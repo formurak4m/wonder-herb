@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選</title>
     <meta name="description" content="康草堂 Wonder Herb - 超過20年經驗，雲芝糖肽精華有效成份 >90%，加拿大GMP藥廠生產，大學證實複合配方功效倍增。">
-    <!-- 機器可讀的最後更新時間，傳遞內容新鮮度訊號 -->
     <meta name="dateModified" content="2026-06-02T10:00:00+08:00">
     <meta property="og:title" content="康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選">
     <meta property="og:description" content="超過20年經驗，雲芝糖肽精華有效成份 >90%，加拿大GMP藥廠生產，大學證實複合配方功效倍增。">
@@ -22,179 +21,195 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.35);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            --glass-blur: 18px;
+            --reveal-distance: 36px;
+            --reveal-duration: 0.7s;
+            --liquid-tint: rgba(255, 255, 255, 0.22);
+            --liquid-shine: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.55),
+                inset -1px -1px 1px 1px rgba(255, 255, 255, 0.45);
+            --liquid-blur: 5px;
+            --jelly-spring: cubic-bezier(0.175, 0.885, 0.32, 2.2);
+            --jelly-spring-gentle: cubic-bezier(0.175, 0.885, 0.32, 1.6);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #fefcf8;
             color: #2c2a28;
             line-height: 1.5;
             scroll-behavior: smooth;
+            overflow-x: hidden;
         }
 
+        /* ========== SVG 滤镜 (液态玻璃扭曲) ========== */
+        .svg-filters {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        /* ========== 滚动渐现动画 ========== */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(var(--reveal-distance));
+            transition: opacity var(--reveal-duration) cubic-bezier(0.22, 0.61, 0.36, 1),
+                transform var(--reveal-duration) cubic-bezier(0.22, 0.61, 0.36, 1);
+            will-change: opacity, transform;
+        }
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-on-scroll.reveal-delay-1 {
+            transition-delay: 0.08s;
+        }
+        .reveal-on-scroll.reveal-delay-2 {
+            transition-delay: 0.16s;
+        }
+        .reveal-on-scroll.reveal-delay-3 {
+            transition-delay: 0.24s;
+        }
+        .reveal-on-scroll.reveal-delay-4 {
+            transition-delay: 0.32s;
+        }
+        .reveal-on-scroll.reveal-left {
+            transform: translateX(-40px);
+            opacity: 0;
+        }
+        .reveal-on-scroll.reveal-left.is-visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .reveal-on-scroll.reveal-right {
+            transform: translateX(40px);
+            opacity: 0;
+        }
+        .reveal-on-scroll.reveal-right.is-visible {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        /* ========== 液态玻璃卡片增强 ========== */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.28);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow), var(--liquid-shine);
+            border-radius: 28px;
+            transition: all 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: var(--liquid-tint);
+            backdrop-filter: blur(var(--liquid-blur));
+            -webkit-backdrop-filter: blur(var(--liquid-blur));
+            filter: url(#glass-distortion);
+            border-radius: inherit;
+            pointer-events: none;
+            transition: background 0.45s ease, opacity 0.45s ease;
+            opacity: 0.85;
+        }
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1), var(--liquid-shine);
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.55);
+        }
+        .glass-panel:hover::before {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+        }
+        .glass-panel>* {
+            position: relative;
+            z-index: 2;
+        }
+
+        .shimmer-overlay {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-overlay::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(115deg,
+                    transparent 30%,
+                    rgba(255, 255, 255, 0.25) 38%,
+                    rgba(255, 255, 255, 0.45) 42%,
+                    rgba(255, 255, 255, 0.25) 46%,
+                    transparent 54%);
+            transform: translateX(-100%) rotate(25deg);
+            animation: shimmerSweep 5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 3;
+            border-radius: inherit;
+        }
+        @keyframes shimmerSweep {
+            0%,
+            100% {
+                transform: translateX(-100%) rotate(25deg);
+            }
+            40% {
+                transform: translateX(100%) rotate(25deg);
+            }
+            60% {
+                transform: translateX(100%) rotate(25deg);
+            }
+        }
+
+        /* ========== 容器样式 ========== */
         .container {
             max-width: 1280px;
             margin: 0 auto;
             padding: 0 24px;
+            position: relative;
+            z-index: 2;
         }
-
         section {
             padding: 35px 0;
+            position: relative;
+            z-index: 2;
         }
 
+        /* ========== Hero + Canvas ========== */
         .hero {
             padding: 60px 0 50px;
-        }
-
-        .container .quality-highlight {
-            margin: 30px 0 50px;
-        }
-
-        .case-studies {
-            margin: 50px auto 40px;
-        }
-
-        /* ----- 頂部欄樣式（保持不變）----- */
-        .top-bar {
-            background-color: #2d5e3b;
-            color: #fff;
-            font-size: 0.85rem;
-            padding: 8px 0;
-            text-align: right;
-        }
-
-        .top-bar .container {
-            display: flex;
-            justify-content: flex-end;
-            gap: 20px;
-        }
-
-        .lang-selector {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        .lang-selector span {
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .lang-selector span:hover {
-            opacity: 0.8;
-            text-decoration: underline;
-        }
-
-        .lang-selector .active-lang {
-            font-weight: 700;
-            text-decoration: underline;
-        }
-
-        /* ----- 主導航欄樣式（保持不變）----- */
-        .main-header {
-            background: #E9DDCF;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid #eee6dc;
-        }
-
-        .header-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            padding: 16px 0;
-            gap: 20px;
-        }
-
-        .logo img {
-            height: 55px;
-            width: auto;
-        }
-
-        .nav-menu ul {
-            display: flex;
-            gap: 28px;
-            list-style: none;
-            flex-wrap: wrap;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            font-weight: 500;
-            color: #2c3e2b;
-            font-size: 1rem;
-            transition: color 0.2s;
-        }
-
-        .nav-menu a:hover,
-        .nav-menu a.active {
-            color: #9b2e2e;
-            border-bottom: 2px solid #9b2e2e;
-            padding-bottom: 4px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .header-actions .social-icon {
-            color: #6b4e2e;
-            font-size: 1.3rem;
-            text-decoration: none;
-            transition: transform 0.2s;
-        }
-
-        .header-actions .social-icon:hover {
-            transform: translateY(-2px);
-            color: #9b2e2e;
-        }
-
-        .cart-icon {
-            font-size: 1.4rem;
-            color: #2d5e3b;
             position: relative;
-            text-decoration: none;
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -12px;
-            background: #9b2e2e;
-            color: white;
-            font-size: 0.7rem;
-            border-radius: 30px;
-            padding: 2px 6px;
-            min-width: 18px;
-            text-align: center;
-        }
-
-        .btn-contact {
-            background-color: #2d5e3b;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .btn-contact:hover {
-            background-color: #1e4028;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .hero {
+            z-index: 2;
             background: linear-gradient(135deg, #fff8f0 0%, #f2ede4 100%);
             border-radius: 0 0 48px 48px;
+            overflow: hidden;
+        }
+        #heroCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            display: block;
+        }
+        @media (hover: none) and (pointer: coarse) {
+            #heroCanvas {
+                opacity: 0.55;
+            }
         }
 
         .hero-grid {
@@ -202,12 +217,12 @@
             align-items: center;
             gap: 48px;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 3;
         }
-
         .hero-content {
             flex: 1;
         }
-
         .hero-badge {
             display: inline-block;
             background: #9b2e2e;
@@ -218,7 +233,6 @@
             font-weight: 600;
             margin-bottom: 20px;
         }
-
         .hero-content h1 {
             font-size: 3rem;
             font-weight: 700;
@@ -227,54 +241,91 @@
             line-height: 1.2;
             margin-bottom: 20px;
         }
-
         .hero-content p {
             font-size: 1.1rem;
             color: #4a4a48;
             margin-bottom: 30px;
         }
-
         .hero-stats {
             display: flex;
             gap: 32px;
             margin-bottom: 32px;
         }
-
         .stat-item {
             text-align: center;
         }
-
         .stat-number {
             font-size: 2rem;
             font-weight: 800;
             color: #2d5e3b;
         }
-
         .hero-image {
             flex: 1;
             text-align: center;
             position: relative;
+            z-index: 3;
         }
 
+        /* ========== 液态玻璃轮播容器 (增强版 — 背景可见) ========== */
         .carousel-container {
             position: relative;
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
             border-radius: 32px;
-            overflow: hidden;
-            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1);
-            background: #f9f5f0;
+            overflow: visible;
+            box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+            background: transparent;
+            z-index: 2;
+            transition: all 0.5s var(--jelly-spring);
         }
-
+        .carousel-container:hover {
+            box-shadow: 0 12px 18px rgba(0, 0, 0, 0.25), 0 0 35px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+            border-radius: 36px;
+        }
+        .carousel-container .liquidGlass-effect {
+            position: absolute;
+            z-index: 0;
+            inset: 0;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            filter: url(#liquid-glass-carousel);
+            overflow: hidden;
+            border-radius: inherit;
+            pointer-events: none;
+        }
+        .carousel-container .liquidGlass-tint {
+            z-index: 1;
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.15);  /* 降低背景不透明度 */
+            border-radius: inherit;
+            pointer-events: none;
+            transition: background 0.5s ease;
+        }
+        .carousel-container:hover .liquidGlass-tint {
+            background: rgba(255, 255, 255, 0.25);  /* hover 时稍微亮一点 */
+        }
+        .carousel-container .liquidGlass-shine {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            overflow: hidden;
+            border-radius: inherit;
+            pointer-events: none;
+            box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.55),
+                inset -1px -1px 1px 1px rgba(255, 255, 255, 0.5);
+        }
         .carousel-slides {
             position: relative;
             width: 100%;
             height: 0;
             padding-bottom: 85%;
-            overflow: hidden;
+            overflow: visible;
+            z-index: 3;
+            border-radius: inherit;
         }
-
         .carousel-slide {
             position: absolute;
             top: 0;
@@ -282,54 +333,96 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 0.6s ease-in-out;
+            transition: opacity 0.6s ease-in-out, transform 0.6s var(--jelly-spring-gentle);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #faf7f2;
+            background: rgba(250, 247, 242, 0.15);  /* 背景近乎透明 */
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: inherit;
+            z-index: 0;
+            will-change: transform, opacity;
         }
-
         .carousel-slide.active {
             opacity: 1;
-            z-index: 1;
+            z-index: 5;
         }
-
+        .carousel-slide .slide-glass-effect {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            filter: url(#liquid-glass-carousel);
+            border-radius: inherit;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .carousel-slide .slide-glass-tint {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.1);  /* 几乎透明 */
+            border-radius: inherit;
+            pointer-events: none;
+            transition: background 0.5s ease;
+        }
+        .carousel-slide.active .slide-glass-tint {
+            background: rgba(255, 255, 255, 0.15);  /* 活跃时稍亮 */
+        }
+        .carousel-slide .slide-glass-shine {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            border-radius: inherit;
+            pointer-events: none;
+            overflow: hidden;
+            box-shadow: inset 1px 1px 0 0 rgba(255, 255, 255, 0.5),
+                inset -1px -1px 0 1px rgba(255, 255, 255, 0.4);
+        }
         .carousel-slide img {
             width: 100%;
             height: 100%;
             object-fit: contain;
             padding: 20px;
+            position: relative;
+            z-index: 3;
+            pointer-events: none;
+            transition: transform 0.6s var(--jelly-spring-gentle);
         }
-
+        /* 当鼠标靠近轮播时，活跃slide放大 */
+        .carousel-container.magnify-active .carousel-slide.active {
+            transform: scale(1.0);
+        }
         .carousel-btn {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(45, 94, 59, 0.6);
+            background: rgba(45, 94, 59, 0.55);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             color: white;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             width: 40px;
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            z-index: 10;
+            z-index: 20;
             font-size: 1.2rem;
-            backdrop-filter: blur(4px);
-            transition: background 0.2s;
+            transition: all 0.35s var(--jelly-spring-gentle);
         }
-
         .carousel-btn:hover {
-            background: #2d5e3b;
+            background: rgba(45, 94, 59, 0.85);
+            transform: translateY(-50%) scale(1.15);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
         }
-
         .carousel-btn.prev {
             left: 12px;
         }
-
         .carousel-btn.next {
             right: 12px;
         }
-
         .carousel-dots {
             position: absolute;
             bottom: 16px;
@@ -338,24 +431,24 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            z-index: 10;
+            z-index: 20;
         }
-
         .dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.35s var(--jelly-spring-gentle);
         }
-
         .dot.active {
             background: #9b2e2e;
             width: 24px;
             border-radius: 10px;
         }
 
+        /* ========== 产品布局 (液态玻璃卡片) ========== */
         .triple-product-layout {
             display: flex;
             gap: 16px;
@@ -363,103 +456,160 @@
             align-items: center;
             flex-wrap: wrap;
             justify-content: center;
+            position: relative;
+            z-index: 3;
         }
-
         .product-nav-btn {
             flex: 0 0 auto;
             display: flex;
             align-items: center;
         }
-
         .control-btn {
-            background: rgba(45, 94, 59, 0.75);
-            backdrop-filter: blur(4px);
+            background: rgba(45, 94, 59, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             color: white;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             width: 48px;
             height: 48px;
             border-radius: 60px;
             font-size: 1.4rem;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.35s var(--jelly-spring-gentle);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1), var(--liquid-shine);
         }
-
         .control-btn:hover {
-            background: rgba(45, 94, 59, 0.95);
-            transform: scale(1.06);
+            background: rgba(45, 94, 59, 0.9);
+            transform: scale(1.12);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15), var(--liquid-shine);
         }
-
         .featured-card {
             flex: 2;
-            background: white;
+            background: rgba(255, 255, 255, 0.32);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
             border-radius: 32px;
             padding: 36px 28px;
-            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.2);
-            border: 1px solid #eedfcb;
-            transition: transform 0.25s ease;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.12), var(--liquid-shine);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.45s var(--jelly-spring-gentle),
+                box-shadow 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+                background 0.4s ease;
             text-align: center;
+            position: relative;
+            z-index: 3;
+            overflow: hidden;
         }
-
+        .featured-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            filter: url(#glass-distortion);
+            border-radius: inherit;
+            pointer-events: none;
+            transition: background 0.45s ease;
+            opacity: 0.8;
+        }
         .featured-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-7px);
+            background: rgba(255, 255, 255, 0.48);
+            box-shadow: 0 32px 55px -14px rgba(0, 0, 0, 0.16), var(--liquid-shine);
+            border-color: rgba(255, 255, 255, 0.65);
         }
-
+        .featured-card:hover::before {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+        }
+        .featured-card>* {
+            position: relative;
+            z-index: 2;
+        }
         .side-card {
             flex: 1;
-            background: #fefaf5;
+            background: rgba(254, 250, 245, 0.55);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 28px;
             padding: 20px 16px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            border: 1px solid #f0e0cf;
-            transition: all 0.2s;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05), var(--liquid-shine);
+            border: 1px solid rgba(240, 224, 207, 0.55);
+            transition: all 0.45s var(--jelly-spring-gentle);
             text-align: center;
-            backdrop-filter: blur(2px);
-            background: rgba(254, 250, 245, 0.95);
             display: flex;
             flex-direction: column;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
         }
-
+        .side-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            filter: url(#glass-distortion);
+            border-radius: inherit;
+            pointer-events: none;
+            transition: background 0.4s ease;
+            opacity: 0.7;
+        }
         .side-card:hover {
-            transform: translateY(-2px);
-            background: #fffefb;
+            transform: translateY(-4px) scale(1.03);
+            background: rgba(255, 255, 255, 0.78);
+            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.1), var(--liquid-shine);
+            border-color: rgba(255, 255, 255, 0.65);
         }
-
+        .side-card:hover::before {
+            background: rgba(255, 255, 255, 0.28);
+            opacity: 1;
+        }
+        .side-card>* {
+            position: relative;
+            z-index: 2;
+        }
         .featured-card .product-img {
             height: 220px;
-            background: #faf5ee;
+            background: rgba(250, 245, 238, 0.4);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
-
         .featured-card .product-img img {
             max-width: 85%;
             max-height: 200px;
             object-fit: contain;
         }
-
         .side-card .product-img {
             height: 110px;
-            background: #faf5ee;
+            background: rgba(250, 245, 238, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
         }
-
         .side-card .product-img img {
             max-width: 75%;
             max-height: 95px;
             object-fit: contain;
         }
-
         .featured-card h3 {
             font-size: 1.9rem;
             font-weight: 700;
@@ -467,7 +617,6 @@
             color: #2c3e2b;
             margin-bottom: 12px;
         }
-
         .featured-card .product-description {
             font-size: 1rem;
             color: #4a4a48;
@@ -477,24 +626,21 @@
             margin-left: auto;
             margin-right: auto;
         }
-
         .side-card h4 {
             font-size: 1.1rem;
             font-weight: 600;
             color: #2d5e3b;
             margin: 8px 0 6px;
         }
-
         .side-card .side-desc {
             font-size: 0.75rem;
             color: #6b5e55;
             line-height: 1.3;
         }
-
         .btn-detail-main {
             background: #2d5e3b;
             color: white;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 12px 32px;
             border-radius: 40px;
             font-weight: 600;
@@ -504,38 +650,72 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            transition: background 0.2s;
+            transition: all 0.35s var(--jelly-spring-gentle);
+            position: relative;
+            z-index: 3;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
-
         .btn-detail-main:hover {
             background: #1e4028;
-            transform: scale(1.02);
+            transform: scale(1.06);
+            box-shadow: 0 10px 26px rgba(45, 94, 59, 0.35);
         }
 
+        /* ========== 病例卡片 (液态玻璃) ========== */
         .featured-cases-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
             margin: 40px 0 30px;
         }
-
         .mini-case-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.28);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             border-radius: 28px;
             padding: 24px;
-            box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.05);
-            transition: all 0.25s;
+            box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.06), var(--liquid-shine);
+            transition: all 0.45s var(--jelly-spring-gentle);
             border-left: 5px solid #2d5e3b;
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-right: 1px solid rgba(255, 255, 255, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
             height: 100%;
             display: flex;
             flex-direction: column;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
         }
-
+        .mini-case-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            filter: url(#glass-distortion);
+            border-radius: inherit;
+            pointer-events: none;
+            transition: background 0.4s ease;
+            opacity: 0.75;
+        }
         .mini-case-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 18px 32px -12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-6px) scale(1.03);
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 24px 44px -14px rgba(0, 0, 0, 0.14), var(--liquid-shine);
+            border-color: rgba(255, 255, 255, 0.6);
         }
-
+        .mini-case-card:hover::before {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+        }
+        .mini-case-card>* {
+            position: relative;
+            z-index: 2;
+        }
         .mini-case-title {
             font-size: 1.2rem;
             font-weight: 700;
@@ -543,7 +723,6 @@
             font-family: 'Playfair Display', serif;
             margin-bottom: 6px;
         }
-
         .mini-case-subtitle {
             font-size: 0.8rem;
             color: #9b2e2e;
@@ -551,7 +730,6 @@
             margin-bottom: 12px;
             letter-spacing: 0.3px;
         }
-
         .mini-case-excerpt {
             font-size: 0.9rem;
             line-height: 1.5;
@@ -559,7 +737,6 @@
             margin-bottom: 16px;
             flex: 1;
         }
-
         .read-more-link {
             color: #2d5e3b;
             font-weight: 600;
@@ -569,13 +746,14 @@
             align-items: center;
             gap: 6px;
             margin-top: 8px;
+            transition: color 0.25s ease;
         }
-
         .read-more-link:hover {
             color: #9b2e2e;
             text-decoration: underline;
         }
 
+        /* ========== 通用标题与徽章 ========== */
         .section-title {
             font-size: 2.2rem;
             font-family: 'Playfair Display', serif;
@@ -583,29 +761,57 @@
             margin-bottom: 48px;
             color: #2c3e2b;
         }
-
         .section-sub {
             text-align: center;
             max-width: 700px;
             margin: -20px auto 40px;
             color: #6b5e55;
         }
-
         .quality-highlight {
-            background: linear-gradient(120deg, #fff0e6, #fff8f0);
+            background: rgba(255, 240, 230, 0.4);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
             border-radius: 40px;
             padding: 48px 40px;
             text-align: center;
             border-left: 8px solid #c0392b;
+            border-top: 1px solid rgba(255, 255, 255, 0.55);
+            border-right: 1px solid rgba(255, 255, 255, 0.45);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06), var(--liquid-shine);
+            position: relative;
+            z-index: 2;
+            margin: 30px 0 50px;
+            overflow: hidden;
         }
-
+        .quality-highlight::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            filter: url(#glass-distortion);
+            border-radius: inherit;
+            pointer-events: none;
+            transition: background 0.45s ease;
+            opacity: 0.8;
+        }
+        .quality-highlight:hover::before {
+            background: rgba(255, 255, 255, 0.32);
+            opacity: 1;
+        }
+        .quality-highlight>* {
+            position: relative;
+            z-index: 2;
+        }
         .quality-highlight p {
             font-size: 1.6rem;
             font-weight: 600;
             line-height: 1.4;
             color: #1e2a1b;
         }
-
         .quality-highlight span {
             color: #c0392b;
             font-weight: 800;
@@ -614,7 +820,6 @@
             border-radius: 40px;
             display: inline-block;
         }
-
         .trust-badges {
             display: flex;
             flex-wrap: wrap;
@@ -622,20 +827,55 @@
             gap: 40px;
             margin-bottom: 40px;
         }
-
         .badge-item {
             text-align: center;
             max-width: 180px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 20px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04), var(--liquid-shine);
+            transition: all 0.4s var(--jelly-spring-gentle);
+            position: relative;
+            overflow: hidden;
         }
-
+        .badge-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            filter: url(#glass-distortion);
+            border-radius: inherit;
+            pointer-events: none;
+            opacity: 0.6;
+            transition: opacity 0.35s ease;
+        }
+        .badge-item:hover {
+            background: rgba(255, 255, 255, 0.48);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.1), var(--liquid-shine);
+        }
+        .badge-item:hover::before {
+            opacity: 1;
+        }
+        .badge-item>* {
+            position: relative;
+            z-index: 2;
+        }
         .badge-item i {
             font-size: 2.5rem;
             color: #2d5e3b;
             margin-bottom: 12px;
         }
-
         .case-studies {
-            background-color: #2c3e2b;
+            background: rgba(44, 62, 43, 0.82);
+            backdrop-filter: blur(26px);
+            -webkit-backdrop-filter: blur(26px);
             color: white;
             border-radius: 48px;
             padding: 50px 40px;
@@ -643,8 +883,35 @@
             max-width: 1100px;
             width: calc(100% - 48px);
             box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), var(--liquid-shine);
+            position: relative;
+            z-index: 2;
+            margin: 50px auto 40px;
+            overflow: hidden;
         }
-
+        .case-studies::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            filter: url(#glass-distortion);
+            border-radius: inherit;
+            pointer-events: none;
+            transition: background 0.45s ease;
+            opacity: 0.7;
+        }
+        .case-studies:hover::before {
+            background: rgba(255, 255, 255, 0.14);
+            opacity: 1;
+        }
+        .case-studies>* {
+            position: relative;
+            z-index: 2;
+        }
         .case-action-buttons {
             display: flex;
             justify-content: center;
@@ -654,7 +921,6 @@
             margin: 32px auto 0 auto;
             width: 100%;
         }
-
         .case-btn {
             display: inline-flex;
             align-items: center;
@@ -664,112 +930,122 @@
             border-radius: 40px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: all 0.35s var(--jelly-spring-gentle);
             white-space: nowrap;
             font-size: 0.95rem;
             line-height: 1.2;
             cursor: pointer;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
         }
-
         .case-btn-primary {
             background: #ffd966;
             color: #2c3e2b;
-            border: 1px solid transparent;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08), var(--liquid-shine);
         }
-
         .case-btn-primary:hover {
             background: #e6c34e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14), var(--liquid-shine);
         }
-
         .case-btn-outline {
             background: transparent;
             border: 1px solid #ffd966;
             color: #ffd966;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
-
         .case-btn-outline:hover {
-            background: rgba(255, 217, 102, 0.1);
-            transform: translateY(-2px);
+            background: rgba(255, 217, 102, 0.12);
+            transform: translateY(-3px) scale(1.04);
             border-color: #ffdd88;
             color: #ffe5a3;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+        .company-glass-card {
+            background: rgba(255, 255, 255, 0.28);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.05), var(--liquid-shine);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.45s var(--jelly-spring-gentle);
+        }
+        .company-glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            filter: url(#glass-distortion);
+            border-radius: inherit;
+            pointer-events: none;
+            transition: background 0.45s ease;
+            opacity: 0.75;
+        }
+        .company-glass-card:hover {
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 44px rgba(0, 0, 0, 0.1), var(--liquid-shine);
+            transform: translateY(-3px);
+        }
+        .company-glass-card:hover::before {
+            background: rgba(255, 255, 255, 0.3);
+            opacity: 1;
+        }
+        .company-glass-card>* {
+            position: relative;
+            z-index: 2;
         }
 
-        @media (max-width: 640px) {
-            .case-action-buttons {
-                gap: 14px;
-            }
-            .case-btn {
-                padding: 8px 20px;
-                font-size: 0.85rem;
-                white-space: nowrap;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .case-action-buttons {
-                gap: 12px;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            .case-btn {
-                white-space: normal;
-                text-align: center;
-            }
-            .case-studies {
-                padding: 35px 20px;
-            }
-        }
-
+        /* ========== Footer ========== */
         footer {
             background: #1f2c1c;
             color: #ddd;
             padding: 48px 0 24px;
             margin-top: 40px;
+            position: relative;
+            z-index: 2;
         }
-
         .footer-inner {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             gap: 32px;
         }
-
         .footer-col {
             flex: 1;
             min-width: 180px;
         }
-
         .footer-col h4 {
             color: #ffd966;
             margin-bottom: 16px;
         }
-
         .footer-col a {
             color: #ddd;
             text-decoration: none;
+            transition: color 0.25s;
         }
-
         .footer-col a:hover {
             color: #ffd966;
         }
-
         .footer-social a {
             color: #ddd;
             font-size: 1.4rem;
             margin-right: 16px;
-            transition: 0.2s;
+            transition: all 0.3s var(--jelly-spring-gentle);
             display: inline-block;
             text-decoration: none;
         }
-
         .footer-social a:hover {
             color: #ffd966;
+            transform: translateY(-3px) scale(1.12);
         }
-
         .copyright {
             text-align: center;
             padding-top: 32px;
@@ -777,12 +1053,13 @@
             margin-top: 32px;
             font-size: 0.85rem;
         }
-
         .back-to-top {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background-color: #2d5e3b;
+            background: rgba(45, 94, 59, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             color: white;
             width: 50px;
             height: 50px;
@@ -794,27 +1071,25 @@
             font-size: 1.5rem;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s;
+            transition: all 0.45s var(--jelly-spring-gentle);
             z-index: 99;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18), var(--liquid-shine);
         }
-
         .back-to-top.show {
             opacity: 1;
             visibility: visible;
         }
-
         .back-to-top:hover {
             background-color: #1e4028;
-            transform: translateY(-3px);
+            transform: translateY(-6px) scale(1.1);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), var(--liquid-shine);
         }
-
         .last-update {
             font-size: 0.7rem;
             color: #a8b7a4;
             margin-top: 8px;
         }
-
-        /* 螢幕閱讀器專用：視覺隱藏但輔助技術可讀取 */
         .sr-only {
             position: absolute;
             width: 1px;
@@ -826,11 +1101,52 @@
             white-space: nowrap;
             border: 0;
         }
+        .cta-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn-primary {
+            background-color: #2d5e3b;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 40px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            transition: all 0.35s var(--jelly-spring-gentle);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 14px rgba(45, 94, 59, 0.2);
+        }
+        .btn-primary:hover {
+            background-color: #1e4028;
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 10px 28px rgba(45, 94, 59, 0.35);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 2px solid #2d5e3b;
+            color: #2d5e3b;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.35s var(--jelly-spring-gentle);
+            display: inline-block;
+        }
+        .btn-secondary:hover {
+            background: rgba(45, 94, 59, 0.08);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
 
+        /* ========== 响应式 ========== */
         @media (max-width: 900px) {
-            .header-inner {
-                flex-direction: column;
-            }
             .nav-menu ul {
                 gap: 16px;
                 justify-content: center;
@@ -853,10 +1169,219 @@
                 width: calc(100% - 32px);
                 padding: 35px 20px;
             }
+            .company-glass-card {
+                padding: 24px 18px;
+            }
+            /* 移动端减弱液态扭曲 (性能优化) */
+            .glass-panel::before,
+            .featured-card::before,
+            .side-card::before,
+            .mini-case-card::before,
+            .quality-highlight::before,
+            .case-studies::before,
+            .company-glass-card::before,
+            .carousel-container .liquidGlass-effect,
+            .carousel-slide .slide-glass-effect,
+            .badge-item::before {
+                filter: none;
+                backdrop-filter: blur(2px);
+                -webkit-backdrop-filter: blur(2px);
+            }
+            .carousel-container .liquidGlass-effect {
+                filter: none;
+            }
+            .carousel-slide .slide-glass-effect {
+                filter: none;
+            }
+        }
+        @media (max-width: 640px) {
+            .case-action-buttons {
+                gap: 14px;
+            }
+            .case-btn {
+                padding: 8px 20px;
+                font-size: 0.85rem;
+                white-space: nowrap;
+            }
+            .quality-highlight p {
+                font-size: 1.1rem;
+            }
+            .quality-highlight {
+                padding: 28px 18px;
+            }
+        }
+        @media (max-width: 480px) {
+            .case-action-buttons {
+                gap: 12px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .case-btn {
+                white-space: normal;
+                text-align: center;
+            }
+            .case-studies {
+                padding: 35px 20px;
+            }
+        }
+        /* 减弱动效偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            .glass-panel::before,
+            .featured-card::before,
+            .side-card::before,
+            .mini-case-card::before,
+            .quality-highlight::before,
+            .case-studies::before,
+            .company-glass-card::before,
+            .carousel-container .liquidGlass-effect,
+            .carousel-slide .slide-glass-effect,
+            .badge-item::before {
+                filter: none;
+            }
+            .shimmer-overlay::after {
+                animation: none;
+            }
+            .carousel-slide {
+                transition: opacity 0.3s ease-in-out, transform 0.3s ease;
+            }
+            .carousel-container {
+                transition: all 0.3s ease;
+            }
+        }
+
+        /* ========== 顶部栏 & 导航 ========== */
+        .top-bar {
+            background-color: #2d5e3b;
+            color: #fff;
+            font-size: 0.85rem;
+            padding: 8px 0;
+            text-align: right;
+            position: relative;
+            z-index: 101;
+        }
+        .top-bar .container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+        }
+        .lang-selector {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .lang-selector span {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .lang-selector span:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+        .lang-selector .active-lang {
+            font-weight: 700;
+            text-decoration: underline;
+        }
+        .main-header {
+            background: #E9DDCF;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #eee6dc;
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 16px 0;
+            gap: 20px;
+        }
+        .logo img {
+            height: 55px;
+            width: auto;
+        }
+        .nav-menu ul {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+        .nav-menu a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #2c3e2b;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: #9b2e2e;
+            border-bottom: 2px solid #9b2e2e;
+            padding-bottom: 4px;
+        }
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .header-actions .social-icon {
+            color: #6b4e2e;
+            font-size: 1.3rem;
+            text-decoration: none;
+            transition: transform 0.3s var(--jelly-spring-gentle), color 0.25s;
+        }
+        .header-actions .social-icon:hover {
+            transform: translateY(-3px) scale(1.12);
+            color: #9b2e2e;
+        }
+        .cart-icon {
+            font-size: 1.4rem;
+            color: #2d5e3b;
+            position: relative;
+            text-decoration: none;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: #9b2e2e;
+            color: white;
+            font-size: 0.7rem;
+            border-radius: 30px;
+            padding: 2px 6px;
+            min-width: 18px;
+            text-align: center;
+        }
+        .btn-contact {
+            background-color: #2d5e3b;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.35s var(--jelly-spring-gentle);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-contact:hover {
+            background-color: #1e4028;
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+        @media (max-width: 900px) {
+            .header-inner {
+                flex-direction: column;
+            }
         }
     </style>
 
-    <!-- JSON-LD 結構化資料：清晰定義 Organization、Product、FAQ、Review 之間的關係 -->
+    <!-- JSON-LD 结构化数据 -->
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
@@ -868,17 +1393,9 @@
                 "url": "https://www.wonder-herb.com/",
                 "logo": "https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png",
                 "description": "康草堂是以人為本的中草藥製品公司，專注於高活性雲芝糖肽精華PSP及複方產品，加拿大GMP藥廠生產，超過20年臨床經驗。",
-                "sameAs": [
-                    "https://www.facebook.com/wonderherbhealth",
-                    "https://www.instagram.com/wonderherb_hk/",
-                    "https://wa.me/85293318571/"
-                ],
-                "contactPoint": {
-                    "@type": "ContactPoint",
-                    "contactType": "customer service",
-                    "telephone": "+85293318571",
-                    "contactOption": "WhatsApp"
-                }
+                "sameAs": ["https://www.facebook.com/wonderherbhealth", "https://www.instagram.com/wonderherb_hk/", "https://wa.me/85293318571/"],
+                "contactPoint": { "@type": "ContactPoint", "contactType": "customer service", "telephone": "+85293318571",
+                    "contactOption": "WhatsApp" }
             }, {
                 "@type": "Product",
                 "@id": "https://www.wonder-herb.com/#product_psp_standard",
@@ -886,25 +1403,12 @@
                 "description": "每瓶500粒，雲芝糖肽有效成分 >90%，多醣肽含量超國家標準1.8倍，強化免疫調節，適合長期輔助療程。GMP認證、雙重檢測。",
                 "image": "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg",
                 "sku": "WH-PSP-500",
-                "brand": {
-                    "@type": "Brand",
-                    "name": "康草堂 Wonder Herb"
-                },
-                "manufacturer": {
-                    "@id": "https://www.wonder-herb.com/#organization"
-                },
-                "offers": {
-                    "@type": "Offer",
-                    "priceCurrency": "HKD",
-                    "availability": "https://schema.org/InStock",
-                    "priceSpecification": {
-                        "@type": "PriceSpecification",
-                        "price": "0",
-                        "priceCurrency": "HKD",
-                        "valueAddedTaxIncluded": false
-                    },
-                    "description": "Contact for pricing and consultation."
-                }
+                "brand": { "@type": "Brand", "name": "康草堂 Wonder Herb" },
+                "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" },
+                "offers": { "@type": "Offer", "priceCurrency": "HKD", "availability": "https://schema.org/InStock",
+                    "priceSpecification": { "@type": "PriceSpecification", "price": "0",
+                        "priceCurrency": "HKD", "valueAddedTaxIncluded": false },
+                    "description": "Contact for pricing and consultation." }
             }, {
                 "@type": "Product",
                 "@id": "https://www.wonder-herb.com/#product_t3",
@@ -912,19 +1416,10 @@
                 "description": "大學證實雲芝糖肽PSP結合三烯生育醇T3，功效倍增，專為頑疾輔助設計。加拿大GMP生產，提升常規治療效益。",
                 "image": "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png",
                 "sku": "WH-PSP-T3",
-                "brand": {
-                    "@type": "Brand",
-                    "name": "康草堂 Wonder Herb"
-                },
-                "manufacturer": {
-                    "@id": "https://www.wonder-herb.com/#organization"
-                },
-                "offers": {
-                    "@type": "Offer",
-                    "priceCurrency": "HKD",
-                    "availability": "https://schema.org/InStock",
-                    "price": "0"
-                }
+                "brand": { "@type": "Brand", "name": "康草堂 Wonder Herb" },
+                "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" },
+                "offers": { "@type": "Offer", "priceCurrency": "HKD", "availability": "https://schema.org/InStock",
+                    "price": "0" }
             }, {
                 "@type": "Product",
                 "@id": "https://www.wonder-herb.com/#product_trial",
@@ -932,13 +1427,8 @@
                 "description": "60粒裝，初次體驗佳，多醣肽含量高於國家標準1.8倍，活性成分>90%。",
                 "sku": "WH-PSP-60",
                 "image": "https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg",
-                "brand": {
-                    "@type": "Brand",
-                    "name": "康草堂"
-                },
-                "manufacturer": {
-                    "@id": "https://www.wonder-herb.com/#organization"
-                }
+                "brand": { "@type": "Brand", "name": "康草堂" },
+                "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" }
             }, {
                 "@type": "Product",
                 "@id": "https://www.wonder-herb.com/#product_hepa",
@@ -946,13 +1436,8 @@
                 "description": "天然草本護肝配方，抑制HBV活性，減輕肝纖維化，輔助肝臟健康。",
                 "sku": "WH-YGQ",
                 "image": "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png",
-                "brand": {
-                    "@type": "Brand",
-                    "name": "康草堂"
-                },
-                "manufacturer": {
-                    "@id": "https://www.wonder-herb.com/#organization"
-                }
+                "brand": { "@type": "Brand", "name": "康草堂" },
+                "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" }
             }, {
                 "@type": "Product",
                 "@id": "https://www.wonder-herb.com/#product_memo",
@@ -960,93 +1445,75 @@
                 "description": "奧地利研發，修復腦細胞，提升記憶力與專注力，適合認知健康輔助。",
                 "sku": "WH-MEMO",
                 "image": "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg",
-                "brand": {
-                    "@type": "Brand",
-                    "name": "康草堂"
-                },
-                "manufacturer": {
-                    "@id": "https://www.wonder-herb.com/#organization"
-                }
+                "brand": { "@type": "Brand", "name": "康草堂" },
+                "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" }
             }, {
                 "@type": "Product",
                 "@id": "https://www.wonder-herb.com/#product_pt3",
                 "name": "PT3 (專業配方)",
                 "description": "只在指定中西醫診所發售，專業級雲芝複合配方，需諮詢醫生後使用。",
                 "sku": "WH-PT3-PRO",
-                "brand": {
-                    "@type": "Brand",
-                    "name": "康草堂"
-                },
-                "manufacturer": {
-                    "@id": "https://www.wonder-herb.com/#organization"
-                }
+                "brand": { "@type": "Brand", "name": "康草堂" },
+                "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" }
             }, {
                 "@type": "FAQPage",
-                "mainEntity": [{
-                    "@type": "Question",
-                    "name": "雲芝糖肽精華 PSP 的主要健康益處是什麼？",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "康草堂雲芝糖肽精華PSP經大學研究證實，能調節免疫功能，輔助癌症患者緩解放化療不適，提升生活品質，並可增強常規治療效果。有效成份高達90%以上，遠超國家標準。"
-                    }
-                }, {
-                    "@type": "Question",
-                    "name": "PSP 與 T3 一起服用有什麼特別效益？",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "根據大學研究，康草堂獨特的「雲芝糖肽精華 PSP + T3」配方比單一服用PSP功效倍增。T3 (三烯生育醇) 能增強免疫調節及抗氧化，協同PSP提升對頑疾的輔助防護力。"
-                    }
-                }, {
-                    "@type": "Question",
-                    "name": "雲芝產品安全嗎？會有副作用嗎？",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "康草堂產品由加拿大GMP認證藥廠生產，每一批次皆經加拿大及香港雙重檢測，確保重金屬、微生物符合安全標準。多年臨床使用顯示耐受性良好，極少數人可能出現輕微腸胃不適，建議諮詢專業人員。"
-                    }
-                }, {
-                    "@type": "Question",
-                    "name": "如何確認雲芝糖肽的有效成分含量？",
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "康草堂每批產品皆附有第三方檢測報告，有效成份 (多醣+蛋白肽) 穩定高於90%，遠高於國家藥品標準要求的49.5%，消費者可在官網查閱檢測報告。"
-                    }
-                }]
+                "mainEntity": [
+                    { "@type": "Question", "name": "雲芝糖肽精華 PSP 的主要健康益處是什麼？",
+                        "acceptedAnswer": { "@type": "Answer",
+                            "text": "康草堂雲芝糖肽精華PSP經大學研究證實，能調節免疫功能，輔助癌症患者緩解放化療不適，提升生活品質，並可增強常規治療效果。有效成份高達90%以上，遠超國家標準。" } },
+                    { "@type": "Question", "name": "PSP 與 T3 一起服用有什麼特別效益？", "acceptedAnswer": { "@type": "Answer",
+                            "text": "根據大學研究，康草堂獨特的「雲芝糖肽精華 PSP + T3」配方比單一服用PSP功效倍增。T3 (三烯生育醇) 能增強免疫調節及抗氧化，協同PSP提升對頑疾的輔助防護力。" } },
+                    { "@type": "Question", "name": "雲芝產品安全嗎？會有副作用嗎？", "acceptedAnswer": { "@type": "Answer",
+                            "text": "康草堂產品由加拿大GMP認證藥廠生產，每一批次皆經加拿大及香港雙重檢測，確保重金屬、微生物符合安全標準。多年臨床使用顯示耐受性良好，極少數人可能出現輕微腸胃不適，建議諮詢專業人員。" } },
+                    { "@type": "Question", "name": "如何確認雲芝糖肽的有效成分含量？", "acceptedAnswer": { "@type": "Answer",
+                            "text": "康草堂每批產品皆附有第三方檢測報告，有效成份 (多醣+蛋白肽) 穩定高於90%，遠高於國家藥品標準要求的49.5%，消費者可在官網查閱檢測報告。" } }
+                ]
             }, {
                 "@type": "Product",
                 "@id": "https://www.wonder-herb.com/#mainProduct_aggregate",
                 "name": "雲芝糖肽精華 PSP 系列",
-                "aggregateRating": {
-                    "@type": "AggregateRating",
-                    "ratingValue": "4.8",
-                    "reviewCount": "328",
-                    "bestRating": "5",
-                    "worstRating": "1",
-                    "ratingExplanation": "基於超過20,000名患者回饋及典型病例成效統計，綜合免疫力改善、生活品質評分。"
-                },
-                "review": [{
-                    "@type": "Review",
-                    "author": "麥女士家屬",
-                    "reviewBody": "化療期間配合使用雲芝+T3，副作用明顯減輕，醫生肯定其輔助價值。",
-                    "reviewRating": {
-                        "@type": "Rating",
-                        "ratingValue": "5"
-                    }
-                }, {
-                    "@type": "Review",
-                    "author": "陳小姐",
-                    "reviewBody": "術後持續服用PSP，追蹤兩年無復發，體力恢復良好。",
-                    "reviewRating": {
-                        "@type": "Rating",
-                        "ratingValue": "5"
-                    }
-                }]
+                "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "328",
+                    "bestRating": "5", "worstRating": "1",
+                    "ratingExplanation": "基於超過20,000名患者回饋及典型病例成效統計，綜合免疫力改善、生活品質評分。" },
+                "review": [
+                    { "@type": "Review", "author": "麥女士家屬", "reviewBody": "化療期間配合使用雲芝+T3，副作用明顯減輕，醫生肯定其輔助價值。",
+                        "reviewRating": { "@type": "Rating", "ratingValue": "5" } },
+                    { "@type": "Review", "author": "陳小姐", "reviewBody": "術後持續服用PSP，追蹤兩年無復發，體力恢復良好。",
+                        "reviewRating": { "@type": "Rating", "ratingValue": "5" } }
+                ]
             }]
         }
     </script>
 </head>
 <body>
 
-    <!-- 頂部欄：語言選擇器，樣式保持不變 -->
+    <!-- SVG 液态玻璃滤镜 (增强版 — 含 specular lighting + displacement) -->
+    <svg class="svg-filters" aria-hidden="true">
+        <defs>
+            <!-- 通用玻璃扭曲 (温和版，用于卡片伪元素) -->
+            <filter id="glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="5" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+            <!-- 液态玻璃轮播专用 (高级版 — 含镜面高光 + 位移扭曲) -->
+            <filter id="liquid-glass-carousel" x="-10%" y="-10%" width="120%" height="120%" filterUnits="objectBoundingBox">
+                <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="2" seed="14" result="turbulence" />
+                <feComponentTransfer in="turbulence" result="mapped">
+                    <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+                    <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+                    <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+                </feComponentTransfer>
+                <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+                <feSpecularLighting in="softMap" surfaceScale="4" specularConstant="0.8" specularExponent="80" lighting-color="white" result="specLight">
+                    <fePointLight x="-200" y="-200" z="250" />
+                </feSpecularLighting>
+                <feComposite in="specLight" operator="arithmetic" k1="0" k2="0.6" k3="1" k4="0" result="litImage" />
+                <feDisplacementMap in="SourceGraphic" in2="softMap" scale="50" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- 顶部栏 -->
     <div class="top-bar">
         <div class="container">
             <div class="lang-selector" aria-label="語言切換器" role="group">
@@ -1057,7 +1524,7 @@
         </div>
     </div>
 
-    <!-- 主導航欄：樣式保持不變 -->
+    <!-- 主导航栏 -->
     <header class="main-header" role="banner">
         <div class="container header-inner">
             <div class="logo">
@@ -1087,10 +1554,11 @@
     </header>
 
     <main>
-        <!-- 英雄區域：語意化標題層級 h1 -->
-        <section class="hero" aria-label="首頁介紹與產品焦點">
+        <!-- 英雄区域 (含 Canvas 粒子背景) -->
+        <section class="hero" id="heroSection" aria-label="首頁介紹與產品焦點">
+            <canvas id="heroCanvas" aria-hidden="true"></canvas>
             <div class="container hero-grid">
-                <div class="hero-content">
+                <div class="hero-content reveal-on-scroll reveal-left">
                     <div class="hero-badge" data-i18n="hero_badge">⭐ 臨床驗證 · 加拿大GMP藥廠</div>
                     <h1><span data-i18n="hero_title_main">雲芝糖肽精華 PSP<span style="color:#9b2e2e;">+T3</span><br>天然輔助方案</span></h1>
                     <p data-i18n="hero_desc">超過20年經驗，大學研究證實獨特配方功效倍增。每批產品雙重檢測，有效成份 >90% — 遠超國家標準。</p>
@@ -1109,15 +1577,16 @@
                         </div>
                     </div>
                     <div class="cta-group">
-                        <a href="https://wa.me/85293318571/" class="btn-primary" style="background-color:#2d5e3b; color:white; padding:12px 32px; border-radius:40px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; font-weight:700;"
-                            data-i18n="hero_cta_primary"><i class="fab fa-whatsapp"></i> 立即查詢 · 康復方案</a>
-                        <a href="#products" class="btn-secondary" style="background:transparent; border:2px solid #2d5e3b; color:#2d5e3b; padding:10px 28px; border-radius:40px; font-weight:600; text-decoration:none;"
-                            data-i18n="hero_cta_secondary">了解產品系列</a>
+                        <a href="https://wa.me/85293318571/" class="btn-primary" data-i18n="hero_cta_primary"><i class="fab fa-whatsapp"></i> 立即查詢 · 康復方案</a>
+                        <a href="#products" class="btn-secondary" data-i18n="hero_cta_secondary">了解產品系列</a>
                     </div>
                 </div>
-                <div class="hero-image">
-                    <!-- 輪播區域：增強 ARIA 標籤以提升可存取性 -->
+                <div class="hero-image reveal-on-scroll reveal-right">
+                    <!-- ===== 液态玻璃轮播容器 (增强版 — 背景可见) ===== -->
                     <div class="carousel-container" id="heroCarousel" role="region" aria-roledescription="carousel" aria-label="產品形象輪播展示">
+                        <div class="liquidGlass-effect"></div>
+                        <div class="liquidGlass-tint"></div>
+                        <div class="liquidGlass-shine"></div>
                         <div class="carousel-slides" id="heroSlides" aria-live="polite"></div>
                         <button class="carousel-btn prev" id="heroPrev" aria-label="上一張圖片"><i class="fas fa-chevron-left"></i></button>
                         <button class="carousel-btn next" id="heroNext" aria-label="下一張圖片"><i class="fas fa-chevron-right"></i></button>
@@ -1127,98 +1596,99 @@
             </div>
         </section>
 
-        <!-- 公司介紹：h2 標題 -->
+        <!-- 公司介绍 -->
         <section aria-labelledby="company-heading">
             <div class="container">
-                <h2 id="company-heading" class="section-title" data-i18n="company_title">🌿 康草堂 · 以人為本的中草藥科研</h2>
-                <div class="section-sub" data-i18n="company_subtitle">結合中西醫學理論，為頑疾患者提供高活性、純天然輔助方案</div>
-                <div style="background: #fff; border-radius: 32px; padding: 40px;">
-                    <p style="font-size:1.05rem; line-height:1.6; margin-bottom:1.2rem;" data-i18n="company_text1">康草堂 (Wonder Herb Health Products Ltd) 是以人為本的中草藥製品公司，沿用中草藥附以西藥治療效益的前題，結合中西藥平衡理論，採用品質上乘且活性含量極高的中草藥，每一批次都經過加拿大及香港雙重檢測，確保活性含量水平，協助慢性頑疾患者改善健康。</p>
-                    <p style="font-size:1.05rem; line-height:1.6; margin-bottom:1.2rem;" data-i18n="company_text2">累積二十餘年經驗，協助各類頑疾患者舒緩療程不適，提升免疫力。</p>
-                    <p style="font-size:1.05rem; line-height:1.6; margin-bottom:1.2rem;" data-i18n="company_text3">康草堂的產品包括「雲芝糖肽精華 PSP」，T3，PT3 及乙肝清 。產品多樣性能切合不同人仕的需要。獨特配方有助提升常規治療效益。</p>
-                    <p style="font-size:1.05rem; line-height:1.6; margin-bottom:1.2rem;" data-i18n="company_text4">經大學研究證實，「康草堂雲芝糖肽精華 PSP + T3」的獨特配方，比單一服用雲芝糖肽精華PSP功效倍增。</p>
-                    <p style="font-size:1.05rem; line-height:1.6;" data-i18n="company_text5">為確保產品的質量，康草堂的產品均由加拿大GMP藥厰按加拿大優良的生產規範(GMP)指引下生產。</p>
+                <h2 id="company-heading" class="section-title reveal-on-scroll" data-i18n="company_title">🌿 康草堂 · 以人為本的中草藥科研</h2>
+                <div class="section-sub reveal-on-scroll reveal-delay-1" data-i18n="company_subtitle">結合中西醫學理論，為頑疾患者提供高活性、純天然輔助方案</div>
+                <div class="company-glass-card reveal-on-scroll reveal-delay-2">
+                    <p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text1">康草堂 (Wonder Herb Health Products Ltd) 是以人為本的中草藥製品公司，沿用中草藥附以西藥治療效益的前題，結合中西藥平衡理論，採用品質上乘且活性含量極高的中草藥，每一批次都經過加拿大及香港雙重檢測，確保活性含量水平，協助慢性頑疾患者改善健康。</p>
+                    <p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text2">累積二十餘年經驗，協助各類頑疾患者舒緩療程不適，提升免疫力。</p>
+                    <p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text3">康草堂的產品包括「雲芝糖肽精華 PSP」，T3，PT3 及乙肝清 。產品多樣性能切合不同人仕的需要。獨特配方有助提升常規治療效益。</p>
+                    <p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text4">經大學研究證實，「康草堂雲芝糖肽精華 PSP + T3」的獨特配方，比單一服用雲芝糖肽精華PSP功效倍增。</p>
+                    <p style="font-size:1.05rem;line-height:1.6;" data-i18n="company_text5">為確保產品的質量，康草堂的產品均由加拿大GMP藥厰按加拿大優良的生產規範(GMP)指引下生產。</p>
                 </div>
             </div>
         </section>
 
-        <!-- 皇牌產品系列：h2 標題 -->
+        <!-- 皇牌产品系列 -->
         <section id="products" class="product-carousel-section" aria-labelledby="products-heading">
             <div class="container">
-                <h2 id="products-heading" class="section-title" data-i18n="products_section_title">✨ 皇牌產品系列</h2>
-                <div class="triple-product-layout" id="tripleProductLayout" role="group" aria-label="產品輪播展示">
+                <h2 id="products-heading" class="section-title reveal-on-scroll" data-i18n="products_section_title">✨ 皇牌產品系列</h2>
+                <div class="triple-product-layout reveal-on-scroll reveal-delay-1" id="tripleProductLayout" role="group" aria-label="產品輪播展示">
                     <div class="product-nav-btn"><button class="control-btn prev" id="productPrevManual" aria-label="上一個產品"><i class="fas fa-chevron-left"></i></button></div>
                     <div class="side-card" id="leftSideCard"></div>
-                    <div class="featured-card" id="featuredCard"></div>
+                    <div class="featured-card shimmer-overlay" id="featuredCard"></div>
                     <div class="side-card" id="rightSideCard"></div>
                     <div class="product-nav-btn"><button class="control-btn next" id="productNextManual" aria-label="下一個產品"><i class="fas fa-chevron-right"></i></button></div>
                 </div>
             </div>
         </section>
 
-        <!-- 質量高亮：非 section，使用 container 包裹以保留上下間距 -->
+        <!-- 质量高亮 -->
         <div class="container">
-            <div class="quality-highlight">
+            <div class="quality-highlight reveal-on-scroll">
                 <p><span data-i18n="quality_prefix">📢 根據國家藥品標準，雲芝糖肽的含量不得低於49.5%（多醣≥38%，蛋白肽≥11.5%），</span><br>
                     <span data-i18n="quality_highlight_span">康草堂產品的「有效成份」含量高達90%以上 —— 純度最高，吸收最好。</span></p>
             </div>
         </div>
 
-        <!-- 信任徽章：添加 sr-only 標題以滿足無障礙語意 -->
+        <!-- 信任徽章 -->
         <section aria-labelledby="trust-heading">
             <div class="container">
                 <h2 id="trust-heading" class="sr-only" data-i18n="trust_heading_sr">品質信任標章</h2>
                 <div class="trust-badges">
-                    <div class="badge-item"><i class="fas fa-university" aria-hidden="true"></i>
-                        <h3 id="trust1-title" data-i18n="trust1_title">大學臨床研究</h3>
+                    <div class="badge-item reveal-on-scroll reveal-delay-1">
+                        <i class="fas fa-university" aria-hidden="true"></i>
+                        <h3 data-i18n="trust1_title">大學臨床研究</h3>
                         <p data-i18n="trust1_desc">香港/加拿大學術驗證</p>
                     </div>
-                    <div class="badge-item"><i class="fas fa-file-alt" aria-hidden="true"></i>
-                        <h3 id="trust2-title" data-i18n="trust2_title">雙重含量檢測</h3>
+                    <div class="badge-item reveal-on-scroll reveal-delay-2">
+                        <i class="fas fa-file-alt" aria-hidden="true"></i>
+                        <h3 data-i18n="trust2_title">雙重含量檢測</h3>
                         <p data-i18n="trust2_desc">加拿大 + 香港實驗室</p>
                     </div>
-                    <div class="badge-item"><i class="fas fa-certificate" aria-hidden="true"></i>
-                        <h3 id="trust3-title" data-i18n="trust3_title">GMP 認證藥廠</h3>
+                    <div class="badge-item reveal-on-scroll reveal-delay-3">
+                        <i class="fas fa-certificate" aria-hidden="true"></i>
+                        <h3 data-i18n="trust3_title">GMP 認證藥廠</h3>
                         <p data-i18n="trust3_desc">加拿大衛生部監管</p>
                     </div>
-                    <div class="badge-item"><i class="fas fa-chart-line" aria-hidden="true"></i>
-                        <h3 id="trust4-title" data-i18n="trust4_title">20,000+ 患者信賴</h3>
+                    <div class="badge-item reveal-on-scroll reveal-delay-4">
+                        <i class="fas fa-chart-line" aria-hidden="true"></i>
+                        <h3 data-i18n="trust4_title">20,000+ 患者信賴</h3>
                         <p data-i18n="trust4_desc">真實病例改善回饋</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 精選真實病例：h2 標題，h3 卡片標題 -->
+        <!-- 精选真实病例 -->
         <section aria-labelledby="cases-heading">
             <div class="container">
-                <h2 id="cases-heading" class="section-title" data-i18n="featured_cases_title">📋 真實康復故事精選</h2>
-                <div class="section-sub" data-i18n="featured_cases_sub">見證雲芝糖肽精華 PSP 如何幫助患者提升免疫力，改善生活品質</div>
+                <h2 id="cases-heading" class="section-title reveal-on-scroll" data-i18n="featured_cases_title">📋 真實康復故事精選</h2>
+                <div class="section-sub reveal-on-scroll reveal-delay-1" data-i18n="featured_cases_sub">見證雲芝糖肽精華 PSP 如何幫助患者提升免疫力，改善生活品質</div>
                 <div id="featuredCasesGrid" class="featured-cases-grid"></div>
-                <div style="text-align: center; margin-top: 20px;">
-                    <a href="典型病例.html" class="btn-secondary" style="background:transparent; border:2px solid #2d5e3b; color:#2d5e3b; padding:10px 28px; border-radius:40px; font-weight:600; text-decoration:none; display:inline-block;"
-                        data-i18n="featured_cases_more">查看更多典型病例 →</a>
+                <div style="text-align:center;margin-top:20px;" class="reveal-on-scroll reveal-delay-2">
+                    <a href="典型病例.html" class="btn-secondary" data-i18n="featured_cases_more">查看更多典型病例 →</a>
                 </div>
             </div>
         </section>
 
-        <!-- 病例研究區域：h2 標題，按鈕群組 -->
-        <section aria-labelledby="study-heading">
+        <!-- 病例研究区域 -->
+        <section aria-labelledby="study-heading" class="reveal-on-scroll">
             <div class="case-studies">
-                <h2 id="study-heading" style="font-family:'Playfair Display'; font-size: 1.8rem; margin-bottom: 16px;" data-i18n="case_title">📖 真實康復見證 & 典型病例</h2>
-                <p style="margin: 20px 0; max-width: 700px; margin-left: auto; margin-right: auto;" data-i18n="case_desc">數百份典型病例與微信文章，展現雲芝糖肽如何幫助患者提升生活品質。立即參考成功經驗，為您或家人尋求最佳輔助方案。</p>
+                <h2 id="study-heading" style="font-family:'Playfair Display';font-size:1.8rem;margin-bottom:16px;" data-i18n="case_title">📖 真實康復見證 & 典型病例</h2>
+                <p style="margin:20px 0;max-width:700px;margin-left:auto;margin-right:auto;" data-i18n="case_desc">數百份典型病例與微信文章，展現雲芝糖肽如何幫助患者提升生活品質。立即參考成功經驗，為您或家人尋求最佳輔助方案。</p>
                 <div class="case-action-buttons">
                     <a href="典型病例.html" class="case-btn case-btn-primary" data-i18n="case_btn_cases">📄 瀏覽典型病例</a>
                     <a href="小册子.html" class="case-btn case-btn-outline" data-i18n="case_btn_brochure">📘 下載小冊子</a>
-                    <a href="微信發表文章.html" class="case-btn case-btn-outline" data-i18n="case_btn_wechat">
-                        <i class="fab fa-weixin"></i> 微信發表文章
-                    </a>
+                    <a href="微信發表文章.html" class="case-btn case-btn-outline" data-i18n="case_btn_wechat"><i class="fab fa-weixin"></i> 微信發表文章</a>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- 頁尾：h4 標題層級合理 -->
+    <!-- 页尾 -->
     <footer role="contentinfo">
         <div class="container footer-inner">
             <div class="footer-col">
@@ -1239,7 +1709,7 @@
             </div>
             <div class="footer-col">
                 <h4 data-i18n="footer_info_title">資訊中心</h4>
-                <ul style="list-style: none;">
+                <ul style="list-style:none;">
                     <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
                     <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
                     <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
@@ -1249,7 +1719,6 @@
         </div>
         <div class="container copyright">
             <p data-i18n="copyright">© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p>
-            <!-- 可見的最後更新時間，與 meta dateModified 一致 -->
             <p class="last-update">📅 最後更新：2026年6月2日 | 本頁面定期審核，確保資訊權威性</p>
         </div>
     </footer>
@@ -1257,7 +1726,9 @@
     <a href="#" id="backToTop" class="back-to-top" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
 
     <script>
-        // 多語言資源
+        // ──────────────────────────────────────
+        // 多语言资源
+        // ──────────────────────────────────────
         const translations = {
             zh: {
                 nav_home: "關於我們",
@@ -1403,7 +1874,9 @@
             }
         };
 
-        // 產品數據
+        // ──────────────────────────────────────
+        // 产品数据
+        // ──────────────────────────────────────
         const productsData = [
             { link: "產品_雲芝糖肽精華_A.html", img: "https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg",
                 titleKey: "product_trial_title", descKey: "product_trial_desc" },
@@ -1419,7 +1892,7 @@
                 titleKey: "product_pt3_title", descKey: "product_pt3_desc" }
         ];
 
-        // 病例數據（精選3個用於首頁）
+        // 病例数据
         const caseDataList = [
             { zh: { title: "麥女士（77歲）", subtitle: "肛門惡性腫瘤",
                     content: "<p>2025年體檢發現肛門惡性腫瘤已擴散淋巴，療程首日服用雲芝+T3，僅第22天出現輕微不適，化療耐受度獲醫生讚賞。</p>" },
@@ -1467,15 +1940,17 @@
             const grid = document.getElementById('featuredCasesGrid');
             if (!grid) return;
             const casesToShow = caseDataList.slice(0, 3);
-            grid.innerHTML = casesToShow.map(c => {
+            grid.innerHTML = casesToShow.map((c, i) => {
                 const data = c[lang];
                 if (!data) return '';
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = data.content;
                 const plainExcerpt = (tempDiv.textContent || tempDiv.innerText || '').substring(0, 110);
                 const excerpt = plainExcerpt.length >= 110 ? plainExcerpt + '…' : plainExcerpt;
-                return `<div class="mini-case-card"><h3 class="mini-case-title">${escapeHtml(data.title)}</h3><div class="mini-case-subtitle">${escapeHtml(data.subtitle)}</div><div class="mini-case-excerpt">${escapeHtml(excerpt)}</div><a href="典型病例.html" class="read-more-link">${lang === 'zh' ? '閱讀完整故事 →' : 'Read full story →'}</a></div>`;
+                const delayClass = 'reveal-delay-' + (i + 1);
+                return `<div class="mini-case-card reveal-on-scroll ${delayClass}"><h3 class="mini-case-title">${escapeHtml(data.title)}</h3><div class="mini-case-subtitle">${escapeHtml(data.subtitle)}</div><div class="mini-case-excerpt">${escapeHtml(excerpt)}</div><a href="典型病例.html" class="read-more-link">${lang === 'zh' ? '閱讀完整故事 →' : 'Read full story →'}</a></div>`;
             }).join('');
+            setTimeout(() => observeNewRevealElements(), 100);
         }
 
         function applyStaticTranslation(lang) {
@@ -1525,14 +2000,14 @@
             let total = 0;
             const stored = localStorage.getItem('wonderHerbCart');
             if (stored) {
-                try {
-                    total = JSON.parse(stored).reduce((s, i) => s + (i.quantity || 0), 0);
-                } catch (e) {}
+                try { total = JSON.parse(stored).reduce((s, i) => s + (i.quantity || 0), 0); } catch (e) {}
             }
             badge.innerText = total;
         }
 
-        // Hero 輪播圖片數據
+        // ──────────────────────────────────────
+        // Hero 轮播 (含液态玻璃图层 + 放大果冻效果)
+        // ──────────────────────────────────────
         const heroImages = [
             { src: "https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png",
                 alt_zh: "康草堂 Wonder Herb 品牌形象", alt_en: "Wonder Herb Brand Image" },
@@ -1559,9 +2034,19 @@
                 slide.className = 'carousel-slide' + (i === heroCurrent ? ' active' : '');
                 slide.setAttribute('role', 'tabpanel');
                 slide.setAttribute('aria-label', `圖片 ${i + 1} / ${heroImages.length}`);
+                // 液态玻璃图层
+                const glassEffect = document.createElement('div');
+                glassEffect.className = 'slide-glass-effect';
+                const glassTint = document.createElement('div');
+                glassTint.className = 'slide-glass-tint';
+                const glassShine = document.createElement('div');
+                glassShine.className = 'slide-glass-shine';
                 const image = document.createElement('img');
                 image.src = img.src;
                 image.alt = currentLang === 'zh' ? img.alt_zh : img.alt_en;
+                slide.appendChild(glassEffect);
+                slide.appendChild(glassTint);
+                slide.appendChild(glassShine);
                 slide.appendChild(image);
                 container.appendChild(slide);
                 const dot = document.createElement('div');
@@ -1589,15 +2074,13 @@
             });
             heroCurrent = index;
             resetHeroTimer();
+            // 切换后重新应用当前放大比例
+            applyCurrentMagnification();
         }
 
-        function nextHero() {
-            goToHeroSlide(heroCurrent + 1);
-        }
+        function nextHero() { goToHeroSlide(heroCurrent + 1); }
 
-        function prevHero() {
-            goToHeroSlide(heroCurrent - 1);
-        }
+        function prevHero() { goToHeroSlide(heroCurrent - 1); }
 
         function resetHeroTimer() {
             if (heroInterval) clearInterval(heroInterval);
@@ -1611,6 +2094,102 @@
             });
         }
 
+        // ──────────────────────────────────────
+        // 🍮 果冻放大效果 — 鼠标靠近轮播时slide放大
+        // ──────────────────────────────────────
+        let carouselMagnifyTargetScale = 1.0;
+        let carouselMagnifyCurrentScale = 1.0;
+        let magnificationRafId = null;
+        let lastMouseInCarousel = false;
+
+        function getActiveSlide() {
+            const container = document.getElementById('heroCarousel');
+            if (!container) return null;
+            return container.querySelector('.carousel-slide.active');
+        }
+
+        function applyCurrentMagnification() {
+            const slide = getActiveSlide();
+            if (slide) {
+                slide.style.transform = `scale(${carouselMagnifyCurrentScale})`;
+            }
+        }
+
+        function smoothMagnificationLoop() {
+            // 平滑插值逼近目标缩放值 (模拟弹簧阻尼)
+            const diff = carouselMagnifyTargetScale - carouselMagnifyCurrentScale;
+            if (Math.abs(diff) < 0.0005) {
+                carouselMagnifyCurrentScale = carouselMagnifyTargetScale;
+                applyCurrentMagnification();
+                magnificationRafId = null;
+                return;
+            }
+            carouselMagnifyCurrentScale += diff * 0.18; // 平滑因子
+            applyCurrentMagnification();
+            magnificationRafId = requestAnimationFrame(smoothMagnificationLoop);
+        }
+
+        function updateMagnificationTarget(mouseX, mouseY) {
+            const container = document.getElementById('heroCarousel');
+            if (!container) return;
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const relX = mouseX - rect.left;
+            const relY = mouseY - rect.top;
+            const dist = Math.sqrt((relX - centerX) ** 2 + (relY - centerY) ** 2);
+            const maxDist = Math.sqrt(centerX ** 2 + centerY ** 2);
+            const proximity = 1 - Math.min(dist / maxDist, 1);
+            // 最大放大 8%，使用平滑曲线
+            carouselMagnifyTargetScale = 1.0 + proximity * 0.08;
+            if (!magnificationRafId) {
+                magnificationRafId = requestAnimationFrame(smoothMagnificationLoop);
+            }
+        }
+
+        function resetMagnificationTarget() {
+            carouselMagnifyTargetScale = 1.0;
+            if (!magnificationRafId) {
+                magnificationRafId = requestAnimationFrame(smoothMagnificationLoop);
+            }
+        }
+
+        function initCarouselMagnification() {
+            const container = document.getElementById('heroCarousel');
+            if (!container) return;
+            const isHoverDevice = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            if (!isHoverDevice) return; // 触屏设备不启用放大效果
+
+            container.addEventListener('mousemove', (e) => {
+                lastMouseInCarousel = true;
+                container.classList.add('magnify-active');
+                updateMagnificationTarget(e.clientX, e.clientY);
+            }, { passive: true });
+
+            container.addEventListener('mouseleave', () => {
+                lastMouseInCarousel = false;
+                container.classList.remove('magnify-active');
+                resetMagnificationTarget();
+            });
+
+            // 触摸设备：轻触时短暂放大
+            container.addEventListener('touchstart', () => {
+                carouselMagnifyTargetScale = 1.04;
+                if (!magnificationRafId) {
+                    magnificationRafId = requestAnimationFrame(smoothMagnificationLoop);
+                }
+            }, { passive: true });
+            container.addEventListener('touchend', () => {
+                resetMagnificationTarget();
+            });
+            container.addEventListener('touchcancel', () => {
+                resetMagnificationTarget();
+            });
+        }
+
+        // ──────────────────────────────────────
+        // 返回顶部
+        // ──────────────────────────────────────
         function bindBackToTop() {
             const backBtn = document.getElementById('backToTop');
             if (!backBtn) return;
@@ -1620,24 +2199,239 @@
             });
             backBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         }
 
+        // ──────────────────────────────────────
+        // 🎨 Canvas 粒子网格背景
+        // ──────────────────────────────────────
+        function initHeroCanvas() {
+            const canvas = document.getElementById('heroCanvas');
+            const hero = document.getElementById('heroSection');
+            if (!canvas || !hero) return;
+
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            let mouseX = -9999;
+            let mouseY = -9999;
+            let targetMouseX = -9999;
+            let targetMouseY = -9999;
+            const GRID_SPACING = 38;
+            const DOT_RADIUS = 2.2;
+            const MOUSE_INFLUENCE_RADIUS = 140;
+            const REPULSION_STRENGTH = 32;
+            const SPRING_TENSION = 0.06;
+            const CONNECTION_DIST = 52;
+            const WAVE_AMPLITUDE = 1.6;
+            const WAVE_FREQ = 0.0008;
+            let time = 0;
+            let animFrameId = null;
+            let isHoverDevice = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+            function resize() {
+                const rect = hero.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                width = rect.width;
+                height = rect.height;
+                canvas.width = width * dpr;
+                canvas.height = height * dpr;
+                canvas.style.width = width + 'px';
+                canvas.style.height = height + 'px';
+                ctx.setTransform(1, 0, 0, 1, 0, 0);
+                ctx.scale(dpr, dpr);
+                buildParticleGrid();
+            }
+
+            function buildParticleGrid() {
+                particles = [];
+                const cols = Math.floor(width / GRID_SPACING) + 2;
+                const rows = Math.floor(height / GRID_SPACING) + 2;
+                const offsetX = (width - (cols - 1) * GRID_SPACING) / 2;
+                const offsetY = (height - (rows - 1) * GRID_SPACING) / 2;
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        const ox = offsetX + c * GRID_SPACING;
+                        const oy = offsetY + r * GRID_SPACING;
+                        particles.push({
+                            ox,
+                            oy,
+                            x: ox,
+                            y: oy,
+                            vx: 0,
+                            vy: 0,
+                            baseRadius: DOT_RADIUS * (0.7 + Math.random() * 0.6),
+                        });
+                    }
+                }
+            }
+
+            function updateParticles() {
+                time += 0.016;
+                const mxSmooth = mouseX + (targetMouseX - mouseX) * 0.18;
+                const mySmooth = mouseY + (targetMouseY - mouseY) * 0.18;
+                mouseX = mxSmooth;
+                mouseY = mySmooth;
+
+                for (const p of particles) {
+                    const waveX = Math.sin(p.oy * WAVE_FREQ + time * 1.3) * WAVE_AMPLITUDE;
+                    const waveY = Math.cos(p.ox * WAVE_FREQ + time * 1.1) * WAVE_AMPLITUDE;
+                    const targetX = p.ox + waveX;
+                    const targetY = p.oy + waveY;
+
+                    const dx = p.x - mouseX;
+                    const dy = p.y - mouseY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    let fx = 0,
+                        fy = 0;
+                    if (dist < MOUSE_INFLUENCE_RADIUS && dist > 0.01 && isHoverDevice) {
+                        const strength = (1 - dist / MOUSE_INFLUENCE_RADIUS);
+                        const smoothStrength = strength * strength * REPULSION_STRENGTH;
+                        const nx = dx / dist;
+                        const ny = dy / dist;
+                        fx = nx * smoothStrength;
+                        fy = ny * smoothStrength;
+                    }
+
+                    const springX = (targetX - p.x) * SPRING_TENSION;
+                    const springY = (targetY - p.y) * SPRING_TENSION;
+                    p.vx += springX + fx;
+                    p.vy += springY + fy;
+                    p.vx *= 0.82;
+                    p.vy *= 0.82;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.strokeStyle = 'rgba(155,130,105,0.09)';
+                ctx.lineWidth = 0.6;
+                ctx.beginPath();
+                for (let i = 0; i < particles.length; i++) {
+                    const a = particles[i];
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const b = particles[j];
+                        const dx = a.x - b.x;
+                        const dy = a.y - b.y;
+                        const dist = dx * dx + dy * dy;
+                        if (dist < CONNECTION_DIST * CONNECTION_DIST) {
+                            ctx.moveTo(a.x, a.y);
+                            ctx.lineTo(b.x, b.y);
+                        }
+                    }
+                }
+                ctx.stroke();
+
+                for (const p of particles) {
+                    const distToMouse = Math.sqrt((p.x - mouseX) ** 2 + (p.y - mouseY) ** 2);
+                    let alpha = 0.32;
+                    let radius = p.baseRadius;
+                    if (distToMouse < MOUSE_INFLUENCE_RADIUS && isHoverDevice) {
+                        const t = 1 - distToMouse / MOUSE_INFLUENCE_RADIUS;
+                        alpha = 0.32 + t * 0.38;
+                        radius = p.baseRadius + t * 1.6;
+                    }
+                    ctx.fillStyle = `rgba(140,110,75,${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    if (radius > p.baseRadius + 0.4) {
+                        ctx.fillStyle = `rgba(160,125,80,${alpha * 0.5})`;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, radius + 2.5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            function animate() {
+                updateParticles();
+                draw();
+                animFrameId = requestAnimationFrame(animate);
+            }
+
+            function onMouseMove(e) {
+                const rect = hero.getBoundingClientRect();
+                targetMouseX = e.clientX - rect.left;
+                targetMouseY = e.clientY - rect.top;
+            }
+
+            function onMouseLeave() {
+                targetMouseX = -9999;
+                targetMouseY = -9999;
+            }
+
+            function onTouchMove(e) {
+                if (!e.touches || e.touches.length === 0) return;
+                const rect = hero.getBoundingClientRect();
+                targetMouseX = e.touches[0].clientX - rect.left;
+                targetMouseY = e.touches[0].clientY - rect.top;
+            }
+
+            function onTouchEnd() {
+                targetMouseX = -9999;
+                targetMouseY = -9999;
+            }
+
+            resize();
+            hero.addEventListener('mousemove', onMouseMove, { passive: true });
+            hero.addEventListener('mouseleave', onMouseLeave);
+            hero.addEventListener('touchmove', onTouchMove, { passive: true });
+            hero.addEventListener('touchend', onTouchEnd);
+            hero.addEventListener('touchcancel', onTouchEnd);
+            window.addEventListener('resize', () => { resize(); });
+            animate();
+
+            canvas._heroCleanup = () => {
+                if (animFrameId) cancelAnimationFrame(animFrameId);
+                hero.removeEventListener('mousemove', onMouseMove);
+                hero.removeEventListener('mouseleave', onMouseLeave);
+                hero.removeEventListener('touchmove', onTouchMove);
+                hero.removeEventListener('touchend', onTouchEnd);
+                hero.removeEventListener('touchcancel', onTouchEnd);
+            };
+        }
+
+        // ──────────────────────────────────────
+        // 滚动渐现动画
+        // ──────────────────────────────────────
+        function initScrollReveal() {
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+            if (revealElements.length === 0) return;
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+            revealElements.forEach(el => observer.observe(el));
+            window._revealObserver = observer;
+        }
+
+        function observeNewRevealElements() {
+            const observer = window._revealObserver;
+            if (!observer) return;
+            document.querySelectorAll('.reveal-on-scroll:not(.is-visible)').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // ──────────────────────────────────────
+        // 页面加载初始化
+        // ──────────────────────────────────────
         window.addEventListener('load', () => {
             buildHeroCarousel();
             resetHeroTimer();
-            document.getElementById('heroPrev')?.addEventListener('click', () => {
-                prevHero();
-                resetHeroTimer();
-            });
-            document.getElementById('heroNext')?.addEventListener('click', () => {
-                nextHero();
-                resetHeroTimer();
-            });
+            document.getElementById('heroPrev')?.addEventListener('click', () => { prevHero();
+                resetHeroTimer(); });
+            document.getElementById('heroNext')?.addEventListener('click', () => { nextHero();
+                resetHeroTimer(); });
             document.getElementById('productPrevManual')?.addEventListener('click', () => {
                 currentProductIdx = (currentProductIdx - 1 + productsData.length) % productsData.length;
                 renderProductTriple();
@@ -1648,21 +2442,29 @@
             });
             updateCartCountBadge();
             bindBackToTop();
+            initCarouselMagnification();
             const savedLang = localStorage.getItem('wonderherb_lang');
             if (savedLang === 'zh' || savedLang === 'en') currentLang = savedLang;
             else currentLang = 'zh';
             renderProductTriple();
             renderFeaturedCases(currentLang);
             applyStaticTranslation(currentLang);
-            document.getElementById('langZhBtn')?.addEventListener('click', (e) => {
-                e.preventDefault();
-                setLanguage('zh');
-            });
-            document.getElementById('langEnBtn')?.addEventListener('click', (e) => {
-                e.preventDefault();
-                setLanguage('en');
-            });
+            document.getElementById('langZhBtn')?.addEventListener('click', (e) => { e.preventDefault();
+                setLanguage('zh'); });
+            document.getElementById('langEnBtn')?.addEventListener('click', (e) => { e.preventDefault();
+                setLanguage('en'); });
             window.addEventListener('storage', () => updateCartCountBadge());
+
+            initHeroCanvas();
+            initScrollReveal();
+        });
+
+        window.addEventListener('beforeunload', () => {
+            const canvas = document.getElementById('heroCanvas');
+            if (canvas && canvas._heroCleanup) {
+                canvas._heroCleanup();
+            }
+            if (magnificationRafId) cancelAnimationFrame(magnificationRafId);
         });
     </script>
 </body>
