@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>購物車 | Wonder Herb – 雲芝糖肽精華</title>
+  <meta name="description" content="康草堂 Wonder Herb 購物車 – 查看您的雲芝糖肽精華訂單，調整數量或繼續選購。">
+  <meta name="dateModified" content="2025-06-02">
+
+  <meta property="og:title" content="購物車 | Wonder Herb – 雲芝糖肽精華">
+  <meta property="og:description" content="康草堂 Wonder Herb 購物車 – 查看您的雲芝糖肽精華訂單，調整數量或繼續選購。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png">
+  <meta property="og:locale" content="zh_HK">
+  <meta property="og:site_name" content="康草堂 Wonder Herb">
+
+  <link rel="canonical" href="https://www.wonder-herb.com/購物車.html">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Inter', sans-serif;
+          background-color: #fefcf8;
+          color: #2c2a28;
+          line-height: 1.5;
+          scroll-behavior: smooth;
+      }
+
+      .container {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 24px;
+      }
+
+      .top-bar {
+          background-color: #2d5e3b;
+          color: #fff;
+          font-size: 0.85rem;
+          padding: 8px 0;
+          text-align: right;
+      }
+
+      .top-bar .container {
+          display: flex;
+          justify-content: flex-end;
+          gap: 20px;
+      }
+
+      .top-bar a {
+          color: #fff;
+          text-decoration: none;
+      }
+
+      .lang-selector {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: rgba(255, 255, 255, 0.15);
+          padding: 4px 12px;
+          border-radius: 30px;
+          font-size: 0.8rem;
+          cursor: pointer;
+      }
+
+      .lang-selector span {
+          cursor: pointer;
+          transition: opacity 0.2s;
+      }
+
+      .lang-selector span:hover {
+          opacity: 0.8;
+          text-decoration: underline;
+      }
+
+      .lang-selector .active-lang {
+          font-weight: 700;
+          text-decoration: underline;
+      }
+
+      .main-header {
+          background: #E9DDCF;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          border-bottom: 1px solid #eee6dc;
+      }
+
+      .header-inner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          padding: 16px 0;
+          gap: 20px;
+      }
+
+      .logo img {
+          height: 55px;
+          width: auto;
+      }
+
+      .nav-menu ul {
+          display: flex;
+          gap: 28px;
+          list-style: none;
+          flex-wrap: wrap;
+      }
+
+      .nav-menu a {
+          text-decoration: none;
+          font-weight: 500;
+          color: #2c3e2b;
+          font-size: 1rem;
+      }
+
+      .nav-menu a:hover,
+      .nav-menu a.active {
+          color: #9b2e2e;
+          border-bottom: 2px solid #9b2e2e;
+          padding-bottom: 4px;
+      }
+
+      .header-actions {
+          display: flex;
+          gap: 16px;
+          align-items: center;
+      }
+
+      .header-actions .social-icon {
+          color: #6b4e2e;
+          font-size: 1.3rem;
+          text-decoration: none;
+      }
+
+      .cart-icon {
+          font-size: 1.4rem;
+          color: #2d5e3b;
+          position: relative;
+          text-decoration: none;
+      }
+
+      .cart-count {
+          position: absolute;
+          top: -8px;
+          right: -12px;
+          background: #9b2e2e;
+          color: white;
+          font-size: 0.7rem;
+          border-radius: 30px;
+          padding: 2px 6px;
+          min-width: 18px;
+          text-align: center;
+      }
+
+      .btn-contact {
+          background-color: #2d5e3b;
+          color: white;
+          padding: 8px 20px;
+          border-radius: 40px;
+          text-decoration: none;
+          font-weight: 600;
+      }
+
+      .btn-contact:hover {
+          background-color: #1e4028;
+          transform: translateY(-2px);
+      }
+
+      /* ----- Cart Grid and Items ----- */
+      .cart-grid {
+          display: grid;
+          grid-template-columns: 1fr 320px;
+          gap: 40px;
+          margin: 40px 0 60px;
+      }
+
+      .cart-items {
+          background: white;
+          border-radius: 24px;
+          padding: 28px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+          border: 1px solid #f0e8db;
+      }
+
+      /* Header grid with corrected column assignments */
+      .cart-header {
+          display: grid;
+          grid-template-columns: 3fr 0.55fr 1fr 1fr 0.5fr;
+          gap: 0 8px;
+          padding-bottom: 14px;
+          border-bottom: 1px solid #eee6dc;
+          font-weight: 600;
+          color: #8a7e72;
+          font-size: 0.85rem;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          margin-bottom: 12px;
+      }
+
+      /* Precise alignment for header texts */
+      .cart-header span:first-child {
+          grid-column: 1; /* 產品 */
+      }
+      .cart-header span:nth-child(2) {
+          grid-column: 2; /* empty remove column */
+      }
+      .cart-header span:nth-child(3) {
+          grid-column: 3; /* 單價 */
+      }
+      .cart-header span:nth-child(4) {
+          grid-column: 4; /* 數量 */
+      }
+      .cart-header span:nth-child(5) {
+          grid-column: 5; /* 總計 */
+      }
+
+      .cart-item {
+          display: grid;
+          grid-template-columns: 3fr 0.55fr 1fr 1fr 0.5fr;
+          gap: 0 8px;
+          align-items: center;
+          padding: 18px 0;
+          border-bottom: 1px solid #f5efe8;
+      }
+
+      .cart-item:last-child {
+          border-bottom: none;
+      }
+
+      .item-info {
+          display: flex;
+          gap: 16px;
+          align-items: center;
+          grid-column: 1;
+      }
+
+      .item-image {
+          width: 80px;
+          height: 80px;
+          background: #faf5ef;
+          border-radius: 16px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+      }
+
+      .item-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+      }
+
+      .item-details h3 {
+          font-size: 1.05rem;
+          margin-bottom: 4px;
+          color: #2c3e2b;
+      }
+
+      .item-details p {
+          font-size: 0.8rem;
+          color: #8a7e72;
+          background: #f9f5f0;
+          display: inline-block;
+          padding: 3px 10px;
+          border-radius: 20px;
+      }
+
+      .item-quantity {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          grid-column: 4;
+      }
+
+      .quantity-btn {
+          background: #f5efe8;
+          border: none;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          cursor: pointer;
+          font-weight: 600;
+          font-size: 1rem;
+          transition: all 0.2s;
+          color: #2c3e2b;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .quantity-btn:hover {
+          background: #2d5e3b;
+          color: white;
+          transform: scale(1.08);
+      }
+
+      .item-quantity input {
+          width: 55px;
+          text-align: center;
+          border: 1px solid #e0d4c6;
+          border-radius: 30px;
+          padding: 8px 0;
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: #2c3e2b;
+          background: #fefdfb;
+      }
+
+      .item-price {
+          font-weight: 600;
+          color: #2c3e2b;
+          font-size: 0.95rem;
+          grid-column: 3;
+      }
+
+      .item-total {
+          font-weight: 600;
+          color: #2d5e3b;
+          font-size: 0.95rem;
+          grid-column: 5;
+      }
+
+      .remove-item {
+          background: #fff;
+          border: 2px solid #f0e0d6;
+          cursor: pointer;
+          color: #c5a08b;
+          font-size: 1rem;
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.25s ease;
+          box-shadow: 0 4px 14px rgba(220, 80, 60, 0.18),
+                      0 2px 6px rgba(220, 80, 60, 0.08);
+          justify-self: center;
+          grid-column: 2;
+      }
+
+      .remove-item:hover {
+          color: #fff;
+          background: #e74c3c;
+          border-color: #e74c3c;
+          box-shadow: 0 8px 24px rgba(231, 76, 60, 0.35),
+                      0 4px 12px rgba(231, 76, 60, 0.2);
+          transform: scale(1.12);
+      }
+
+      .remove-item:active {
+          transform: scale(0.95);
+          box-shadow: 0 2px 8px rgba(231, 76, 60, 0.25);
+          transition: all 0.1s ease;
+      }
+
+      .remove-item i {
+          position: relative;
+          z-index: 1;
+      }
+
+      .cart-summary {
+          background: white;
+          border-radius: 24px;
+          padding: 28px 24px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+          border: 1px solid #f0e8db;
+          height: fit-content;
+          position: sticky;
+          top: 120px;
+      }
+
+      .summary-title {
+          font-family: 'Playfair Display', serif;
+          font-size: 1.35rem;
+          font-weight: 600;
+          margin-bottom: 20px;
+          padding-bottom: 14px;
+          border-bottom: 2px solid #f0e8db;
+          color: #2c3e2b;
+      }
+
+      .summary-row {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 14px;
+          font-size: 0.95rem;
+          color: #5a5046;
+      }
+
+      .summary-row.total {
+          font-weight: 700;
+          font-size: 1.1rem;
+          color: #2c3e2b;
+          border-top: 1px solid #f0e8db;
+          padding-top: 16px;
+          margin-top: 8px;
+      }
+
+      .summary-row.total span:last-child {
+          color: #2d5e3b;
+          font-size: 1.2rem;
+      }
+
+      .checkout-btn {
+          display: block;
+          background: linear-gradient(135deg, #2d5e3b 0%, #3a7048 100%);
+          color: white;
+          text-align: center;
+          padding: 15px;
+          border-radius: 50px;
+          text-decoration: none;
+          font-weight: 700;
+          margin-top: 22px;
+          border: none;
+          cursor: pointer;
+          width: 100%;
+          font-size: 1rem;
+          transition: all 0.3s;
+          box-shadow: 0 4px 16px rgba(45, 94, 59, 0.25);
+          letter-spacing: 0.5px;
+      }
+
+      .checkout-btn:hover {
+          background: linear-gradient(135deg, #1e4028 0%, #2d5e3b 100%);
+          transform: translateY(-3px);
+          box-shadow: 0 8px 24px rgba(45, 94, 59, 0.35);
+      }
+
+      .empty-cart {
+          text-align: center;
+          padding: 70px 20px;
+          background: white;
+          border-radius: 24px;
+          grid-column: 1/-1;
+          border: 2px dashed #e8ddd0;
+      }
+
+      .empty-cart i {
+          font-size: 4.5rem;
+          color: #d4c5b5;
+          margin-bottom: 20px;
+          display: block;
+      }
+
+      .btn-secondary {
+          display: inline-block;
+          background: transparent;
+          border: 2px solid #2d5e3b;
+          color: #2d5e3b;
+          padding: 12px 32px;
+          border-radius: 50px;
+          font-weight: 600;
+          text-decoration: none;
+          margin-top: 20px;
+          transition: all 0.3s;
+      }
+
+      .btn-secondary:hover {
+          background: #2d5e3b;
+          color: white;
+      }
+
+      /* Modal and other styles unchanged */
+      .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(20, 18, 15, 0.7);
+          z-index: 1000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.35s ease;
+          backdrop-filter: blur(2px);
+          -webkit-backdrop-filter: blur(2px);
+      }
+
+      .modal-overlay.active {
+          opacity: 1;
+          visibility: visible;
+      }
+
+      .checkout-modal {
+          background: #fffef9;
+          max-width: 880px;
+          width: 94%;
+          max-height: 92vh;
+          border-radius: 28px;
+          overflow-y: auto;
+          padding: 0;
+          position: relative;
+          box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+          border: 1px solid #eee2d4;
+          transform: translateY(20px);
+          transition: transform 0.35s ease;
+      }
+
+      .modal-overlay.active .checkout-modal {
+          transform: translateY(0);
+      }
+
+      .modal-close {
+          position: absolute;
+          top: 18px;
+          right: 20px;
+          font-size: 26px;
+          cursor: pointer;
+          background: #f5efe8;
+          border: none;
+          color: #6b5e55;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.25s;
+          z-index: 10;
+      }
+
+      .modal-close:hover {
+          background: #e74c3c;
+          color: white;
+          transform: rotate(90deg);
+      }
+
+      .modal-header {
+          background: linear-gradient(135deg, #faf7f1 0%, #f3ede4 100%);
+          padding: 28px 32px;
+          border-bottom: 1px solid #eee2d4;
+          border-radius: 28px 28px 0 0;
+          text-align: center;
+      }
+
+      .modal-header h2 {
+          font-family: 'Playfair Display', serif;
+          font-size: 1.8rem;
+          color: #2d5e3b;
+          margin-bottom: 6px;
+      }
+
+      .modal-header .modal-subtitle {
+          font-size: 0.85rem;
+          color: #8a7e72;
+      }
+
+      .checkout-steps {
+          display: flex;
+          justify-content: center;
+          gap: 0;
+          padding: 20px 32px;
+          background: #fffef9;
+          border-bottom: 1px solid #f5efe8;
+          flex-wrap: wrap;
+      }
+
+      .checkout-step {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: #c5b8a8;
+          padding: 8px 16px;
+      }
+
+      .checkout-step .step-number {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background: #f5efe8;
+          color: #b5a898;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          font-size: 0.8rem;
+          transition: all 0.3s;
+      }
+
+      .checkout-step.active .step-number {
+          background: #2d5e3b;
+          color: white;
+          box-shadow: 0 4px 12px rgba(45, 94, 59, 0.3);
+      }
+
+      .checkout-step.active {
+          color: #2d5e3b;
+      }
+
+      .step-connector {
+          width: 40px;
+          height: 2px;
+          background: #e8ddd0;
+          margin: 0 4px;
+          align-self: center;
+      }
+
+      .modal-body {
+          padding: 28px 32px;
+      }
+
+      .order-preview-card {
+          background: #faf7f1;
+          border-radius: 20px;
+          padding: 20px 24px;
+          margin-bottom: 24px;
+          border: 1px solid #eee2d4;
+      }
+
+      .preview-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+          font-weight: 700;
+          color: #2c3e2b;
+      }
+
+      .preview-items {
+          font-size: 0.88rem;
+          color: #5a5046;
+          max-height: 130px;
+          overflow-y: auto;
+          margin-bottom: 14px;
+      }
+
+      .preview-item-row {
+          display: flex;
+          justify-content: space-between;
+          padding: 6px 0;
+          border-bottom: 1px dotted #e8ddd0;
+      }
+
+      .preview-total-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 14px;
+          border-top: 2px solid #e0d4c6;
+          font-size: 1.15rem;
+          font-weight: 700;
+          color: #2d5e3b;
+      }
+
+      .preview-total-bar .total-amount {
+          font-size: 1.3rem;
+          color: #9b2e2e;
+      }
+
+      .form-section {
+          margin-bottom: 24px;
+      }
+
+      .form-section-title {
+          font-weight: 700;
+          font-size: 1rem;
+          color: #2c3e2b;
+          margin-bottom: 14px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+      }
+
+      .form-section-title i {
+          color: #2d5e3b;
+          background: #eef5e9;
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.85rem;
+      }
+
+      .form-group {
+          margin-bottom: 16px;
+      }
+
+      .form-row {
+          display: flex;
+          gap: 16px;
+          flex-wrap: wrap;
+      }
+
+      .form-row .form-group {
+          flex: 1;
+          min-width: 140px;
+      }
+
+      label {
+          display: block;
+          font-weight: 600;
+          margin-bottom: 6px;
+          font-size: 0.85rem;
+          color: #4a4038;
+      }
+
+      input,
+      select,
+      textarea {
+          width: 100%;
+          padding: 13px 16px;
+          border-radius: 14px;
+          border: 1.5px solid #e2d5c8;
+          background: #fefdfb;
+          font-family: 'Inter', sans-serif;
+          font-size: 0.9rem;
+          transition: all 0.25s;
+          color: #2c3e2b;
+      }
+
+      input:focus,
+      select:focus {
+          outline: none;
+          border-color: #2d5e3b;
+          box-shadow: 0 0 0 4px rgba(45, 94, 59, 0.06);
+          background: #fff;
+      }
+
+      select {
+          appearance: none;
+          -webkit-appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%238a7e72'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 16px center;
+          padding-right: 40px;
+          cursor: pointer;
+      }
+
+      .checkbox-group {
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+          margin: 10px 0;
+          font-size: 0.85rem;
+          color: #5a5046;
+      }
+
+      .checkbox-group input[type="checkbox"] {
+          width: 18px;
+          height: 18px;
+          margin-top: 2px;
+          accent-color: #2d5e3b;
+          cursor: pointer;
+      }
+
+      .payment-method-tabs {
+          display: flex;
+          gap: 12px;
+          margin-bottom: 20px;
+          background: #f9f5f0;
+          padding: 6px;
+          border-radius: 18px;
+      }
+
+      .payment-method-tab {
+          flex: 1;
+          padding: 14px 20px;
+          border-radius: 14px;
+          cursor: pointer;
+          text-align: center;
+          font-weight: 600;
+          font-size: 0.9rem;
+          transition: all 0.3s;
+          border: 2px solid transparent;
+          background: transparent;
+          color: #8a7e72;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+      }
+
+      .payment-method-tab.active {
+          background: white;
+          color: #2d5e3b;
+          border-color: #2d5e3b;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      }
+
+      .payment-method-tab:hover:not(.active) {
+          color: #4a4038;
+          background: rgba(255, 255, 255, 0.5);
+      }
+
+      .card-payment-section {
+          background: #fdfcf9;
+          border-radius: 18px;
+          padding: 20px 24px;
+          border: 1px solid #eee2d4;
+          margin-top: 8px;
+      }
+
+      .card-icons-row {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 16px;
+      }
+
+      .card-icons-row i {
+          font-size: 1.8rem;
+          color: #4a5568;
+          background: #f0ece6;
+          padding: 8px 12px;
+          border-radius: 12px;
+      }
+
+      .card-input-wrapper {
+          position: relative;
+      }
+
+      .card-input-wrapper .card-icon-right {
+          position: absolute;
+          right: 14px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #b5a898;
+          font-size: 1.1rem;
+      }
+
+      .paypal-section {
+          text-align: center;
+          padding: 20px 0;
+          margin-top: 8px;
+      }
+
+      .paypal-btn {
+          background: #ffc439;
+          color: #1a1a1a;
+          border: none;
+          padding: 15px 28px;
+          border-radius: 50px;
+          font-weight: 700;
+          font-size: 1rem;
+          width: 100%;
+          max-width: 400px;
+          cursor: pointer;
+          transition: all 0.3s;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          box-shadow: 0 4px 16px rgba(255, 196, 57, 0.35);
+      }
+
+      .paypal-btn:hover {
+          background: #f0b82e;
+          transform: translateY(-3px);
+      }
+
+      .paypal-note {
+          font-size: 0.78rem;
+          color: #8a7e72;
+          margin-top: 10px;
+      }
+
+      .modal-submit-btn {
+          display: block;
+          width: 100%;
+          background: linear-gradient(135deg, #2d5e3b 0%, #3a7048 100%);
+          color: white;
+          text-align: center;
+          padding: 16px;
+          border-radius: 50px;
+          font-weight: 700;
+          margin-top: 10px;
+          border: none;
+          cursor: pointer;
+          font-size: 1.05rem;
+          transition: all 0.3s;
+      }
+
+      .modal-submit-btn:hover {
+          background: linear-gradient(135deg, #1e4028 0%, #2d5e3b 100%);
+          transform: translateY(-3px);
+      }
+
+      footer {
+          background: #1f2c1c;
+          color: #ddd;
+          padding: 48px 0 24px;
+          margin-top: 40px;
+      }
+
+      .footer-inner {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          gap: 32px;
+      }
+
+      .footer-col {
+          flex: 1;
+          min-width: 180px;
+      }
+
+      .footer-col h4 {
+          color: #c33d3d;
+          margin-bottom: 16px;
+      }
+
+      .footer-col a {
+          color: #ddd;
+          text-decoration: none;
+      }
+
+      .footer-col a:hover {
+          color: #c33d3d;
+      }
+
+      .footer-social a {
+          color: #ddd;
+          font-size: 1.4rem;
+          margin-right: 16px;
+          transition: 0.2s;
+          display: inline-block;
+          text-decoration: none;
+      }
+
+      .copyright {
+          text-align: center;
+          padding-top: 32px;
+          border-top: 1px solid #3a4a36;
+          margin-top: 32px;
+          font-size: 0.85rem;
+      }
+
+      .last-updated {
+          text-align: center;
+          font-size: 0.8rem;
+          color: #aaa;
+          margin-top: 8px;
+      }
+
+      .back-to-top {
+          position: fixed;
+          bottom: 30px;
+          right: 30px;
+          background: linear-gradient(135deg, #2d5e3b, #3a7048);
+          color: white;
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          font-size: 1.3rem;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s;
+          z-index: 99;
+      }
+
+      .back-to-top.show {
+          opacity: 1;
+          visibility: visible;
+      }
+
+      @media (max-width: 900px) {
+          .cart-grid {
+              grid-template-columns: 1fr;
+          }
+
+          .cart-header {
+              display: none;
+          }
+
+          .cart-item {
+              grid-template-columns: 1fr;
+              border: 1px solid #eee6dc;
+              border-radius: 20px;
+              padding: 20px;
+              margin-bottom: 16px;
+              gap: 12px;
+          }
+
+          .item-info {
+              flex-direction: column;
+              text-align: center;
+              grid-column: auto;
+          }
+
+          .remove-item {
+              justify-self: center;
+              grid-column: auto;
+              order: 2;
+          }
+
+          .item-price {
+              grid-column: auto;
+              order: 3;
+          }
+
+          .item-quantity {
+              grid-column: auto;
+              order: 4;
+          }
+
+          .item-total {
+              grid-column: auto;
+              order: 5;
+          }
+      }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="container">
+    <div class="lang-selector" aria-label="語言選擇" role="group">
+      <i class="fas fa-globe" aria-hidden="true"></i>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-current="true">中文</span> | 
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0">EN</span>
+    </div>
+  </div>
+</div>
+
+<header class="main-header">
+  <div class="container header-inner">
+    <div class="logo"><img src="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png" alt="康草堂 Wonder Herb 標誌"></div>
+    <nav class="nav-menu" aria-label="主要導航">
+      <ul role="list">
+        <li><a href="index.html" data-i18n="nav_home">關於我們</a></li>
+        <li><a href="產品介紹.html" data-i18n="nav_products">產品介紹</a></li>
+        <li><a href="研究報告.html" data-i18n="nav_research">研究報告</a></li>
+        <li><a href="有效成份檢測.html" data-i18n="nav_testing">成份檢測</a></li>
+        <li><a href="典型病例.html" data-i18n="nav_cases">典型病例</a></li>
+        <li><a href="小册子.html" data-i18n="nav_brochure">小册子</a></li>
+        <li><a href="微信發表文章.html" data-i18n="nav_articles">文章</a></li>
+        <li><a href="常見問題.html" data-i18n="nav_faq">常見問題</a></li>
+        <li><a href="聯絡我們.html" data-i18n="nav_contact">聯絡我們</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="https://wa.me/85293318571/" target="_blank" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://www.facebook.com/wonderherbhealth" target="_blank" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="購物車.html" class="cart-icon" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="cartCountBadge" class="cart-count" aria-label="購物車內有 0 件商品">0</span></a>
+      <a href="https://wa.me/85293318571/" class="btn-contact" data-i18n="header_contact_btn">諮詢專員 <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</header>
+
+<main class="container" role="main">
+  <div id="cartContainer" class="cart-grid" aria-label="購物車內容"></div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-col"><h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4><p data-i18n="footer_col1_text1">以人為本，天然高效。</p><p data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p><p data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p></div>
+    <div class="footer-col"><h4 data-i18n="footer_contact_title">聯絡我們</h4><p><i class="fas fa-envelope"></i> <a href="mailto:info@wonder-herb.com" style="color:#c33d3d;">info@wonder-herb.com</a></p><p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/85293318571/" style="color:#c33d3d;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p><div class="footer-social"><a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="https://wa.me/85293318571/" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></div></div>
+    <div class="footer-col"><h4 data-i18n="footer_info_title">資訊中心</h4><ul style="list-style: none;" role="list"><li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li><li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li><li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li><li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li></ul></div>
+  </div>
+  <div class="container copyright"><p data-i18n="copyright">© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p></div>
+  <div class="container last-updated"><p data-i18n="last_updated">最後更新：2025年6月2日</p></div>
+</footer>
+
+<a href="#" id="backToTop" class="back-to-top" aria-label="回到頂端"><i class="fas fa-chevron-up"></i></a>
+<div id="checkoutModal" class="modal-overlay" aria-hidden="true"><div class="checkout-modal" id="modalContent" role="dialog" aria-modal="true" aria-label="結帳對話框"></div></div>
+
+<script>
+  const translations = {
+    zh: {
+      nav_home: "關於我們", nav_products: "產品介紹", nav_research: "研究報告", nav_testing: "成份檢測",
+      nav_cases: "典型病例", nav_brochure: "小册子", nav_articles: "文章", nav_faq: "常見問題", nav_contact: "聯絡我們",
+      header_contact_btn: "諮詢專員 <i class='fas fa-arrow-right'></i>",
+      cart_header_product: "產品", cart_header_unit_price: "單價", cart_header_qty: "數量", cart_header_total: "總計",
+      empty_cart_title: "您的購物車是空的", empty_cart_desc: "選購我們的雲芝糖肽精華，為健康加分。", empty_cart_btn: "繼續選購 <i class='fas fa-arrow-right'></i>",
+      summary_title: "訂單摘要", subtotal_label: "商品小計", checkout_btn: "結帳", secure_note: "<i class='fas fa-lock'></i> 安全結帳",
+      product_badge_psp: "有效成份 >90% · GMP認證", product_badge_memoprove: "奧地利研發 · 臨床實證",
+      footer_col1_title: "康草堂 Wonder Herb", footer_col1_text1: "以人為本，天然高效。", footer_col1_text2: "加拿大GMP藥廠生產", footer_col1_text3: "香港及加拿大雙重檢測",
+      footer_contact_title: "聯絡我們", footer_info_title: "資訊中心",
+      footer_link_research: "研究報告", footer_link_testing: "有效成份檢測", footer_link_faq: "常見問題", footer_link_cases: "典型病例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家",
+      last_updated: "最後更新：2025年6月2日",
+      modal_title: "快速結帳", modal_subtitle: "填寫以下資料以完成訂單",
+      step_shipping: "運送資料", step_payment: "付款方式", step_review: "確認訂單",
+      order_summary_label: "訂單摘要", total_due: "應付總額",
+      contact_email: "電子郵件", contact_phone: "聯絡電話", marketing_ok: "透過 WhatsApp 和電子郵件接收最新消息及優惠",
+      shipping_section: "運送資料", first_name: "名字", last_name: "姓氏",
+      address_line1: "地址 (街道及號碼)", address_line2: "詳細地址 (屋苑/座數/樓層/單位) 或 順豐智能櫃編號", district: "地區 (例如: 灣仔 / 旺角)",
+      save_info: "儲存此資訊供下次使用", sms_ok: "以簡訊接收最新消息及優惠",
+      shipping_method: "運送方式", shipping_std: "標準配送 (免運費)", shipping_exp: "特快配送 (+HK$30)", shipping_selfpick: "順豐站/智能櫃 (+HK$15)",
+      payment_section: "付款方式", card_payment: "信用卡", paypal_payment: "PayPal",
+      card_number: "信用卡號碼", expiry: "有效期 (MM/YY)", cvv: "安全碼 (CVV)",
+      use_billing_addr: "帳單地址與運送地址相同",
+      submit_order: "確認付款 · 完成訂單",
+      paypal_simulate: "以 PayPal 付款", paypal_redirect: "您將被安全引導至 PayPal 完成付款",
+      fill_required: "請填寫必要的聯絡資訊（電郵、電話及名字）。", fill_card: "請填寫信用卡號碼。",
+      order_success_card: "訂單已成功提交！感謝您的購買（信用卡支付）。", order_success_paypal: "正在跳轉至 PayPal 支付平台... (模擬)",
+      remove_item_label: "移除商品",
+      increase_qty_label: "增加數量",
+      decrease_qty_label: "減少數量"
+    },
+    en: {
+      nav_home: "About Us", nav_products: "Products", nav_research: "Research", nav_testing: "Testing",
+      nav_cases: "Case", nav_brochure: "Brochure", nav_articles: "Articles", nav_faq: "FAQ", nav_contact: "Contact",
+      header_contact_btn: "Consult <i class='fas fa-arrow-right'></i>",
+      cart_header_product: "Product", cart_header_unit_price: "Unit Price", cart_header_qty: "Qty", cart_header_total: "Total",
+      empty_cart_title: "Your Cart is Empty", empty_cart_desc: "Browse our Yunzhi PSP Essence.", empty_cart_btn: "Continue Shopping <i class='fas fa-arrow-right'></i>",
+      summary_title: "Order Summary", subtotal_label: "Subtotal", checkout_btn: "Checkout", secure_note: "<i class='fas fa-lock'></i> Secure checkout",
+      product_badge_psp: "Active >90% · GMP Certified", product_badge_memoprove: "Austrian Research · Clinically Proven",
+      footer_col1_title: "Wonder Herb", footer_col1_text1: "Patient-first, natural & effective.", footer_col1_text2: "GMP-certified in Canada", footer_col1_text3: "Dual testing: Canada & HK",
+      footer_contact_title: "Contact Us", footer_info_title: "Information",
+      footer_link_research: "Research", footer_link_testing: "Testing Reports", footer_link_faq: "FAQ", footer_link_cases: "Case Studies",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. All Rights Reserved",
+      last_updated: "Last updated: June 2, 2025",
+      modal_title: "Express Checkout", modal_subtitle: "Fill in your details to complete the order",
+      step_shipping: "Shipping", step_payment: "Payment", step_review: "Confirm",
+      order_summary_label: "Order Summary", total_due: "Total Due",
+      contact_email: "Email", contact_phone: "Phone", marketing_ok: "Send me updates via WhatsApp & Email",
+      shipping_section: "Shipping Details", first_name: "First Name", last_name: "Last Name",
+      address_line1: "Address (Street & Number)", address_line2: "Detailed Address / SF Locker Code", district: "District (e.g. Central, Wan Chai)",
+      save_info: "Save this information for next time", sms_ok: "Send me offers via SMS",
+      shipping_method: "Shipping Method", shipping_std: "Standard (Free)", shipping_exp: "Express (+HK$30)", shipping_selfpick: "SF Station/Locker (+HK$15)",
+      payment_section: "Payment Method", card_payment: "Credit Card", paypal_payment: "PayPal",
+      card_number: "Card Number", expiry: "Expiry (MM/YY)", cvv: "CVV",
+      use_billing_addr: "Use shipping address as billing address",
+      submit_order: "Confirm Payment · Place Order",
+      paypal_simulate: "Pay with PayPal", paypal_redirect: "You will be securely redirected to PayPal",
+      fill_required: "Please fill in your email, phone, and first name.", fill_card: "Please enter your card number.",
+      order_success_card: "Order placed! Thank you (Credit Card).", order_success_paypal: "Redirecting to PayPal... (Demo)",
+      remove_item_label: "Remove item",
+      increase_qty_label: "Increase quantity",
+      decrease_qty_label: "Decrease quantity"
+    }
+  };
+
+  let currentLang = 'zh';
+  let cartItems = [];
+  const productNameMap = {
+    1: { zh: "雲芝糖肽精華 (PSP) - 試用裝", en: "Yunzhi PSP Essence - Trial Pack" },
+    2: { zh: "雲芝糖肽精華 (PSP) – 標準裝", en: "Yunzhi PSP Essence – Standard Pack" },
+    3: { zh: "T3 配方", en: "T3 Formula" },
+    4: { zh: "乙肝清", en: "Yigan Qing" },
+    5: { zh: "憶活素 MemoProve", en: "MemoProve" },
+    6: { zh: "PT3 (指定診所發售)", en: "PT3 (Clinic Only)" }
+  };
+
+  function loadCart() {
+    const stored = localStorage.getItem('wonderHerbCart');
+    if (stored) {
+      try {
+        let raw = JSON.parse(stored);
+        if (Array.isArray(raw)) {
+          cartItems = raw.map(item => {
+            if (item.product && typeof item.product === 'object') return { product: { ...item.product }, quantity: item.quantity || 1 };
+            else if (item.id && item.name) return { product: { id: item.id, name: item.name, price: item.price || 0, image: item.image || "https://via.placeholder.com/80?text=Product" }, quantity: item.quantity || 1 };
+            return null;
+          }).filter(i => i !== null);
+        } else cartItems = [];
+      } catch(e) { cartItems = []; }
+    } else cartItems = [];
+    updateCartBadge();
+    renderCart();
+  }
+
+  function saveCart() { localStorage.setItem('wonderHerbCart', JSON.stringify(cartItems)); updateCartBadge(); }
+  function updateCartBadge() {
+    const total = cartItems.reduce((s,i)=>s+i.quantity,0);
+    const badge = document.getElementById('cartCountBadge');
+    if(badge) {
+      badge.innerText = total;
+      badge.setAttribute('aria-label', currentLang==='zh' ? `購物車內有 ${total} 件商品` : `Cart contains ${total} items`);
+    }
+  }
+  function removeItem(idx) { cartItems.splice(idx,1); saveCart(); renderCart(); }
+  function updateQuantity(idx,newQty) { if(newQty<=0) removeItem(idx); else { cartItems[idx].quantity = newQty; saveCart(); renderCart(); } }
+  function getSubtotal() { return cartItems.reduce((s,i)=>s+(i.product.price * i.quantity),0); }
+  function getLocalizedProductName(p) { return productNameMap[p.id]?.[currentLang] || p.name; }
+  function getProductBadge(p) { return currentLang==='zh'? (p.id===5?translations.zh.product_badge_memoprove:translations.zh.product_badge_psp) : (p.id===5?translations.en.product_badge_memoprove:translations.en.product_badge_psp); }
+
+  function renderCart() {
+    const container = document.getElementById('cartContainer');
+    if(!container) return;
+    const t = translations[currentLang];
+    if(cartItems.length===0){
+      container.innerHTML = `<div class="empty-cart"><i class="fas fa-shopping-cart"></i><h3>${t.empty_cart_title}</h3><p>${t.empty_cart_desc}</p><a href="產品介紹.html" class="btn-secondary">${t.empty_cart_btn}</a></div>`;
+      return;
+    }
+    container.innerHTML = `<div class="cart-items" role="list"><div class="cart-header"><span>${t.cart_header_product}</span><span></span><span>${t.cart_header_unit_price}</span><span>${t.cart_header_qty}</span><span>${t.cart_header_total}</span></div><div id="cartItemsList"></div></div><div class="cart-summary"><div class="summary-title">${t.summary_title}</div><div id="summaryDetails"></div></div>`;
+    const listDiv = document.getElementById('cartItemsList');
+    cartItems.forEach((item,idx)=>{
+      const prod=item.product, name=getLocalizedProductName(prod), badge=getProductBadge(prod), price=prod.price, qty=item.quantity, total=price*qty;
+      const row=document.createElement('div'); row.className='cart-item'; row.setAttribute('role', 'listitem');
+      row.innerHTML=`
+        <div class="item-info">
+          <div class="item-image"><img src="${prod.image||'https://via.placeholder.com/80?text=Product'}" onerror="this.src='https://via.placeholder.com/80?text=Product'" alt="${escapeHtml(name)}"></div>
+          <div class="item-details"><h3>${escapeHtml(name)}</h3><p>${escapeHtml(badge)}</p></div>
+        </div>
+        <button class="remove-item" data-idx="${idx}" aria-label="${t.remove_item_label}"><i class="fas fa-trash-alt"></i></button>
+        <div class="item-price">HK$${price.toFixed(2)}</div>
+        <div class="item-quantity">
+          <button class="quantity-btn" data-action="decr" data-idx="${idx}" aria-label="${t.decrease_qty_label}">−</button>
+          <input type="number" min="0" value="${qty}" data-idx="${idx}" class="qty-input" aria-label="${currentLang==='zh'?'數量':'Quantity'}">
+          <button class="quantity-btn" data-action="incr" data-idx="${idx}" aria-label="${t.increase_qty_label}">+</button>
+        </div>
+        <div class="item-total">HK$${total.toFixed(2)}</div>
+      `;
+      listDiv.appendChild(row);
+    });
+    document.querySelectorAll('.quantity-btn').forEach(btn=>btn.addEventListener('click',(e)=>{ const idx=parseInt(btn.dataset.idx); const cur=cartItems[idx]?.quantity||0; if(btn.dataset.action==='incr') updateQuantity(idx,cur+1); else updateQuantity(idx,cur-1); }));
+    document.querySelectorAll('.qty-input').forEach(inp=>inp.addEventListener('change',(e)=>{ const idx=parseInt(inp.dataset.idx); let val=parseInt(inp.value); if(isNaN(val)) val=0; updateQuantity(idx,val); }));
+    document.querySelectorAll('.remove-item').forEach(btn=>btn.addEventListener('click',()=> removeItem(parseInt(btn.dataset.idx))));
+    const summaryDiv=document.getElementById('summaryDetails');
+    if(summaryDiv) summaryDiv.innerHTML=`<div class="summary-row"><span>${t.subtotal_label}</span><span>HK$${getSubtotal().toFixed(2)}</span></div><button id="openCheckoutBtn" class="checkout-btn">${t.checkout_btn}</button><div style="margin-top:16px; text-align:center; font-size:0.8rem; color:#6b5e55;">${t.secure_note}</div>`;
+    document.getElementById('openCheckoutBtn')?.addEventListener('click', openCheckoutModal);
+  }
+
+  function openCheckoutModal() {
+    if(cartItems.length===0) return;
+    const t = translations[currentLang];
+    const subtotal = getSubtotal();
+    const modalOverlay = document.getElementById('checkoutModal');
+    const modalContent = document.getElementById('modalContent');
+
+    const buildModalHTML = (selectedShippingValue = '0', selectedPayment = 'card') => {
+      const shippingMethods = [
+        { value: '0', label: t.shipping_std, fee: 0 },
+        { value: '30', label: t.shipping_exp, fee: 30 },
+        { value: '15', label: t.shipping_selfpick, fee: 15 }
+      ];
+      const optionsHtml = shippingMethods.map(m => `<option value="${m.value}" ${selectedShippingValue===m.value?'selected':''}>${m.label}</option>`).join('');
+      const isCard = selectedPayment === 'card';
+      const shippingFee = parseInt(selectedShippingValue, 10) || 0;
+      const grandTotal = subtotal + shippingFee;
+
+      return `
+        <button class="modal-close" id="closeModalBtn" aria-label="${currentLang==='zh'?'關閉':'Close'}">&times;</button>
+        <div class="modal-header">
+          <h2>${t.modal_title}</h2>
+          <p class="modal-subtitle">${t.modal_subtitle}</p>
+        </div>
+        <div class="checkout-steps">
+          <div class="checkout-step active"><span class="step-number">1</span>${t.step_shipping}</div>
+          <div class="step-connector"></div>
+          <div class="checkout-step active"><span class="step-number">2</span>${t.step_payment}</div>
+          <div class="step-connector"></div>
+          <div class="checkout-step"><span class="step-number">3</span>${t.step_review}</div>
+        </div>
+        <div class="modal-body">
+          <div class="order-preview-card">
+            <div class="preview-header"><span><i class="fas fa-box"></i> ${t.order_summary_label}</span><span>${cartItems.reduce((s,i)=>s+i.quantity,0)} ${currentLang==='zh'?'件':'items'}</span></div>
+            <div class="preview-items">
+              ${cartItems.map(i=>`<div class="preview-item-row"><span>${escapeHtml(getLocalizedProductName(i.product))} ×${i.quantity}</span><span>HK$${(i.product.price*i.quantity).toFixed(2)}</span></div>`).join('')}
+            </div>
+            <div class="preview-total-bar"><span>${t.total_due}</span><span class="total-amount" id="dynamicTotalDisplay">HK$${grandTotal.toFixed(2)}</span></div>
+          </div>
+
+          <form id="checkoutForm" novalidate>
+            <div class="form-section">
+              <div class="form-section-title"><i class="fas fa-user"></i> ${t.shipping_section}</div>
+              <div class="form-group"><label>${t.contact_email} <span style="color:#9b2e2e;">*</span></label><input type="email" id="email" required></div>
+              <div class="form-group"><label>${t.contact_phone} <span style="color:#9b2e2e;">*</span></label><input type="tel" id="phone" required></div>
+              <div class="checkbox-group"><input type="checkbox" id="marketingOk"><label>${t.marketing_ok}</label></div>
+              <div class="form-row">
+                <div class="form-group"><label>${t.first_name} <span style="color:#9b2e2e;">*</span></label><input id="firstName" required></div>
+                <div class="form-group"><label>${t.last_name} <span style="color:#9b2e2e;">*</span></label><input id="lastName" required></div>
+              </div>
+              <div class="form-group"><label>${t.address_line1} <span style="color:#9b2e2e;">*</span></label><input id="addr1" required></div>
+              <div class="form-group"><label>${t.address_line2} <span class="optional">(${currentLang==='zh'?'選填':'optional'})</span></label><input id="addr2"></div>
+              <div class="form-group"><label>${t.district}</label><input id="district"></div>
+              <div class="checkbox-group"><input type="checkbox" id="saveInfo"><label>${t.save_info}</label></div>
+              <div class="checkbox-group"><input type="checkbox" id="smsOk"><label>${t.sms_ok}</label></div>
+              <div class="form-group"><label>${t.shipping_method}</label><select id="shippingMethodSelect">${optionsHtml}</select></div>
+            </div>
+
+            <hr class="modal-divider">
+
+            <div class="form-section">
+              <div class="form-section-title"><i class="fas fa-credit-card"></i> ${t.payment_section}</div>
+              <div class="payment-method-tabs" id="paymentTabs">
+                <div class="payment-method-tab ${isCard?'active':''}" data-method="card"><i class="far fa-credit-card"></i> ${t.card_payment}</div>
+                <div class="payment-method-tab ${!isCard?'active':''}" data-method="paypal"><i class="fab fa-paypal"></i> ${t.paypal_payment}</div>
+              </div>
+              <div id="cardPaymentSection" class="card-payment-section" style="display:${isCard?'block':'none'}">
+                <div class="card-icons-row"><i class="fab fa-cc-visa"></i><i class="fab fa-cc-mastercard"></i><i class="fab fa-cc-amex"></i><i class="fab fa-cc-jcb"></i></div>
+                <div class="checkbox-group"><input type="checkbox" id="useBillingAddr" checked><label>${t.use_billing_addr}</label></div>
+                <div class="form-group card-input-wrapper">
+                  <label>${t.card_number}</label>
+                  <input id="cardNum" placeholder="4242 4242 4242 4242">
+                  <span class="card-icon-right"><i class="far fa-credit-card"></i></span>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>${t.expiry}</label><input id="expiry" placeholder="MM/YY"></div>
+                  <div class="form-group"><label>${t.cvv}</label><input id="cvv" placeholder="123"></div>
+                </div>
+              </div>
+              <div id="paypalPaymentSection" class="paypal-section" style="display:${!isCard?'block':'none'}">
+                <button type="button" id="simulatePaypalBtn" class="paypal-btn"><i class="fab fa-paypal"></i> ${t.paypal_simulate}</button>
+                <p class="paypal-note"><i class="fas fa-lock"></i> ${t.paypal_redirect}</p>
+              </div>
+            </div>
+
+            <button type="submit" class="modal-submit-btn" id="finalSubmitBtn" style="display:${isCard ? 'block' : 'none'};"><i class="fas fa-lock" style="margin-right:8px;"></i> ${t.submit_order}</button>
+          </form>
+        </div>`;
+    };
+
+    const closeModal = () => {
+      modalOverlay.classList.remove('active');
+      modalOverlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      setTimeout(() => { modalContent.innerHTML = ''; }, 350);
+    };
+
+    const renderModalContent = (shippingVal, paymentMethod) => {
+      modalContent.innerHTML = buildModalHTML(shippingVal, paymentMethod);
+      modalOverlay.classList.add('active');
+      modalOverlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      const shippingSelect = document.getElementById('shippingMethodSelect');
+      const updateTotal = () => {
+        const fee = parseInt(shippingSelect?.value || '0', 10);
+        const total = subtotal + (isNaN(fee) ? 0 : fee);
+        const totalSpan = document.getElementById('dynamicTotalDisplay');
+        if(totalSpan) totalSpan.innerHTML = `HK$${total.toFixed(2)}`;
+      };
+      if(shippingSelect) {
+        shippingSelect.addEventListener('change', updateTotal);
+        updateTotal();
+      }
+
+      const paymentTabs = document.getElementById('paymentTabs');
+      if(paymentTabs) {
+        paymentTabs.querySelectorAll('.payment-method-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            paymentTabs.querySelectorAll('.payment-method-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const method = tab.dataset.method;
+            document.getElementById('cardPaymentSection').style.display = method==='card'?'block':'none';
+            document.getElementById('paypalPaymentSection').style.display = method==='paypal'?'block':'none';
+            const submitBtn = document.getElementById('finalSubmitBtn');
+            if(submitBtn) submitBtn.style.display = method === 'card' ? 'block' : 'none';
+          });
+        });
+      }
+
+      const paypalBtn = document.getElementById('simulatePaypalBtn');
+      if(paypalBtn) {
+        paypalBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const email = document.getElementById('email')?.value.trim();
+          const phone = document.getElementById('phone')?.value.trim();
+          const firstName = document.getElementById('firstName')?.value.trim();
+          if (!email || !phone || !firstName) {
+            alert(t.fill_required);
+            return;
+          }
+          alert(t.order_success_paypal);
+          closeModal();
+          localStorage.removeItem('wonderHerbCart');
+          loadCart();
+        });
+      }
+
+      const form = document.getElementById('checkoutForm');
+      if(form) {
+        form.onsubmit = (e) => {
+          e.preventDefault();
+          const activeMethod = document.querySelector('.payment-method-tab.active')?.dataset?.method || 'card';
+          if(activeMethod === 'paypal') {
+            document.getElementById('simulatePaypalBtn')?.click();
+            return;
+          }
+          const email = document.getElementById('email')?.value.trim();
+          const phone = document.getElementById('phone')?.value.trim();
+          const firstName = document.getElementById('firstName')?.value.trim();
+          const cardNum = document.getElementById('cardNum')?.value.trim();
+          if (!email || !phone || !firstName) {
+            alert(t.fill_required);
+            return;
+          }
+          if (!cardNum) {
+            alert(t.fill_card);
+            return;
+          }
+          alert(t.order_success_card);
+          closeModal();
+          localStorage.removeItem('wonderHerbCart');
+          loadCart();
+        };
+      }
+
+      document.getElementById('closeModalBtn')?.addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeModal(); });
+      document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+          closeModal();
+          document.removeEventListener('keydown', escHandler);
+        }
+      });
+    };
+
+    renderModalContent('0', 'card');
+  }
+
+  function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m] || m); }
+
+  function applyStaticTranslation(lang){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key=el.getAttribute('data-i18n');
+      if(translations[lang]?.[key]!==undefined) el.innerHTML=translations[lang][key];
+    });
+    document.title = lang==='zh'?'購物車 | Wonder Herb – 雲芝糖肽精華':'Shopping Cart | Wonder Herb – Yunzhi PSP Essence';
+    document.documentElement.lang=lang;
+    const zhSpan=document.getElementById('langZhBtn'), enSpan=document.getElementById('langEnBtn');
+    if(zhSpan&&enSpan){
+      zhSpan.classList.toggle('active-lang', lang==='zh');
+      enSpan.classList.toggle('active-lang', lang==='en');
+    }
+    updateCartBadge();
+  }
+  function setLanguage(lang){ if(lang!=='zh'&&lang!=='en') return; currentLang=lang; localStorage.setItem('wonderherb_lang',lang); applyStaticTranslation(currentLang); renderCart(); }
+  function initLanguage(){ const saved=localStorage.getItem('wonderherb_lang'); setLanguage(saved==='zh'||saved==='en'?saved:'zh'); }
+  function bindLanguageSwitcher(){ document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); }
+
+  window.addEventListener('storage',(e)=>{ if(e.key==='wonderHerbCart') loadCart(); });
+  const backBtn=document.getElementById('backToTop');
+  window.addEventListener('scroll',()=> backBtn.classList.toggle('show', window.scrollY > 300));
+  backBtn.addEventListener('click',(e)=>{ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); });
+  window.addEventListener('load',()=>{ loadCart(); initLanguage(); bindLanguageSwitcher(); });
+  window.addEventListener('pageshow',()=>loadCart());
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) loadCart(); });
+</script>
+</body>
+</html>
