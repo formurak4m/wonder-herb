@@ -16,7 +16,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- ========== JSON-LD 結構化資料 (Schema.org) ========== -->
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
@@ -1105,7 +1104,6 @@
             margin-bottom: 12px;
         }
 
-        /* ---------- 真實康復見證：區塊影片背景 + 清晰玻璃卡片 (Clear Glass) ---------- */
         .case-studies-section {
             position: relative;
             overflow: hidden;
@@ -1128,7 +1126,6 @@
             pointer-events: none;
         }
 
-        /* 清晰玻璃卡片：極低模糊度 + 高透明度，讓影片清晰可見 */
         .case-studies {
             background: rgba(255, 255, 255, 0.07);
             backdrop-filter: blur(3px) brightness(1.01) saturate(1.02);
@@ -1146,7 +1143,8 @@
             z-index: 2;
             margin: 0 auto;
             overflow: hidden;
-            transition: all 0.45s var(--jelly-spring-gentle);
+            transition: box-shadow 0.45s var(--jelly-spring-gentle), border-color 0.45s ease, background 0.4s ease, backdrop-filter 0.4s ease;
+            will-change: transform, border-radius;
         }
         .case-studies h2 {
             font-family: 'Playfair Display', serif;
@@ -1156,6 +1154,8 @@
             z-index: 10;
             color: #ffffff;
             text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+            pointer-events: none;
+            will-change: transform;
         }
         .case-studies p {
             margin: 20px auto;
@@ -1166,6 +1166,8 @@
             line-height: 1.6;
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
             font-weight: 500;
+            pointer-events: none;
+            will-change: transform;
         }
 
         .case-studies::before {
@@ -1181,7 +1183,6 @@
             opacity: 0.7;
         }
 
-        /* 折射紋理 - 極淡 */
         .case-studies::after {
             content: '';
             position: absolute;
@@ -1196,7 +1197,6 @@
             -webkit-filter: url(#glass-distortion);
         }
 
-        /* 厚度層 - 極輕微，保持玻璃邊緣立體感 */
         .case-studies .glass-thickness-layer {
             position: absolute;
             inset: -1px;
@@ -1207,16 +1207,15 @@
             mix-blend-mode: overlay;
             opacity: 0.5;
             transition: opacity 0.45s ease;
+            will-change: transform;
         }
 
-        /* 懸停：稍微增加可見度，但仍保持清晰 */
         .case-studies:hover {
             background: rgba(255, 255, 255, 0.14);
             backdrop-filter: blur(6px) brightness(1.02);
             -webkit-backdrop-filter: blur(6px) brightness(1.02);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), var(--liquid-shine);
             border-color: rgba(255, 255, 255, 0.7);
-            transform: translateY(-3px);
         }
         .case-studies:hover::before {
             opacity: 1;
@@ -1236,6 +1235,8 @@
             width: 100%;
             position: relative;
             z-index: 10;
+            pointer-events: auto;
+            will-change: transform;
         }
         .case-btn {
             display: inline-flex;
@@ -1253,6 +1254,7 @@
             cursor: pointer;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
+            pointer-events: auto;
         }
         .case-btn-primary {
             background: #2d5e3b;
@@ -1432,7 +1434,6 @@
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
         }
 
-        /* ==================== TOP BAR & HEADER – EXACT COPY FROM 小册子 ==================== */
         .top-bar {
             background-color: #2d5e3b;
             color: #fff;
@@ -1453,7 +1454,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.15);
             padding: 4px 12px;
             border-radius: 30px;
             font-size: 0.8rem;
@@ -1554,14 +1555,11 @@
 <body>
     <svg class="svg-filters" aria-hidden="true"><defs><filter id="glass-distortion"><feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="5" /><feDisplacementMap in="SourceGraphic" in2="noise" scale="5" /></filter></defs></svg>
 
-    <!-- 頂部語言切換列 -->
     <div class="top-bar"><div class="container"><div class="lang-selector" aria-label="語言切換器" role="group"><i class="fas fa-globe"></i><span id="langZhBtn" data-lang="zh" role="button" tabindex="0" class="active-lang">中文</span> | <span id="langEnBtn" data-lang="en" role="button" tabindex="0">EN</span></div></div></div>
 
-    <!-- 主導航 -->
     <header class="main-header" role="banner"><div class="container header-inner"><div class="logo"><img src="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png" alt="康草堂 Wonder Herb 官方標誌" width="220" height="55"></div><nav class="nav-menu" aria-label="主導航選單"><ul><li><a href="index.html" class="active" data-i18n="nav_home">關於我們</a></li><li><a href="產品介紹.html" data-i18n="nav_products">產品介紹</a></li><li><a href="研究報告.html" data-i18n="nav_research">研究報告</a></li><li><a href="有效成份檢測.html" data-i18n="nav_testing">成份檢測</a></li><li><a href="典型病例.html" data-i18n="nav_cases">典型病例</a></li><li><a href="小册子.html" data-i18n="nav_brochure">小册子</a></li><li><a href="微信發表文章.html" data-i18n="nav_articles">文章</a></li><li><a href="常見問題.html" data-i18n="nav_faq">常見問題</a></li><li><a href="聯絡我們.html" data-i18n="nav_contact">聯絡我們</a></li></ul></nav><div class="header-actions"><a href="https://wa.me/85293318571/" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a><a href="https://www.facebook.com/wonderherbhealth" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/wonderherb_hk/" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="購物車.html" class="cart-icon" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="cartCountBadge" class="cart-count">0</span></a><a href="https://wa.me/85293318571/" class="btn-contact" data-i18n="header_contact_btn">諮詢專員 <i class="fas fa-arrow-right"></i></a></div></div></header>
 
     <main id="main-content">
-        <!-- Hero 區塊 -->
         <section class="hero" id="heroSection" aria-labelledby="hero-heading">
             <canvas id="heroCanvas" aria-hidden="true"></canvas>
             <div class="container hero-grid">
@@ -1584,32 +1582,26 @@
             </div>
         </section>
 
-        <!-- 公司簡介 -->
         <section aria-labelledby="company-heading"><div class="container"><h2 id="company-heading" class="section-title reveal-on-scroll" data-i18n="company_title">🌿 康草堂 · 以人為本的中草藥科研</h2><div class="section-sub reveal-on-scroll reveal-delay-1" data-i18n="company_subtitle">結合中西醫學理論，為頑疾患者提供高活性、純天然輔助方案</div><div class="company-glass-card reveal-on-scroll reveal-delay-2"><p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text1"></p><p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text2"></p><p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text3"></p><p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text4"></p><p style="font-size:1.05rem;line-height:1.6;" data-i18n="company_text5"></p></div></div></section>
 
-        <!-- 產品系列 -->
         <section id="products" class="product-carousel-section" aria-labelledby="products-heading"><div class="container"><h2 id="products-heading" class="section-title reveal-on-scroll" data-i18n="products_section_title">✨ 皇牌產品系列</h2><div class="triple-product-layout reveal-on-scroll reveal-delay-1" id="tripleProductLayout" role="group" aria-label="產品輪播展示"><div class="product-nav-btn"><button class="control-btn prev" id="productPrevManual" aria-label="上一個產品"><i class="fas fa-chevron-left"></i></button></div><div class="side-card" id="leftSideCard"></div><div class="featured-card shimmer-overlay" id="featuredCard"></div><div class="side-card" id="rightSideCard"></div><div class="product-nav-btn"><button class="control-btn next" id="productNextManual" aria-label="下一個產品"><i class="fas fa-chevron-right"></i></button></div></div></div></section>
 
-        <!-- 品質標語 -->
         <div class="container"><div class="quality-highlight reveal-on-scroll"><p><span data-i18n="quality_prefix"></span><br><span data-i18n="quality_highlight_span"></span></p></div></div>
 
-        <!-- 信任標章 -->
         <section aria-labelledby="trust-heading"><div class="container"><h2 id="trust-heading" class="sr-only" data-i18n="trust_heading_sr">品質信任標章</h2><div class="trust-badges"><div class="badge-item reveal-on-scroll reveal-delay-1"><i class="fas fa-university" aria-hidden="true"></i><h3 data-i18n="trust1_title"></h3><p data-i18n="trust1_desc"></p></div><div class="badge-item reveal-on-scroll reveal-delay-2"><i class="fas fa-file-alt" aria-hidden="true"></i><h3 data-i18n="trust2_title"></h3><p data-i18n="trust2_desc"></p></div><div class="badge-item reveal-on-scroll reveal-delay-3"><i class="fas fa-certificate" aria-hidden="true"></i><h3 data-i18n="trust3_title"></h3><p data-i18n="trust3_desc"></p></div><div class="badge-item reveal-on-scroll reveal-delay-4"><i class="fas fa-chart-line" aria-hidden="true"></i><h3 data-i18n="trust4_title"></h3><p data-i18n="trust4_desc"></p></div></div></div></section>
 
-        <!-- 真實康復故事精選 -->
         <section aria-labelledby="cases-heading"><div class="container"><h2 id="cases-heading" class="section-title reveal-on-scroll" data-i18n="featured_cases_title">📋 真實康復故事精選</h2><div class="section-sub reveal-on-scroll reveal-delay-1" data-i18n="featured_cases_sub"></div><div id="featuredCasesGrid" class="featured-cases-grid"></div><div style="text-align:center;margin-top:20px;" class="reveal-on-scroll reveal-delay-2"><a href="典型病例.html" class="btn-secondary" data-i18n="featured_cases_more">查看更多典型病例 →</a></div></div></section>
 
-        <!-- 真實康復見證區塊 (影片背景 + 清晰玻璃卡片) -->
         <section class="case-studies-section reveal-on-scroll" aria-labelledby="study-heading">
             <video class="case-studies-section-video" autoplay muted loop playsinline aria-hidden="true">
                 <source src="https://video.wixstatic.com/video/11062b_d578b9d4ffba48c68d086ec29fe9e6f0/1080p/mp4/file.mp4" type="video/mp4">
             </video>
             <div class="case-studies-section-overlay" aria-hidden="true"></div>
-            <div class="case-studies shimmer-overlay">
-                <div class="glass-thickness-layer" aria-hidden="true"></div>
+            <div class="case-studies shimmer-overlay" id="caseStudiesCard">
+                <div class="glass-thickness-layer" id="caseStudiesThicknessLayer" aria-hidden="true"></div>
                 <h2 id="study-heading" data-i18n="case_title"></h2>
                 <p data-i18n="case_desc"></p>
-                <div class="case-action-buttons">
+                <div class="case-action-buttons" id="caseActionButtons">
                     <a href="典型病例.html" class="case-btn case-btn-primary" data-i18n="case_btn_cases">📄 瀏覽典型病例</a>
                     <a href="小册子.html" class="case-btn case-btn-outline" data-i18n="case_btn_brochure">📘 下載小冊子</a>
                     <a href="微信發表文章.html" class="case-btn case-btn-outline" data-i18n="case_btn_wechat"><i class="fab fa-weixin"></i> 微信發表文章</a>
@@ -1618,10 +1610,8 @@
         </section>
     </main>
 
-    <!-- 頁尾 -->
     <footer role="contentinfo"><div class="container footer-inner"><div class="footer-col"><h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4><p data-i18n="footer_col1_text1"></p><p data-i18n="footer_col1_text2"></p><p data-i18n="footer_col1_text3"></p></div><div class="footer-col"><h4 data-i18n="footer_contact_title">聯絡我們</h4><p><i class="fas fa-envelope"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p><p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p><div class="footer-social"><a href="https://www.facebook.com/wonderherbhealth" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/wonderherb_hk/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="https://wa.me/85293318571/" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></div></div><div class="footer-col"><h4 data-i18n="footer_info_title">資訊中心</h4><ul style="list-style:none;"><li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li><li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li><li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li><li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li></ul></div></div><div class="container copyright"><p data-i18n="copyright">© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p><p class="last-update">📅 最後更新：<time datetime="2026-06-08">2026年6月8日</time></p></div></footer>
 
-    <!-- 回到頂部按鈕 -->
     <a href="#" id="backToTop" class="back-to-top" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
 
     <script>
@@ -1701,7 +1691,6 @@
 
         function resetAllSlidesTransform() { document.querySelectorAll('#heroSlides .carousel-slide').forEach(slide => { slide.style.transform = ''; }); }
 
-        // ========== 果凍彈性系統 (包含邊緣圓角彈性) ==========
         const MAX_SCALE = 1.06;
         const MAX_IMG_PARALLAX = 10;
         const JELLY_STIFFNESS = 0.12;
@@ -2093,6 +2082,225 @@
             obs.observe(section);
         }
 
+        // ========== Case Studies 果凍彈性系統 ==========
+        const CS_MAX_SCALE = 1.025;
+        const CS_HOVER_TRANSLATE_Y = -4;
+        const CS_MAX_INNER_PARALLAX = 4;
+        const CS_BASE_BORDER_RADIUS = 48;
+        const CS_MAX_BORDER_DELTA = 6;
+        const CS_JELLY_STIFFNESS = 0.1;
+        const CS_JELLY_DAMPING = 0.78;
+
+        let csJellyEl = null;
+        let csJellyTargetScale = 1.0,
+            csJellyCurrentScale = 1.0,
+            csJellyVelocityScale = 0;
+        let csJellyTargetTranslateY = 0,
+            csJellyCurrentTranslateY = 0,
+            csJellyVelocityTranslateY = 0;
+        let csJellyTargetInnerX = 0,
+            csJellyCurrentInnerX = 0,
+            csJellyVelocityInnerX = 0;
+        let csJellyTargetInnerY = 0,
+            csJellyCurrentInnerY = 0,
+            csJellyVelocityInnerY = 0;
+        let csBrTargetTL = CS_BASE_BORDER_RADIUS,
+            csBrCurrentTL = CS_BASE_BORDER_RADIUS,
+            csBrVelocityTL = 0;
+        let csBrTargetTR = CS_BASE_BORDER_RADIUS,
+            csBrCurrentTR = CS_BASE_BORDER_RADIUS,
+            csBrVelocityTR = 0;
+        let csBrTargetBR = CS_BASE_BORDER_RADIUS,
+            csBrCurrentBR = CS_BASE_BORDER_RADIUS,
+            csBrVelocityBR = 0;
+        let csBrTargetBL = CS_BASE_BORDER_RADIUS,
+            csBrCurrentBL = CS_BASE_BORDER_RADIUS,
+            csBrVelocityBL = 0;
+        let csJellyRafId = null;
+        let csIsMouseOn = false;
+        let csIsTouchActive = false;
+        let csJellyIsFinePointer = true;
+        let csThicknessLayer = null;
+        let csHeadingEl = null;
+        let csDescEl = null;
+        let csButtonsEl = null;
+
+        function applyCsJellyTransform() {
+            if (!csJellyEl) return;
+            csJellyEl.style.transform = `scale(${csJellyCurrentScale}) translateY(${csJellyCurrentTranslateY}px)`;
+            csJellyEl.style.borderRadius = `${csBrCurrentTL}px ${csBrCurrentTR}px ${csBrCurrentBR}px ${csBrCurrentBL}px`;
+            if (csThicknessLayer) {
+                csThicknessLayer.style.transform = `translate(${csJellyCurrentInnerX}px, ${csJellyCurrentInnerY}px)`;
+            }
+            if (csHeadingEl) {
+                csHeadingEl.style.transform = `translate(${csJellyCurrentInnerX * 0.35}px, ${csJellyCurrentInnerY * 0.35}px)`;
+            }
+            if (csDescEl) {
+                csDescEl.style.transform = `translate(${csJellyCurrentInnerX * 0.25}px, ${csJellyCurrentInnerY * 0.25}px)`;
+            }
+            if (csButtonsEl) {
+                csButtonsEl.style.transform = `translate(${csJellyCurrentInnerX * 0.15}px, ${csJellyCurrentInnerY * 0.15}px)`;
+            }
+        }
+
+        function csJellyAnimationLoop() {
+            const stiffness = CS_JELLY_STIFFNESS;
+            const damping = CS_JELLY_DAMPING;
+            const forceS = (csJellyTargetScale - csJellyCurrentScale) * stiffness;
+            csJellyVelocityScale += forceS;
+            csJellyVelocityScale *= damping;
+            csJellyCurrentScale += csJellyVelocityScale;
+            const forceTY = (csJellyTargetTranslateY - csJellyCurrentTranslateY) * stiffness;
+            csJellyVelocityTranslateY += forceTY;
+            csJellyVelocityTranslateY *= damping;
+            csJellyCurrentTranslateY += csJellyVelocityTranslateY;
+            const forceIX = (csJellyTargetInnerX - csJellyCurrentInnerX) * stiffness;
+            csJellyVelocityInnerX += forceIX;
+            csJellyVelocityInnerX *= damping;
+            csJellyCurrentInnerX += csJellyVelocityInnerX;
+            const forceIY = (csJellyTargetInnerY - csJellyCurrentInnerY) * stiffness;
+            csJellyVelocityInnerY += forceIY;
+            csJellyVelocityInnerY *= damping;
+            csJellyCurrentInnerY += csJellyVelocityInnerY;
+            const forceBTL = (csBrTargetTL - csBrCurrentTL) * stiffness;
+            csBrVelocityTL += forceBTL;
+            csBrVelocityTL *= damping;
+            csBrCurrentTL += csBrVelocityTL;
+            const forceBTR = (csBrTargetTR - csBrCurrentTR) * stiffness;
+            csBrVelocityTR += forceBTR;
+            csBrVelocityTR *= damping;
+            csBrCurrentTR += csBrVelocityTR;
+            const forceBBR = (csBrTargetBR - csBrCurrentBR) * stiffness;
+            csBrVelocityBR += forceBBR;
+            csBrVelocityBR *= damping;
+            csBrCurrentBR += csBrVelocityBR;
+            const forceBBL = (csBrTargetBL - csBrCurrentBL) * stiffness;
+            csBrVelocityBL += forceBBL;
+            csBrVelocityBL *= damping;
+            csBrCurrentBL += csBrVelocityBL;
+            applyCsJellyTransform();
+            const allSettled = Math.abs(csJellyTargetScale - csJellyCurrentScale) < 0.0003 && Math.abs(csJellyVelocityScale) < 0.0003 && Math.abs(csJellyTargetTranslateY - csJellyCurrentTranslateY) < 0.008 && Math.abs(csJellyVelocityTranslateY) < 0.008 && Math.abs(csJellyTargetInnerX - csJellyCurrentInnerX) < 0.008 && Math.abs(csJellyVelocityInnerX) < 0.008 && Math.abs(csJellyTargetInnerY - csJellyCurrentInnerY) < 0.008 && Math.abs(csJellyVelocityInnerY) < 0.008 && Math.abs(csBrTargetTL - csBrCurrentTL) < 0.04 && Math.abs(csBrVelocityTL) < 0.04 && Math.abs(csBrTargetTR - csBrCurrentTR) < 0.04 && Math.abs(csBrVelocityTR) < 0.04 && Math.abs(csBrTargetBR - csBrCurrentBR) < 0.04 && Math.abs(csBrVelocityBR) < 0.04 && Math.abs(
+                csBrTargetBL - csBrCurrentBL) < 0.04 && Math.abs(csBrVelocityBL) < 0.04;
+            if (allSettled) {
+                csJellyCurrentScale = csJellyTargetScale;
+                csJellyCurrentTranslateY = csJellyTargetTranslateY;
+                csJellyCurrentInnerX = csJellyTargetInnerX;
+                csJellyCurrentInnerY = csJellyTargetInnerY;
+                csBrCurrentTL = csBrTargetTL;
+                csBrCurrentTR = csBrTargetTR;
+                csBrCurrentBR = csBrTargetBR;
+                csBrCurrentBL = csBrTargetBL;
+                csJellyVelocityScale = 0;
+                csJellyVelocityTranslateY = 0;
+                csJellyVelocityInnerX = 0;
+                csJellyVelocityInnerY = 0;
+                csBrVelocityTL = 0;
+                csBrVelocityTR = 0;
+                csBrVelocityBR = 0;
+                csBrVelocityBL = 0;
+                applyCsJellyTransform();
+                csJellyRafId = null;
+                return;
+            }
+            csJellyRafId = requestAnimationFrame(csJellyAnimationLoop);
+        }
+
+        function startCsJellyLoop() { if (!csJellyRafId) { csJellyRafId = requestAnimationFrame(csJellyAnimationLoop); } }
+
+        function updateCsJellyTargets(mx, my, rect) {
+            const cx = rect.width / 2,
+                cy = rect.height / 2,
+                rx = mx - rect.left,
+                ry = my - rect.top,
+                normX = Math.max(-1, Math.min(1, (rx - cx) / cx)),
+                normY = Math.max(-1, Math.min(1, (ry - cy) / cy)),
+                dist = Math.sqrt(normX * normX + normY * normY),
+                strengthMultiplier = csJellyIsFinePointer ? 1.0 : 0.5;
+            csJellyTargetScale = 1.0 + (1 - Math.min(dist, 1)) * (CS_MAX_SCALE - 1.0) * strengthMultiplier;
+            csJellyTargetTranslateY = CS_HOVER_TRANSLATE_Y * strengthMultiplier;
+            csJellyTargetInnerX = -normX * CS_MAX_INNER_PARALLAX * strengthMultiplier;
+            csJellyTargetInnerY = normY * CS_MAX_INNER_PARALLAX * strengthMultiplier;
+            const deltaX = normX * CS_MAX_BORDER_DELTA * strengthMultiplier,
+                deltaY = normY * CS_MAX_BORDER_DELTA * strengthMultiplier;
+            csBrTargetTL = CS_BASE_BORDER_RADIUS + deltaY - deltaX;
+            csBrTargetTR = CS_BASE_BORDER_RADIUS + deltaY + deltaX;
+            csBrTargetBR = CS_BASE_BORDER_RADIUS - deltaY + deltaX;
+            csBrTargetBL = CS_BASE_BORDER_RADIUS - deltaY - deltaX;
+            const minR = CS_BASE_BORDER_RADIUS - CS_MAX_BORDER_DELTA,
+                maxR = CS_BASE_BORDER_RADIUS + CS_MAX_BORDER_DELTA;
+            csBrTargetTL = Math.min(maxR, Math.max(minR, csBrTargetTL));
+            csBrTargetTR = Math.min(maxR, Math.max(minR, csBrTargetTR));
+            csBrTargetBR = Math.min(maxR, Math.max(minR, csBrTargetBR));
+            csBrTargetBL = Math.min(maxR, Math.max(minR, csBrTargetBL));
+            csIsMouseOn = true;
+            startCsJellyLoop();
+        }
+
+        function resetCsJellyTargets() {
+            csJellyTargetScale = 1.0;
+            csJellyTargetTranslateY = 0;
+            csJellyTargetInnerX = 0;
+            csJellyTargetInnerY = 0;
+            csBrTargetTL = CS_BASE_BORDER_RADIUS;
+            csBrTargetTR = CS_BASE_BORDER_RADIUS;
+            csBrTargetBR = CS_BASE_BORDER_RADIUS;
+            csBrTargetBL = CS_BASE_BORDER_RADIUS;
+            csIsMouseOn = false;
+            csIsTouchActive = false;
+            startCsJellyLoop();
+        }
+
+        function initCaseStudiesJelly() {
+            csJellyEl = document.getElementById('caseStudiesCard');
+            if (!csJellyEl) return;
+            csThicknessLayer = document.getElementById('caseStudiesThicknessLayer');
+            csHeadingEl = csJellyEl.querySelector('h2');
+            csDescEl = csJellyEl.querySelector('p');
+            csButtonsEl = document.getElementById('caseActionButtons');
+            csJellyIsFinePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+            csJellyEl.addEventListener('mousemove', function(e) {
+                if (csIsTouchActive) return;
+                const rect = csJellyEl.getBoundingClientRect();
+                updateCsJellyTargets(e.clientX, e.clientY, rect);
+            }, { passive: true });
+            csJellyEl.addEventListener('mouseenter', function(e) {
+                if (csIsTouchActive) return;
+                const rect = csJellyEl.getBoundingClientRect();
+                updateCsJellyTargets(e.clientX, e.clientY, rect);
+            });
+            csJellyEl.addEventListener('mouseleave', function() {
+                if (csIsTouchActive) return;
+                resetCsJellyTargets();
+            });
+            csJellyEl.addEventListener('touchmove', function(e) {
+                if (!e.touches.length) return;
+                csIsTouchActive = true;
+                const rect = csJellyEl.getBoundingClientRect();
+                updateCsJellyTargets(e.touches[0].clientX, e.touches[0].clientY, rect);
+            }, { passive: true });
+            csJellyEl.addEventListener('touchend', resetCsJellyTargets);
+            csJellyEl.addEventListener('touchcancel', resetCsJellyTargets);
+            applyCsJellyTransform();
+        }
+
+        function cleanupCaseStudiesJelly() {
+            if (csJellyRafId) { cancelAnimationFrame(csJellyRafId);
+                csJellyRafId = null; }
+            if (csJellyEl) {
+                csJellyEl.style.transform = '';
+                csJellyEl.style.borderRadius = '';
+            }
+            if (csThicknessLayer) { csThicknessLayer.style.transform = ''; }
+            if (csHeadingEl) { csHeadingEl.style.transform = ''; }
+            if (csDescEl) { csDescEl.style.transform = ''; }
+            if (csButtonsEl) { csButtonsEl.style.transform = ''; }
+            csJellyEl = null;
+            csThicknessLayer = null;
+            csHeadingEl = null;
+            csDescEl = null;
+            csButtonsEl = null;
+        }
+
         window.addEventListener('load', () => {
             buildHeroCarousel();
             resetHeroTimer();
@@ -2107,6 +2315,7 @@
             updateCartCountBadge();
             bindBackToTop();
             initJellyElasticity();
+            initCaseStudiesJelly();
             const savedLang = localStorage.getItem('wonderherb_lang');
             currentLang = (savedLang === 'zh' || savedLang === 'en') ? savedLang : 'zh';
             applyStaticTranslation(currentLang);
@@ -2118,7 +2327,8 @@
             initCaseStudiesVideo();
         });
         window.addEventListener('beforeunload', () => { const c = document.getElementById('heroCanvas'); if (c && c._heroCleanup) c._heroCleanup();
-            cleanupJellyElasticity(); });
+            cleanupJellyElasticity();
+            cleanupCaseStudiesJelly(); });
     </script>
 </body>
 </html>
