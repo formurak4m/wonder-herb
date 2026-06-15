@@ -953,38 +953,50 @@
             }
             .product-nav-btn {
                 display: flex;
-                width: 100%;
+                flex: 0 0 auto;
+                align-items: center;
                 justify-content: center;
-                margin: 10px 0;
+                margin: 0;
+                width: 48px;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            .product-nav-btn:first-child {
+                left: 8px;
+            }
+            .product-nav-btn:last-child {
+                right: 8px;
             }
             .product-nav-btn .fas {
-                transform: rotate(90deg);
+                transform: none;
             }
             .triple-product-layout {
-                gap: 12px;
+                gap: 8px;
                 justify-content: center;
                 align-items: center;
                 overflow-x: hidden;
-                padding-bottom: 8px;
+                padding-bottom: 0;
                 -webkit-overflow-scrolling: touch;
-                flex-direction: column;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                position: relative;
             }
             .triple-product-layout .featured-card,
             .triple-product-layout .side-card {
-                flex: 0 0 auto;
-                min-width: auto;
-                width: calc(100% - 24px);
-                max-width: 420px;
+                flex: 1 1 auto;
+                min-width: 0;
+                width: auto;
             }
             .featured-card {
-                flex: 0 0 auto;
-                min-width: auto;
-                width: calc(100% - 24px);
-                max-width: 420px;
+                flex: 1 1 auto;
+                min-width: 0;
+                width: 100%;
+                max-width: calc(100% - 120px);
+                margin: 0 auto;
             }
             .side-card {
-                display: none;
-                width: calc(100% - 24px);
+                display: none !important;
             }
             /* Make case grid show two columns on small screens */
             .featured-cases-grid {
