@@ -7,15 +7,6 @@
     <meta name="description" content="康草堂 Wonder Herb - 超過20年經驗，雲芝糖肽精華有效成份 >90%，加拿大GMP藥廠生產，大學證實複合配方功效倍增。">
     <meta name="og:title" content="康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選">
     <meta name="og:description" content="超過20年經驗，雲芝糖肽精華有效成份 >90%，加拿大GMP藥廠生產，大學證實複合配方功效倍增。">
-    <meta name="og:type" content="website"><!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選</title>
-    <meta name="description" content="康草堂 Wonder Herb - 超過20年經驗，雲芝糖肽精華有效成份 >90%，加拿大GMP藥廠生產，大學證實複合配方功效倍增。">
-    <meta name="og:title" content="康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選">
-    <meta name="og:description" content="超過20年經驗，雲芝糖肽精華有效成份 >90%，加拿大GMP藥廠生產，大學證實複合配方功效倍增。">
     <meta name="og:type" content="website">
     <meta name="og:image" content="https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png">
     <meta name="og:locale" content="zh_HK">
@@ -663,6 +654,21 @@
             box-shadow: 0 3px 10px rgba(155, 46, 46, 0.4), inset 0 1.5px 0 rgba(255, 255, 255, 0.4);
             border-color: rgba(255, 255, 255, 0.5);
         }
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 20px;
+            }
+            .hero-grid {
+                gap: 32px;
+            }
+            .featured-cases-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            .nav-menu ul {
+                gap: 16px;
+            }
+        }
         @media (max-width: 768px) {
             :root {
                 --carousel-glass-blur: 14px;
@@ -672,1030 +678,63 @@
                 --carousel-inner-shadow-opacity: 0.4;
                 --carousel-border-glow: rgba(255, 255, 255, 0.25);
             }
+            .container {
+                padding: 0 18px;
+            }
             .carousel-btn {
                 width: 38px;
                 height: 38px;
             }
-        }
-        @media (max-width: 480px) {
-            :root {
-                --carousel-glass-blur: 9px;
-                --carousel-highlight-opacity: 0.28;
-                --carousel-refraction-opacity: 0.03;
-                --carousel-shadow-strength: 0.14;
-                --carousel-inner-shadow-opacity: 0.3;
-                --carousel-border-glow: rgba(255, 255, 255, 0.18);
+            .hero {
+                padding: 40px 0 35px;
             }
-            .carousel-btn {
-                width: 34px;
-                height: 34px;
-                font-size: 1rem;
-            }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .carousel-container {
-                animation: none;
-            }
-            .carousel-container::before {
-                animation: none;
-            }
-            .carousel-container::after {
-                animation: none;
-                opacity: 0.03;
-            }
-            .carousel-slide::after {
-                animation: none;
-                opacity: 0.16;
-            }
-            .shimmer-overlay::after {
-                animation: none;
-            }
-            .carousel-slide {
-                transition: opacity 0.3s ease-in-out, transform 0.3s ease;
-            }
-            .case-studies-section-video {
-                display: none;
-            }
-            .case-studies-section-overlay {
-                background: rgba(254, 252, 248, 0.45);
-            }
-        }
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-            position: relative;
-            z-index: 2;
-        }
-        section {
-            padding: 35px 0;
-            position: relative;
-            z-index: 2;
-        }
-        .hero {
-            padding: 60px 0 50px;
-            position: relative;
-            z-index: 2;
-            background: linear-gradient(135deg, #fff8f0 0%, #f2ede4 100%);
-            border-radius: 0 0 48px 48px;
-            overflow: hidden;
-        }
-        #heroCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            display: block;
-        }
-        @media (hover: none) and (pointer: coarse) {
-            #heroCanvas {
-                opacity: 0.55;
-            }
-        }
-        .hero-grid {
-            display: flex;
-            align-items: center;
-            gap: 48px;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 3;
-        }
-        .hero-content {
-            flex: 1;
-        }
-        .hero-badge {
-            display: inline-block;
-            background: #9b2e2e;
-            color: white;
-            padding: 5px 14px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-        .hero-content h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            font-family: 'Playfair Display', serif;
-            color: #2c3e2b;
-            line-height: 1.2;
-            margin-bottom: 20px;
-        }
-        .hero-content p {
-            font-size: 1.1rem;
-            color: #4a4a48;
-            margin-bottom: 30px;
-        }
-        .hero-stats {
-            display: flex;
-            gap: 32px;
-            margin-bottom: 32px;
-        }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #2d5e3b;
-        }
-        .hero-image {
-            flex: 1;
-            text-align: center;
-            position: relative;
-            z-index: 3;
-        }
-        .triple-product-layout {
-            display: flex;
-            gap: 16px;
-            margin: 20px 0 40px;
-            align-items: center;
-            flex-wrap: wrap;
-            justify-content: center;
-            position: relative;
-            z-index: 3;
-        }
-        .product-nav-btn {
-            flex: 0 0 auto;
-            display: flex;
-            align-items: center;
-        }
-        .control-btn {
-            background: rgba(45, 94, 59, 0.7);
-            backdrop-filter: blur(8px);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            width: 48px;
-            height: 48px;
-            border-radius: 60px;
-            font-size: 1.4rem;
-            cursor: pointer;
-            transition: all 0.35s var(--jelly-spring-gentle);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1), var(--liquid-shine);
-        }
-        .control-btn:hover {
-            background: rgba(45, 94, 59, 0.9);
-            transform: scale(1.12);
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15), var(--liquid-shine);
-        }
-        .featured-card {
-            flex: 2;
-            background: rgba(255, 255, 255, 0.32);
-            backdrop-filter: blur(22px);
-            border-radius: 32px;
-            padding: 36px 28px;
-            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.12), var(--liquid-shine);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            transition: transform 0.45s var(--jelly-spring-gentle), box-shadow 0.45s cubic-bezier(0.22, 0.61, 0.36, 1), background 0.4s ease;
-            text-align: center;
-            position: relative;
-            z-index: 3;
-            overflow: hidden;
-        }
-        .featured-card:hover {
-            transform: translateY(-7px);
-            background: rgba(255, 255, 255, 0.48);
-            box-shadow: 0 32px 55px -14px rgba(0, 0, 0, 0.16), var(--liquid-shine);
-            border-color: rgba(255, 255, 255, 0.65);
-        }
-        .featured-card>* {
-            position: relative;
-            z-index: 2;
-        }
-        .side-card {
-            flex: 1;
-            background: rgba(254, 250, 245, 0.55);
-            backdrop-filter: blur(16px);
-            border-radius: 28px;
-            padding: 20px 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05), var(--liquid-shine);
-            border: 1px solid rgba(240, 224, 207, 0.55);
-            transition: all 0.45s var(--jelly-spring-gentle);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 2;
-            overflow: hidden;
-        }
-        .side-card:hover {
-            transform: translateY(-4px) scale(1.03);
-            background: rgba(255, 255, 255, 0.78);
-            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.1), var(--liquid-shine);
-            border-color: rgba(255, 255, 255, 0.65);
-        }
-        .side-card>* {
-            position: relative;
-            z-index: 2;
-        }
-        .featured-card .product-img {
-            height: 220px;
-            background: rgba(250, 245, 238, 0.4);
-            backdrop-filter: blur(6px);
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-        .featured-card .product-img img {
-            max-width: 85%;
-            max-height: 200px;
-            object-fit: contain;
-        }
-        .side-card .product-img {
-            height: 110px;
-            background: rgba(250, 245, 238, 0.4);
-            backdrop-filter: blur(4px);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-        }
-        .side-card .product-img img {
-            max-width: 75%;
-            max-height: 95px;
-            object-fit: contain;
-        }
-        .featured-card h3 {
-            font-size: 1.9rem;
-            font-weight: 700;
-            font-family: 'Playfair Display', serif;
-            color: #2c3e2b;
-            margin-bottom: 12px;
-        }
-        .featured-card .product-description {
-            font-size: 1rem;
-            color: #4a4a48;
-            margin: 16px 0 28px;
-            line-height: 1.5;
-            max-width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .side-card h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2d5e3b;
-            margin: 8px 0 6px;
-        }
-        .side-card .side-desc {
-            font-size: 0.75rem;
-            color: #6b5e55;
-            line-height: 1.3;
-        }
-        .btn-detail-main {
-            background: #2d5e3b;
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px 32px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.35s var(--jelly-spring-gentle);
-            position: relative;
-            z-index: 3;
-            backdrop-filter: blur(4px);
-        }
-        .btn-detail-main:hover {
-            background: #1e4028;
-            transform: scale(1.06);
-            box-shadow: 0 10px 26px rgba(45, 94, 59, 0.35);
-        }
-        .featured-cases-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            margin: 40px 0 30px;
-        }
-        .mini-case-card {
-            background: rgba(255, 255, 255, 0.28);
-            backdrop-filter: blur(18px);
-            border-radius: 28px;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
-            transition: all 0.45s var(--jelly-spring-gentle);
-            border-left: 5px solid #2d5e3b;
-            border-top: 1px solid rgba(255, 255, 255, 0.5);
-            border-right: 1px solid rgba(255, 255, 255, 0.4);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 2;
-            overflow: hidden;
-        }
-        .mini-case-card:hover {
-            transform: translateY(-6px) scale(1.03);
-            background: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
-            border-color: rgba(255, 255, 255, 0.6);
-        }
-        .mini-case-card>* {
-            position: relative;
-            z-index: 2;
-        }
-        .mini-case-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #2c3e2b;
-            font-family: 'Playfair Display', serif;
-            margin-bottom: 6px;
-        }
-        .mini-case-subtitle {
-            font-size: 0.8rem;
-            color: #9b2e2e;
-            font-weight: 600;
-            margin-bottom: 12px;
-            letter-spacing: 0.3px;
-        }
-        .mini-case-excerpt {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #4a4a48;
-            margin-bottom: 16px;
-            flex: 1;
-        }
-        .read-more-link {
-            color: #2d5e3b;
-            font-weight: 600;
-            text-decoration: none;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 8px;
-            transition: color 0.25s ease;
-        }
-        .read-more-link:hover {
-            color: #9b2e2e;
-            text-decoration: underline;
-        }
-        .section-title {
-            font-size: 2.2rem;
-            font-family: 'Playfair Display', serif;
-            text-align: center;
-            margin-bottom: 48px;
-            color: #2c3e2b;
-        }
-        .section-sub {
-            text-align: center;
-            max-width: 700px;
-            margin: -20px auto 40px;
-            color: #6b5e55;
-        }
-        .quality-highlight {
-            background: rgba(255, 240, 230, 0.4);
-            backdrop-filter: blur(22px);
-            border-radius: 40px;
-            padding: 48px 40px;
-            text-align: center;
-            border-left: 8px solid #c0392b;
-            border-top: 1px solid rgba(255, 255, 255, 0.55);
-            border-right: 1px solid rgba(255, 255, 255, 0.45);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.45);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06), var(--liquid-shine);
-            position: relative;
-            z-index: 2;
-            margin: 30px 0 50px;
-            overflow: hidden;
-        }
-        .quality-highlight p {
-            font-size: 1.6rem;
-            font-weight: 600;
-            line-height: 1.4;
-            color: #1e2a1b;
-        }
-        .quality-highlight span {
-            color: #c0392b;
-            font-weight: 800;
-            background: rgba(192, 57, 43, 0.08);
-            padding: 4px 12px;
-            border-radius: 40px;
-            display: inline-block;
-        }
-        .trust-badges {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-        .badge-item {
-            text-align: center;
-            max-width: 180px;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            padding: 20px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.45);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04), var(--liquid-shine);
-            transition: all 0.4s var(--jelly-spring-gentle);
-        }
-        .badge-item i {
-            font-size: 2.5rem;
-            color: #2d5e3b;
-            margin-bottom: 12px;
-        }
-
-        .case-studies-section {
-            position: relative;
-            overflow: hidden;
-            padding: 50px 0 60px;
-        }
-        .case-studies-section-video {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 0;
-            pointer-events: none;
-        }
-        .case-studies-section-overlay {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            background: rgba(0, 0, 0, 0.04);
-            pointer-events: none;
-        }
-
-        .case-studies {
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(3px) brightness(1.01) saturate(1.02);
-            -webkit-backdrop-filter: blur(3px) brightness(1.01) saturate(1.02);
-            color: #1a1a18;
-            border-radius: 48px;
-            padding: 50px 40px;
-            text-align: center;
-            max-width: 1100px;
-            width: calc(100% - 48px);
-            box-sizing: border-box;
-            border: 1.5px solid rgba(255, 255, 255, 0.55);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04), var(--liquid-shine);
-            position: relative;
-            z-index: 2;
-            margin: 0 auto;
-            overflow: hidden;
-            transition: box-shadow 0.45s var(--jelly-spring-gentle), border-color 0.45s ease, background 0.4s ease, backdrop-filter 0.4s ease;
-            will-change: transform, border-radius;
-        }
-        .case-studies h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 10;
-            color: #ffffff;
-            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-            pointer-events: none;
-            will-change: transform;
-        }
-        .case-studies p {
-            margin: 20px auto;
-            max-width: 700px;
-            position: relative;
-            z-index: 10;
-            color: #ffffff;
-            line-height: 1.6;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-            font-weight: 500;
-            pointer-events: none;
-            will-change: transform;
-        }
-
-        .case-studies::before {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            z-index: 6;
-            pointer-events: none;
-            border-radius: inherit;
-            background: radial-gradient(ellipse 300px 220px at 22% 14%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.22) 18%, rgba(255, 255, 255, 0.08) 36%, rgba(255, 255, 255, 0.02) 54%, transparent 72%);
-            animation: glassHighlightDrift 8s ease-in-out infinite;
-            mix-blend-mode: soft-light;
-            opacity: 0.7;
-        }
-
-        .case-studies::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            z-index: 5;
-            pointer-events: none;
-            border-radius: inherit;
-            background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0) 0px, rgba(255, 255, 255, 0.03) 1px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0.01) 3px, rgba(255, 255, 255, 0) 5px);
-            opacity: 0.06;
-            animation: glassRefractionShift 12s ease-in-out infinite;
-            filter: url(#glass-distortion);
-            -webkit-filter: url(#glass-distortion);
-        }
-
-        .case-studies .glass-thickness-layer {
-            position: absolute;
-            inset: -1px;
-            z-index: 4;
-            pointer-events: none;
-            border-radius: inherit;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 18%, rgba(255, 255, 255, 0.01) 42%, rgba(0, 0, 0, 0.01) 68%, rgba(0, 0, 0, 0.03) 100%);
-            mix-blend-mode: overlay;
-            opacity: 0.5;
-            transition: opacity 0.45s ease;
-            will-change: transform;
-        }
-
-        .case-studies:hover {
-            background: rgba(255, 255, 255, 0.14);
-            backdrop-filter: blur(6px) brightness(1.02);
-            -webkit-backdrop-filter: blur(6px) brightness(1.02);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), var(--liquid-shine);
-            border-color: rgba(255, 255, 255, 0.7);
-        }
-        .case-studies:hover::before {
-            opacity: 1;
-            background: radial-gradient(ellipse 320px 240px at 22% 14%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.28) 18%, rgba(255, 255, 255, 0.1) 36%, rgba(255, 255, 255, 0.03) 54%, transparent 72%);
-        }
-        .case-studies:hover .glass-thickness-layer {
-            opacity: 0.7;
-        }
-
-        .case-action-buttons {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin: 32px auto 0 auto;
-            width: 100%;
-            position: relative;
-            z-index: 10;
-            pointer-events: auto;
-            will-change: transform;
-        }
-        .case-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 28px;
-            border-radius: 40px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.35s var(--jelly-spring-gentle);
-            white-space: nowrap;
-            font-size: 0.95rem;
-            line-height: 1.2;
-            cursor: pointer;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            pointer-events: auto;
-        }
-        .case-btn-primary {
-            background: #2d5e3b;
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 4px 16px rgba(45, 94, 59, 0.3), var(--liquid-shine);
-        }
-        .case-btn-primary:hover {
-            background: #1e4028;
-            transform: translateY(-3px) scale(1.04);
-            box-shadow: 0 8px 24px rgba(45, 94, 59, 0.4), var(--liquid-shine);
-        }
-        .case-btn-outline {
-            background: rgba(255, 255, 255, 0.78);
-            border: 1.5px solid rgba(45, 94, 59, 0.5);
-            color: #1e4028;
-            font-weight: 600;
-        }
-        .case-btn-outline:hover {
-            background: rgba(255, 255, 255, 0.78);
-            transform: translateY(-3px) scale(1.04);
-            border-color: #2d5e3b;
-            color: #1e4028;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1), var(--liquid-shine);
-        }
-        .company-glass-card {
-            background: rgba(255, 255, 255, 0.28);
-            backdrop-filter: blur(20px);
-            border-radius: 32px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.45);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.05), var(--liquid-shine);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.45s var(--jelly-spring-gentle);
-        }
-        footer {
-            background: #1f2c1c;
-            color: #ddd;
-            padding: 48px 0 24px;
-            margin-top: 0px;
-            position: relative;
-            z-index: 2;
-        }
-        .footer-inner {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 32px;
-        }
-        .footer-col {
-            flex: 1;
-            min-width: 180px;
-        }
-        .footer-col h4 {
-            color: #ffffff;
-            margin-bottom: 16px;
-        }
-        .footer-col a {
-            color: #ddd;
-            text-decoration: none;
-            transition: color 0.25s;
-        }
-        .footer-col a:hover {
-            color: #ffffff;
-        }
-        .footer-social a {
-            color: #ddd;
-            font-size: 1.4rem;
-            margin-right: 16px;
-            transition: all 0.3s var(--jelly-spring-gentle);
-            display: inline-block;
-            text-decoration: none;
-        }
-        .footer-social a:hover {
-            color: #ffd966;
-            transform: translateY(-3px) scale(1.12);
-        }
-        .copyright {
-            text-align: center;
-            padding-top: 32px;
-            border-top: 1px solid #3a4a36;
-            margin-top: 32px;
-            font-size: 0.85rem;
-        }
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: rgba(45, 94, 59, 0.75);
-            backdrop-filter: blur(12px);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            font-size: 1.5rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.45s var(--jelly-spring-gentle);
-            z-index: 99;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18), var(--liquid-shine);
-        }
-        .back-to-top.show {
-            opacity: 1;
-            visibility: visible;
-        }
-        .back-to-top:hover {
-            background-color: #1e4028;
-            transform: translateY(-6px) scale(1.1);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), var(--liquid-shine);
-        }
-        .last-update {
-            font-size: 0.7rem;
-            color: #a8b7a4;
-            margin-top: 8px;
-        }
-        .last-update time {
-            font-weight: 500;
-            color: #c5cfc0;
-        }
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-        .cta-group {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .btn-primary {
-            background-color: #2d5e3b;
-            color: white;
-            padding: 12px 32px;
-            border-radius: 40px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            transition: all 0.35s var(--jelly-spring-gentle);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 4px 14px rgba(45, 94, 59, 0.2);
-        }
-        .btn-primary:hover {
-            background-color: #1e4028;
-            transform: translateY(-3px) scale(1.04);
-            box-shadow: 0 10px 28px rgba(45, 94, 59, 0.35);
-        }
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(6px);
-            border: 2px solid #2d5e3b;
-            color: #2d5e3b;
-            padding: 10px 28px;
-            border-radius: 40px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.35s var(--jelly-spring-gentle);
-            display: inline-block;
-        }
-        .btn-secondary:hover {
-            background: rgba(45, 94, 59, 0.08);
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-        }
-
-        .top-bar {
-            background-color: #2d5e3b;
-            color: #fff;
-            font-size: 0.85rem;
-            padding: 8px 0;
-            text-align: right;
-        }
-        .top-bar .container {
-            display: flex;
-            justify-content: flex-end;
-            gap: 20px;
-        }
-        .top-bar a {
-            color: #fff;
-            text-decoration: none;
-        }
-        .lang-selector {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-        .lang-selector span {
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .lang-selector span:hover {
-            opacity: 0.8;
-            text-decoration: underline;
-        }
-        .lang-selector .active-lang {
-            font-weight: 700;
-            text-decoration: underline;
-        }
-
-        .main-header {
-            background: #E9DDCF;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid #eee6dc;
-        }
-        .header-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            padding: 16px 0;
-            gap: 20px;
-        }
-        .logo img {
-            height: 55px;
-            width: auto;
-        }
-        .nav-menu ul {
-            display: flex;
-            gap: 28px;
-            list-style: none;
-            flex-wrap: wrap;
-        }
-        .nav-menu a {
-            text-decoration: none;
-            font-weight: 500;
-            color: #2c3e2b;
-            font-size: 1rem;
-        }
-        .nav-menu a:hover,
-        .nav-menu a.active {
-            color: #9b2e2e;
-            border-bottom: 2px solid #9b2e2e;
-            padding-bottom: 4px;
-        }
-        .header-actions {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-        .header-actions .social-icon {
-            color: #6b4e2e;
-            font-size: 1.3rem;
-            text-decoration: none;
-        }
-        .cart-icon {
-            font-size: 1.4rem;
-            color: #2d5e3b;
-            position: relative;
-            text-decoration: none;
-        }
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -12px;
-            background: #9b2e2e;
-            color: white;
-            font-size: 0.7rem;
-            border-radius: 30px;
-            padding: 2px 6px;
-            min-width: 18px;
-            text-align: center;
-        }
-        .btn-contact {
-            background-color: #2d5e3b;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 40px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .btn-contact:hover {
-            background-color: #1e4028;
-            transform: translateY(-2px);
-        }
-    </style>
-
-    <!-- ========== MOBILE RESPONSIVE ENHANCEMENTS (ADDITIVE ONLY) ========== -->
-    <style>
-        /* Hamburger Menu Button */
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            z-index: 110;
-            flex-direction: column;
-            gap: 5px;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            transition: background 0.25s ease;
-        }
-        .mobile-menu-toggle:hover {
-            background: rgba(0,0,0,0.05);
-        }
-        .mobile-menu-toggle span {
-            display: block;
-            width: 24px;
-            height: 2.5px;
-            background: #2c3e2b;
-            border-radius: 3px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-origin: center;
-        }
-        .mobile-menu-toggle.active span:nth-child(1) {
-            transform: translateY(7.5px) rotate(45deg);
-        }
-        .mobile-menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-            transform: scaleX(0);
-        }
-        .mobile-menu-toggle.active span:nth-child(3) {
-            transform: translateY(-7.5px) rotate(-45deg);
-        }
-
-        /* Mobile Nav Overlay */
-        .mobile-nav-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 105;
-            opacity: 0;
-            transition: opacity 0.35s ease;
-            pointer-events: none;
-        }
-        .mobile-nav-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* Mobile Nav Panel */
-        .mobile-nav-panel {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 300px;
-            max-width: 82vw;
-            height: 100vh;
-            height: 100dvh;
-            background: #fefcf8;
-            z-index: 106;
-            overflow-y: auto;
-            padding: 80px 24px 40px;
-            box-shadow: -8px 0 32px rgba(0,0,0,0.18);
-            transition: right 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            border-radius: 24px 0 0 24px;
-        }
-        .mobile-nav-panel.active {
-            right: 0;
-        }
-        .mobile-nav-panel a {
-            display: block;
-            padding: 13px 18px;
-            text-decoration: none;
-            font-weight: 500;
-            color: #2c3e2b;
-            font-size: 1.05rem;
-            border-radius: 14px;
-            transition: all 0.25s ease;
-        }
-        .mobile-nav-panel a:hover,
-        .mobile-nav-panel a.active {
-            background: rgba(45,94,59,0.08);
-            color: #9b2e2e;
-        }
-        .mobile-nav-panel .mobile-nav-social {
-            display: flex;
-            gap: 18px;
-            margin-top: 24px;
-            padding: 16px 18px;
-            border-top: 1px solid #e8e0d5;
-        }
-        .mobile-nav-panel .mobile-nav-social a {
-            padding: 8px;
-            font-size: 1.3rem;
-            color: #6b4e2e;
-        }
-
-        /* ----- Tablet & Small Desktop (≤1024px) ----- */
-        @media (max-width: 1024px) {
             .hero-grid {
+                gap: 24px;
                 flex-direction: column;
-                gap: 28px;
             }
             .hero-content h1 {
-                font-size: 2.3rem;
+                font-size: 2.2rem;
             }
             .hero-content p {
                 font-size: 1rem;
             }
             .hero-stats {
                 gap: 20px;
-                flex-wrap: wrap;
-                justify-content: center;
             }
             .stat-number {
-                font-size: 1.7rem;
+                font-size: 1.5rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+                margin-bottom: 32px;
+            }
+            .featured-cases-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .trust-badges {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            .badge-item {
+                max-width: 100%;
+                flex: 1 1 calc(50% - 10px);
             }
             .triple-product-layout {
-                flex-wrap: nowrap;
-                gap: 10px;
+                gap: 12px;
+                margin: 20px 0 30px;
+            }
+            .featured-card {
+                padding: 28px 20px;
+            }
+            .featured-card h3 {
+                font-size: 1.6rem;
+            }
+            .featured-card .product-description {
+                font-size: 0.9rem;
             }
             .side-card {
-                padding: 14px 10px;
+                padding: 16px 12px;
             }
             .side-card h4 {
                 font-size: 0.95rem;
@@ -1703,76 +742,144 @@
             .side-card .side-desc {
                 font-size: 0.7rem;
             }
-            .featured-card {
-                padding: 24px 18px;
-            }
-            .featured-card h3 {
-                font-size: 1.5rem;
-            }
-            .featured-card .product-description {
-                font-size: 0.9rem;
-            }
-            .featured-cases-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
-            .case-studies {
-                padding: 36px 28px;
-                border-radius: 36px;
-                width: calc(100% - 32px);
-            }
-            .case-studies h2 {
-                font-size: 1.5rem;
-            }
             .quality-highlight {
-                padding: 32px 24px;
+                padding: 30px 24px;
+                margin: 20px 0 35px;
             }
             .quality-highlight p {
                 font-size: 1.3rem;
             }
-            .company-glass-card {
-                padding: 28px 22px;
+            .case-studies {
+                padding: 35px 24px;
+                width: calc(100% - 24px);
             }
-            .section-title {
-                font-size: 1.8rem;
-                margin-bottom: 32px;
+            .case-studies h2 {
+                font-size: 1.5rem;
             }
-            .trust-badges {
-                gap: 20px;
+            .case-studies p {
+                font-size: 0.95rem;
+                max-width: 100%;
             }
-            .badge-item {
-                max-width: 150px;
-                padding: 16px 12px;
+            .case-action-buttons {
+                gap: 12px;
+                flex-wrap: wrap;
             }
-            .badge-item i {
-                font-size: 2rem;
+            .case-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                flex: 1 1 calc(50% - 6px);
+                min-width: 140px;
+            }
+            .header-inner {
+                padding: 12px 0;
+                flex-wrap: wrap;
             }
             .nav-menu ul {
-                gap: 14px;
+                gap: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
             .nav-menu a {
-                font-size: 0.85rem;
+                font-size: 0.95rem;
             }
             .header-actions {
-                gap: 10px;
+                gap: 12px;
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
             }
             .btn-contact {
-                padding: 6px 14px;
-                font-size: 0.85rem;
+                padding: 8px 16px;
+                font-size: 0.9rem;
             }
-            .carousel-container {
-                max-width: 380px;
+            footer {
+                padding: 30px 0 16px;
             }
-        }
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 44px;
+                height: 44px;
+                font-size: 1.3rem;
+            }
+            .footer-inner {
+                gap: 24px;
+                flex-wrap: wrap;
+            }
+            .footer-col {
+                flex: 0 1 100%;
+                text-align: center;
+            }
 
-        /* ----- Tablet Portrait (≤768px) ----- */
-        @media (max-width: 768px) {
+            .footer-col {
+                flex: 0 1 100%;
+                text-align: center;
+            }
+
+            .footer-col {
+                flex: 0 1 100%;
+                text-align: center;
+            }
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 44px;
+                height: 44px;
+                font-size: 1.3rem;
+            }
+            section {
+                padding: 25px 0;
+            }
+            .cta-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .btn-detail-main {
+                width: 100%;
+            }
+
+            .footer-inner {
+                gap: 24px;
+                flex-wrap: wrap;
+            }
+            .footer-col {
+                flex: 0 1 100%;
+                text-align: center;
+            }
+
+            .footer-inner {
+                gap: 24px;
+                flex-wrap: wrap;
+            }
+            .footer-col {
+                flex: 0 1 100%;
+                text-align: center;
+            }
+}
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 16px;
+            }
+            .logo img {
+                height: 45px;
+            }
             .hero {
-                padding: 40px 0 36px;
-                border-radius: 0 0 32px 32px;
+                padding: 30px 0 25px;
             }
             .hero-content h1 {
-                font-size: 1.9rem;
+                font-size: 1.8rem;
+                line-height: 1.3;
+                margin-bottom: 16px;
+            }
+            .hero-badge {
+                font-size: 0.75rem;
+                padding: 4px 12px;
+                margin-bottom: 16px;
             }
             .hero-content p {
                 font-size: 0.95rem;
@@ -1780,2199 +887,143 @@
             }
             .hero-stats {
                 gap: 16px;
-                margin-bottom: 20px;
+                margin-bottom: 24px;
+            }
+            .stat-item {
+                flex: 1;
             }
             .stat-number {
-                font-size: 1.5rem;
-            }
-            .hero-badge {
-                font-size: 0.7rem;
-                padding: 4px 10px;
-            }
-            .cta-group {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 10px;
-            }
-            .btn-primary,
-            .btn-secondary {
-                text-align: center;
-                justify-content: center;
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-            .carousel-container {
-                max-width: 320px;
-                border-radius: 24px;
-            }
-            .carousel-slide img {
-                padding: 14px;
-            }
-            .carousel-btn {
-                width: 34px;
-                height: 34px;
-                font-size: 1rem;
-            }
-            .carousel-btn.prev {
-                left: 8px;
-            }
-            .carousel-btn.next {
-                right: 8px;
-            }
-            .carousel-dots {
-                bottom: 10px;
-                gap: 8px;
-            }
-            .dot {
-                width: 9px;
-                height: 9px;
-            }
-            .dot.active {
-                width: 22px;
-            }
-
-            /* Hide desktop nav, show hamburger */
-            .nav-menu {
-                display: none;
-            }
-            .header-actions .btn-contact {
-                display: none;
-            }
-            .header-actions .social-icon {
-                display: none;
-            }
-            .mobile-menu-toggle {
-                display: flex;
-            }
-            .mobile-nav-overlay {
-                display: block;
-            }
-            .header-inner {
-                padding: 10px 0;
-                gap: 10px;
-            }
-            .logo img {
-                height: 40px;
-            }
-            .header-actions {
-                gap: 6px;
-            }
-            .header-actions .cart-icon {
-                font-size: 1.2rem;
-            }
-
-            /* Triple product layout → stacked */
-            .triple-product-layout {
-                flex-direction: column;
-                gap: 16px;
-            }
-            .product-nav-btn {
-                display: none;
-            }
-            .side-card {
-                display: none;
-            }
-            .featured-card {
-                width: 100%;
-                padding: 28px 20px;
-                border-radius: 24px;
-            }
-            .featured-card .product-img {
-                height: 160px;
-                border-radius: 20px;
-            }
-            .featured-card .product-img img {
-                max-height: 140px;
-            }
-            .featured-card h3 {
                 font-size: 1.4rem;
             }
-            .featured-card .product-description {
+            .stat-item div:last-child {
+                font-size: 0.75rem;
+            }
+            .carousel-btn {
+                width: 32px;
+                height: 32px;
                 font-size: 0.9rem;
-                margin: 12px 0 20px;
             }
-            .btn-detail-main {
-                padding: 10px 24px;
-                font-size: 0.9rem;
+            .carousel-btn.prev {
+                left: 10px;
             }
-            /* Show swipeable dots for mobile products */
-            .mobile-product-dots {
-                display: flex;
-                justify-content: center;
-                gap: 10px;
-                margin-top: 12px;
-            }
-            .mobile-product-dots .mp-dot {
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                background: rgba(45,94,59,0.25);
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-            .mobile-product-dots .mp-dot.active {
-                background: #2d5e3b;
-                width: 26px;
-                border-radius: 12px;
-            }
-
-            .featured-cases-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            .mini-case-card {
-                padding: 18px 16px;
-                border-radius: 20px;
-            }
-            .mini-case-title {
-                font-size: 1.05rem;
+            .carousel-btn.next {
+                right: 10px;
             }
             .section-title {
                 font-size: 1.5rem;
                 margin-bottom: 24px;
             }
             .section-sub {
-                font-size: 0.85rem;
-                margin: -12px auto 28px;
-                padding: 0 12px;
+                font-size: 0.9rem;
+                margin: -16px auto 32px;
+            }
+            .featured-card {
+                padding: 20px 16px;
+            }
+            .featured-card h3 {
+                font-size: 1.4rem;
+            }
+            .featured-card .product-img {
+                height: 160px;
+                margin-bottom: 16px;
+            }
+            .featured-card .product-img img {
+                max-height: 150px;
+            }
+            .side-card .product-img {
+                height: 90px;
+                margin-bottom: 8px;
+            }
+            .side-card .product-img img {
+                max-height: 80px;
+            }
+            .product-nav-btn {
+                display: none;
+            }
+            .triple-product-layout {
+                gap: 8px;
+                justify-content: space-between;
+            }
+            .featured-card {
+                flex: 1;
+                min-width: 200px;
+            }
+            .side-card {
+                display: none;
             }
             .quality-highlight {
                 padding: 24px 16px;
-                border-radius: 28px;
-                border-left-width: 5px;
-                margin: 20px 0 32px;
+                border-left-width: 6px;
+                border-radius: 24px;
             }
             .quality-highlight p {
                 font-size: 1.1rem;
+                line-height: 1.4;
             }
-            .quality-highlight span {
-                padding: 3px 10px;
-                font-size: 0.95rem;
+            .mini-case-card {
+                padding: 16px;
+                border-radius: 20px;
             }
-            .trust-badges {
-                gap: 12px;
-                flex-wrap: wrap;
+            .mini-case-title {
+                font-size: 1rem;
+                margin-bottom: 4px;
             }
-            .badge-item {
-                max-width: 130px;
-                padding: 14px 10px;
-                border-radius: 18px;
-                flex: 1 1 40%;
-                min-width: 120px;
+            .mini-case-subtitle {
+                font-size: 0.75rem;
+                margin-bottom: 8px;
             }
-            .badge-item i {
-                font-size: 1.7rem;
-                margin-bottom: 6px;
-            }
-            .badge-item h3 {
+            .mini-case-excerpt {
                 font-size: 0.85rem;
-            }
-            .badge-item p {
-                font-size: 0.7rem;
-            }
-            .company-glass-card {
-                padding: 22px 16px;
-                border-radius: 24px;
-            }
-            .company-glass-card p {
-                font-size: 0.9rem !important;
+                margin-bottom: 12px;
             }
             .case-studies {
-                padding: 28px 18px;
-                border-radius: 28px;
-                width: calc(100% - 24px);
+                padding: 24px 16px;
+                border-radius: 24px;
+                width: calc(100% - 16px);
             }
             .case-studies h2 {
                 font-size: 1.3rem;
+                margin-bottom: 12px;
             }
             .case-studies p {
-                font-size: 0.85rem;
+                font-size: 0.9rem;
                 margin: 12px auto;
             }
             .case-action-buttons {
-                flex-direction: column;
                 gap: 10px;
-                margin-top: 20px;
+                margin: 20px auto 0;
+                flex-direction: column;
             }
             .case-btn {
+                padding: 12px 16px;
+                font-size: 0.85rem;
+                flex: 0 1 auto;
                 width: 100%;
-                justify-content: center;
-                padding: 12px 20px;
-                font-size: 0.9rem;
             }
-            .case-studies-section {
-                padding: 30px 0 40px;
+            .trust-badges {
+                gap: 12px;
             }
-            .case-studies-section-video {
-                object-fit: cover;
+            .badge-item {
+                flex: 1 1 calc(50% - 6px);
+                padding: 16px 12px;
+                border-radius: 20px;
             }
-            .footer-inner {
-                flex-direction: column;
-                gap: 24px;
+            .badge-item i {
+                font-size: 2rem;
+                margin-bottom: 8px;
             }
-            .footer-col {
-                min-width: 100%;
-            }
-            footer {
-                padding: 32px 0 20px;
-            }
-            .copyright {
-                padding-top: 20px;
-                margin-top: 20px;
-                font-size: 0.75rem;
+            .logo img {
+                height: 45px;
             }
             .back-to-top {
-                bottom: 20px;
+                bottom: 16px;
                 right: 16px;
                 width: 40px;
                 height: 40px;
                 font-size: 1.2rem;
             }
-            .top-bar .container {
-                justify-content: center;
-                font-size: 0.75rem;
-            }
-            .container {
-                padding: 0 16px;
-            }
             section {
-                padding: 24px 0;
-            }
-            .shimmer-overlay::after {
-                animation-duration: 7s;
-            }
-        }
-
-        /* ----- Small Phone (≤480px) ----- */
-        @media (max-width: 480px) {
-            .hero {
-                padding: 28px 0 24px;
-                border-radius: 0 0 24px 24px;
-            }
-            .hero-content h1 {
-                font-size: 1.6rem;
-            }
-            .hero-content p {
-                font-size: 0.85rem;
-            }
-            .hero-stats {
-                gap: 10px;
-            }
-            .stat-number {
-                font-size: 1.3rem;
-            }
-            .stat-item {
-                font-size: 0.7rem;
-            }
-            .hero-badge {
-                font-size: 0.65rem;
-                padding: 3px 8px;
-                margin-bottom: 12px;
-            }
-            .carousel-container {
-                max-width: 260px;
-                border-radius: 20px;
-            }
-            .carousel-slide img {
-                padding: 10px;
-            }
-            .carousel-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 0.85rem;
-            }
-            .carousel-btn.prev {
-                left: 4px;
-            }
-            .carousel-btn.next {
-                right: 4px;
-            }
-            .carousel-dots {
-                bottom: 6px;
-                gap: 6px;
-            }
-            .dot {
-                width: 7px;
-                height: 7px;
-            }
-            .dot.active {
-                width: 18px;
-            }
-            .featured-card {
-                padding: 20px 14px;
-                border-radius: 20px;
-            }
-            .featured-card .product-img {
-                height: 130px;
-                border-radius: 16px;
-                margin-bottom: 14px;
-            }
-            .featured-card .product-img img {
-                max-height: 110px;
-            }
-            .featured-card h3 {
-                font-size: 1.2rem;
-            }
-            .featured-card .product-description {
-                font-size: 0.8rem;
-                margin: 8px 0 14px;
-            }
-            .btn-detail-main {
-                padding: 8px 18px;
-                font-size: 0.8rem;
-                border-radius: 30px;
-            }
-            .section-title {
-                font-size: 1.3rem;
-            }
-            .quality-highlight p {
-                font-size: 0.95rem;
-            }
-            .quality-highlight span {
-                font-size: 0.85rem;
-                padding: 2px 8px;
-            }
-            .case-studies {
-                padding: 20px 12px;
-                border-radius: 22px;
-                width: calc(100% - 16px);
-            }
-            .case-studies h2 {
-                font-size: 1.15rem;
-            }
-            .case-studies p {
-                font-size: 0.78rem;
-            }
-            .case-btn {
-                padding: 10px 16px;
-                font-size: 0.8rem;
-                border-radius: 30px;
-            }
-            .mini-case-card {
-                padding: 14px 12px;
-                border-radius: 16px;
-                border-left-width: 4px;
-            }
-            .mini-case-title {
-                font-size: 0.95rem;
-            }
-            .mini-case-excerpt {
-                font-size: 0.8rem;
-            }
-            .badge-item {
-                max-width: 100px;
-                min-width: 90px;
-                padding: 10px 8px;
-                border-radius: 14px;
-                flex: 1 1 44%;
-            }
-            .badge-item i {
-                font-size: 1.4rem;
-            }
-            .badge-item h3 {
-                font-size: 0.75rem;
-            }
-            .badge-item p {
-                font-size: 0.65rem;
-            }
-            .container {
-                padding: 0 12px;
-            }
-            .logo img {
-                height: 34px;
-            }
-            .mobile-nav-panel {
-                width: 260px;
-                max-width: 78vw;
-                padding: 70px 16px 30px;
-                border-radius: 20px 0 0 20px;
-            }
-            .mobile-nav-panel a {
-                font-size: 0.95rem;
-                padding: 11px 14px;
-            }
-            .header-actions .cart-icon {
-                font-size: 1.1rem;
-            }
-            .cart-count {
-                top: -6px;
-                right: -10px;
-                font-size: 0.6rem;
-                min-width: 14px;
-                padding: 1px 4px;
-            }
-            .top-bar .container {
-                font-size: 0.7rem;
-                gap: 12px;
-            }
-            .lang-selector {
-                font-size: 0.7rem;
-                padding: 3px 10px;
-            }
-            .last-update {
-                font-size: 0.65rem;
-            }
-        }
-
-        /* ----- Tiny Phone (≤360px) ----- */
-        @media (max-width: 360px) {
-            .hero-content h1 {
-                font-size: 1.35rem;
-            }
-            .carousel-container {
-                max-width: 220px;
-            }
-            .featured-card .product-img {
-                height: 110px;
-            }
-            .featured-card .product-img img {
-                max-height: 95px;
-            }
-            .featured-card h3 {
-                font-size: 1.1rem;
-            }
-            .section-title {
-                font-size: 1.15rem;
-            }
-            .badge-item {
-                max-width: 80px;
-                min-width: 70px;
-                padding: 8px 6px;
-            }
-            .badge-item i {
-                font-size: 1.2rem;
-            }
-            .badge-item h3 {
-                font-size: 0.7rem;
-            }
-            .badge-item p {
-                font-size: 0.6rem;
-            }
-            .logo img {
-                height: 28px;
-            }
-            .container {
-                padding: 0 10px;
-            }
-        }
-
-        /* ----- Landscape Phone (height ≤500px) ----- */
-        @media (max-height: 500px) and (orientation: landscape) {
-            .hero {
                 padding: 20px 0;
-            }
-            .hero-grid {
-                flex-direction: row;
-                gap: 20px;
-            }
-            .hero-content h1 {
-                font-size: 1.3rem;
-            }
-            .hero-content p {
-                font-size: 0.75rem;
-                margin-bottom: 10px;
-            }
-            .hero-stats {
-                gap: 10px;
-                margin-bottom: 10px;
-            }
-            .stat-number {
-                font-size: 1.1rem;
-            }
-            .carousel-container {
-                max-width: 200px;
-            }
-            .carousel-slide img {
-                padding: 6px;
-            }
-            .mobile-nav-panel {
-                padding-top: 50px;
-            }
-            .mobile-nav-panel a {
-                padding: 8px 12px;
-                font-size: 0.85rem;
-            }
-        }
-
-        /* ----- Reduced Motion ----- */
-        @media (prefers-reduced-motion: reduce) {
-            .mobile-nav-panel {
-                transition: right 0.15s ease;
-            }
-            .mobile-nav-overlay {
-                transition: opacity 0.15s ease;
-            }
-            .mobile-menu-toggle span {
-                transition: all 0.15s ease;
-            }
-            .carousel-slide {
-                transition: opacity 0.2s ease-in-out;
-            }
-        }
-
-        /* ----- High-DPI / Retina tweaks ----- */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            .carousel-slide img {
-                image-rendering: auto;
-            }
-        }
-
-        /* ----- Mobile Product Swipe Hint ----- */
-        .mobile-swipe-hint {
-            display: none;
-            text-align: center;
-            font-size: 0.75rem;
-            color: #9b9b9b;
-            margin-top: 8px;
-            gap: 4px;
-            align-items: center;
-            justify-content: center;
-        }
-        @media (max-width: 768px) {
-            .mobile-swipe-hint {
-                display: flex;
-            }
-            .mobile-product-dots {
-                display: flex;
-            }
-        }
-        @media (min-width: 769px) {
-            .mobile-product-dots {
-                display: none;
-            }
-        }
-    </style>
-</head>
-<body>
-    <svg class="svg-filters" aria-hidden="true"><defs><filter id="glass-distortion"><feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="5" /><feDisplacementMap in="SourceGraphic" in2="noise" scale="5" /></filter></defs></svg>
-
-    <div class="top-bar"><div class="container"><div class="lang-selector" aria-label="語言切換器" role="group"><i class="fas fa-globe"></i><span id="langZhBtn" data-lang="zh" role="button" tabindex="0" class="active-lang">中文</span> | <span id="langEnBtn" data-lang="en" role="button" tabindex="0">EN</span></div></div></div>
-
-    <header class="main-header" role="banner"><div class="container header-inner"><div class="logo"><img src="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png" alt="康草堂 Wonder Herb 官方標誌" width="220" height="55"></div><nav class="nav-menu" aria-label="主導航選單"><ul><li><a href="index.html" class="active" data-i18n="nav_home">關於我們</a></li><li><a href="產品介紹.html" data-i18n="nav_products">產品介紹</a></li><li><a href="研究報告.html" data-i18n="nav_research">研究報告</a></li><li><a href="有效成份檢測.html" data-i18n="nav_testing">成份檢測</a></li><li><a href="典型病例.html" data-i18n="nav_cases">典型病例</a></li><li><a href="小册子.html" data-i18n="nav_brochure">小册子</a></li><li><a href="微信發表文章.html" data-i18n="nav_articles">文章</a></li><li><a href="常見問題.html" data-i18n="nav_faq">常見問題</a></li><li><a href="聯絡我們.html" data-i18n="nav_contact">聯絡我們</a></li></ul></nav><div class="header-actions"><a href="https://wa.me/85293318571/" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a><a href="https://www.facebook.com/wonderherbhealth" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/wonderherb_hk/" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="購物車.html" class="cart-icon" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="cartCountBadge" class="cart-count">0</span></a><a href="https://wa.me/85293318571/" class="btn-contact" data-i18n="header_contact_btn">諮詢專員 <i class="fas fa-arrow-right"></i></a></div></div></header>
-
-    <main id="main-content">
-        <section class="hero" id="heroSection" aria-labelledby="hero-heading">
-            <canvas id="heroCanvas" aria-hidden="true"></canvas>
-            <div class="container hero-grid">
-                <div class="hero-content reveal-on-scroll reveal-left">
-                    <div class="hero-badge" data-i18n="hero_badge">⭐ 臨床驗證 · 加拿大GMP藥廠</div>
-                    <h1 id="hero-heading"><span data-i18n="hero_title_main">雲芝糖肽精華 PSP<span style="color:#9b2e2e;">+T3</span><br>天然輔助方案</span></h1>
-                    <p data-i18n="hero_desc">超過20年經驗，大學研究證實獨特配方功效倍增。每批產品雙重檢測，有效成份 >90% — 遠超國家標準。</p>
-                    <div class="hero-stats"><div class="stat-item"><div class="stat-number">90%+</div><div data-i18n="hero_stat1_label">有效成份含量</div></div><div class="stat-item"><div class="stat-number">20+ Yrs</div><div data-i18n="hero_stat2_label">臨床經驗</div></div><div class="stat-item"><div class="stat-number">GMP</div><div data-i18n="hero_stat3_label">加拿大認證藥廠</div></div></div>
-                    <div class="cta-group"><a href="https://wa.me/85293318571/" class="btn-primary" data-i18n="hero_cta_primary"><i class="fab fa-whatsapp"></i> 立即查詢 · 康復方案</a><a href="#products" class="btn-secondary" data-i18n="hero_cta_secondary">了解產品系列</a></div>
-                </div>
-                <div class="hero-image reveal-on-scroll reveal-right">
-                    <div class="carousel-container" id="heroCarousel" role="region" aria-roledescription="carousel" aria-label="產品形象輪播展示">
-                        <div class="glass-thickness-layer" aria-hidden="true"></div>
-                        <div class="carousel-slides" id="heroSlides" aria-live="polite"></div>
-                        <button class="carousel-btn prev" id="heroPrev" aria-label="上一張圖片"><i class="fas fa-chevron-left"></i></button>
-                        <button class="carousel-btn next" id="heroNext" aria-label="下一張圖片"><i class="fas fa-chevron-right"></i></button>
-                        <div class="carousel-dots" id="heroDots" role="tablist" aria-label="輪播導航點"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section aria-labelledby="company-heading"><div class="container"><h2 id="company-heading" class="section-title reveal-on-scroll" data-i18n="company_title">🌿 康草堂 · 以人為本的中草藥科研</h2><div class="section-sub reveal-on-scroll reveal-delay-1" data-i18n="company_subtitle">結合中西醫學理論，為頑疾患者提供高活性、純天然輔助方案</div><div class="company-glass-card reveal-on-scroll reveal-delay-2"><p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text1"></p><p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text2"></p><p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text3"></p><p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem;" data-i18n="company_text4"></p><p style="font-size:1.05rem;line-height:1.6;" data-i18n="company_text5"></p></div></div></section>
-
-        <section id="products" class="product-carousel-section" aria-labelledby="products-heading"><div class="container"><h2 id="products-heading" class="section-title reveal-on-scroll" data-i18n="products_section_title">✨ 皇牌產品系列</h2><div class="triple-product-layout reveal-on-scroll reveal-delay-1" id="tripleProductLayout" role="group" aria-label="產品輪播展示"><div class="product-nav-btn"><button class="control-btn prev" id="productPrevManual" aria-label="上一個產品"><i class="fas fa-chevron-left"></i></button></div><div class="side-card" id="leftSideCard"></div><div class="featured-card shimmer-overlay" id="featuredCard"></div><div class="side-card" id="rightSideCard"></div><div class="product-nav-btn"><button class="control-btn next" id="productNextManual" aria-label="下一個產品"><i class="fas fa-chevron-right"></i></button></div></div></div></section>
-
-        <div class="container"><div class="quality-highlight reveal-on-scroll"><p><span data-i18n="quality_prefix"></span><br><span data-i18n="quality_highlight_span"></span></p></div></div>
-
-        <section aria-labelledby="trust-heading"><div class="container"><h2 id="trust-heading" class="sr-only" data-i18n="trust_heading_sr">品質信任標章</h2><div class="trust-badges"><div class="badge-item reveal-on-scroll reveal-delay-1"><i class="fas fa-university" aria-hidden="true"></i><h3 data-i18n="trust1_title"></h3><p data-i18n="trust1_desc"></p></div><div class="badge-item reveal-on-scroll reveal-delay-2"><i class="fas fa-file-alt" aria-hidden="true"></i><h3 data-i18n="trust2_title"></h3><p data-i18n="trust2_desc"></p></div><div class="badge-item reveal-on-scroll reveal-delay-3"><i class="fas fa-certificate" aria-hidden="true"></i><h3 data-i18n="trust3_title"></h3><p data-i18n="trust3_desc"></p></div><div class="badge-item reveal-on-scroll reveal-delay-4"><i class="fas fa-chart-line" aria-hidden="true"></i><h3 data-i18n="trust4_title"></h3><p data-i18n="trust4_desc"></p></div></div></div></section>
-
-        <section aria-labelledby="cases-heading"><div class="container"><h2 id="cases-heading" class="section-title reveal-on-scroll" data-i18n="featured_cases_title">📋 真實康復故事精選</h2><div class="section-sub reveal-on-scroll reveal-delay-1" data-i18n="featured_cases_sub"></div><div id="featuredCasesGrid" class="featured-cases-grid"></div><div style="text-align:center;margin-top:20px;" class="reveal-on-scroll reveal-delay-2"><a href="典型病例.html" class="btn-secondary" data-i18n="featured_cases_more">查看更多典型病例 →</a></div></div></section>
-
-        <section class="case-studies-section reveal-on-scroll" aria-labelledby="study-heading">
-            <video class="case-studies-section-video" autoplay muted loop playsinline aria-hidden="true">
-                <source src="https://video.wixstatic.com/video/11062b_d578b9d4ffba48c68d086ec29fe9e6f0/1080p/mp4/file.mp4" type="video/mp4">
-            </video>
-            <div class="case-studies-section-overlay" aria-hidden="true"></div>
-            <div class="case-studies shimmer-overlay" id="caseStudiesCard">
-                <div class="glass-thickness-layer" id="caseStudiesThicknessLayer" aria-hidden="true"></div>
-                <h2 id="study-heading" data-i18n="case_title"></h2>
-                <p data-i18n="case_desc"></p>
-                <div class="case-action-buttons" id="caseActionButtons">
-                    <a href="典型病例.html" class="case-btn case-btn-primary" data-i18n="case_btn_cases">📄 瀏覽典型病例</a>
-                    <a href="小册子.html" class="case-btn case-btn-outline" data-i18n="case_btn_brochure">📘 下載小冊子</a>
-                    <a href="微信發表文章.html" class="case-btn case-btn-outline" data-i18n="case_btn_wechat"><i class="fab fa-weixin"></i> 微信發表文章</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer role="contentinfo"><div class="container footer-inner"><div class="footer-col"><h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4><p data-i18n="footer_col1_text1"></p><p data-i18n="footer_col1_text2"></p><p data-i18n="footer_col1_text3"></p></div><div class="footer-col"><h4 data-i18n="footer_contact_title">聯絡我們</h4><p><i class="fas fa-envelope"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p><p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p><div class="footer-social"><a href="https://www.facebook.com/wonderherbhealth" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/wonderherb_hk/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="https://wa.me/85293318571/" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></div></div><div class="footer-col"><h4 data-i18n="footer_info_title">資訊中心</h4><ul style="list-style:none;"><li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li><li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li><li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li><li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li></ul></div></div><div class="container copyright"><p data-i18n="copyright">© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p><p class="last-update">📅 最後更新：<time datetime="2026-06-08">2026年6月8日</time></p></div></footer>
-
-    <a href="#" id="backToTop" class="back-to-top" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
-
-    <!-- Mobile Navigation UI (injected) -->
-    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="開啟選單" aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
-    <nav class="mobile-nav-panel" id="mobileNavPanel" aria-label="手機導航選單">
-        <a href="index.html" class="active" data-i18n="nav_home">關於我們</a>
-        <a href="產品介紹.html" data-i18n="nav_products">產品介紹</a>
-        <a href="研究報告.html" data-i18n="nav_research">研究報告</a>
-        <a href="有效成份檢測.html" data-i18n="nav_testing">成份檢測</a>
-        <a href="典型病例.html" data-i18n="nav_cases">典型病例</a>
-        <a href="小册子.html" data-i18n="nav_brochure">小册子</a>
-        <a href="微信發表文章.html" data-i18n="nav_articles">文章</a>
-        <a href="常見問題.html" data-i18n="nav_faq">常見問題</a>
-        <a href="聯絡我們.html" data-i18n="nav_contact">聯絡我們</a>
-        <div class="mobile-nav-social">
-            <a href="https://wa.me/85293318571/" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-            <a href="https://www.facebook.com/wonderherbhealth" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/wonderherb_hk/" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="購物車.html" aria-label="購物車"><i class="fas fa-shopping-cart"></i></a>
-        </div>
-    </nav>
-
-    <!-- Mobile Product Dots & Swipe Hint -->
-    <div id="mobileProductDots" class="mobile-product-dots" style="display:none;" aria-hidden="true"></div>
-    <div class="mobile-swipe-hint" style="display:none;">
-        <i class="fas fa-arrows-left-right" aria-hidden="true"></i>
-        <span data-i18n-mobile="swipe_hint">左右滑動瀏覽產品</span>
-    </div>
-
-    <script>
-        const translations = {
-            zh: { nav_home: "關於我們", nav_products: "產品介紹", nav_research: "研究報告", nav_testing: "成份檢測", nav_cases: "典型病例", nav_brochure: "小册子", nav_articles: "文章", nav_faq: "常見問題", nav_contact: "聯絡我們", header_contact_btn: "諮詢專員 <i class='fas fa-arrow-right'></i>", hero_badge: "⭐ 臨床驗證 · 加拿大GMP藥廠", hero_title_main: "雲芝糖肽精華 PSP<span style='color:#9b2e2e;'>+T3</span><br>天然輔助方案", hero_desc: "超過20年經驗，大學研究證實獨特配方功效倍增。每批產品雙重檢測，有效成份 >90% — 遠超國家標準。", hero_stat1_label: "有效成份含量", hero_stat2_label: "臨床經驗", hero_stat3_label: "加拿大認證藥廠", hero_cta_primary: "<i class='fab fa-whatsapp'></i> 立即查詢 · 康復方案", hero_cta_secondary: "了解產品系列", company_title: "🌿 康草堂 · 以人為本的中草藥科研", company_subtitle: "結合中西醫學理論，為頑疾患者提供高活性、純天然輔助方案", company_text1: "康草堂 (Wonder Herb Health Products Ltd) 是以人為本的中草藥製品公司，沿用中草藥附以西藥治療效益的前題，結合中西藥平衡理論，採用品質上乘且活性含量極高的中草藥，每一批次都經過加拿大及香港雙重檢測，確保活性含量水平，協助慢性頑疾患者改善健康。", company_text2: "累積二十餘年經驗，協助各類頑疾患者舒緩療程不適，提升免疫力。", company_text3: "康草堂的產品包括「雲芝糖肽精華 PSP」，T3，PT3 及乙肝清 。產品多樣性能切合不同人仕的需要。獨特配方有助提升常規治療效益。", company_text4: "經大學研究證實，「康草堂雲芝糖肽精華 PSP + T3」的獨特配方，比單一服用雲芝糖肽精華PSP功效倍增。", company_text5: "為確保產品的質量，康草堂的產品均由加拿大GMP藥厰按加拿大優良的生產規範(GMP)指引下生產。", products_section_title: "✨ 皇牌產品系列", product_trial_title: "雲芝糖肽精華 (試用裝)", product_trial_desc: "60粒裝，初次體驗佳，多醣肽含量超國家標準1.8倍。", product_std_title: "雲芝糖肽精華 PSP (標準裝)", product_std_desc: "500粒裝，強化免疫調節，適合長期輔助療程。", product_t3_title: "PSP + T3 配方", product_t3_desc: "大學證實複合配方功效倍增，頑疾輔助首選。", product_hepa_title: "乙肝清", product_hepa_desc: "天然草本護肝，抑制HBV，減輕肝纖維化。", product_memo_title: "憶活素 MemoProve", product_memo_desc: "奧地利研發，修復腦細胞，提升記憶力與專注力。", product_pt3_title: "PT3 (指定診所發售)", product_pt3_desc: "專業級配方，只在指定中西醫診所出售，請諮詢醫生。", quality_prefix: "📢 根據國家藥品標準，雲芝糖肽的含量不得低於49.5%（多醣≥38%，蛋白肽≥11.5%），", quality_highlight_span: "康草堂產品的「有效成份」含量高達90%以上 —— 純度最高，吸收最好。", trust1_title: "大學臨床研究", trust1_desc: "香港/加拿大學術驗證", trust2_title: "雙重含量檢測", trust2_desc: "加拿大 + 香港實驗室", trust3_title: "GMP 認證藥廠", trust3_desc: "加拿大衛生部監管", trust4_title: "20,000+ 患者信賴", trust4_desc: "真實病例改善回饋", featured_cases_title: "📋 真實康復故事精選", featured_cases_sub: "見證雲芝糖肽精華 PSP 如何幫助患者提升免疫力，改善生活品質", featured_cases_more: "查看更多典型病例 →", case_title: "📖 真實康復見證 & 典型病例", case_desc: "數百份典型病例與微信文章，展現雲芝糖肽如何幫助患者提升生活品質。立即參考成功經驗，為您或家人尋求最佳輔助方案。", case_btn_cases: "📄 瀏覽典型病例", case_btn_brochure: "📘 下載小冊子", case_btn_wechat: "<i class='fab fa-weixin'></i> 微信發表文章", footer_col1_title: "康草堂 Wonder Herb", footer_col1_text1: "以人為本，天然高效。", footer_col1_text2: "加拿大GMP藥廠生產", footer_col1_text3: "香港及加拿大雙重檢測", footer_contact_title: "聯絡我們", footer_whatsapp_label: "WhatsApp 專線", footer_info_title: "資訊中心", footer_link_research: "研究報告", footer_link_testing: "有效成份檢測", footer_link_faq: "常見問題", footer_link_cases: "典型病例", copyright: "© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家",
-                trust_heading_sr: "品質信任標章" },
-            en: { nav_home: "About Us", nav_products: "Products", nav_research: "Research", nav_testing: "Testing", nav_cases: "Case", nav_brochure: "Brochure", nav_articles: "Articles", nav_faq: "FAQ", nav_contact: "Contact", header_contact_btn: "Consult <i class='fas fa-arrow-right'></i>", hero_badge: "⭐ Clinically Proven · GMP Canada", hero_title_main: "Yunzhi PSP Essence<span style='color:#9b2e2e;'>+T3</span><br>Natural Support Formula", hero_desc: "Over 20 years, university study confirms unique formula doubles efficacy. Dual testing, active ingredients >90%.", hero_stat1_label: "Active Ingredients", hero_stat2_label: "Clinical Experience", hero_stat3_label: "GMP Certified", hero_cta_primary: "<i class='fab fa-whatsapp'></i> Inquire · Recovery Plan", hero_cta_secondary: "Explore Products", company_title: "🌿 Wonder Herb · Patient-Focused Herbal Science", company_subtitle: "Integrating TCM & Western Medicine for high-active natural solutions", company_text1: "Wonder Herb Health Products Ltd is a patient-focused herbal company, combining TCM and modern standards, using high-quality, high-active natural ingredients. Each batch is double-tested in Canada and Hong Kong to ensure active content levels.", company_text2: "Over 20 years of experience, we help patients relieve treatment discomfort and boost immunity.", company_text3: "Our products include Yunzhi PSP Essence, T3, PT3, and Hepatitis B Clear. Unique formulas enhance conventional therapy.", company_text4: "University studies confirm that 'Wonder Herb Yunzhi PSP + T3' formula doubles efficacy compared to single PSP.", company_text5: "To guarantee quality, all Wonder Herb products are manufactured in a GMP-certified facility in Canada.", products_section_title: "✨ Signature Products", product_trial_title: "Yunzhi PSP (Trial Pack)", product_trial_desc: "60 capsules, first trial, polysaccharide-peptide >1.8x national standard.", product_std_title: "Yunzhi PSP (Standard Pack)", product_std_desc: "500 capsules, long-term immune modulation.", product_t3_title: "PSP + T3 Formula", product_t3_desc: "University-proven synergistic formula doubles efficacy.", product_hepa_title: "Hepatitis B Clear", product_hepa_desc: "Natural liver support, inhibits HBV.", product_memo_title: "MemoProve", product_memo_desc: "Austrian formula, repairs brain cells.", product_pt3_title: "PT3 (Clinic Only)", product_pt3_desc: "Professional-grade formula at selected clinics.", quality_prefix: "📢 According to national drug standards, Yunzhi PSP content must not be less than 49.5% (polysaccharides ≥38%, protein peptides ≥11.5%),", quality_highlight_span: "Wonder Herb's active ingredient content exceeds 90% — highest purity, optimal absorption.", trust1_title: "University Research", trust1_desc: "Validated in HK/Canada", trust2_title: "Dual Lab Testing", trust2_desc: "Canada + Hong Kong", trust3_title: "GMP Certified", trust3_desc: "Health Canada regulated", trust4_title: "20,000+ Patients", trust4_desc: "Real recovery stories", featured_cases_title: "📋 Real Recovery Stories", featured_cases_sub: "Witness how Yunzhi PSP Essence helps patients improve immunity and quality of life", featured_cases_more: "View more case studies →", case_title: "📖 Real Testimonials & Case Studies", case_desc: "Hundreds of cases and WeChat articles show how Yunzhi PSP improves quality of life.", case_btn_cases: "📄 View Case Studies", case_btn_brochure: "📘 Download Brochure", case_btn_wechat: "<i class='fab fa-weixin'></i> WeChat Articles", footer_col1_title: "Wonder Herb", footer_col1_text1: "Patient-first, natural & effective.", footer_col1_text2: "GMP-certified in Canada", footer_col1_text3: "Dual testing: Canada & HK", footer_contact_title: "Contact Us", footer_whatsapp_label: "WhatsApp Hotline", footer_info_title: "Information", footer_link_research: "Research", footer_link_testing: "Testing Reports", footer_link_faq: "FAQ", footer_link_cases: "Case Studies", copyright: "© 2025 Wonder-herb Health Products Ltd. All Rights Reserved | Natural Yunzhi PSP Expert",
-                trust_heading_sr: "Quality Trust Badges" }
-        };
-        const productsData = [
-            { link: "產品_雲芝糖肽精華_A.html", img: "https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg", titleKey: "product_trial_title", descKey: "product_trial_desc" },
-            { link: "產品_雲芝糖肽精華_B.html", img: "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg", titleKey: "product_std_title", descKey: "product_std_desc" },
-            { link: "產品_T3.html", img: "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png", titleKey: "product_t3_title", descKey: "product_t3_desc" },
-            { link: "產品_乙肝清.html", img: "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png", titleKey: "product_hepa_title", descKey: "product_hepa_desc" },
-            { link: "產品_憶活素.html", img: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg", titleKey: "product_memo_title", descKey: "product_memo_desc" },
-            { link: "產品_PT3.html", img: "https://static.wixstatic.com/media/b3683f_e63c67060cba4d83ba576a0086e7e613~mv2.jpg", titleKey: "product_pt3_title", descKey: "product_pt3_desc" }
-        ];
-        const caseDataList = [
-            { zh: { title: "麥女士（77歲）", subtitle: "肛門惡性腫瘤", content: "<p>2025年體檢發現肛門惡性腫瘤已擴散淋巴，療程首日服用雲芝+T3，僅第22天出現輕微不適，化療耐受度獲醫生讚賞。</p>" }, en: { title: "Ms. Mak (77)", subtitle: "Anal Malignant Tumor", content: "<p>Anal tumor with lymph spread, took Yunzhi+T3 from day1 of chemoradiotherapy, only mild discomfort on day22.</p>" } },
-            { zh: { title: "陳小姐（55歲）", subtitle: "腹膜惡性腫瘤", content: "<p>手術切除後持續服用雲芝及T3，CT追蹤2年均正常，現維持低劑量鞏固。</p>" }, en: { title: "Ms. Chan (55)", subtitle: "Peritoneal Malignancy", content: "<p>Post-surgery took Yunzhi+T3, CT scans normal at 6 & 15 months.</p>" } },
-            { zh: { title: "Peter Hall（74歲）", subtitle: "前列腺惡性腫瘤", content: "<p>PSP服用後PSA下降，第二次活檢正常；減量後PSA回升，加回PSP+T3後再次受控。</p>" }, en: { title: "Peter Hall (74)", subtitle: "Prostate Cancer", content: "<p>PSP lowered PSA, second biopsy normal.</p>" } }
-        ];
-        let currentLang = 'zh',
-            currentProductIdx = 0;
-
-        function escapeHtml(s) { if (!s) return ''; return s.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
-
-        function renderProductTriple() {
-            const l = document.getElementById('leftSideCard'),
-                m = document.getElementById('featuredCard'),
-                r = document.getElementById('rightSideCard');
-            if (!l || !m || !r) return;
-            const t = translations[currentLang],
-                total = productsData.length,
-                prev = (currentProductIdx - 1 + total) % total,
-                next = (currentProductIdx + 1) % total;
-            const mp = productsData[currentProductIdx],
-                lp = productsData[prev],
-                rp = productsData[next];
-            m.innerHTML = `<div class="product-img"><img src="${mp.img}" alt="${t[mp.titleKey]}"></div><h3>${t[mp.titleKey]}</h3><div class="product-description">${t[mp.descKey]}</div><a href="${mp.link}" class="btn-detail-main">${currentLang==='zh'?'瞭解更多 <i class="fas fa-arrow-right"></i>':'Learn More <i class="fas fa-arrow-right"></i>'}</a>`;
-            l.innerHTML = `<div class="product-img"><img src="${lp.img}" alt="${t[lp.titleKey]}"></div><h4>${t[lp.titleKey]}</h4><div class="side-desc">${t[lp.descKey].substring(0,70)}${t[lp.descKey].length>70?'…':''}</div>`;
-            r.innerHTML = `<div class="product-img"><img src="${rp.img}" alt="${t[rp.titleKey]}"></div><h4>${t[rp.titleKey]}</h4><div class="side-desc">${t[rp.descKey].substring(0,70)}${t[rp.descKey].length>70?'…':''}</div>`;
-            // Update mobile dots as well
-            if (typeof updateMobileProductDots === 'function') updateMobileProductDots();
-        }
-
-        function renderFeaturedCases(lang) {
-            const grid = document.getElementById('featuredCasesGrid');
-            if (!grid) return;
-            grid.innerHTML = caseDataList.slice(0, 3).map((c, i) => { const d = c[lang]; if (!d) return ''; const div = document.createElement('div'); div.innerHTML = d.content; const plain = (div.textContent || '').substring(0, 110),
-                    excerpt = plain.length >= 110 ? plain + '…' : plain; return `<div class="mini-case-card reveal-on-scroll reveal-delay-${i+1}"><h3 class="mini-case-title">${escapeHtml(d.title)}</h3><div class="mini-case-subtitle">${escapeHtml(d.subtitle)}</div><div class="mini-case-excerpt">${escapeHtml(excerpt)}</div><a href="典型病例.html" class="read-more-link">${lang==='zh'?'閱讀完整故事 →':'Read full story →'}</a></div>`; }).join('');
-            setTimeout(() => { document.querySelectorAll('.reveal-on-scroll:not(.is-visible)').forEach(el => { if (window._revealObserver) window._revealObserver.observe(el); }); }, 100);
-        }
-
-        function applyStaticTranslation(lang) {
-            document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][k] !== undefined) el.innerHTML = translations[lang][k]; });
-            document.title = lang === 'zh' ? '康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選' : 'Wonder Herb | Yunzhi PSP Essence Natural Support Formula';
-            document.documentElement.lang = lang === 'zh' ? 'zh' : 'en';
-            document.getElementById('langZhBtn').classList.toggle('active-lang', lang === 'zh');
-            document.getElementById('langEnBtn').classList.toggle('active-lang', lang === 'en');
-            renderProductTriple();
-            renderFeaturedCases(lang);
-            updateHeroCarouselAlt();
-        }
-
-        function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
-
-        function updateCartCountBadge() { const b = document.getElementById('cartCountBadge'); if (!b) return; let t = 0; const s = localStorage.getItem('wonderHerbCart'); if (s) try { t = JSON.parse(s).reduce((a, i) => a + (i.quantity || 0), 0); } catch (e) {} b.innerText = t; }
-
-        const heroImages = [
-            { src: "https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png", alt_zh: "康草堂 Wonder Herb 品牌形象", alt_en: "Wonder Herb Brand Image" },
-            { src: "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg", alt_zh: "雲芝糖肽精華 PSP 標準裝", alt_en: "Yunzhi PSP Essence Standard Pack" },
-            { src: "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png", alt_zh: "T3 三烯生育醇配方", alt_en: "T3 Tocotrienols Formula" },
-            { src: "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png", alt_zh: "乙肝清 草本護肝", alt_en: "Yigan Qing Herbal Liver Support" },
-            { src: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg", alt_zh: "憶活素 MemoProve 腦部保健", alt_en: "MemoProve Brain Health" }
-        ];
-        let heroCurrent = 0,
-            heroInterval;
-
-        function resetAllSlidesTransform() { document.querySelectorAll('#heroSlides .carousel-slide').forEach(slide => { slide.style.transform = ''; }); }
-
-        const MAX_SCALE = 1.06;
-        const MAX_IMG_PARALLAX = 10;
-        const JELLY_STIFFNESS = 0.12;
-        const JELLY_DAMPING = 0.75;
-        const HOVER_TRANSLATE_Y = -8;
-        const BASE_BORDER_RADIUS = 32;
-        const MAX_BORDER_DELTA = 10;
-
-        let jellyTargetScale = 1.0,
-            jellyCurrentScale = 1.0,
-            jellyVelocityScale = 0;
-        let jellyTargetTranslateY = 0,
-            jellyCurrentTranslateY = 0,
-            jellyVelocityTranslateY = 0;
-        let jellyTargetImgX = 0,
-            jellyCurrentImgX = 0,
-            jellyVelocityImgX = 0;
-        let jellyTargetImgY = 0,
-            jellyCurrentImgY = 0,
-            jellyVelocityImgY = 0;
-
-        let brTargetTL = BASE_BORDER_RADIUS,
-            brCurrentTL = BASE_BORDER_RADIUS,
-            brVelocityTL = 0;
-        let brTargetTR = BASE_BORDER_RADIUS,
-            brCurrentTR = BASE_BORDER_RADIUS,
-            brVelocityTR = 0;
-        let brTargetBR = BASE_BORDER_RADIUS,
-            brCurrentBR = BASE_BORDER_RADIUS,
-            brVelocityBR = 0;
-        let brTargetBL = BASE_BORDER_RADIUS,
-            brCurrentBL = BASE_BORDER_RADIUS,
-            brVelocityBL = 0;
-
-        let jellyRafId = null;
-        let isMouseOnCarousel = false;
-        let isTouchActive = false;
-        let jellyCarouselEl = null;
-        let jellyIsFinePointer = true;
-
-        function applyJellyTransform() {
-            if (!jellyCarouselEl) return;
-            jellyCarouselEl.style.transform = `scale(${jellyCurrentScale}) translateY(${jellyCurrentTranslateY}px)`;
-            jellyCarouselEl.style.borderRadius = `${brCurrentTL}px ${brCurrentTR}px ${brCurrentBR}px ${brCurrentBL}px`;
-            const activeSlide = jellyCarouselEl.querySelector('.carousel-slide.active');
-            if (activeSlide) {
-                const img = activeSlide.querySelector('img');
-                if (img) { img.style.transform = `translate(${jellyCurrentImgX}px, ${jellyCurrentImgY}px)`; }
-            }
-        }
-
-        function jellyAnimationLoop() {
-            const stiffness = JELLY_STIFFNESS;
-            const damping = JELLY_DAMPING;
-            const forceS = (jellyTargetScale - jellyCurrentScale) * stiffness;
-            jellyVelocityScale += forceS;
-            jellyVelocityScale *= damping;
-            jellyCurrentScale += jellyVelocityScale;
-            const forceTY = (jellyTargetTranslateY - jellyCurrentTranslateY) * stiffness;
-            jellyVelocityTranslateY += forceTY;
-            jellyVelocityTranslateY *= damping;
-            jellyCurrentTranslateY += jellyVelocityTranslateY;
-            const forceIX = (jellyTargetImgX - jellyCurrentImgX) * stiffness;
-            jellyVelocityImgX += forceIX;
-            jellyVelocityImgX *= damping;
-            jellyCurrentImgX += jellyVelocityImgX;
-            const forceIY = (jellyTargetImgY - jellyCurrentImgY) * stiffness;
-            jellyVelocityImgY += forceIY;
-            jellyVelocityImgY *= damping;
-            jellyCurrentImgY += jellyVelocityImgY;
-            const forceBTL = (brTargetTL - brCurrentTL) * stiffness;
-            brVelocityTL += forceBTL;
-            brVelocityTL *= damping;
-            brCurrentTL += brVelocityTL;
-            const forceBTR = (brTargetTR - brCurrentTR) * stiffness;
-            brVelocityTR += forceBTR;
-            brVelocityTR *= damping;
-            brCurrentTR += brVelocityTR;
-            const forceBBR = (brTargetBR - brCurrentBR) * stiffness;
-            brVelocityBR += forceBBR;
-            brVelocityBR *= damping;
-            brCurrentBR += brVelocityBR;
-            const forceBBL = (brTargetBL - brCurrentBL) * stiffness;
-            brVelocityBL += forceBBL;
-            brVelocityBL *= damping;
-            brCurrentBL += brVelocityBL;
-            applyJellyTransform();
-            const allSettled = Math.abs(jellyTargetScale - jellyCurrentScale) < 0.0005 && Math.abs(jellyVelocityScale) < 0.0005 && Math.abs(jellyTargetTranslateY - jellyCurrentTranslateY) < 0.01 && Math.abs(jellyVelocityTranslateY) < 0.01 && Math.abs(jellyTargetImgX - jellyCurrentImgX) < 0.01 && Math.abs(jellyVelocityImgX) < 0.01 && Math.abs(jellyTargetImgY - jellyCurrentImgY) < 0.01 && Math.abs(jellyVelocityImgY) < 0.01 && Math.abs(brTargetTL - brCurrentTL) < 0.05 && Math.abs(brVelocityTL) < 0.05 && Math.abs(brTargetTR - brCurrentTR) < 0.05 && Math.abs(brVelocityTR) < 0.05 && Math.abs(brTargetBR - brCurrentBR) < 0.05 && Math.abs(brVelocityBR) < 0.05 && Math.abs(brTargetBL - brCurrentBL) < 0.05 && Math.abs(
-                brVelocityBL) < 0.05;
-            if (allSettled) { jellyCurrentScale = jellyTargetScale;
-                jellyCurrentTranslateY = jellyTargetTranslateY;
-                jellyCurrentImgX = jellyTargetImgX;
-                jellyCurrentImgY = jellyTargetImgY;
-                brCurrentTL = brTargetTL;
-                brCurrentTR = brTargetTR;
-                brCurrentBR = brTargetBR;
-                brCurrentBL = brTargetBL;
-                jellyVelocityScale = 0;
-                jellyVelocityTranslateY = 0;
-                jellyVelocityImgX = 0;
-                jellyVelocityImgY = 0;
-                brVelocityTL = 0;
-                brVelocityTR = 0;
-                brVelocityBR = 0;
-                brVelocityBL = 0;
-                applyJellyTransform();
-                jellyRafId = null; return; }
-            jellyRafId = requestAnimationFrame(jellyAnimationLoop);
-        }
-
-        function startJellyLoop() { if (!jellyRafId) { jellyRafId = requestAnimationFrame(jellyAnimationLoop); } }
-
-        function updateJellyTargets(mx, my, carouselRect) {
-            const cx = carouselRect.width / 2,
-                cy = carouselRect.height / 2,
-                rx = mx - carouselRect.left,
-                ry = my - carouselRect.top,
-                normX = Math.max(-1, Math.min(1, (rx - cx) / cx)),
-                normY = Math.max(-1, Math.min(1, (ry - cy) / cy)),
-                dist = Math.sqrt(normX * normX + normY * normY),
-                strengthMultiplier = jellyIsFinePointer ? 1.0 : 0.55;
-            jellyTargetScale = 1.0 + (1 - Math.min(dist, 1)) * (MAX_SCALE - 1.0) * strengthMultiplier;
-            jellyTargetTranslateY = HOVER_TRANSLATE_Y * strengthMultiplier;
-            jellyTargetImgX = -normX * MAX_IMG_PARALLAX * strengthMultiplier;
-            jellyTargetImgY = normY * MAX_IMG_PARALLAX * strengthMultiplier;
-            const deltaX = normX * MAX_BORDER_DELTA * strengthMultiplier,
-                deltaY = normY * MAX_BORDER_DELTA * strengthMultiplier;
-            brTargetTL = BASE_BORDER_RADIUS + deltaY - deltaX;
-            brTargetTR = BASE_BORDER_RADIUS + deltaY + deltaX;
-            brTargetBR = BASE_BORDER_RADIUS - deltaY + deltaX;
-            brTargetBL = BASE_BORDER_RADIUS - deltaY - deltaX;
-            const minR = BASE_BORDER_RADIUS - MAX_BORDER_DELTA,
-                maxR = BASE_BORDER_RADIUS + MAX_BORDER_DELTA;
-            brTargetTL = Math.min(maxR, Math.max(minR, brTargetTL));
-            brTargetTR = Math.min(maxR, Math.max(minR, brTargetTR));
-            brTargetBR = Math.min(maxR, Math.max(minR, brTargetBR));
-            brTargetBL = Math.min(maxR, Math.max(minR, brTargetBL));
-            isMouseOnCarousel = true;
-            startJellyLoop();
-        }
-
-        function resetJellyTargets() { jellyTargetScale = 1.0;
-            jellyTargetTranslateY = 0;
-            jellyTargetImgX = 0;
-            jellyTargetImgY = 0;
-            brTargetTL = BASE_BORDER_RADIUS;
-            brTargetTR = BASE_BORDER_RADIUS;
-            brTargetBR = BASE_BORDER_RADIUS;
-            brTargetBL = BASE_BORDER_RADIUS;
-            isMouseOnCarousel = false;
-            isTouchActive = false;
-            startJellyLoop(); }
-
-        function initJellyElasticity() {
-            jellyCarouselEl = document.getElementById('heroCarousel');
-            if (!jellyCarouselEl) return;
-            jellyIsFinePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-            jellyCarouselEl.addEventListener('mousemove', function(e) { if (isTouchActive) return; const rect = jellyCarouselEl.getBoundingClientRect();
-                updateJellyTargets(e.clientX, e.clientY, rect); }, { passive: true });
-            jellyCarouselEl.addEventListener('mouseenter', function(e) { if (isTouchActive) return; const rect = jellyCarouselEl.getBoundingClientRect();
-                updateJellyTargets(e.clientX, e.clientY, rect); });
-            jellyCarouselEl.addEventListener('mouseleave', function() { if (isTouchActive) return;
-                resetJellyTargets(); });
-            jellyCarouselEl.addEventListener('touchmove', function(e) { if (!e.touches.length) return;
-                isTouchActive = true; const rect = jellyCarouselEl.getBoundingClientRect();
-                updateJellyTargets(e.touches[0].clientX, e.touches[0].clientY, rect); }, { passive: true });
-            jellyCarouselEl.addEventListener('touchend', resetJellyTargets);
-            jellyCarouselEl.addEventListener('touchcancel', resetJellyTargets);
-            applyJellyTransform();
-        }
-
-        function cleanupJellyElasticity() { if (jellyRafId) { cancelAnimationFrame(jellyRafId);
-                jellyRafId = null; } if (jellyCarouselEl) { jellyCarouselEl.style.transform = '';
-                jellyCarouselEl.style.borderRadius = ''; const activeSlide = jellyCarouselEl.querySelector('.carousel-slide.active'); if (activeSlide) { const img = activeSlide.querySelector('img'); if (img) img.style.transform = ''; } }
-            jellyCarouselEl = null; }
-
-        function goToHeroSlide(idx) {
-            const slides = document.querySelectorAll('#heroSlides .carousel-slide'),
-                dots = document.querySelectorAll('#heroDots .dot');
-            if (idx < 0) idx = slides.length - 1;
-            if (idx >= slides.length) idx = 0;
-            slides.forEach((s, i) => { s.classList.toggle('active', i === idx); if (i !== idx) s.style.transform = ''; });
-            dots.forEach((d, i) => { d.classList.toggle('active', i === idx);
-                d.setAttribute('aria-selected', i === idx ? 'true' : 'false'); });
-            heroCurrent = idx;
-            resetHeroTimer();
-            applyJellyTransform();
-        }
-
-        function nextHero() { goToHeroSlide(heroCurrent + 1); }
-
-        function prevHero() { goToHeroSlide(heroCurrent - 1); }
-
-        function resetHeroTimer() { clearInterval(heroInterval);
-            heroInterval = setInterval(nextHero, 5000); }
-
-        function updateHeroCarouselAlt() { document.querySelectorAll('#heroSlides .carousel-slide img').forEach((img, idx) => { if (heroImages[idx]) img.alt = currentLang === 'zh' ? heroImages[idx].alt_zh : heroImages[idx].alt_en; }); }
-
-        function buildHeroCarousel() {
-            const s = document.getElementById('heroSlides'),
-                d = document.getElementById('heroDots');
-            s.innerHTML = '';
-            d.innerHTML = '';
-            heroImages.forEach((img, i) => {
-                const slide = document.createElement('div');
-                slide.className = 'carousel-slide' + (i === heroCurrent ? ' active' : '');
-                slide.setAttribute('role', 'tabpanel');
-                slide.setAttribute('aria-label', `圖片 ${i+1}/${heroImages.length}`);
-                slide.innerHTML = `<img src="${img.src}" alt="${currentLang==='zh'?img.alt_zh:img.alt_en}" loading="${i===0?'eager':'lazy'}">`;
-                s.appendChild(slide);
-                const dot = document.createElement('div');
-                dot.className = 'dot' + (i === heroCurrent ? ' active' : '');
-                dot.setAttribute('role', 'tab');
-                dot.setAttribute('aria-label', `切換至圖片 ${i+1}`);
-                dot.setAttribute('aria-selected', i === heroCurrent ? 'true' : 'false');
-                dot.addEventListener('click', () => goToHeroSlide(i));
-                d.appendChild(dot);
-            });
-            resetAllSlidesTransform();
-            applyJellyTransform();
-        }
-
-        function bindBackToTop() { const b = document.getElementById('backToTop'); if (!b) return; window.addEventListener('scroll', () => { b.classList.toggle('show', window.scrollY > 300); }); b.addEventListener('click', e => { e.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'smooth' }); }); }
-
-        function initHeroCanvas() {
-            const canvas = document.getElementById('heroCanvas'),
-                hero = document.getElementById('heroSection');
-            if (!canvas || !hero) return;
-            const ctx = canvas.getContext('2d');
-            let width, height, particles = [],
-                mouseX = -9999,
-                mouseY = -9999,
-                targetMouseX = -9999,
-                targetMouseY = -9999,
-                prevMouseX = -9999,
-                prevMouseY = -9999;
-            const GRID_SPACING = 38,
-                DOT_RADIUS = 2.2,
-                BASE_INFLUENCE_RADIUS = 100,
-                MIN_INFLUENCE_RADIUS = 3,
-                REPULSION_STRENGTH = 38,
-                SPRING_TENSION = 0.06,
-                CONNECTION_DIST = 52,
-                WAVE_AMPLITUDE = 1.6,
-                WAVE_FREQ = 0.0008;
-            let time = 0,
-                animFrameId = null,
-                isHoverDevice = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-            let mouseActive = false,
-                mouseInfluenceFactor = 0,
-                mouseActivationStart = performance.now();
-            const SHOWER_DURATION = 2000;
-            let showerStartTime = performance.now();
-            let currentInfluenceRadius = BASE_INFLUENCE_RADIUS,
-                targetInfluenceRadius = BASE_INFLUENCE_RADIUS;
-            const RADIUS_SHRINK_SPEED = 0.15,
-                RADIUS_RECOVERY_SPEED = 0.025;
-
-            function resize() { const rect = hero.getBoundingClientRect(),
-                    dpr = Math.min(window.devicePixelRatio || 1, 2);
-                width = rect.width;
-                height = rect.height;
-                canvas.width = width * dpr;
-                canvas.height = height * dpr;
-                canvas.style.width = width + 'px';
-                canvas.style.height = height + 'px';
-                ctx.setTransform(1, 0, 0, 1, 0, 0);
-                ctx.scale(dpr, dpr);
-                buildParticleGrid(); }
-
-            function buildParticleGrid() { const elapsed = performance.now() - showerStartTime,
-                    showerProgress = Math.min(elapsed / SHOWER_DURATION, 1),
-                    remainingShower = 1 - showerProgress;
-                particles = []; const cols = Math.floor(width / GRID_SPACING) + 2,
-                    rows = Math.floor(height / GRID_SPACING) + 2,
-                    offsetX = (width - (cols - 1) * GRID_SPACING) / 2,
-                    offsetY = (height - (rows - 1) * GRID_SPACING) / 2; for (let r = 0; r < rows; r++)
-                    for (let c = 0; c < cols; c++) { const ox = offsetX + c * GRID_SPACING,
-                            oy = offsetY + r * GRID_SPACING,
-                            showerOffsetY = remainingShower > 0.01 ? -(25 + Math.random() * 55) * remainingShower : 0;
-                        particles.push({ ox, oy, x: ox, y: oy + showerOffsetY, vx: 0, vy: 0, baseRadius: DOT_RADIUS * (0.7 + Math.random() * 0.6) }); } }
-
-            function getShowerScale() { const p = Math.min((performance.now() - showerStartTime) / SHOWER_DURATION, 1); return 1 + 1.7 * Math.pow(p - 1, 3) + 1.7 * Math.pow(p - 1, 2); }
-
-            function updateParticles() { time += 0.016; const now = performance.now(); if (mouseActive) { const activeSec = (now - mouseActivationStart) / 1000; if (activeSec < 1) mouseInfluenceFactor = 0; else if (activeSec < 4) mouseInfluenceFactor = (activeSec - 1) / 3; else mouseInfluenceFactor = 1; } else { mouseInfluenceFactor += (0 - mouseInfluenceFactor) * 0.02; if (Math.abs(mouseInfluenceFactor) < 0.001) mouseInfluenceFactor = 0; } const mx = mouseX + (targetMouseX - mouseX) * 0.03; const my = mouseY + (targetMouseY - mouseY) * 0.03;
-                mouseX = mx;
-                mouseY = my; let vx = 0,
-                    vy = 0; if (prevMouseX !== -9999) { vx = targetMouseX - prevMouseX;
-                    vy = targetMouseY - prevMouseY; }
-                prevMouseX = targetMouseX;
-                prevMouseY = targetMouseY; const mouseSpeed = Math.sqrt(vx * vx + vy * vy); const speedFactor = Math.min(mouseSpeed / 30, 1);
-                targetInfluenceRadius = BASE_INFLUENCE_RADIUS - speedFactor * (BASE_INFLUENCE_RADIUS - MIN_INFLUENCE_RADIUS); const lerpSpeed = targetInfluenceRadius < currentInfluenceRadius ? RADIUS_SHRINK_SPEED : RADIUS_RECOVERY_SPEED;
-                currentInfluenceRadius += (targetInfluenceRadius - currentInfluenceRadius) * lerpSpeed; const dirX = mouseSpeed > 0.5 ? vx / mouseSpeed : 1; const dirY = mouseSpeed > 0.5 ? vy / mouseSpeed : 0; for (const p of particles) { const waveX = Math.sin(p.oy * WAVE_FREQ + time * 1.3) * WAVE_AMPLITUDE,
-                        waveY = Math.cos(p.ox * WAVE_FREQ + time * 1.1) * WAVE_AMPLITUDE; const tx = p.ox + waveX,
-                        ty = p.oy + waveY,
-                        dx = p.x - mouseX,
-                        dy = p.y - mouseY,
-                        dist = Math.sqrt(dx * dx + dy * dy); let fx = 0,
-                        fy = 0; if (isHoverDevice && dist > 0.01 && mouseInfluenceFactor > 0.01) { const dot = (dx * dirX + dy * dirY) / dist; const radiusScale = dot < 0 ? 1.0 - dot * 0.8 : 1.0; const effectiveRadius = currentInfluenceRadius * radiusScale; if (dist < effectiveRadius) { const directionFactor = 0.3 + 0.7 * Math.max(0, dot); const strength = (1 - dist / effectiveRadius); const smoothStrength = strength * strength * REPULSION_STRENGTH * mouseInfluenceFactor * directionFactor;
-                            fx = (dx / dist) * smoothStrength;
-                            fy = (dy / dist) * smoothStrength; } }
-                    p.vx += ((tx - p.x) * SPRING_TENSION) + fx;
-                    p.vy += ((ty - p.y) * SPRING_TENSION) + fy;
-                    p.vx *= 0.82;
-                    p.vy *= 0.82;
-                    p.x += p.vx;
-                    p.y += p.vy; } }
-
-            function draw() { ctx.clearRect(0, 0, width, height); const ss = getShowerScale();
-                ctx.strokeStyle = 'rgba(210,185,155,0.08)';
-                ctx.lineWidth = 0.6;
-                ctx.beginPath(); for (let i = 0; i < particles.length; i++) { const a = particles[i]; for (let j = i + 1; j < particles.length; j++) { const b = particles[j]; if ((a.x - b.x) ** 2 + (a.y - b.y) ** 2 < CONNECTION_DIST ** 2) { ctx.moveTo(a.x, a.y);
-                            ctx.lineTo(b.x, b.y); } } }
-                ctx.stroke(); for (const p of particles) { const distToMouse = Math.sqrt((p.x - mouseX) ** 2 + (p.y - mouseY) ** 2); let alpha = 0.35,
-                        radius = p.baseRadius * ss,
-                        glowRadius = 0; if (isHoverDevice && distToMouse < currentInfluenceRadius * 1.5 && mouseInfluenceFactor > 0.01) { const t = 1 - distToMouse / (currentInfluenceRadius * 1.5); const influenceT = Math.min(1, t * mouseInfluenceFactor);
-                        alpha = 0.35 + influenceT * 0.45;
-                        radius = p.baseRadius * ss + influenceT * 2.8;
-                        glowRadius = influenceT * 5.5; } const finalAlpha = Math.min(alpha, 1) * ss; if (glowRadius > 0.2) { const grad = ctx.createRadialGradient(p.x, p.y, radius * 0.5, p.x, p.y, radius + glowRadius);
-                        grad.addColorStop(0, `rgba(215,188,160,${finalAlpha*0.6})`);
-                        grad.addColorStop(0.5, `rgba(205,175,150,${finalAlpha*0.25})`);
-                        grad.addColorStop(1, 'rgba(205,175,150,0)');
-                        ctx.fillStyle = grad;
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, radius + glowRadius, 0, Math.PI * 2);
-                        ctx.fill(); }
-                    ctx.fillStyle = `rgba(205,175,150,${finalAlpha})`;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-                    ctx.fill(); } }
-
-            function animate() { updateParticles();
-                draw();
-                animFrameId = requestAnimationFrame(animate); }
-
-            function onMouseMove(e) { const rect = hero.getBoundingClientRect();
-                targetMouseX = e.clientX - rect.left;
-                targetMouseY = e.clientY - rect.top; if (!mouseActive) { mouseActive = true;
-                    mouseActivationStart = performance.now(); } }
-
-            function onMouseEnter(e) { const rect = hero.getBoundingClientRect();
-                targetMouseX = e.clientX - rect.left;
-                targetMouseY = e.clientY - rect.top; if (!mouseActive) { mouseActive = true;
-                    mouseActivationStart = performance.now(); } }
-
-            function onMouseLeave() { mouseActive = false;
-                targetInfluenceRadius = BASE_INFLUENCE_RADIUS; }
-
-            function onTouchMove(e) { if (!e.touches.length) return; const rect = hero.getBoundingClientRect();
-                targetMouseX = e.touches[0].clientX - rect.left;
-                targetMouseY = e.touches[0].clientY - rect.top; if (!mouseActive) { mouseActive = true;
-                    mouseActivationStart = performance.now(); } }
-
-            function onTouchEnd() { mouseActive = false;
-                targetInfluenceRadius = BASE_INFLUENCE_RADIUS; }
-            resize();
-            hero.addEventListener('mousemove', onMouseMove, { passive: true });
-            hero.addEventListener('mouseenter', onMouseEnter);
-            hero.addEventListener('mouseleave', onMouseLeave);
-            hero.addEventListener('touchmove', onTouchMove, { passive: true });
-            hero.addEventListener('touchend', onTouchEnd);
-            hero.addEventListener('touchcancel', onTouchEnd);
-            window.addEventListener('resize', resize);
-            animate();
-            canvas._heroCleanup = () => { if (animFrameId) cancelAnimationFrame(animFrameId);
-                hero.removeEventListener('mousemove', onMouseMove);
-                hero.removeEventListener('mouseenter', onMouseEnter);
-                hero.removeEventListener('mouseleave', onMouseLeave);
-                hero.removeEventListener('touchmove', onTouchMove);
-                hero.removeEventListener('touchend', onTouchEnd);
-                hero.removeEventListener('touchcancel', onTouchEnd); };
-        }
-
-        function initScrollReveal() { const els = document.querySelectorAll('.reveal-on-scroll'); if (!els.length) return; const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible');
-                        obs.unobserve(e.target); } }); }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-            els.forEach(el => obs.observe(el));
-            window._revealObserver = obs; }
-
-        function initCaseStudiesVideo() {
-            const video = document.querySelector('.case-studies-section-video');
-            if (!video || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-            const play = () => { video.play().catch(() => {}); };
-            play();
-            const section = video.closest('.case-studies-section');
-            if (!section || !('IntersectionObserver' in window)) return;
-            const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) play();
-                    else video.pause(); }); }, { threshold: 0.15 });
-            obs.observe(section);
-        }
-
-        // ========== Case Studies 果凍彈性系統 ==========
-        const CS_MAX_SCALE = 1.025;
-        const CS_HOVER_TRANSLATE_Y = -4;
-        const CS_MAX_INNER_PARALLAX = 4;
-        const CS_BASE_BORDER_RADIUS = 48;
-        const CS_MAX_BORDER_DELTA = 6;
-        const CS_JELLY_STIFFNESS = 0.1;
-        const CS_JELLY_DAMPING = 0.78;
-
-        let csJellyEl = null;
-        let csJellyTargetScale = 1.0,
-            csJellyCurrentScale = 1.0,
-            csJellyVelocityScale = 0;
-        let csJellyTargetTranslateY = 0,
-            csJellyCurrentTranslateY = 0,
-            csJellyVelocityTranslateY = 0;
-        let csJellyTargetInnerX = 0,
-            csJellyCurrentInnerX = 0,
-            csJellyVelocityInnerX = 0;
-        let csJellyTargetInnerY = 0,
-            csJellyCurrentInnerY = 0,
-            csJellyVelocityInnerY = 0;
-        let csBrTargetTL = CS_BASE_BORDER_RADIUS,
-            csBrCurrentTL = CS_BASE_BORDER_RADIUS,
-            csBrVelocityTL = 0;
-        let csBrTargetTR = CS_BASE_BORDER_RADIUS,
-            csBrCurrentTR = CS_BASE_BORDER_RADIUS,
-            csBrVelocityTR = 0;
-        let csBrTargetBR = CS_BASE_BORDER_RADIUS,
-            csBrCurrentBR = CS_BASE_BORDER_RADIUS,
-            csBrVelocityBR = 0;
-        let csBrTargetBL = CS_BASE_BORDER_RADIUS,
-            csBrCurrentBL = CS_BASE_BORDER_RADIUS,
-            csBrVelocityBL = 0;
-        let csJellyRafId = null;
-        let csIsMouseOn = false;
-        let csIsTouchActive = false;
-        let csJellyIsFinePointer = true;
-        let csThicknessLayer = null;
-        let csHeadingEl = null;
-        let csDescEl = null;
-        let csButtonsEl = null;
-
-        function applyCsJellyTransform() {
-            if (!csJellyEl) return;
-            csJellyEl.style.transform = `scale(${csJellyCurrentScale}) translateY(${csJellyCurrentTranslateY}px)`;
-            csJellyEl.style.borderRadius = `${csBrCurrentTL}px ${csBrCurrentTR}px ${csBrCurrentBR}px ${csBrCurrentBL}px`;
-            if (csThicknessLayer) {
-                csThicknessLayer.style.transform = `translate(${csJellyCurrentInnerX}px, ${csJellyCurrentInnerY}px)`;
-            }
-            if (csHeadingEl) {
-                csHeadingEl.style.transform = `translate(${csJellyCurrentInnerX * 0.35}px, ${csJellyCurrentInnerY * 0.35}px)`;
-            }
-            if (csDescEl) {
-                csDescEl.style.transform = `translate(${csJellyCurrentInnerX * 0.25}px, ${csJellyCurrentInnerY * 0.25}px)`;
-            }
-            if (csButtonsEl) {
-                csButtonsEl.style.transform = `translate(${csJellyCurrentInnerX * 0.15}px, ${csJellyCurrentInnerY * 0.15}px)`;
-            }
-        }
-
-        function csJellyAnimationLoop() {
-            const stiffness = CS_JELLY_STIFFNESS;
-            const damping = CS_JELLY_DAMPING;
-            const forceS = (csJellyTargetScale - csJellyCurrentScale) * stiffness;
-            csJellyVelocityScale += forceS;
-            csJellyVelocityScale *= damping;
-            csJellyCurrentScale += csJellyVelocityScale;
-            const forceTY = (csJellyTargetTranslateY - csJellyCurrentTranslateY) * stiffness;
-            csJellyVelocityTranslateY += forceTY;
-            csJellyVelocityTranslateY *= damping;
-            csJellyCurrentTranslateY += csJellyVelocityTranslateY;
-            const forceIX = (csJellyTargetInnerX - csJellyCurrentInnerX) * stiffness;
-            csJellyVelocityInnerX += forceIX;
-            csJellyVelocityInnerX *= damping;
-            csJellyCurrentInnerX += csJellyVelocityInnerX;
-            const forceIY = (csJellyTargetInnerY - csJellyCurrentInnerY) * stiffness;
-            csJellyVelocityInnerY += forceIY;
-            csJellyVelocityInnerY *= damping;
-            csJellyCurrentInnerY += csJellyVelocityInnerY;
-            const forceBTL = (csBrTargetTL - csBrCurrentTL) * stiffness;
-            csBrVelocityTL += forceBTL;
-            csBrVelocityTL *= damping;
-            csBrCurrentTL += csBrVelocityTL;
-            const forceBTR = (csBrTargetTR - csBrCurrentTR) * stiffness;
-            csBrVelocityTR += forceBTR;
-            csBrVelocityTR *= damping;
-            csBrCurrentTR += csBrVelocityTR;
-            const forceBBR = (csBrTargetBR - csBrCurrentBR) * stiffness;
-            csBrVelocityBR += forceBBR;
-            csBrVelocityBR *= damping;
-            csBrCurrentBR += csBrVelocityBR;
-            const forceBBL = (csBrTargetBL - csBrCurrentBL) * stiffness;
-            csBrVelocityBL += forceBBL;
-            csBrVelocityBL *= damping;
-            csBrCurrentBL += csBrVelocityBL;
-            applyCsJellyTransform();
-            const allSettled = Math.abs(csJellyTargetScale - csJellyCurrentScale) < 0.0003 && Math.abs(csJellyVelocityScale) < 0.0003 && Math.abs(csJellyTargetTranslateY - csJellyCurrentTranslateY) < 0.008 && Math.abs(csJellyVelocityTranslateY) < 0.008 && Math.abs(csJellyTargetInnerX - csJellyCurrentInnerX) < 0.008 && Math.abs(csJellyVelocityInnerX) < 0.008 && Math.abs(csJellyTargetInnerY - csJellyCurrentInnerY) < 0.008 && Math.abs(csJellyVelocityInnerY) < 0.008 && Math.abs(csBrTargetTL - csBrCurrentTL) < 0.04 && Math.abs(csBrVelocityTL) < 0.04 && Math.abs(csBrTargetTR - csBrCurrentTR) < 0.04 && Math.abs(csBrVelocityTR) < 0.04 && Math.abs(csBrTargetBR - csBrCurrentBR) < 0.04 && Math.abs(csBrVelocityBR) < 0.04 && Math.abs(
-                csBrTargetBL - csBrCurrentBL) < 0.04 && Math.abs(csBrVelocityBL) < 0.04;
-            if (allSettled) {
-                csJellyCurrentScale = csJellyTargetScale;
-                csJellyCurrentTranslateY = csJellyTargetTranslateY;
-                csJellyCurrentInnerX = csJellyTargetInnerX;
-                csJellyCurrentInnerY = csJellyTargetInnerY;
-                csBrCurrentTL = csBrTargetTL;
-                csBrCurrentTR = csBrTargetTR;
-                csBrCurrentBR = csBrTargetBR;
-                csBrCurrentBL = csBrTargetBL;
-                csJellyVelocityScale = 0;
-                csJellyVelocityTranslateY = 0;
-                csJellyVelocityInnerX = 0;
-                csJellyVelocityInnerY = 0;
-                csBrVelocityTL = 0;
-                csBrVelocityTR = 0;
-                csBrVelocityBR = 0;
-                csBrVelocityBL = 0;
-                applyCsJellyTransform();
-                csJellyRafId = null;
-                return;
-            }
-            csJellyRafId = requestAnimationFrame(csJellyAnimationLoop);
-        }
-
-        function startCsJellyLoop() { if (!csJellyRafId) { csJellyRafId = requestAnimationFrame(csJellyAnimationLoop); } }
-
-        function updateCsJellyTargets(mx, my, rect) {
-            const cx = rect.width / 2,
-                cy = rect.height / 2,
-                rx = mx - rect.left,
-                ry = my - rect.top,
-                normX = Math.max(-1, Math.min(1, (rx - cx) / cx)),
-                normY = Math.max(-1, Math.min(1, (ry - cy) / cy)),
-                dist = Math.sqrt(normX * normX + normY * normY),
-                strengthMultiplier = csJellyIsFinePointer ? 1.0 : 0.5;
-            csJellyTargetScale = 1.0 + (1 - Math.min(dist, 1)) * (CS_MAX_SCALE - 1.0) * strengthMultiplier;
-            csJellyTargetTranslateY = CS_HOVER_TRANSLATE_Y * strengthMultiplier;
-            csJellyTargetInnerX = -normX * CS_MAX_INNER_PARALLAX * strengthMultiplier;
-            csJellyTargetInnerY = normY * CS_MAX_INNER_PARALLAX * strengthMultiplier;
-            const deltaX = normX * CS_MAX_BORDER_DELTA * strengthMultiplier,
-                deltaY = normY * CS_MAX_BORDER_DELTA * strengthMultiplier;
-            csBrTargetTL = CS_BASE_BORDER_RADIUS + deltaY - deltaX;
-            csBrTargetTR = CS_BASE_BORDER_RADIUS + deltaY + deltaX;
-            csBrTargetBR = CS_BASE_BORDER_RADIUS - deltaY + deltaX;
-            csBrTargetBL = CS_BASE_BORDER_RADIUS - deltaY - deltaX;
-            const minR = CS_BASE_BORDER_RADIUS - CS_MAX_BORDER_DELTA,
-                maxR = CS_BASE_BORDER_RADIUS + CS_MAX_BORDER_DELTA;
-            csBrTargetTL = Math.min(maxR, Math.max(minR, csBrTargetTL));
-            csBrTargetTR = Math.min(maxR, Math.max(minR, csBrTargetTR));
-            csBrTargetBR = Math.min(maxR, Math.max(minR, csBrTargetBR));
-            csBrTargetBL = Math.min(maxR, Math.max(minR, csBrTargetBL));
-            csIsMouseOn = true;
-            startCsJellyLoop();
-        }
-
-        function resetCsJellyTargets() {
-            csJellyTargetScale = 1.0;
-            csJellyTargetTranslateY = 0;
-            csJellyTargetInnerX = 0;
-            csJellyTargetInnerY = 0;
-            csBrTargetTL = CS_BASE_BORDER_RADIUS;
-            csBrTargetTR = CS_BASE_BORDER_RADIUS;
-            csBrTargetBR = CS_BASE_BORDER_RADIUS;
-            csBrTargetBL = CS_BASE_BORDER_RADIUS;
-            csIsMouseOn = false;
-            csIsTouchActive = false;
-            startCsJellyLoop();
-        }
-
-        function initCaseStudiesJelly() {
-            csJellyEl = document.getElementById('caseStudiesCard');
-            if (!csJellyEl) return;
-            csThicknessLayer = document.getElementById('caseStudiesThicknessLayer');
-            csHeadingEl = csJellyEl.querySelector('h2');
-            csDescEl = csJellyEl.querySelector('p');
-            csButtonsEl = document.getElementById('caseActionButtons');
-            csJellyIsFinePointer = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-            csJellyEl.addEventListener('mousemove', function(e) {
-                if (csIsTouchActive) return;
-                const rect = csJellyEl.getBoundingClientRect();
-                updateCsJellyTargets(e.clientX, e.clientY, rect);
-            }, { passive: true });
-            csJellyEl.addEventListener('mouseenter', function(e) {
-                if (csIsTouchActive) return;
-                const rect = csJellyEl.getBoundingClientRect();
-                updateCsJellyTargets(e.clientX, e.clientY, rect);
-            });
-            csJellyEl.addEventListener('mouseleave', function() {
-                if (csIsTouchActive) return;
-                resetCsJellyTargets();
-            });
-            csJellyEl.addEventListener('touchmove', function(e) {
-                if (!e.touches.length) return;
-                csIsTouchActive = true;
-                const rect = csJellyEl.getBoundingClientRect();
-                updateCsJellyTargets(e.touches[0].clientX, e.touches[0].clientY, rect);
-            }, { passive: true });
-            csJellyEl.addEventListener('touchend', resetCsJellyTargets);
-            csJellyEl.addEventListener('touchcancel', resetCsJellyTargets);
-            applyCsJellyTransform();
-        }
-
-        function cleanupCaseStudiesJelly() {
-            if (csJellyRafId) { cancelAnimationFrame(csJellyRafId);
-                csJellyRafId = null; }
-            if (csJellyEl) {
-                csJellyEl.style.transform = '';
-                csJellyEl.style.borderRadius = '';
-            }
-            if (csThicknessLayer) { csThicknessLayer.style.transform = ''; }
-            if (csHeadingEl) { csHeadingEl.style.transform = ''; }
-            if (csDescEl) { csDescEl.style.transform = ''; }
-            if (csButtonsEl) { csButtonsEl.style.transform = ''; }
-            csJellyEl = null;
-            csThicknessLayer = null;
-            csHeadingEl = null;
-            csDescEl = null;
-            csButtonsEl = null;
-        }
-
-        window.addEventListener('load', () => {
-            buildHeroCarousel();
-            resetHeroTimer();
-            document.getElementById('heroPrev').addEventListener('click', () => { prevHero();
-                resetHeroTimer(); });
-            document.getElementById('heroNext').addEventListener('click', () => { nextHero();
-                resetHeroTimer(); });
-            document.getElementById('productPrevManual').addEventListener('click', () => { currentProductIdx = (currentProductIdx - 1 + productsData.length) % productsData.length;
-                renderProductTriple(); });
-            document.getElementById('productNextManual').addEventListener('click', () => { currentProductIdx = (currentProductIdx + 1) % productsData.length;
-                renderProductTriple(); });
-            updateCartCountBadge();
-            bindBackToTop();
-            initJellyElasticity();
-            initCaseStudiesJelly();
-            const savedLang = localStorage.getItem('wonderherb_lang');
-            currentLang = (savedLang === 'zh' || savedLang === 'en') ? savedLang : 'zh';
-            applyStaticTranslation(currentLang);
-            document.getElementById('langZhBtn').addEventListener('click', () => setLanguage('zh'));
-            document.getElementById('langEnBtn').addEventListener('click', () => setLanguage('en'));
-            window.addEventListener('storage', updateCartCountBadge);
-            initHeroCanvas();
-            initScrollReveal();
-            initCaseStudiesVideo();
-        });
-        window.addEventListener('beforeunload', () => { const c = document.getElementById('heroCanvas'); if (c && c._heroCleanup) c._heroCleanup();
-            cleanupJellyElasticity();
-            cleanupCaseStudiesJelly(); });
-    </script>
-
-    <!-- ========== MOBILE NAVIGATION & SWIPE SCRIPT ========== -->
-    <script>
-        (function() {
-            // Mobile Navigation Toggle
-            const menuToggle = document.getElementById('mobileMenuToggle');
-            const navOverlay = document.getElementById('mobileNavOverlay');
-            const navPanel = document.getElementById('mobileNavPanel');
-            const body = document.body;
-
-            function openMobileNav() {
-                menuToggle.classList.add('active');
-                navOverlay.classList.add('active');
-                navPanel.classList.add('active');
-                menuToggle.setAttribute('aria-expanded', 'true');
-                menuToggle.setAttribute('aria-label', '關閉選單');
-                body.style.overflow = 'hidden';
-                const firstLink = navPanel.querySelector('a');
-                if (firstLink) setTimeout(() => firstLink.focus(), 350);
-            }
-
-            function closeMobileNav() {
-                menuToggle.classList.remove('active');
-                navOverlay.classList.remove('active');
-                navPanel.classList.remove('active');
-                menuToggle.setAttribute('aria-expanded', 'false');
-                menuToggle.setAttribute('aria-label', '開啟選單');
-                body.style.overflow = '';
-                menuToggle.focus();
-            }
-
-            function toggleMobileNav() {
-                if (navPanel.classList.contains('active')) {
-                    closeMobileNav();
-                } else {
-                    openMobileNav();
-                }
-            }
-
-            if (menuToggle && navOverlay && navPanel) {
-                menuToggle.addEventListener('click', toggleMobileNav);
-                navOverlay.addEventListener('click', closeMobileNav);
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && navPanel.classList.contains('active')) {
-                        closeMobileNav();
-                    }
-                });
-                navPanel.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', function() {
-                        setTimeout(closeMobileNav, 150);
-                    });
-                });
-            }
-
-            // Mobile Product Swipe
-            let touchStartX = 0,
-                touchStartY = 0;
-            const featuredCard = document.getElementById('featuredCard');
-            const mobileProductDots = document.getElementById('mobileProductDots');
-
-            window.updateMobileProductDots = function() {
-                if (!mobileProductDots) return;
-                if (window.innerWidth > 768) {
-                    mobileProductDots.style.display = 'none';
-                    return;
-                }
-                mobileProductDots.style.display = 'flex';
-                let dotsHTML = '';
-                for (let i = 0; i < productsData.length; i++) {
-                    dotsHTML +=
-                        `<span class="mp-dot${i === currentProductIdx ? ' active' : ''}" data-idx="${i}" aria-label="產品 ${i+1}"></span>`;
-                }
-                mobileProductDots.innerHTML = dotsHTML;
-                mobileProductDots.querySelectorAll('.mp-dot').forEach(dot => {
-                    dot.addEventListener('click', function() {
-                        const idx = parseInt(this.getAttribute('data-idx'));
-                        if (!isNaN(idx) && idx !== currentProductIdx) {
-                            currentProductIdx = idx;
-                            renderProductTriple();
-                            window.updateMobileProductDots();
-                        }
-                    });
-                });
-            };
-
-            if (featuredCard) {
-                featuredCard.addEventListener('touchstart', function(e) {
-                    if (window.innerWidth > 768) return;
-                    touchStartX = e.changedTouches[0].screenX;
-                    touchStartY = e.changedTouches[0].screenY;
-                }, { passive: true });
-                featuredCard.addEventListener('touchend', function(e) {
-                    if (window.innerWidth > 768) return;
-                    const touchEndX = e.changedTouches[0].screenX;
-                    const touchEndY = e.changedTouches[0].screenY;
-                    const diffX = touchEndX - touchStartX;
-                    const diffY = touchEndY - touchStartY;
-                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
-                        if (diffX < 0) {
-                            currentProductIdx = (currentProductIdx + 1) % productsData.length;
-                        } else {
-                            currentProductIdx = (currentProductIdx - 1 + productsData.length) % productsData.length;
-                        }
-                        renderProductTriple();
-                        window.updateMobileProductDots();
-                    }
-                });
-            }
-
-            // Mobile i18n extensions
-            const mobileTranslations = {
-                zh: { swipe_hint: '左右滑動瀏覽產品' },
-                en: { swipe_hint: 'Swipe to browse products' }
-            };
-
-            const originalSetLanguage = window.setLanguage || setLanguage;
-            window.setLanguage = function(lang) {
-                if (originalSetLanguage) originalSetLanguage(lang);
-                document.querySelectorAll('[data-i18n-mobile]').forEach(el => {
-                    const k = el.getAttribute('data-i18n-mobile');
-                    if (mobileTranslations[lang] && mobileTranslations[lang][k] !== undefined) {
-                        el.textContent = mobileTranslations[lang][k];
-                    }
-                });
-                // Update nav panel links
-                if (navPanel && translations[lang]) {
-                    navPanel.querySelectorAll('[data-i18n]').forEach(el => {
-                        const k = el.getAttribute('data-i18n');
-                        if (translations[lang][k] !== undefined) {
-                            el.textContent = translations[lang][k].replace(/<[^>]*>/g, '');
-                        }
-                    });
-                }
-                window.updateMobileProductDots();
-            };
-
-            // Initial setup
-            window.updateMobileProductDots();
-            const lang = currentLang || 'zh';
-            document.querySelectorAll('[data-i18n-mobile]').forEach(el => {
-                const k = el.getAttribute('data-i18n-mobile');
-                if (mobileTranslations[lang] && mobileTranslations[lang][k] !== undefined) {
-                    el.textContent = mobileTranslations[lang][k];
-                }
-            });
-
-            // Update on resize
-            let resizeDebounce;
-            window.addEventListener('resize', function() {
-                clearTimeout(resizeDebounce);
-                resizeDebounce = setTimeout(function() {
-                    window.updateMobileProductDots();
-                    const hint = document.querySelector('.mobile-swipe-hint');
-                    if (hint) hint.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
-                }, 250);
-            });
-        })();
-    </script>
-</body>
-</html>
-    <meta name="og:image" content="https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png">
-    <meta name="og:locale" content="zh_HK">
-    <meta name="dateModified" content="2026-06-08">
-    <meta name="dc.date.modified" content="2026-06-08">
-    <link rel="canonical" href="https://www.wonder-herb.com/">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@graph": [
-                {
-                    "@type": "Organization",
-                    "@id": "https://www.wonder-herb.com/#organization",
-                    "name": "康草堂 Wonder Herb Health Products Ltd",
-                    "alternateName": "Wonder Herb",
-                    "url": "https://www.wonder-herb.com/",
-                    "logo": {
-                        "@type": "ImageObject",
-                        "url": "https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png",
-                        "width": 220,
-                        "height": 55
-                    },
-                    "description": "超過20年經驗的中草藥科研公司，專注雲芝糖肽精華PSP及天然輔助方案，加拿大GMP藥廠生產。",
-                    "contactPoint": {
-                        "@type": "ContactPoint",
-                        "telephone": "+852-9331-8571",
-                        "contactType": "customer service",
-                        "availableLanguage": ["zh-HK", "en"],
-                        "contactOption": "WhatsApp"
-                    },
-                    "email": "info@wonder-herb.com",
-                    "sameAs": [
-                        "https://www.facebook.com/wonderherbhealth",
-                        "https://www.instagram.com/wonderherb_hk/"
-                    ],
-                    "address": {
-                        "@type": "PostalAddress",
-                        "addressCountry": "HK"
-                    }
-                },
-                {
-                    "@type": "Product",
-                    "@id": "https://www.wonder-herb.com/#product-psp-standard",
-                    "name": "雲芝糖肽精華 PSP (標準裝)",
-                    "alternateName": "Yunzhi PSP Essence Standard Pack",
-                    "description": "500粒裝雲芝糖肽精華，多醣肽有效成份含量高達90%以上，遠超國家標準49.5%，適合長期免疫調節輔助療程。",
-                    "sku": "WH-PSP-500",
-                    "image": "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg",
-                    "brand": { "@id": "https://www.wonder-herb.com/#organization" },
-                    "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" },
-                    "countryOfOrigin": "CA",
-                    "offers": {
-                        "@type": "Offer",
-                        "availability": "https://schema.org/InStock",
-                        "itemCondition": "https://schema.org/NewCondition",
-                        "priceCurrency": "HKD",
-                        "seller": { "@id": "https://www.wonder-herb.com/#organization" },
-                        "url": "https://www.wonder-herb.com/產品_雲芝糖肽精華_B.html"
-                    },
-                    "category": "Health Supplement > Immune Support"
-                },
-                {
-                    "@type": "Product",
-                    "@id": "https://www.wonder-herb.com/#product-psp-t3",
-                    "name": "PSP + T3 複合配方",
-                    "alternateName": "Yunzhi PSP + T3 Synergistic Formula",
-                    "description": "大學研究證實PSP與T3三烯生育醇複合配方功效倍增，頑疾輔助首選。",
-                    "sku": "WH-PSP-T3",
-                    "image": "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png",
-                    "brand": { "@id": "https://www.wonder-herb.com/#organization" },
-                    "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" },
-                    "countryOfOrigin": "CA",
-                    "offers": {
-                        "@type": "Offer",
-                        "availability": "https://schema.org/InStock",
-                        "itemCondition": "https://schema.org/NewCondition",
-                        "priceCurrency": "HKD",
-                        "seller": { "@id": "https://www.wonder-herb.com/#organization" },
-                        "url": "https://www.wonder-herb.com/產品_T3.html"
-                    },
-                    "category": "Health Supplement > Immune Support > Synergistic Formula"
-                },
-                {
-                    "@type": "Product",
-                    "@id": "https://www.wonder-herb.com/#product-psp-trial",
-                    "name": "雲芝糖肽精華 PSP (試用裝)",
-                    "alternateName": "Yunzhi PSP Essence Trial Pack",
-                    "description": "60粒試用裝，多醣肽含量超國家標準1.8倍，初次體驗佳。",
-                    "sku": "WH-PSP-060",
-                    "image": "https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg",
-                    "brand": { "@id": "https://www.wonder-herb.com/#organization" },
-                    "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" },
-                    "countryOfOrigin": "CA",
-                    "offers": {
-                        "@type": "Offer",
-                        "availability": "https://schema.org/InStock",
-                        "itemCondition": "https://schema.org/NewCondition",
-                        "priceCurrency": "HKD",
-                        "seller": { "@id": "https://www.wonder-herb.com/#organization" },
-                        "url": "https://www.wonder-herb.com/產品_雲芝糖肽精華_A.html"
-                    },
-                    "category": "Health Supplement > Immune Support"
-                },
-                {
-                    "@type": "Product",
-                    "@id": "https://www.wonder-herb.com/#product-hepa",
-                    "name": "乙肝清",
-                    "alternateName": "Yigan Qing Herbal Liver Support",
-                    "description": "天然草本護肝配方，抑制HBV，減輕肝纖維化。",
-                    "sku": "WH-HEPA-001",
-                    "image": "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png",
-                    "brand": { "@id": "https://www.wonder-herb.com/#organization" },
-                    "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" },
-                    "countryOfOrigin": "CA",
-                    "offers": {
-                        "@type": "Offer",
-                        "availability": "https://schema.org/InStock",
-                        "itemCondition": "https://schema.org/NewCondition",
-                        "priceCurrency": "HKD",
-                        "seller": { "@id": "https://www.wonder-herb.com/#organization" },
-                        "url": "https://www.wonder-herb.com/產品_乙肝清.html"
-                    },
-                    "category": "Health Supplement > Liver Support"
-                },
-                {
-                    "@type": "Product",
-                    "@id": "https://www.wonder-herb.com/#product-memo",
-                    "name": "憶活素 MemoProve",
-                    "alternateName": "MemoProve Brain Health",
-                    "description": "奧地利研發配方，修復腦細胞，提升記憶力與專注力。",
-                    "sku": "WH-MEMO-001",
-                    "image": "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg",
-                    "brand": { "@id": "https://www.wonder-herb.com/#organization" },
-                    "manufacturer": { "@id": "https://www.wonder-herb.com/#organization" },
-                    "countryOfOrigin": "AT",
-                    "offers": {
-                        "@type": "Offer",
-                        "availability": "https://schema.org/InStock",
-                        "itemCondition": "https://schema.org/NewCondition",
-                        "priceCurrency": "HKD",
-                        "seller": { "@id": "https://www.wonder-herb.com/#organization" },
-                        "url": "https://www.wonder-herb.com/產品_憶活素.html"
-                    },
-                    "category": "Health Supplement > Brain Health"
-                },
-                {
-                    "@type": "FAQPage",
-                    "@id": "https://www.wonder-herb.com/#faq",
-                    "name": "雲芝糖肽精華 PSP 常見問題",
-                    "mainEntity": [
-                        {
-                            "@type": "Question",
-                            "name": "什麼是雲芝糖肽 PSP？",
-                            "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "雲芝糖肽（PSP）是從雲芝菌絲體中提取的活性成分複合物，主要包含多醣（polysaccharides）和蛋白肽（protein peptides）。康草堂的雲芝糖肽精華有效成份含量高達90%以上，遠超國家藥品標準要求的49.5%，是目前純度最高的雲芝提取物之一。"
-                            }
-                        },
-                        {
-                            "@type": "Question",
-                            "name": "雲芝糖肽 PSP 的主要功效是什麼？",
-                            "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "雲芝糖肽PSP主要功效包括：調節免疫系統功能、提升NK細胞及T細胞活性、減輕常規治療（如化療、放療）引起的不適、改善患者食慾與體重、提升整體生活品質。經大學研究證實，康草堂PSP+T3複合配方比單一PSP功效倍增。"
-                            }
-                        },
-                        {
-                            "@type": "Question",
-                            "name": "康草堂雲芝糖肽的有效成份含量是多少？",
-                            "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "根據國家藥品標準，雲芝糖肽的含量不得低於49.5%（多醣≥38%，蛋白肽≥11.5%）。康草堂產品的有效成份含量高達90%以上，純度最高，吸收最好。每批次產品均經加拿大及香港雙重實驗室檢測。"
-                            }
-                        },
-                        {
-                            "@type": "Question",
-                            "name": "PSP+T3 複合配方有什麼優勢？",
-                            "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "經大學研究證實，康草堂雲芝糖肽精華PSP與T3（三烯生育醇Tocotrienols）的獨特複合配方，比單一服用PSP功效倍增。T3是維生素E家族中抗氧化活性最強的成分，能與PSP產生協同效應，增強免疫調節和細胞保護功能。"
-                            }
-                        },
-                        {
-                            "@type": "Question",
-                            "name": "康草堂產品是否經過檢測認證？",
-                            "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "是的，康草堂所有產品均由加拿大GMP藥廠按加拿大優良生產規範（GMP）指引生產，加拿大衛生部監管。每批次產品均經過加拿大及香港雙重檢測，確保活性含量水平符合標準。"
-                            }
-                        },
-                        {
-                            "@type": "Question",
-                            "name": "如何服用雲芝糖肽精華？",
-                            "acceptedAnswer": {
-                                "@type": "Answer",
-                                "text": "一般建議每日服用2-3次，每次2-4粒，飯前或飯後服用均可。具體劑量因個人健康狀況而異，建議諮詢醫生意見或聯絡康草堂專員獲取個人化服用建議。WhatsApp諮詢專線：+852 9331 8571。"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "@type": "Review",
-                    "@id": "https://www.wonder-herb.com/#aggregate-review",
-                    "itemReviewed": {
-                        "@type": "Product",
-                        "name": "雲芝糖肽精華 PSP 系列"
-                    },
-                    "author": {
-                        "@type": "Organization",
-                        "name": "康草堂 Wonder Herb",
-                        "url": "https://www.wonder-herb.com/"
-                    },
-                    "reviewBody": "綜合多位真實患者反饋：麥女士（77歲，肛門惡性腫瘤）服用後化療耐受度獲醫生讚賞；陳小姐（55歲，腹膜惡性腫瘤）術後追蹤2年CT均正常；Peter Hall（74歲，前列腺惡性腫瘤）服用PSP後PSA指數下降，活檢正常。",
-                    "reviewRating": {
-                        "@type": "Rating",
-                        "ratingValue": 4.8,
-                        "bestRating": 5,
-                        "worstRating": 1
-                    }
-                }
-            ]
-        }
-    </script>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        :root {
-            --glass-bg: rgba(255, 255, 255, 0.25);
-            --glass-border: rgba(255, 255, 255, 0.35);
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-            --glass-blur: 18px;
-            --reveal-distance: 36px;
-            --reveal-duration: 0.7s;
-            --liquid-tint: rgba(255, 255, 255, 0.22);
-            --liquid-shine: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.55), inset -1px -1px 1px 1px rgba(255, 255, 255, 0.45);
-            --liquid-blur: 5px;
-            --jelly-spring: cubic-bezier(0.175, 0.885, 0.32, 2.2);
-            --jelly-spring-gentle: cubic-bezier(0.175, 0.885, 0.32, 1.6);
-            --carousel-glass-blur: 22px;
-            --carousel-glass-bg: rgba(255, 255, 255, 0.18);
-            --carousel-glass-border: rgba(255, 255, 255, 0.55);
-            --carousel-highlight-opacity: 0.62;
-            --carousel-refraction-opacity: 0.12;
-            --carousel-shadow-strength: 0.28;
-            --carousel-inner-shadow-opacity: 0.55;
-            --carousel-border-glow: rgba(255, 255, 255, 0.35);
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #fefcf8;
-            color: #2c2a28;
-            line-height: 1.5;
-            scroll-behavior: smooth;
-            overflow-x: hidden;
-        }
-        .svg-filters {
-            position: absolute;
-            width: 0;
-            height: 0;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        .reveal-on-scroll {
-            opacity: 0;
-            transform: translateY(var(--reveal-distance));
-            transition: opacity var(--reveal-duration) cubic-bezier(0.22, 0.61, 0.36, 1), transform var(--reveal-duration) cubic-bezier(0.22, 0.61, 0.36, 1);
-            will-change: opacity, transform;
-        }
-        .reveal-on-scroll.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .reveal-on-scroll.reveal-delay-1 {
-            transition-delay: 0.08s;
-        }
-        .reveal-on-scroll.reveal-delay-2 {
-            transition-delay: 0.16s;
-        }
-        .reveal-on-scroll.reveal-delay-3 {
-            transition-delay: 0.24s;
-        }
-        .reveal-on-scroll.reveal-delay-4 {
-            transition-delay: 0.32s;
-        }
-        .reveal-on-scroll.reveal-left {
-            transform: translateX(-40px);
-            opacity: 0;
-        }
-        .reveal-on-scroll.reveal-left.is-visible {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        .reveal-on-scroll.reveal-right {
-            transform: translateX(40px);
-            opacity: 0;
-        }
-        .reveal-on-scroll.reveal-right.is-visible {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.28);
-            backdrop-filter: blur(var(--glass-blur));
-            -webkit-backdrop-filter: blur(var(--glass-blur));
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow), var(--liquid-shine);
-            border-radius: 28px;
-            transition: all 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
-            position: relative;
-            z-index: 2;
-            overflow: hidden;
-        }
-        .glass-panel::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-            background: var(--liquid-tint);
-            backdrop-filter: blur(var(--liquid-blur));
-            -webkit-backdrop-filter: blur(var(--liquid-blur));
-            filter: url(#glass-distortion);
-            border-radius: inherit;
-            pointer-events: none;
-            transition: background 0.45s ease, opacity 0.45s ease;
-            opacity: 0.85;
-        }
-        .glass-panel:hover {
-            background: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1), var(--liquid-shine);
-            transform: translateY(-4px);
-            border-color: rgba(255, 255, 255, 0.55);
-        }
-        .glass-panel:hover::before {
-            background: rgba(255, 255, 255, 0.3);
-            opacity: 1;
-        }
-        .glass-panel>* {
-            position: relative;
-            z-index: 2;
-        }
-        .shimmer-overlay {
-            position: relative;
-            overflow: hidden;
-        }
-        .shimmer-overlay::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.25) 38%, rgba(255, 255, 255, 0.45) 42%, rgba(255, 255, 255, 0.25) 46%, transparent 54%);
-            transform: translateX(-100%) rotate(25deg);
-            animation: shimmerSweep 5s ease-in-out infinite;
-            pointer-events: none;
-            z-index: 3;
-            border-radius: inherit;
-        }
-        @keyframes shimmerSweep {
-            0%,
-            100% {
-                transform: translateX(-100%) rotate(25deg);
-            }
-            40% {
-                transform: translateX(100%) rotate(25deg);
-            }
-            60% {
-                transform: translateX(100%) rotate(25deg);
-            }
-        }
-        @keyframes glassHighlightDrift {
-            0%,
-            100% {
-                transform: translate(0, 0) scale(1);
-                opacity: var(--carousel-highlight-opacity);
-            }
-            20% {
-                transform: translate(2.5%, -2%) scale(1.06);
-                opacity: calc(var(--carousel-highlight-opacity) * 1.18);
-            }
-            45% {
-                transform: translate(-2%, 1.5%) scale(0.95);
-                opacity: calc(var(--carousel-highlight-opacity) * 0.82);
-            }
-            65% {
-                transform: translate(1.5%, 0.8%) scale(1.03);
-                opacity: calc(var(--carousel-highlight-opacity) * 1.08);
-            }
-            85% {
-                transform: translate(-0.8%, -1.2%) scale(0.98);
-                opacity: calc(var(--carousel-highlight-opacity) * 0.9);
-            }
-        }
-        @keyframes glassEdgeGlowPulse {
-            0%,
-            100% {
-                box-shadow: 0 8px 8px rgba(0, 0, 0, var(--carousel-shadow-strength)), 0 0 28px rgba(0, 0, 0, 0.14), inset 0 2px 0 rgba(255, 255, 255, var(--carousel-inner-shadow-opacity)), inset 0 -2px 0 rgba(255, 255, 255, 0.22), 0 0 0 2px var(--carousel-border-glow);
-            }
-            50% {
-                box-shadow: 0 12px 12px rgba(0, 0, 0, calc(var(--carousel-shadow-strength)*1.15)), 0 0 38px rgba(0, 0, 0, 0.18), inset 0 3px 0 rgba(255, 255, 255, calc(var(--carousel-inner-shadow-opacity)*1.2)), inset 0 -2px 0 rgba(255, 255, 255, 0.28), 0 0 0 2.5px rgba(255, 255, 255, 0.45);
-            }
-        }
-        @keyframes glassRefractionShift {
-            0%,
-            100% {
-                background-position: 0% 0%;
-            }
-            33% {
-                background-position: 2% -1.2%;
-            }
-            66% {
-                background-position: -1% 1.6%;
-            }
-        }
-        @keyframes slideGlassSheen {
-            0%,
-            100% {
-                opacity: 0.35;
-                transform: translateX(-35%) rotate(18deg);
-            }
-            50% {
-                opacity: 0.6;
-                transform: translateX(35%) rotate(18deg);
-            }
-        }
-        @keyframes thickGlassBreathe {
-            0%,
-            100% {
-                backdrop-filter: blur(var(--carousel-glass-blur)) brightness(1.02);
-                -webkit-backdrop-filter: blur(var(--carousel-glass-blur)) brightness(1.02);
-            }
-            50% {
-                backdrop-filter: blur(calc(var(--carousel-glass-blur)*1.08)) brightness(1.05);
-                -webkit-backdrop-filter: blur(calc(var(--carousel-glass-blur)*1.08)) brightness(1.05);
-            }
-        }
-
-        .carousel-container {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            border-radius: 32px;
-            overflow: hidden;
-            background: var(--carousel-glass-bg);
-            backdrop-filter: blur(var(--carousel-glass-blur)) brightness(1.03);
-            -webkit-backdrop-filter: blur(var(--carousel-glass-blur)) brightness(1.03);
-            border: 2px solid var(--carousel-glass-border);
-            box-shadow: 0 8px 8px rgba(0, 0, 0, var(--carousel-shadow-strength)), 0 0 28px rgba(0, 0, 0, 0.14), inset 0 2px 0 rgba(255, 255, 255, var(--carousel-inner-shadow-opacity)), inset 0 -2px 0 rgba(255, 255, 255, 0.22), 0 0 0 2px var(--carousel-border-glow);
-            z-index: 2;
-            transition: box-shadow 0.5s cubic-bezier(0.22, 0.61, 0.36, 1), border-color 0.5s ease, border-width 0.5s ease;
-            animation: glassEdgeGlowPulse 7s ease-in-out infinite, thickGlassBreathe 9s ease-in-out infinite;
-            will-change: transform, border-radius;
-        }
-        .carousel-container::before {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            z-index: 6;
-            pointer-events: none;
-            border-radius: inherit;
-            background: radial-gradient(ellipse 220px 160px at 24% 16%, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.38) 16%, rgba(255, 255, 255, 0.18) 34%, rgba(255, 255, 255, 0.06) 52%, rgba(255, 255, 255, 0.01) 66%, transparent 78%);
-            animation: glassHighlightDrift 8s ease-in-out infinite;
-            mix-blend-mode: soft-light;
-        }
-        .carousel-container::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            z-index: 5;
-            pointer-events: none;
-            border-radius: inherit;
-            background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0) 0px, rgba(255, 255, 255, 0.04) 1px, rgba(255, 255, 255, 0) 2px, rgba(255, 255, 255, 0.01) 3px, rgba(255, 255, 255, 0) 5px);
-            opacity: var(--carousel-refraction-opacity);
-            animation: glassRefractionShift 12s ease-in-out infinite;
-            filter: url(#glass-distortion);
-            -webkit-filter: url(#glass-distortion);
-        }
-        .carousel-container .glass-thickness-layer {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            z-index: 4;
-            pointer-events: none;
-            border-radius: inherit;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 15%, rgba(255, 255, 255, 0.01) 40%, rgba(0, 0, 0, 0.03) 65%, rgba(0, 0, 0, 0.08) 85%, rgba(0, 0, 0, 0.12) 100%);
-            mix-blend-mode: overlay;
-            transition: opacity 0.5s ease;
-        }
-        .carousel-container:hover .glass-thickness-layer {
-            opacity: 0.7;
-        }
-        .carousel-container:hover {
-            box-shadow: 0 18px 28px rgba(0, 0, 0, 0.35), 0 0 50px rgba(0, 0, 0, 0.2), inset 0 3px 0 rgba(255, 255, 255, 0.7), inset 0 -3px 0 rgba(255, 255, 255, 0.32), 0 0 0 3px rgba(255, 255, 255, 0.5);
-            border-color: rgba(255, 255, 255, 0.7);
-            border-width: 2.5px;
-            backdrop-filter: blur(calc(var(--carousel-glass-blur)*1.35)) brightness(1.06);
-            -webkit-backdrop-filter: blur(calc(var(--carousel-glass-blur)*1.35)) brightness(1.06);
-            animation: none;
-        }
-        .carousel-container:hover::before {
-            animation: none;
-            opacity: calc(var(--carousel-highlight-opacity)*1.4);
-            background: radial-gradient(ellipse 250px 180px at 22% 14%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.45) 16%, rgba(255, 255, 255, 0.22) 34%, rgba(255, 255, 255, 0.08) 52%, rgba(255, 255, 255, 0.02) 66%, transparent 78%);
-        }
-        .carousel-container:hover::after {
-            opacity: calc(var(--carousel-refraction-opacity)*2);
-            animation-duration: 5s;
-        }
-        .carousel-slides {
-            position: relative;
-            width: 100%;
-            height: 0;
-            padding-bottom: 85%;
-            overflow: hidden;
-            z-index: 3;
-            border-radius: inherit;
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
-            background: rgba(255, 255, 255, 0.06);
-        }
-        .carousel-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.6s ease-in-out, transform 0.6s var(--jelly-spring-gentle);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(0px);
-            -webkit-backdrop-filter: blur(0px);
-            border-radius: inherit;
-            z-index: 1;
-        }
-        .carousel-slide::after {
-            content: '';
-            position: absolute;
-            top: -30%;
-            left: -40%;
-            width: 180%;
-            height: 160%;
-            z-index: 4;
-            pointer-events: none;
-            background: linear-gradient(125deg, transparent 32%, rgba(255, 255, 255, 0.18) 40%, rgba(255, 255, 255, 0.38) 44%, rgba(255, 255, 255, 0.18) 48%, transparent 56%);
-            transform: translateX(-35%) rotate(18deg);
-            animation: slideGlassSheen 6s ease-in-out infinite;
-            border-radius: inherit;
-            mix-blend-mode: overlay;
-        }
-        .carousel-slide.active {
-            opacity: 1;
-            z-index: 5;
-        }
-        .carousel-slide.active::after {
-            animation-play-state: running;
-        }
-        .carousel-slide:not(.active)::after {
-            animation-play-state: paused;
-            opacity: 0.12;
-        }
-        .carousel-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 20px;
-            position: relative;
-            z-index: 3;
-            pointer-events: none;
-            transition: filter 0.5s ease;
-            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.18)) brightness(1.05) contrast(1.04);
-            will-change: transform;
-        }
-        .carousel-container:hover .carousel-slide.active img {
-            filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.26)) brightness(1.08) contrast(1.06);
-        }
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(45, 94, 59, 0.55);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            color: white;
-            border: none;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 20;
-            font-size: 1.2rem;
-            transition: all 0.35s var(--jelly-spring-gentle);
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .carousel-btn:hover {
-            background: rgba(45, 94, 59, 0.85);
-            transform: translateY(-50%) scale(1.18);
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
-        }
-        .carousel-btn.prev {
-            left: 14px;
-        }
-        .carousel-btn.next {
-            right: 14px;
-        }
-        .carousel-dots {
-            position: absolute;
-            bottom: 18px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            z-index: 20;
-        }
-        .dot {
-            width: 11px;
-            height: 11px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            cursor: pointer;
-            transition: all 0.35s var(--jelly-spring-gentle);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        .dot.active {
-            background: #9b2e2e;
-            width: 28px;
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(155, 46, 46, 0.4), inset 0 1.5px 0 rgba(255, 255, 255, 0.4);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-        @media (max-width: 768px) {
-            :root {
-                --carousel-glass-blur: 14px;
-                --carousel-highlight-opacity: 0.42;
-                --carousel-refraction-opacity: 0.06;
-                --carousel-shadow-strength: 0.2;
-                --carousel-inner-shadow-opacity: 0.4;
-                --carousel-border-glow: rgba(255, 255, 255, 0.25);
-            }
-            .carousel-btn {
-                width: 38px;
-                height: 38px;
             }
         }
         @media (max-width: 480px) {
@@ -3984,10 +1035,133 @@
                 --carousel-inner-shadow-opacity: 0.3;
                 --carousel-border-glow: rgba(255, 255, 255, 0.18);
             }
+            .container {
+                padding: 0 14px;
+            }
+            .top-bar {
+                font-size: 0.8rem;
+                padding: 6px 0;
+            }
+            .logo img {
+                height: 55px;
+                width: auto;
+            }
             .carousel-btn {
-                width: 34px;
-                height: 34px;
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            .hero {
+                padding: 20px 0 20px;
+            }
+            .hero-content h1 {
+                font-size: 1.6rem;
+            }
+            .hero-content p {
+                font-size: 0.9rem;
+                margin-bottom: 16px;
+            }
+            .section-title {
+                font-size: 1.3rem;
+                margin-bottom: 20px;
+            }
+            .featured-card h3 {
+                font-size: 1.2rem;
+            }
+            .featured-card .product-img {
+                height: 140px;
+            }
+            .case-studies {
+                padding: 20px 14px;
+            }
+            .case-studies h2 {
+                font-size: 1.2rem;
+            }
+            .quality-highlight {
+                padding: 20px 14px;
+            }
+            .quality-highlight p {
                 font-size: 1rem;
+            }
+            .footer-col {
+                font-size: 0.85rem;
+            }
+        }
+        @media (max-width: 380px) {
+            .container {
+                padding: 0 12px;
+            }
+            .hero {
+                padding: 16px 0 16px;
+            }
+            .hero-content h1 {
+                font-size: 1.4rem;
+                margin-bottom: 12px;
+            }
+            .hero-badge {
+                font-size: 0.7rem;
+                padding: 3px 10px;
+                margin-bottom: 12px;
+            }
+            .hero-stats {
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+            .stat-number {
+                font-size: 1.2rem;
+            }
+            .stat-item div:last-child {
+                font-size: 0.65rem;
+            }
+            .section-title {
+                font-size: 1.2rem;
+                margin-bottom: 16px;
+            }
+            .quality-highlight {
+                padding: 16px 12px;
+                margin: 12px 0 24px;
+            }
+            .quality-highlight p {
+                font-size: 0.95rem;
+            }
+            .trust-badges {
+                gap: 10px;
+            }
+            .badge-item {
+                flex: 1 1 100%;
+                padding: 12px 10px;
+            }
+            .badge-item i {
+                font-size: 1.8rem;
+            }
+            .featured-card {
+                padding: 16px 12px;
+            }
+            .featured-card h3 {
+                font-size: 1.1rem;
+            }
+            .featured-card .product-img {
+                height: 120px;
+                margin-bottom: 12px;
+            }
+            .mini-case-card {
+                padding: 12px;
+                border-radius: 16px;
+            }
+            .mini-case-title {
+                font-size: 0.95rem;
+            }
+            .case-studies {
+                padding: 16px 12px;
+                border-radius: 20px;
+            }
+            .case-studies h2 {
+                font-size: 1.1rem;
+                margin-bottom: 8px;
+            }
+            .case-btn {
+                padding: 10px 12px;
+                font-size: 0.8rem;
             }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -4857,14 +2031,273 @@
             background-color: #1e4028;
             transform: translateY(-2px);
         }
-    </style>
+    
+    /* Shared header/footer styles */
+    .top-bar {
+        background-color: #2d5e3b;
+        color: #fff;
+        font-size: 0.85rem;
+        padding: 8px 0;
+        text-align: right;
+    }
+
+    .top-bar .container {
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px;
+    }
+
+    .top-bar a {
+        color: #fff;
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+
+    .top-bar a:hover {
+        opacity: 0.8;
+    }
+
+    .lang-selector {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 4px 12px;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        cursor: pointer;
+    }
+
+    .lang-selector span {
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+    .lang-selector span:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+
+    .lang-selector .active-lang {
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    .main-header {
+        background: #E9DDCF;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 1px solid #eee6dc;
+    }
+
+    .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 16px 0;
+        gap: 20px;
+    }
+
+    .logo img {
+        height: 55px;
+        width: auto;
+        display: block;
+    }
+
+    .nav-menu ul {
+        display: flex;
+        gap: 28px;
+        list-style: none;
+        flex-wrap: wrap;
+    }
+
+    .nav-menu a {
+        text-decoration: none;
+        font-weight: 500;
+        color: #2c3e2b;
+        font-size: 1rem;
+        transition: color 0.2s;
+    }
+
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #9b2e2e;
+        border-bottom: 2px solid #9b2e2e;
+        padding-bottom: 4px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .header-actions .social-icon {
+        color: #6b4e2e;
+        font-size: 1.3rem;
+        transition: transform 0.2s;
+        text-decoration: none;
+    }
+
+    .header-actions .social-icon:hover {
+        transform: scale(1.1);
+        color: #2d5e3b;
+    }
+
+    .cart-icon {
+        font-size: 1.4rem;
+        color: #2d5e3b;
+        position: relative;
+        text-decoration: none;
+    }
+
+    .cart-count {
+        position: absolute;
+        top: -8px;
+        right: -12px;
+        background: #9b2e2e;
+        color: white;
+        font-size: 0.7rem;
+        border-radius: 30px;
+        padding: 2px 6px;
+        min-width: 18px;
+        text-align: center;
+    }
+
+    .btn-contact {
+        background-color: #2d5e3b;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .btn-contact:hover {
+        background-color: #1e4028;
+        transform: translateY(-2px);
+    }
+
+    footer {
+        background: #1f2c1c;
+        color: #ddd;
+        padding: 48px 0 24px;
+        margin-top: 40px;
+    }
+
+    .footer-inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 32px;
+    }
+
+    .footer-col {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .footer-col h4 {
+        color: #ffffff;
+        margin-bottom: 16px;
+    }
+
+    .footer-col a {
+        color: #ddd;
+        text-decoration: none;
+    }
+
+    .footer-col a:hover {
+        color: #ffffff;
+    }
+
+    .footer-social a {
+        color: #ddd;
+        font-size: 1.4rem;
+        margin-right: 16px;
+        transition: 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .footer-social a:hover {
+        color: #ffd966;
+    }
+
+    .copyright {
+        text-align: center;
+        padding-top: 32px;
+        border-top: 1px solid #3a4a36;
+        margin-top: 32px;
+        font-size: 0.85rem;
+    }
+
+    .last-update {
+        margin-top: 8px;
+        font-size: 0.7rem;
+        color: #a8b7a4;
+        letter-spacing: 0.3px;
+    }
+
+
+    /* Shared small-screen footer layout */
+    @media (max-width: 768px) {
+        footer {
+            padding: 30px 0 16px !important;
+        }
+        .footer-inner {
+            gap: 24px !important;
+            flex-wrap: wrap !important;
+        }
+        .footer-col {
+            flex: 0 1 100% !important;
+            text-align: center !important;
+        }
+    }
+</style>
 </head>
 <body>
     <svg class="svg-filters" aria-hidden="true"><defs><filter id="glass-distortion"><feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="5" /><feDisplacementMap in="SourceGraphic" in2="noise" scale="5" /></filter></defs></svg>
 
-    <div class="top-bar"><div class="container"><div class="lang-selector" aria-label="語言切換器" role="group"><i class="fas fa-globe"></i><span id="langZhBtn" data-lang="zh" role="button" tabindex="0" class="active-lang">中文</span> | <span id="langEnBtn" data-lang="en" role="button" tabindex="0">EN</span></div></div></div>
+    <div class="top-bar">
+  <div class="container">
+    <div class="lang-selector" aria-label="語言切換器" role="group">
+      <i class="fas fa-globe" aria-hidden="true"></i>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span>
+    </div>
+  </div>
+</div>
 
-    <header class="main-header" role="banner"><div class="container header-inner"><div class="logo"><img src="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png" alt="康草堂 Wonder Herb 官方標誌" width="220" height="55"></div><nav class="nav-menu" aria-label="主導航選單"><ul><li><a href="index.html" class="active" data-i18n="nav_home">關於我們</a></li><li><a href="產品介紹.html" data-i18n="nav_products">產品介紹</a></li><li><a href="研究報告.html" data-i18n="nav_research">研究報告</a></li><li><a href="有效成份檢測.html" data-i18n="nav_testing">成份檢測</a></li><li><a href="典型病例.html" data-i18n="nav_cases">典型病例</a></li><li><a href="小册子.html" data-i18n="nav_brochure">小册子</a></li><li><a href="微信發表文章.html" data-i18n="nav_articles">文章</a></li><li><a href="常見問題.html" data-i18n="nav_faq">常見問題</a></li><li><a href="聯絡我們.html" data-i18n="nav_contact">聯絡我們</a></li></ul></nav><div class="header-actions"><a href="https://wa.me/85293318571/" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a><a href="https://www.facebook.com/wonderherbhealth" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/wonderherb_hk/" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="購物車.html" class="cart-icon" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="cartCountBadge" class="cart-count">0</span></a><a href="https://wa.me/85293318571/" class="btn-contact" data-i18n="header_contact_btn">諮詢專員 <i class="fas fa-arrow-right"></i></a></div></div></header>
+    <header class="main-header" role="banner">
+  <div class="container header-inner">
+    <div class="logo">
+      <img src="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png" alt="康草堂 Wonder Herb 官方標誌">
+    </div>
+    <nav class="nav-menu" aria-label="主導航">
+      <ul>
+        <li><a href="index.html" data-i18n="nav_home" class="active">關於我們</a></li>
+        <li><a href="產品介紹.html" data-i18n="nav_products">產品介紹</a></li>
+        <li><a href="研究報告.html" data-i18n="nav_research">研究報告</a></li>
+        <li><a href="有效成份檢測.html" data-i18n="nav_testing">成份檢測</a></li>
+        <li><a href="典型病例.html" data-i18n="nav_cases">典型病例</a></li>
+        <li><a href="小册子.html" data-i18n="nav_brochure">小册子</a></li>
+        <li><a href="微信發表文章.html" data-i18n="nav_articles">文章</a></li>
+        <li><a href="常見問題.html" data-i18n="nav_faq">常見問題</a></li>
+        <li><a href="聯絡我們.html" data-i18n="nav_contact">聯絡我們</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="https://wa.me/85293318571/" target="_blank" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://www.facebook.com/wonderherbhealth" target="_blank" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="購物車.html" class="cart-icon" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="cartCountBadge" class="cart-count">0</span></a>
+      <a href="https://wa.me/85293318571/" class="btn-contact" data-i18n="header_contact_btn">諮詢專員 <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</header>
 
     <main id="main-content">
         <section class="hero" id="heroSection" aria-labelledby="hero-heading">
@@ -4917,7 +2350,39 @@
         </section>
     </main>
 
-    <footer role="contentinfo"><div class="container footer-inner"><div class="footer-col"><h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4><p data-i18n="footer_col1_text1"></p><p data-i18n="footer_col1_text2"></p><p data-i18n="footer_col1_text3"></p></div><div class="footer-col"><h4 data-i18n="footer_contact_title">聯絡我們</h4><p><i class="fas fa-envelope"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p><p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p><div class="footer-social"><a href="https://www.facebook.com/wonderherbhealth" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/wonderherb_hk/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="https://wa.me/85293318571/" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></div></div><div class="footer-col"><h4 data-i18n="footer_info_title">資訊中心</h4><ul style="list-style:none;"><li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li><li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li><li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li><li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li></ul></div></div><div class="container copyright"><p data-i18n="copyright">© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p><p class="last-update">📅 最後更新：<time datetime="2026-06-08">2026年6月8日</time></p></div></footer>
+    <footer role="contentinfo">
+  <div class="container footer-inner">
+    <div class="footer-col">
+      <h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4>
+      <p data-i18n="footer_col1_text1">以人為本，天然高效。</p>
+      <p data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
+      <p data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_contact_title">聯絡我們</h4>
+      <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
+      <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/85293318571/" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_info_title">資訊中心</h4>
+      <ul style="list-style: none;">
+        <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
+        <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
+        <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
+        <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container copyright">
+    <p data-i18n="copyright">© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p>
+    <p class="last-update">📅 最後更新：<time datetime="2026-06-08">2026年6月8日</time></p>
+  </div>
+</footer>
 
     <a href="#" id="backToTop" class="back-to-top" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
 

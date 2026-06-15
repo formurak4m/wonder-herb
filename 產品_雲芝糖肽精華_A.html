@@ -634,46 +634,321 @@
           transform: translateY(-3px);
       }
 
-      @media (max-width: 900px) {
-          .product-grid {
-              grid-template-columns: 1fr;
-              gap: 32px;
-          }
-
-          .header-inner {
-              flex-direction: column;
-          }
-
-          .nav-menu ul {
-              gap: 16px;
-              justify-content: center;
-          }
-
-          .product-title {
-              font-size: 1.8rem;
-          }
+      @media (max-width: 1024px) {
+          .container { padding: 0 20px; }
+          .product-grid { gap: 24px; }
+          .nav-menu ul { gap: 16px; }
       }
-  </style>
+      @media (max-width: 768px) {
+          .container { padding: 0 18px; }
+          .product-grid { grid-template-columns: 1fr; gap: 24px; }
+          .header-inner { padding: 12px 0; flex-wrap: wrap; }
+          .nav-menu ul { gap: 12px; justify-content: center; flex-wrap: wrap; }
+          .nav-menu a { font-size: 0.95rem; }
+          .header-actions { gap: 12px; width: 100%; justify-content: center; flex-wrap: wrap; }
+          .btn-contact { padding: 8px 16px; font-size: 0.9rem; }
+          .product-title { font-size: 1.6rem; }
+          footer { padding: 30px 0 16px; }
+            .footer-inner {
+                gap: 24px;
+                flex-wrap: wrap;
+            }
+            .footer-col {
+                flex: 0 1 100%;
+                text-align: center;
+            }
+
+            .footer-inner {
+                gap: 24px;
+                flex-wrap: wrap;
+            }
+            .footer-col {
+                flex: 0 1 100%;
+                text-align: center;
+            }
+
+          .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
+      .footer-inner {
+                gap: 24px;
+                flex-wrap: wrap;
+            }
+            .footer-col {
+                flex: 0 1 100%;
+                text-align: center;
+            }
+      .footer-inner {
+                gap: 24px;
+                flex-wrap: wrap;
+            }
+            .footer-col {
+                flex: 0 1 100%;
+                text-align: center;
+            }
+}
+      @media (max-width: 640px) {
+          .container { padding: 0 16px; }
+          .product-title { font-size: 1.5rem; }
+          .product-gallery { gap: 12px; }
+      }
+      @media (max-width: 480px) {
+          .container { padding: 0 14px; }
+          .product-title { font-size: 1.3rem; }
+          .product-gallery { gap: 8px; }
+          .back-to-top { bottom: 16px; right: 16px; width: 40px; height: 40px; }
+      }
+      @media (max-width: 380px) {
+          .container { padding: 0 12px; }
+          .product-title { font-size: 1.2rem; }
+          .product-gallery { gap: 6px; }
+      }
+  
+    /* Shared header/footer styles */
+    .top-bar {
+        background-color: #2d5e3b;
+        color: #fff;
+        font-size: 0.85rem;
+        padding: 8px 0;
+        text-align: right;
+    }
+
+    .top-bar .container {
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px;
+    }
+
+    .top-bar a {
+        color: #fff;
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+
+    .top-bar a:hover {
+        opacity: 0.8;
+    }
+
+    .lang-selector {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 4px 12px;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        cursor: pointer;
+    }
+
+    .lang-selector span {
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+    .lang-selector span:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+
+    .lang-selector .active-lang {
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    .main-header {
+        background: #E9DDCF;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 1px solid #eee6dc;
+    }
+
+    .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 16px 0;
+        gap: 20px;
+    }
+
+    .logo img {
+        height: 55px;
+        width: auto;
+        display: block;
+    }
+
+    .nav-menu ul {
+        display: flex;
+        gap: 28px;
+        list-style: none;
+        flex-wrap: wrap;
+    }
+
+    .nav-menu a {
+        text-decoration: none;
+        font-weight: 500;
+        color: #2c3e2b;
+        font-size: 1rem;
+        transition: color 0.2s;
+    }
+
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #9b2e2e;
+        border-bottom: 2px solid #9b2e2e;
+        padding-bottom: 4px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .header-actions .social-icon {
+        color: #6b4e2e;
+        font-size: 1.3rem;
+        transition: transform 0.2s;
+        text-decoration: none;
+    }
+
+    .header-actions .social-icon:hover {
+        transform: scale(1.1);
+        color: #2d5e3b;
+    }
+
+    .cart-icon {
+        font-size: 1.4rem;
+        color: #2d5e3b;
+        position: relative;
+        text-decoration: none;
+    }
+
+    .cart-count {
+        position: absolute;
+        top: -8px;
+        right: -12px;
+        background: #9b2e2e;
+        color: white;
+        font-size: 0.7rem;
+        border-radius: 30px;
+        padding: 2px 6px;
+        min-width: 18px;
+        text-align: center;
+    }
+
+    .btn-contact {
+        background-color: #2d5e3b;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .btn-contact:hover {
+        background-color: #1e4028;
+        transform: translateY(-2px);
+    }
+
+    footer {
+        background: #1f2c1c;
+        color: #ddd;
+        padding: 48px 0 24px;
+        margin-top: 40px;
+    }
+
+    .footer-inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 32px;
+    }
+
+    .footer-col {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .footer-col h4 {
+        color: #ffffff;
+        margin-bottom: 16px;
+    }
+
+    .footer-col a {
+        color: #ddd;
+        text-decoration: none;
+    }
+
+    .footer-col a:hover {
+        color: #ffffff;
+    }
+
+    .footer-social a {
+        color: #ddd;
+        font-size: 1.4rem;
+        margin-right: 16px;
+        transition: 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .footer-social a:hover {
+        color: #ffd966;
+    }
+
+    .copyright {
+        text-align: center;
+        padding-top: 32px;
+        border-top: 1px solid #3a4a36;
+        margin-top: 32px;
+        font-size: 0.85rem;
+    }
+
+    .last-update {
+        margin-top: 8px;
+        font-size: 0.7rem;
+        color: #a8b7a4;
+        letter-spacing: 0.3px;
+    }
+
+
+    /* Shared small-screen footer layout */
+    @media (max-width: 768px) {
+        footer {
+            padding: 30px 0 16px !important;
+        }
+        .footer-inner {
+            gap: 24px !important;
+            flex-wrap: wrap !important;
+        }
+        .footer-col {
+            flex: 0 1 100% !important;
+            text-align: center !important;
+        }
+    }
+</style>
 </head>
 <body>
 
 <div class="top-bar">
   <div class="container">
-    <div class="lang-selector" aria-label="语言选择" role="group">
+    <div class="lang-selector" aria-label="語言切換器" role="group">
       <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-current="true" aria-label="切换至中文">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-current="false" aria-label="Switch to English">EN</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span>
     </div>
   </div>
 </div>
 
 <header class="main-header" role="banner">
   <div class="container header-inner">
-    <div class="logo"><img src="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png" alt="康草堂 Wonder Herb 标志"></div>
-    <nav class="nav-menu" aria-label="主导航">
+    <div class="logo">
+      <img src="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png" alt="康草堂 Wonder Herb 官方標誌">
+    </div>
+    <nav class="nav-menu" aria-label="主導航">
       <ul>
         <li><a href="index.html" data-i18n="nav_home">關於我們</a></li>
-        <li><a href="產品介紹.html" class="active" data-i18n="nav_products" aria-current="page">產品介紹</a></li>
+        <li><a href="產品介紹.html" data-i18n="nav_products" class="active">產品介紹</a></li>
         <li><a href="研究報告.html" data-i18n="nav_research">研究報告</a></li>
         <li><a href="有效成份檢測.html" data-i18n="nav_testing">成份檢測</a></li>
         <li><a href="典型病例.html" data-i18n="nav_cases">典型病例</a></li>
@@ -684,10 +959,10 @@
       </ul>
     </nav>
     <div class="header-actions">
-      <a href="https://wa.me/85293318571/" target="_blank" class="social-icon" aria-label="WhatsApp联系"><i class="fab fa-whatsapp"></i></a>
-      <a href="https://www.facebook.com/wonderherbhealth" target="_blank" class="social-icon" aria-label="Facebook页面"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" class="social-icon" aria-label="Instagram页面"><i class="fab fa-instagram"></i></a>
-      <a href="購物車.html" class="cart-icon" aria-label="购物车"><i class="fas fa-shopping-cart"></i><span id="cartCountBadge" class="cart-count">0</span></a>
+      <a href="https://wa.me/85293318571/" target="_blank" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://www.facebook.com/wonderherbhealth" target="_blank" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="購物車.html" class="cart-icon" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="cartCountBadge" class="cart-count">0</span></a>
       <a href="https://wa.me/85293318571/" class="btn-contact" data-i18n="header_contact_btn">諮詢專員 <i class="fas fa-arrow-right"></i></a>
     </div>
   </div>
@@ -772,13 +1047,35 @@
 
 <footer role="contentinfo">
   <div class="container footer-inner">
-    <div class="footer-col"><h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4><p data-i18n="footer_col1_text1">以人為本，天然高效。</p><p data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p><p data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p></div>
-    <div class="footer-col"><h4 data-i18n="footer_contact_title">聯絡我們</h4><p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p><p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p><div class="footer-social"><a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="https://wa.me/85293318571/" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></div></div>
-    <div class="footer-col"><h4 data-i18n="footer_info_title">資訊中心</h4><ul style="list-style: none;"><li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li><li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li><li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li><li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li></ul></div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4>
+      <p data-i18n="footer_col1_text1">以人為本，天然高效。</p>
+      <p data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
+      <p data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_contact_title">聯絡我們</h4>
+      <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
+      <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/85293318571/" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_info_title">資訊中心</h4>
+      <ul style="list-style: none;">
+        <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
+        <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
+        <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
+        <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
+      </ul>
+    </div>
   </div>
   <div class="container copyright">
-    <p data-i18n="copyright">&copy; 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p>
-    <p class="last-update" data-i18n="last_update_text">📅 最後更新：2026年6月2日 | 本產品資訊依據最新科研數據定期審核</p>
+    <p data-i18n="copyright">© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p>
+    <p class="last-update">📅 最後更新：<time datetime="2026-06-08">2026年6月8日</time></p>
   </div>
 </footer>
 
