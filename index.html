@@ -240,6 +240,20 @@
             padding: 0;
             box-sizing: border-box;
         }
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        @media (max-width: 768px) {
+            html { font-size: 15px; }
+        }
+        @media (max-width: 480px) {
+            html { font-size: 14px; }
+        }
+        @media (max-width: 380px) {
+            html { font-size: 13px; }
+        }
         :root {
             --glass-bg: rgba(255, 255, 255, 0.25);
             --glass-border: rgba(255, 255, 255, 0.35);

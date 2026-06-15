@@ -95,6 +95,21 @@
           box-sizing: border-box;
       }
 
+      html {
+          font-size: 16px;
+          -webkit-text-size-adjust: 100%;
+          text-size-adjust: 100%;
+      }
+      @media (max-width: 768px) {
+          html { font-size: 15px; }
+      }
+      @media (max-width: 480px) {
+          html { font-size: 14px; }
+      }
+      @media (max-width: 380px) {
+          html { font-size: 13px; }
+      }
+
       body {
           font-family: 'Inter', sans-serif;
           background-color: #fefcf8;
@@ -556,18 +571,29 @@
       @media (max-width: 640px) {
           .container { padding: 0 16px; }
           .page-header h1 { font-size: 1.6rem; }
+          .page-header p { font-size: 0.95rem; }
           .contact-form { padding: 16px; }
+          .contact-card h3 { font-size: 1.25rem; }
       }
       @media (max-width: 480px) {
           .container { padding: 0 14px; }
           .page-header h1 { font-size: 1.4rem; }
+          .page-header p { font-size: 0.9rem; }
           .contact-form { padding: 12px; }
+          .contact-card h3 { font-size: 1.1rem; }
+          .contact-card h4 { font-size: 0.9rem; }
+          .contact-detail { font-size: 0.85rem; }
+          .cta-banner h2 { font-size: 1.35rem; }
+          .nav-menu a { font-size: 0.85rem; }
+          .footer-col { font-size: 0.85rem; }
+          .top-bar { font-size: 0.8rem; padding: 6px 0; }
           .back-to-top { bottom: 16px; right: 16px; width: 40px; height: 40px; }
       }
       @media (max-width: 380px) {
           .container { padding: 0 12px; }
           .page-header h1 { font-size: 1.3rem; }
           .contact-form { padding: 10px; }
+          .contact-card h3 { font-size: 1rem; }
       }
   
     /* Shared header/footer styles */

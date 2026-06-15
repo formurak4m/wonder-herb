@@ -153,6 +153,21 @@
       box-sizing: border-box;
     }
 
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    @media (max-width: 768px) {
+      html { font-size: 15px; }
+    }
+    @media (max-width: 480px) {
+      html { font-size: 14px; }
+    }
+    @media (max-width: 380px) {
+      html { font-size: 13px; }
+    }
+
     body {
       font-family: 'Inter', sans-serif;
       background-color: #fefcf8;
@@ -517,16 +532,26 @@
     @media (max-width: 640px) {
       .container { padding: 0 16px; }
       .page-header h1 { font-size: 1.6rem; }
+      .page-header p { font-size: 0.95rem; }
       .brochure-content { padding: 16px; }
+      .brochure-info h3 { font-size: 1.15rem; }
     }
     @media (max-width: 480px) {
       .container { padding: 0 14px; }
       .page-header h1 { font-size: 1.4rem; }
+      .page-header p { font-size: 0.9rem; }
+      .brochure-info h3 { font-size: 1.05rem; }
+      .brochure-info p { font-size: 0.85rem; }
+      .zoom-hint { font-size: 0.8rem; }
+      .nav-menu a { font-size: 0.85rem; }
+      .footer-col { font-size: 0.85rem; }
+      .top-bar { font-size: 0.8rem; padding: 6px 0; }
       .back-to-top { bottom: 16px; right: 16px; width: 40px; height: 40px; }
     }
     @media (max-width: 380px) {
       .container { padding: 0 12px; }
       .page-header h1 { font-size: 1.3rem; }
+      .brochure-info h3 { font-size: 1rem; }
     }
   
     /* Shared header/footer styles */
