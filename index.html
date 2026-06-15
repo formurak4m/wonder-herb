@@ -709,7 +709,7 @@
                 margin-bottom: 32px;
             }
             .featured-cases-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
                 gap: 16px;
             }
             .trust-badges {
@@ -938,18 +938,44 @@
                 max-height: 80px;
             }
             .product-nav-btn {
-                display: none;
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                margin: 10px 0;
+            }
+            .product-nav-btn .fas {
+                transform: rotate(90deg);
             }
             .triple-product-layout {
-                gap: 8px;
-                justify-content: space-between;
+                gap: 12px;
+                justify-content: center;
+                align-items: center;
+                overflow-x: hidden;
+                padding-bottom: 8px;
+                -webkit-overflow-scrolling: touch;
+                flex-direction: column;
+            }
+            .triple-product-layout .featured-card,
+            .triple-product-layout .side-card {
+                flex: 0 0 auto;
+                min-width: auto;
+                width: calc(100% - 24px);
+                max-width: 420px;
             }
             .featured-card {
-                flex: 1;
-                min-width: 200px;
+                flex: 0 0 auto;
+                min-width: auto;
+                width: calc(100% - 24px);
+                max-width: 420px;
             }
             .side-card {
-                display: none;
+                display: flex;
+                width: calc(100% - 24px);
+            }
+            /* Make case grid show two columns on small screens */
+            .featured-cases-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
             }
             .quality-highlight {
                 padding: 24px 16px;
@@ -1162,6 +1188,10 @@
             .case-btn {
                 padding: 10px 12px;
                 font-size: 0.8rem;
+            }
+            .featured-cases-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
             }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -1450,7 +1480,7 @@
         }
         .featured-cases-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 30px;
             margin: 40px 0 30px;
         }
