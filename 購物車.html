@@ -909,8 +909,8 @@
       footer {
           background: #1f2c1c;
           color: #ddd;
-          padding: 48px 0 24px;
-          margin-top: 40px;
+          padding: 48px 0 32px;
+          margin-top: 0px;
       }
 
       .footer-inner {
@@ -956,7 +956,7 @@
           font-size: 0.85rem;
       }
 
-      .last-updated {
+      .last-update {
           text-align: center;
           font-size: 0.8rem;
           color: #aaa;
@@ -994,13 +994,16 @@
           .nav-menu ul { gap: 16px; }
       }
       @media (max-width: 768px) {
-          .container { padding: 0 18px; }
+          .container { padding: 0 30px; }
+          .logo {
+              margin-left: 25px;
+          }
           .cart-grid { grid-template-columns: 1fr; gap: 24px; }
           .header-inner { padding: 12px 0; flex-wrap: wrap; }
           .nav-menu ul { gap: 12px; justify-content: center; flex-wrap: wrap; }
           .nav-menu a { font-size: 0.95rem; }
           .header-actions { gap: 12px; width: 100%; justify-content: center; flex-wrap: wrap; }
-          .btn-contact { padding: 8px 16px; font-size: 0.9rem; }
+          .btn-contact { padding: 8px 16px; font-size: 0.9rem; white-space: normal; max-width: 100%; }
 
           .cart-header { display: none; }
           .cart-item {
@@ -1056,14 +1059,20 @@
           .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
       }
       @media (max-width: 640px) {
-          .container { padding: 0 16px; }
+          .container { padding: 0 30px; }
+          .logo {
+              margin-left: 25px;
+          }
           .cart-item { padding: 18px; }
           .item-image { width: 70px; height: 70px; }
           .item-details h3 { font-size: 0.95rem; }
           .checkout-btn { padding: 13px; }
       }
       @media (max-width: 480px) {
-          .container { padding: 0 14px; }
+          .container { padding: 0 30px; }
+          .logo {
+              margin-left: 25px;
+          }
           .cart-item { padding: 16px; font-size: 0.88rem; }
           .item-details h3 { font-size: 0.9rem; }
           .cart-summary { font-size: 0.9rem; }
@@ -1076,7 +1085,10 @@
           .back-to-top { bottom: 16px; right: 16px; width: 40px; height: 40px; }
       }
       @media (max-width: 380px) {
-          .container { padding: 0 12px; }
+          .container { padding: 0 30px; }
+          .logo {
+              margin-left: 25px;
+          }
           .cart-item { padding: 14px; font-size: 0.85rem; }
           .item-details h3 { font-size: 0.85rem; }
       }
@@ -1271,6 +1283,7 @@
         }
 
         .main-header .logo {
+            margin-left: 25px;
             flex: 0 0 auto;
         }
 
@@ -1279,6 +1292,7 @@
         }
 
         .menu-toggle {
+            margin-right: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1311,6 +1325,7 @@
             align-items: stretch;
             justify-content: flex-start;
             flex-wrap: nowrap;
+            margin-left: 25px;
         }
 
         .main-header .nav-menu li {
@@ -1338,8 +1353,8 @@
     footer {
         background: #1f2c1c;
         color: #ddd;
-        padding: 48px 0 24px;
-        margin-top: 40px;
+        padding: 48px 0 32px;
+        margin-top: 0px;
     }
 
     .footer-inner {
@@ -1400,15 +1415,38 @@
     /* Shared small-screen footer layout */
     @media (max-width: 768px) {
         footer {
-            padding: 30px 0 16px !important;
+            padding: 32px 0 32px !important;
         }
         .footer-inner {
-            gap: 24px !important;
-            flex-wrap: wrap !important;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
         }
         .footer-col {
-            flex: 0 1 100% !important;
-            text-align: center !important;
+            text-align: left;
+        }
+        .footer-brand-detail {
+            display: none;
+        }
+        .footer-contact {
+            display: none;
+        }
+        .footer-col:last-child {
+            display: none;
+        }
+        footer .container ul {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        footer .container ul li + li {
+            margin-top: 6px !important;
+        }
+        .footer-social {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
         }
     }
 </style>
@@ -1420,7 +1458,8 @@
     <div class="lang-selector" aria-label="語言切換器" role="group">
       <i class="fas fa-globe" aria-hidden="true"></i>
       <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span>
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
     </div>
   </div>
 </div>
@@ -1466,14 +1505,16 @@
   <div class="container footer-inner">
     <div class="footer-col">
       <h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4>
-      <p data-i18n="footer_col1_text1">以人為本，天然高效。</p>
-      <p data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
-      <p data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
+      <p class="footer-brand-tagline" data-i18n="footer_col1_text1">以人為本，天然高效。</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_contact_title">聯絡我們</h4>
-      <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
-      <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      <div class="footer-contact">
+        <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
+        <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      </div>
       <div class="footer-social">
         <a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
         <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -1482,12 +1523,14 @@
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_info_title">資訊中心</h4>
-      <ul style="list-style: none;">
-        <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
-        <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
-        <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
-        <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
-      </ul>
+      <div class="footer-links">
+        <ul style="list-style: none;">
+          <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
+          <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
+          <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
+          <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="container copyright">
@@ -1564,18 +1607,94 @@
       remove_item_label: "Remove item",
       increase_qty_label: "Increase quantity",
       decrease_qty_label: "Decrease quantity"
+    },
+    de: {
+      nav_home: "Über uns",
+      nav_products: "Produkte",
+      nav_research: "Forschung",
+      nav_testing: "Tests",
+      nav_cases: "Fälle",
+      nav_brochure: "Broschüre",
+      nav_articles: "Artikel",
+      nav_faq: "FAQ",
+      nav_contact: "Kontakt",
+      header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
+      cart_header_product: "Produkt",
+      cart_header_unit_price: "Einzelpreis",
+      cart_header_qty: "Menge",
+      cart_header_total: "Gesamt",
+      empty_cart_title: "Ihr Warenkorb ist leer",
+      empty_cart_desc: "Entdecken Sie unsere Yunzhi-PSP-Essenz.",
+      empty_cart_btn: "Weiter einkaufen <i class='fas fa-arrow-right'></i>",
+      summary_title: "Bestellübersicht",
+      subtotal_label: "Zwischensumme",
+      checkout_btn: "Zur Kasse",
+      secure_note: "<i class='fas fa-lock'></i> Sichere Kasse",
+      product_badge_psp: "Wirkstoff >90 % · GMP-zertifiziert",
+      product_badge_memoprove: "Österreichische Forschung · Klinisch bewährt",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
+      footer_col1_text2: "GMP-zertifiziert in Kanada",
+      footer_col1_text3: "Doppelte Prüfung: Kanada & HK",
+      footer_contact_title: "Kontakt",
+      footer_info_title: "Informationszentrum",
+      footer_link_research: "Forschung",
+      footer_link_testing: "Prüfberichte",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Fallstudien",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
+      last_updated: "Zuletzt aktualisiert: 2. Juni 2025",
+      modal_title: "Express-Kasse",
+      modal_subtitle: "Füllen Sie Ihre Daten aus, um die Bestellung abzuschließen",
+      step_shipping: "Versand",
+      step_payment: "Zahlung",
+      step_review: "Bestätigen",
+      order_summary_label: "Bestellübersicht",
+      total_due: "Gesamtbetrag",
+      contact_email: "E-Mail",
+      contact_phone: "Telefon",
+      marketing_ok: "Updates per WhatsApp & E-Mail erhalten",
+      shipping_section: "Versanddetails",
+      first_name: "Vorname",
+      last_name: "Nachname",
+      address_line1: "Adresse (Straße & Hausnummer)",
+      address_line2: "Detaillierte Adresse / SF-Schließfach-Code",
+      district: "Bezirk (z. B. Central, Wan Chai)",
+      save_info: "Diese Informationen für das nächste Mal speichern",
+      sms_ok: "Angebote per SMS erhalten",
+      shipping_method: "Versandart",
+      shipping_std: "Standard (kostenlos)",
+      shipping_exp: "Express (+HK$30)",
+      shipping_selfpick: "SF-Station/Schließfach (+HK$15)",
+      payment_section: "Zahlungsmethode",
+      card_payment: "Kreditkarte",
+      paypal_payment: "PayPal",
+      card_number: "Kartennummer",
+      expiry: "Ablaufdatum (MM/JJ)",
+      cvv: "CVV",
+      use_billing_addr: "Versandadresse als Rechnungsadresse verwenden",
+      submit_order: "Zahlung bestätigen · Bestellung aufgeben",
+      paypal_simulate: "Mit PayPal bezahlen",
+      paypal_redirect: "Sie werden sicher zu PayPal weitergeleitet",
+      fill_required: "Bitte E-Mail, Telefon und Vorname ausfüllen.",
+      fill_card: "Bitte Kartennummer eingeben.",
+      order_success_card: "Bestellung aufgegeben! Vielen Dank (Kreditkarte).",
+      order_success_paypal: "Weiterleitung zu PayPal... (Demo)",
+      remove_item_label: "Artikel entfernen",
+      increase_qty_label: "Menge erhöhen",
+      decrease_qty_label: "Menge verringern"
     }
   };
 
   let currentLang = 'zh';
   let cartItems = [];
   const productNameMap = {
-    1: { zh: "雲芝糖肽精華 (PSP) - 試用裝", en: "Yunzhi PSP Essence - Trial Pack" },
-    2: { zh: "雲芝糖肽精華 (PSP) – 標準裝", en: "Yunzhi PSP Essence – Standard Pack" },
-    3: { zh: "T3 配方", en: "T3 Formula" },
-    4: { zh: "乙肝清", en: "Yigan Qing" },
-    5: { zh: "憶活素 MemoProve", en: "MemoProve" },
-    6: { zh: "PT3 (指定診所發售)", en: "PT3 (Clinic Only)" }
+    1: { zh: "雲芝糖肽精華 (PSP) - 試用裝", en: "Yunzhi PSP Essence - Trial Pack", de: "Yunzhi-PSP-Essenz – Testpackung" },
+    2: { zh: "雲芝糖肽精華 (PSP) – 標準裝", en: "Yunzhi PSP Essence – Standard Pack", de: "Yunzhi-PSP-Essenz – Standardpackung" },
+    3: { zh: "T3 配方", en: "T3 Formula", de: "T3-Formel" },
+    4: { zh: "乙肝清", en: "Yigan Qing", de: "Hepatitis-B-Clear" },
+    5: { zh: "憶活素 MemoProve", en: "MemoProve", de: "MemoProve" },
+    6: { zh: "PT3 (指定診所發售)", en: "PT3 (Clinic Only)", de: "PT3 (nur in Kliniken)" }
   };
 
   function loadCart() {
@@ -1609,7 +1728,7 @@
   function updateQuantity(idx,newQty) { if(newQty<=0) removeItem(idx); else { cartItems[idx].quantity = newQty; saveCart(); renderCart(); } }
   function getSubtotal() { return cartItems.reduce((s,i)=>s+(i.product.price * i.quantity),0); }
   function getLocalizedProductName(p) { return productNameMap[p.id]?.[currentLang] || p.name; }
-  function getProductBadge(p) { return currentLang==='zh'? (p.id===5?translations.zh.product_badge_memoprove:translations.zh.product_badge_psp) : (p.id===5?translations.en.product_badge_memoprove:translations.en.product_badge_psp); }
+  function getProductBadge(p) { return (p.id===5?translations[currentLang]?.product_badge_memoprove:translations[currentLang]?.product_badge_psp) || (p.id===5?translations.en.product_badge_memoprove:translations.en.product_badge_psp); }
 
   function renderCart() {
     const container = document.getElementById('cartContainer');
@@ -1633,7 +1752,7 @@
         <div class="item-price">HK$${price.toFixed(2)}</div>
         <div class="item-quantity">
           <button class="quantity-btn" data-action="decr" data-idx="${idx}" aria-label="${t.decrease_qty_label}">−</button>
-          <input type="number" min="0" value="${qty}" data-idx="${idx}" class="qty-input" aria-label="${currentLang==='zh'?'數量':'Quantity'}">
+          <input type="number" min="0" value="${qty}" data-idx="${idx}" class="qty-input" aria-label="${({ zh: '數量', en: 'Quantity', de: 'Menge' })[currentLang] || 'Quantity'}">
           <button class="quantity-btn" data-action="incr" data-idx="${idx}" aria-label="${t.increase_qty_label}">+</button>
         </div>
         <div class="item-total">HK$${total.toFixed(2)}</div>
@@ -1667,7 +1786,7 @@
       const grandTotal = subtotal + shippingFee;
 
       return `
-        <button class="modal-close" id="closeModalBtn" aria-label="${currentLang==='zh'?'關閉':'Close'}">&times;</button>
+        <button class="modal-close" id="closeModalBtn" aria-label="${({ zh: '關閉', en: 'Close', de: 'Schließen' })[currentLang] || 'Close'}">&times;</button>
         <div class="modal-header">
           <h2>${t.modal_title}</h2>
           <p class="modal-subtitle">${t.modal_subtitle}</p>
@@ -1681,7 +1800,7 @@
         </div>
         <div class="modal-body">
           <div class="order-preview-card">
-            <div class="preview-header"><span><i class="fas fa-box"></i> ${t.order_summary_label}</span><span>${cartItems.reduce((s,i)=>s+i.quantity,0)} ${currentLang==='zh'?'件':'items'}</span></div>
+            <div class="preview-header"><span><i class="fas fa-box"></i> ${t.order_summary_label}</span><span>${cartItems.reduce((s,i)=>s+i.quantity,0)} ${({ zh: '件', en: 'items', de: 'Artikel' })[currentLang] || 'items'}</span></div>
             <div class="preview-items">
               ${cartItems.map(i=>`<div class="preview-item-row"><span>${escapeHtml(getLocalizedProductName(i.product))} ×${i.quantity}</span><span>HK$${(i.product.price*i.quantity).toFixed(2)}</span></div>`).join('')}
             </div>
@@ -1699,7 +1818,7 @@
                 <div class="form-group"><label>${t.last_name} <span style="color:#9b2e2e;">*</span></label><input id="lastName" required></div>
               </div>
               <div class="form-group"><label>${t.address_line1} <span style="color:#9b2e2e;">*</span></label><input id="addr1" required></div>
-              <div class="form-group"><label>${t.address_line2} <span class="optional">(${currentLang==='zh'?'選填':'optional'})</span></label><input id="addr2"></div>
+              <div class="form-group"><label>${t.address_line2} <span class="optional">(${({ zh: '選填', en: 'optional', de: 'optional' })[currentLang] || 'optional'})</span></label><input id="addr2"></div>
               <div class="form-group"><label>${t.district}</label><input id="district"></div>
               <div class="checkbox-group"><input type="checkbox" id="saveInfo"><label>${t.save_info}</label></div>
               <div class="checkbox-group"><input type="checkbox" id="smsOk"><label>${t.sms_ok}</label></div>
@@ -1844,18 +1963,21 @@
       const key=el.getAttribute('data-i18n');
       if(translations[lang]?.[key]!==undefined) el.innerHTML=translations[lang][key];
     });
-    document.title = lang==='zh'?'購物車 | Wonder Herb – 雲芝糖肽精華':'Shopping Cart | Wonder Herb – Yunzhi PSP Essence';
+    document.title = ({ zh: '購物車 | Wonder Herb – 雲芝糖肽精華', en: 'Shopping Cart | Wonder Herb – Yunzhi PSP Essence', de: 'Warenkorb | Wonder Herb – Yunzhi-PSP-Essenz' })[lang] || 'Shopping Cart | Wonder Herb – Yunzhi PSP Essence';
     document.documentElement.lang=lang;
-    const zhSpan=document.getElementById('langZhBtn'), enSpan=document.getElementById('langEnBtn');
+    const zhSpan=document.getElementById('langZhBtn'), enSpan=document.getElementById('langEnBtn'), deSpan=document.getElementById('langDeBtn');
     if(zhSpan&&enSpan){
       zhSpan.classList.toggle('active-lang', lang==='zh');
       enSpan.classList.toggle('active-lang', lang==='en');
+      if(deSpan){ deSpan.classList.toggle('active-lang', lang==='de'); deSpan.setAttribute('aria-current', lang==='de'?'true':'false'); }
+      zhSpan.setAttribute('aria-current', lang==='zh'?'true':'false');
+      enSpan.setAttribute('aria-current', lang==='en'?'true':'false');
     }
     updateCartBadge();
   }
-  function setLanguage(lang){ if(lang!=='zh'&&lang!=='en') return; currentLang=lang; localStorage.setItem('wonderherb_lang',lang); applyStaticTranslation(currentLang); renderCart(); }
-  function initLanguage(){ const saved=localStorage.getItem('wonderherb_lang'); setLanguage(saved==='zh'||saved==='en'?saved:'zh'); }
-  function bindLanguageSwitcher(){ document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); }
+  function setLanguage(lang){ if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return; currentLang=lang; localStorage.setItem('wonderherb_lang',lang); applyStaticTranslation(currentLang); renderCart(); }
+  function initLanguage(){ const saved=localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de'?saved:'zh'); }
+  function bindLanguageSwitcher(){ document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); }); }
 
   window.addEventListener('storage',(e)=>{ if(e.key==='wonderHerbCart') loadCart(); });
   const backBtn=document.getElementById('backToTop');
@@ -1867,14 +1989,14 @@
     if (!toggle || !panel) return;
     const closeMenu = () => {
       toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單');
+      toggle.setAttribute('aria-label', ({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單');
       panel.classList.remove('is-open');
       document.body.classList.remove('menu-open');
     };
     toggle.addEventListener('click', () => {
       const isOpen = panel.classList.toggle('is-open');
       toggle.setAttribute('aria-expanded', String(isOpen));
-      toggle.setAttribute('aria-label', isOpen ? (document.documentElement.lang === 'en' ? 'Close menu' : '關閉選單') : (document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單'));
+      toggle.setAttribute('aria-label', isOpen ? (({ zh: '關閉選單', en: 'Close menu', de: 'Menü schließen' })[document.documentElement.lang] || '關閉選單') : (({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單'));
       document.body.classList.toggle('menu-open', isOpen);
     });
     panel.querySelectorAll('a').forEach(link => { link.addEventListener('click', closeMenu); });

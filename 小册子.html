@@ -36,7 +36,7 @@
         "@type": "ContactPoint",
         "telephone": "+85293318571",
         "contactType": "customer service",
-        "availableLanguage": ["Chinese", "English"]
+        "availableLanguage": ["Chinese", "English", "German"]
       },
       "sameAs": [
         "https://www.facebook.com/wonderherbhealth",
@@ -384,59 +384,6 @@
       margin-top: 12px;
     }
 
-    /* Footer */
-    footer {
-      background: #1f2c1c;
-      color: #ddd;
-      padding: 48px 0 24px;
-      margin-top: 40px;
-    }
-    .footer-inner {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 32px;
-    }
-    .footer-col {
-      flex: 1;
-      min-width: 180px;
-    }
-    .footer-col h4 {
-      color: #ffffff;
-      margin-bottom: 16px;
-    }
-    .footer-col a {
-      color: #ddd;
-      text-decoration: none;
-    }
-    .footer-col a:hover {
-      color: #ffffff;
-    }
-    .footer-social a {
-      color: #ddd;
-      font-size: 1.4rem;
-      margin-right: 16px;
-      transition: 0.2s;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .footer-social a:hover {
-      color: #ffd966;
-    }
-    .copyright {
-      text-align: center;
-      padding-top: 32px;
-      border-top: 1px solid #3a4a36;
-      margin-top: 32px;
-      font-size: 0.85rem;
-    }
-    .last-update {
-      margin-top: 8px;
-      font-size: 0.7rem;
-      color: #a8b7a4;
-      letter-spacing: 0.3px;
-    }
-
     /* Back to Top Button */
     .back-to-top {
       position: fixed;
@@ -485,59 +432,56 @@
       .nav-menu ul { gap: 16px; }
     }
     @media (max-width: 768px) {
-      .container { padding: 0 18px; }
-      .header-inner { padding: 12px 0; flex-wrap: wrap; }
-      .nav-menu ul { gap: 12px; justify-content: center; flex-wrap: wrap; }
-      .nav-menu a { font-size: 0.95rem; }
-      .header-actions { gap: 12px; width: 100%; justify-content: center; flex-wrap: wrap; }
-      .btn-contact { padding: 8px 16px; font-size: 0.9rem; }
-      .page-header h1 { font-size: 2rem; }
-      footer { padding: 30px 0 16px; }
-            .footer-inner {
-                gap: 24px;
-                flex-wrap: wrap;
-            }
-            .footer-col {
-                flex: 0 1 100%;
-                text-align: center;
-            }
-
-            .footer-inner {
-                gap: 24px;
-                flex-wrap: wrap;
-            }
-            .footer-col {
-                flex: 0 1 100%;
-                text-align: center;
-            }
-
-      .back-to-top { bottom: 20px; right: 20px; width: 44px; height: 44px; }
-      .footer-inner {
-                gap: 24px;
-                flex-wrap: wrap;
-            }
-            .footer-col {
-                flex: 0 1 100%;
-                text-align: center;
-            }
-      .footer-inner {
-                gap: 24px;
-                flex-wrap: wrap;
-            }
-            .footer-col {
-                flex: 0 1 100%;
-                text-align: center;
-            }
-}
+        footer {
+            padding: 32px 0 32px !important;
+        }
+        .footer-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+        .footer-col {
+            text-align: left;
+        }
+        .footer-brand-detail {
+            display: none;
+        }
+        .footer-contact {
+            display: none;
+        }
+        .footer-col:last-child {
+            display: none;
+        }
+        footer .container ul {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        footer .container ul li + li {
+            margin-top: 6px !important;
+        }
+        .footer-social {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
+        }
+    }
     @media (max-width: 640px) {
-      .container { padding: 0 16px; }
+      .container { padding: 0 30px; }
+            .logo {
+                margin-left: 25px;
+            }
       .page-header h1 { font-size: 1.6rem; }
       .page-header p { font-size: 0.95rem; }
       .brochure-content { padding: 16px; }
       .brochure-info h3 { font-size: 1.15rem; }
     }
     @media (max-width: 480px) {
-      .container { padding: 0 14px; }
+      .container { padding: 0 30px; }
+            .logo {
+                margin-left: 25px;
+            }
       .page-header h1 { font-size: 1.4rem; }
       .page-header p { font-size: 0.9rem; }
       .brochure-info h3 { font-size: 1.05rem; }
@@ -549,7 +493,10 @@
       .back-to-top { bottom: 16px; right: 16px; width: 40px; height: 40px; }
     }
     @media (max-width: 380px) {
-      .container { padding: 0 12px; }
+      .container { padding: 0 30px; }
+            .logo {
+                margin-left: 25px;
+            }
       .page-header h1 { font-size: 1.3rem; }
       .brochure-info h3 { font-size: 1rem; }
     }
@@ -744,6 +691,7 @@
         }
 
         .main-header .logo {
+            margin-left: 25px;
             flex: 0 0 auto;
         }
 
@@ -752,6 +700,7 @@
         }
 
         .menu-toggle {
+            margin-right: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -784,6 +733,7 @@
             align-items: stretch;
             justify-content: flex-start;
             flex-wrap: nowrap;
+            margin-left: 25px;
         }
 
         .main-header .nav-menu li {
@@ -811,8 +761,8 @@
     footer {
         background: #1f2c1c;
         color: #ddd;
-        padding: 48px 0 24px;
-        margin-top: 40px;
+        padding: 48px 0 32px;
+        margin-top: 0px;
     }
 
     .footer-inner {
@@ -873,16 +823,80 @@
     /* Shared small-screen footer layout */
     @media (max-width: 768px) {
         footer {
-            padding: 30px 0 16px !important;
+            padding: 32px 0 32px !important;
         }
         .footer-inner {
-            gap: 24px !important;
-            flex-wrap: wrap !important;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
         }
         .footer-col {
-            flex: 0 1 100% !important;
-            text-align: center !important;
+            text-align: left;
         }
+        .footer-brand-detail {
+            display: none;
+        }
+        .footer-contact {
+            display: none;
+        }
+        .footer-col:last-child {
+            display: none;
+        }
+        footer .container ul {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        footer .container ul li + li {
+            margin-top: 6px !important;
+        }
+        .footer-social {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
+        }
+    }
+
+    .back-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #2d5e3b;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 1.5rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 99;
+    }
+    .back-to-top.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    .back-to-top:hover {
+        background-color: #1e4028;
+        transform: translateY(-3px);
+    }
+    /* 屏幕阅读器专用文字 */
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
     }
 </style>
 </head>
@@ -893,7 +907,8 @@
     <div class="lang-selector" aria-label="語言切換器" role="group">
       <i class="fas fa-globe" aria-hidden="true"></i>
       <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span>
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
     </div>
   </div>
 </div>
@@ -974,14 +989,16 @@
   <div class="container footer-inner">
     <div class="footer-col">
       <h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4>
-      <p data-i18n="footer_col1_text1">以人為本，天然高效。</p>
-      <p data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
-      <p data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
+      <p class="footer-brand-tagline" data-i18n="footer_col1_text1">以人為本，天然高效。</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_contact_title">聯絡我們</h4>
-      <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
-      <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      <div class="footer-contact">
+        <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
+        <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      </div>
       <div class="footer-social">
         <a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
         <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -990,12 +1007,14 @@
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_info_title">資訊中心</h4>
-      <ul style="list-style: none;">
-        <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
-        <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
-        <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
-        <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
-      </ul>
+      <div class="footer-links">
+        <ul style="list-style: none;">
+          <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
+          <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
+          <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
+          <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="container copyright">
@@ -1073,6 +1092,36 @@
       footer_link_faq: "FAQ",
       footer_link_cases: "Case Studies",
       copyright: "© 2025 Wonder-herb Health Products Ltd. All Rights Reserved | Natural Yunzhi PSP Expert"
+    },
+    de: {
+      nav_home: "Über uns",
+      nav_products: "Produkte",
+      nav_research: "Forschung",
+      nav_testing: "Tests",
+      nav_cases: "Fälle",
+      nav_brochure: "Broschüre",
+      nav_articles: "Artikel",
+      nav_faq: "FAQ",
+      nav_contact: "Kontakt",
+      header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
+      brochure_title: "Product Brochure",
+      brochure_subtitle: "Detailed Product Information · Professional Guide to Yunzhi PSP",
+      brochure_gallery_title: "Brochure Gallery",
+      brochure_card1_title: "Brochure · Cover & Product Introduction",
+      brochure_card2_title: "Brochure · Forschung & Ingredients",
+      brochure_zoom_hint: "<i class='fas fa-search-plus'></i> Click to enlarge",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
+      footer_col1_text2: "GMP-zertifiziert in Kanada",
+      footer_col1_text3: "Doppelte Prüfung: Kanada & HK",
+      footer_contact_title: "Kontakt",
+      footer_whatsapp_label: "WhatsApp-Hotline",
+      footer_info_title: "Informationszentrum",
+      footer_link_research: "Forschung",
+      footer_link_testing: "Prüfberichte",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Fallstudien",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte"
     }
   };
 
@@ -1089,34 +1138,25 @@
       }
     });
     // 更新页面标题
-    if (lang === 'zh') {
-      document.title = '小册子 | 康草堂 Wonder Herb - 雲芝糖肽精華產品指南';
-      document.documentElement.lang = 'zh';
-    } else {
-      document.title = 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide';
-      document.documentElement.lang = 'en';
-    }
+    document.title = ({ zh: '小册子 | 康草堂 Wonder Herb - 雲芝糖肽精華產品指南', en: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide', de: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide' })[lang] || 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide'; document.documentElement.lang = lang;
     // 更新语言切换按钮高亮样式及ARIA状态
     const zhSpan = document.getElementById('langZhBtn');
     const enSpan = document.getElementById('langEnBtn');
     if (zhSpan && enSpan) {
-      if (lang === 'zh') {
-        zhSpan.classList.add('active-lang');
-        zhSpan.setAttribute('aria-current', 'true');
-        enSpan.classList.remove('active-lang');
-        enSpan.setAttribute('aria-current', 'false');
-      } else {
-        enSpan.classList.add('active-lang');
-        enSpan.setAttribute('aria-current', 'true');
-        zhSpan.classList.remove('active-lang');
-        zhSpan.setAttribute('aria-current', 'false');
-      }
+      const deSpan = document.getElementById('langDeBtn');
+    if (zhSpan && enSpan) {
+      zhSpan.classList.toggle('active-lang', lang === 'zh');
+      enSpan.classList.toggle('active-lang', lang === 'en');
+      if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); }
+      zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false');
+      enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false');
+    }
     }
   }
 
   // 设置语言并持久化
   function setLanguage(lang) {
-    if (lang !== 'zh' && lang !== 'en') return;
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return;
     currentLang = lang;
     localStorage.setItem('wonderherb_lang', lang);
     applyStaticTranslation(currentLang);
@@ -1125,7 +1165,7 @@
   // 初始化语言 (读取 localStorage 或默认中文)
   function initLanguage() {
     const savedLang = localStorage.getItem('wonderherb_lang');
-    if (savedLang === 'zh' || savedLang === 'en') {
+    if (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de') {
       currentLang = savedLang;
     } else {
       currentLang = 'zh';
@@ -1143,6 +1183,11 @@
     }
     if (enBtn) {
       enBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('en'); });
+      const deBtn = document.getElementById('langDeBtn');
+      if (deBtn) {
+        deBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('de'); });
+        deBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('de'); } });
+      }
       enBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('en'); } });
     }
   }
@@ -1171,14 +1216,14 @@
     if (!toggle || !panel) return;
     const closeMenu = () => {
       toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單');
+      toggle.setAttribute('aria-label', ({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單');
       panel.classList.remove('is-open');
       document.body.classList.remove('menu-open');
     };
     toggle.addEventListener('click', () => {
       const isOpen = panel.classList.toggle('is-open');
       toggle.setAttribute('aria-expanded', String(isOpen));
-      toggle.setAttribute('aria-label', isOpen ? (document.documentElement.lang === 'en' ? 'Close menu' : '關閉選單') : (document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單'));
+      toggle.setAttribute('aria-label', isOpen ? (({ zh: '關閉選單', en: 'Close menu', de: 'Menü schließen' })[document.documentElement.lang] || '關閉選單') : (({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單'));
       document.body.classList.toggle('menu-open', isOpen);
     });
     panel.querySelectorAll('a').forEach(link => { link.addEventListener('click', closeMenu); });

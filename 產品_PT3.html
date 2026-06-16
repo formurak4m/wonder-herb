@@ -36,7 +36,7 @@
         "@type": "ContactPoint",
         "telephone": "+85293318571",
         "contactType": "customer service",
-        "availableLanguage": ["Chinese", "English"]
+        "availableLanguage": ["Chinese", "English", "German"]
       },
       "sameAs": [
         "https://www.facebook.com/wonderherbhealth",
@@ -521,8 +521,8 @@
     footer {
       background: #1f2c1c;
       color: #ddd;
-      padding: 48px 0 24px;
-      margin-top: 40px;
+      padding: 48px 0 32px;
+      margin-top: 0px;
     }
     .footer-inner {
       display: flex;
@@ -615,13 +615,16 @@
       .nav-menu ul { gap: 16px; }
     }
     @media (max-width: 768px) {
-      .container { padding: 0 18px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .product-grid { grid-template-columns: 1fr; gap: 24px; }
       .header-inner { padding: 12px 0; flex-wrap: wrap; }
       .nav-menu ul { gap: 12px; justify-content: center; flex-wrap: wrap; }
       .nav-menu a { font-size: 0.95rem; }
       .header-actions { gap: 12px; width: 100%; justify-content: center; flex-wrap: wrap; }
-      .btn-contact { padding: 8px 16px; font-size: 0.9rem; }
+      .btn-contact { padding: 8px 16px; font-size: 0.9rem; white-space: normal; max-width: 100%; }
       .product-title { font-size: 1.9rem; }
       .product-price { font-size: 1.7rem; }
       .section-title { font-size: 1.5rem; }
@@ -634,15 +637,18 @@
       .footer-col { flex: 0 1 100%; text-align: center; }
     }
     @media (max-width: 640px) {
-      .container { padding: 0 16px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .logo img { height: 45px; }
       .nav-menu a { font-size: 0.9rem; }
       .product-title { font-size: 1.6rem; }
       .product-price { font-size: 1.5rem; }
       .product-short-desc { font-size: 0.95rem; }
       .quantity-input { font-size: 0.95rem; }
-      .btn-primary { font-size: 0.95rem; padding: 12px 24px; }
-      .btn-secondary { font-size: 0.95rem; padding: 10px 20px; }
+      .btn-primary { font-size: 0.95rem; padding: 12px 24px; white-space: normal; max-width: 100%; }
+      .btn-secondary { font-size: 0.95rem; padding: 10px 20px; white-space: normal; max-width: 100%; }
       .section-title { font-size: 1.3rem; padding-left: 12px; }
       .product-details-card { padding: 24px; }
       .quality-highlight { padding: 24px; }
@@ -660,15 +666,18 @@
       .last-update { font-size: 0.65rem; }
     }
     @media (max-width: 480px) {
-      .container { padding: 0 14px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .logo img { height: 40px; }
       .nav-menu a { font-size: 0.85rem; }
       .product-title { font-size: 1.4rem; }
       .product-price { font-size: 1.3rem; }
       .product-short-desc { font-size: 0.9rem; }
       .quantity-input { font-size: 0.9rem; }
-      .btn-primary { font-size: 0.9rem; padding: 10px 18px; }
-      .btn-secondary { font-size: 0.9rem; padding: 8px 16px; }
+      .btn-primary { font-size: 0.9rem; padding: 10px 18px; white-space: normal; max-width: 100%; }
+      .btn-secondary { font-size: 0.9rem; padding: 8px 16px; white-space: normal; max-width: 100%; }
       .section-title { font-size: 1.15rem; }
       .product-details-card { padding: 18px; margin-bottom: 24px; }
       .quality-highlight { padding: 18px; }
@@ -684,15 +693,18 @@
       .last-update { font-size: 0.6rem; }
     }
     @media (max-width: 380px) {
-      .container { padding: 0 12px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .logo img { height: 35px; }
       .nav-menu a { font-size: 0.8rem; }
       .product-title { font-size: 1.2rem; }
       .product-price { font-size: 1.1rem; }
       .product-short-desc { font-size: 0.85rem; }
       .quantity-input { font-size: 0.85rem; }
-      .btn-primary { font-size: 0.85rem; padding: 8px 14px; }
-      .btn-secondary { font-size: 0.85rem; padding: 6px 12px; }
+      .btn-primary { font-size: 0.85rem; padding: 8px 14px; white-space: normal; max-width: 100%; }
+      .btn-secondary { font-size: 0.85rem; padding: 6px 12px; white-space: normal; max-width: 100%; }
       .section-title { font-size: 1rem; }
       .product-details-card { padding: 16px; margin-bottom: 20px; }
       .quality-highlight { padding: 14px; }
@@ -902,6 +914,7 @@
         }
 
         .main-header .logo {
+            margin-left: 25px;
             flex: 0 0 auto;
         }
 
@@ -910,6 +923,7 @@
         }
 
         .menu-toggle {
+            margin-right: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -942,6 +956,7 @@
             align-items: stretch;
             justify-content: flex-start;
             flex-wrap: nowrap;
+            margin-left: 25px;
         }
 
         .main-header .nav-menu li {
@@ -969,8 +984,8 @@
     footer {
         background: #1f2c1c;
         color: #ddd;
-        padding: 48px 0 24px;
-        margin-top: 40px;
+        padding: 48px 0 32px;
+        margin-top: 0px;
     }
 
     .footer-inner {
@@ -1031,15 +1046,38 @@
     /* Shared small-screen footer layout */
     @media (max-width: 768px) {
         footer {
-            padding: 30px 0 16px !important;
+            padding: 32px 0 32px !important;
         }
         .footer-inner {
-            gap: 24px !important;
-            flex-wrap: wrap !important;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
         }
         .footer-col {
-            flex: 0 1 100% !important;
-            text-align: center !important;
+            text-align: left;
+        }
+        .footer-brand-detail {
+            display: none;
+        }
+        .footer-contact {
+            display: none;
+        }
+        .footer-col:last-child {
+            display: none;
+        }
+        footer .container ul {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        footer .container ul li + li {
+            margin-top: 6px !important;
+        }
+        .footer-social {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
         }
     }
 </style>
@@ -1051,7 +1089,8 @@
     <div class="lang-selector" aria-label="語言切換器" role="group">
       <i class="fas fa-globe" aria-hidden="true"></i>
       <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span>
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
     </div>
   </div>
 </div>
@@ -1190,14 +1229,16 @@
   <div class="container footer-inner">
     <div class="footer-col">
       <h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4>
-      <p data-i18n="footer_col1_text1">以人為本，天然高效。</p>
-      <p data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
-      <p data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
+      <p class="footer-brand-tagline" data-i18n="footer_col1_text1">以人為本，天然高效。</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_contact_title">聯絡我們</h4>
-      <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
-      <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      <div class="footer-contact">
+        <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
+        <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      </div>
       <div class="footer-social">
         <a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
         <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -1206,12 +1247,14 @@
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_info_title">資訊中心</h4>
-      <ul style="list-style: none;">
-        <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
-        <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
-        <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
-        <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
-      </ul>
+      <div class="footer-links">
+        <ul style="list-style: none;">
+          <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
+          <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
+          <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
+          <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="container copyright">
@@ -1298,6 +1341,68 @@
       footer_contact_title: "Contact Us", footer_whatsapp_label: "WhatsApp Hotline", footer_info_title: "Information",
       footer_link_research: "Research", footer_link_testing: "Testing Reports", footer_link_faq: "FAQ", footer_link_cases: "Case Studies",
       copyright: "© 2025 Wonder-herb Health Products Ltd. All Rights Reserved | Natural Yunzhi PSP Expert"
+    },
+    de: {
+      nav_home: "Über uns",
+      nav_products: "Produkte",
+      nav_research: "Forschung",
+      nav_testing: "Tests",
+      nav_cases: "Fälle",
+      nav_brochure: "Broschüre",
+      nav_articles: "Artikel",
+      nav_faq: "FAQ",
+      nav_contact: "Kontakt",
+      header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
+      pt3_title: "PT3",
+      pt3_subtitle: "Yunzhi PSP + T3 | University Forschung Formula",
+      pt3_price: "HK$0.00 <span style='font-size:1rem; font-weight:normal;'>/ 300 capsules</span>",
+      pt3_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Queensland University of Technology + HKU · Several times more effective than PSP alone",
+      pt3_clinic_note: "<i class='fas fa-hospital-user'></i> Available only at selected TCM & Western medicine clinics",
+      pt3_outofstock_btn: "<i class='fas fa-ban'></i> Out of Stock (Clinic Only)",
+      pt3_detail_btn: "More Details <i class='fas fa-chevron-down'></i>",
+      badge1: "University Clinical Study",
+      badge2: "PSP+T3 Synergy",
+      badge3: "Reduce Recurrence Risk",
+      intro_title: "📖 Product Introduction",
+      intro_p1: "<strong>PT3 (Yunzhi PSP + T3)</strong> is jointly developed by the Prostate Cancer Forschung Center at Queensland University of Technology (Australia) and The University of Hong Kong. It significantly inhibits tumor growth, accelerates cancer cell apoptosis, and enhances immune regulation while relieving physical discomfort.",
+      intro_p2: "Forschung shows that the active ingredients (Polysaccharide + Peptide) in PT3 are several times more effective than taking PSP alone. The results were published in 2014 in leading international medical journals (e.g., Plos One). PT3 effectively reduces abnormal cell development and suppresses cancer stem cells.",
+      benefits_title: "✨ Key Benefits",
+      benefits_list: "<li>Rich in antioxidants, helps cancer patients and those with low immunity boost their immune system</li><li>Several times more effective than PSP alone</li><li>Can be used alongside conventional treatments (chemotherapy, radiotherapy, targeted therapy, immunotherapy) and before/after surgery</li><li>Reduces treatment side effects such as fatigue, poor appetite, pain, insomnia, nausea, vomiting</li><li>Lowers recurrence risk</li>",
+      spec_title: "📦 Specifications",
+      spec_text: "✔ 300 capsules per bottle<br>✔ University-developed formula, available only at selected clinics",
+      warning_title: "⚠️ Precautions",
+      warning_badge: "Important",
+      warning_text: "Not suitable for organ transplant recipients",
+      dosage_title: "💊 Recommended Dosage",
+      dosage_text: "Please consult your doctor or healthcare professional for personalized advice.",
+      clinic_only_note: "<em>※ PT3 is a physician-supervised adjuvant product, not available for direct online purchase.</em>",
+      trust_qut: "Queensland University of Tech",
+      trust_qut_desc: "Prostate Cancer Forschung Center",
+      trust_hku: "University of Hong Kong",
+      trust_hku_desc: "Joint Forschung",
+      trust_journal: "2014 International Publication",
+      trust_journal_desc: "Plos One & others",
+      trust_synergy: "Potentiated Efficacy",
+      trust_synergy_desc: "PSP + T3 Synergistic Effect",
+      related_title: "🌟 You May Also Like",
+      product_trial_name: "Yunzhi PSP Essence (Trial Pack)",
+      product_trial_desc: "60 Kapseln, ideal zum Ausprobieren, Polysaccharid-Peptid >1,8× nationaler Standard.",
+      product_std_name: "Yunzhi PSP Essence (Standard Pack)",
+      product_std_desc: "500 Kapseln, langfristige Immunmodulation.",
+      product_t3_name: "T3 Tocotrienol",
+      product_t3_desc: "Universitätsbestätigte synergistische Formel verdoppelt die Wirksamkeit.",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
+      footer_col1_text2: "GMP-zertifiziert in Kanada",
+      footer_col1_text3: "Doppelte Prüfung: Kanada & HK",
+      footer_contact_title: "Kontakt",
+      footer_whatsapp_label: "WhatsApp-Hotline",
+      footer_info_title: "Informationszentrum",
+      footer_link_research: "Forschung",
+      footer_link_testing: "Prüfberichte",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Fallstudien",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte"
     }
   };
 
@@ -1311,23 +1416,23 @@
         el.innerHTML = translations[lang][key];
       }
     });
-    if (lang === 'zh') {
-      document.title = 'PT3 (雲芝糖肽PSP結合T3) | 大學科研配方 | Wonder Herb';
-      document.documentElement.lang = 'zh';
-    } else {
-      document.title = 'PT3 (Yunzhi PSP + T3) | University Research Formula | Wonder Herb';
-      document.documentElement.lang = 'en';
-    }
+    document.title = ({ zh: 'PT3 (雲芝糖肽PSP結合T3) | 大學科研配方 | Wonder Herb', en: 'PT3 (Yunzhi PSP + T3) | University Research Formula | Wonder Herb', de: 'PT3 (Yunzhi PSP + T3) | University Research Formula | Wonder Herb' })[lang] || 'PT3 (Yunzhi PSP + T3) | University Research Formula | Wonder Herb'; document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn');
     const enSpan = document.getElementById('langEnBtn');
     if (zhSpan && enSpan) {
-      if (lang === 'zh') { zhSpan.classList.add('active-lang'); zhSpan.setAttribute('aria-current', 'true'); enSpan.classList.remove('active-lang'); enSpan.setAttribute('aria-current', 'false'); }
-      else { enSpan.classList.add('active-lang'); enSpan.setAttribute('aria-current', 'true'); zhSpan.classList.remove('active-lang'); zhSpan.setAttribute('aria-current', 'false'); }
+      const deSpan = document.getElementById('langDeBtn');
+    if (zhSpan && enSpan) {
+      zhSpan.classList.toggle('active-lang', lang === 'zh');
+      enSpan.classList.toggle('active-lang', lang === 'en');
+      if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); }
+      zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false');
+      enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false');
+    }
     }
   }
 
   function setLanguage(lang) {
-    if (lang !== 'zh' && lang !== 'en') return;
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return;
     currentLang = lang;
     localStorage.setItem('wonderherb_lang', lang);
     applyStaticTranslation(currentLang);
@@ -1335,7 +1440,7 @@
 
   function initLanguage() {
     const saved = localStorage.getItem('wonderherb_lang');
-    if (saved === 'zh' || saved === 'en') currentLang = saved;
+    if (saved === 'zh' || saved === 'en' || saved === 'de') currentLang = saved;
     else currentLang = 'zh';
     applyStaticTranslation(currentLang);
   }
@@ -1349,6 +1454,11 @@
     }
     if (enBtn) {
       enBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('en'); });
+      const deBtn = document.getElementById('langDeBtn');
+      if (deBtn) {
+        deBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('de'); });
+        deBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('de'); } });
+      }
       enBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('en'); } });
     }
   }
@@ -1373,14 +1483,14 @@
     if (!toggle || !panel) return;
     const closeMenu = () => {
       toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單');
+      toggle.setAttribute('aria-label', ({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單');
       panel.classList.remove('is-open');
       document.body.classList.remove('menu-open');
     };
     toggle.addEventListener('click', () => {
       const isOpen = panel.classList.toggle('is-open');
       toggle.setAttribute('aria-expanded', String(isOpen));
-      toggle.setAttribute('aria-label', isOpen ? (document.documentElement.lang === 'en' ? 'Close menu' : '關閉選單') : (document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單'));
+      toggle.setAttribute('aria-label', isOpen ? (({ zh: '關閉選單', en: 'Close menu', de: 'Menü schließen' })[document.documentElement.lang] || '關閉選單') : (({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單'));
       document.body.classList.toggle('menu-open', isOpen);
     });
     panel.querySelectorAll('a').forEach(link => { link.addEventListener('click', closeMenu); });

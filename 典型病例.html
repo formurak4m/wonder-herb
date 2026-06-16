@@ -35,7 +35,7 @@
         "@type": "ContactPoint",
         "telephone": "+85293318571",
         "contactType": "customer service",
-        "availableLanguage": ["Chinese", "English"]
+        "availableLanguage": ["Chinese", "English", "German"]
       },
       "sameAs": [
         "https://www.facebook.com/wonderherbhealth",
@@ -441,7 +441,7 @@
     .filter-chip {
       background: #f6f2ed;
       border: 1px solid #e1d9d2;
-      padding: 6px 18px;
+      padding: 6px 15px;
       border-radius: 40px;
       font-size: 0.85rem;
       font-weight: 500;
@@ -449,6 +449,9 @@
       cursor: pointer;
       transition: all 0.2s ease;
       font-family: 'Inter', sans-serif;
+      flex: 110px;
+      text-align: center;
+      white-space: nowrap;
     }
     .filter-chip:hover {
       background: #e6dfd7;
@@ -507,6 +510,7 @@
       color: #4a4a48;
       line-height: 1.7;
       font-size: 1rem;
+      text-align: justify;
     }
     .case-content p {
       margin-bottom: 1rem;
@@ -515,8 +519,8 @@
     footer {
       background: #1f2c1c;
       color: #ddd;
-      padding: 48px 0 24px;
-      margin-top: 40px;
+      padding: 48px 0 32px;
+      margin-top: 0px;
     }
     .footer-inner {
       display: flex;
@@ -612,13 +616,16 @@
       .cases-grid { gap: 24px; }
     }
     @media (max-width: 768px) {
-      .container { padding: 0 18px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .cases-grid { grid-template-columns: 1fr; gap: 24px; }
       .header-inner { padding: 12px 0; flex-wrap: wrap; }
       .nav-menu ul { gap: 12px; justify-content: center; flex-wrap: wrap; }
       .nav-menu a { font-size: 0.95rem; }
       .header-actions { gap: 12px; width: 100%; justify-content: center; flex-wrap: wrap; }
-      .btn-contact { padding: 8px 16px; font-size: 0.9rem; }
+      .btn-contact { padding: 8px 16px; font-size: 0.9rem; white-space: normal; max-width: 100%; }
       footer { padding: 30px 0 16px; }
             .footer-inner {
                 gap: 24px;
@@ -657,14 +664,20 @@
             }
 }
     @media (max-width: 640px) {
-      .container { padding: 0 16px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .page-header h1 { font-size: 1.6rem; }
       .page-header p { font-size: 0.95rem; }
       .case-card { padding: 16px; }
       .case-title { font-size: 1.05rem; }
     }
     @media (max-width: 480px) {
-      .container { padding: 0 14px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .page-header h1 { font-size: 1.4rem; }
       .page-header p { font-size: 0.9rem; }
       .cases-grid { grid-template-columns: 1fr; gap: 16px; }
@@ -678,7 +691,10 @@
       .back-to-top { bottom: 16px; right: 16px; width: 40px; height: 40px; }
     }
     @media (max-width: 380px) {
-      .container { padding: 0 12px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .case-card { padding: 10px; font-size: 0.85rem; }
       .case-title { font-size: 0.95rem; }
     }
@@ -873,6 +889,7 @@
         }
 
         .main-header .logo {
+            margin-left: 25px;
             flex: 0 0 auto;
         }
 
@@ -881,6 +898,7 @@
         }
 
         .menu-toggle {
+            margin-right: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -913,6 +931,7 @@
             align-items: stretch;
             justify-content: flex-start;
             flex-wrap: nowrap;
+            margin-left: 25px;
         }
 
         .main-header .nav-menu li {
@@ -940,8 +959,8 @@
     footer {
         background: #1f2c1c;
         color: #ddd;
-        padding: 48px 0 24px;
-        margin-top: 40px;
+        padding: 48px 0 32px;
+        margin-top: 0px;
     }
 
     .footer-inner {
@@ -1002,15 +1021,38 @@
     /* Shared small-screen footer layout */
     @media (max-width: 768px) {
         footer {
-            padding: 30px 0 16px !important;
+            padding: 32px 0 32px !important;
         }
         .footer-inner {
-            gap: 24px !important;
-            flex-wrap: wrap !important;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
         }
         .footer-col {
-            flex: 0 1 100% !important;
-            text-align: center !important;
+            text-align: left;
+        }
+        .footer-brand-detail {
+            display: none;
+        }
+        .footer-contact {
+            display: none;
+        }
+        .footer-col:last-child {
+            display: none;
+        }
+        footer .container ul {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        footer .container ul li + li {
+            margin-top: 6px !important;
+        }
+        .footer-social {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
         }
     }
 </style>
@@ -1022,7 +1064,8 @@
     <div class="lang-selector" aria-label="語言切換器" role="group">
       <i class="fas fa-globe" aria-hidden="true"></i>
       <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span>
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
     </div>
   </div>
 </div>
@@ -1084,14 +1127,16 @@
   <div class="container footer-inner">
     <div class="footer-col">
       <h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4>
-      <p data-i18n="footer_col1_text1">以人為本，天然高效。</p>
-      <p data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
-      <p data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
+      <p class="footer-brand-tagline" data-i18n="footer_col1_text1">以人為本，天然高效。</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_contact_title">聯絡我們</h4>
-      <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
-      <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      <div class="footer-contact">
+        <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
+        <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      </div>
       <div class="footer-social">
         <a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
         <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -1100,12 +1145,14 @@
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_info_title">資訊中心</h4>
-      <ul style="list-style: none;">
-        <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
-        <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
-        <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
-        <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
-      </ul>
+      <div class="footer-links">
+        <ul style="list-style: none;">
+          <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
+          <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
+          <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
+          <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="container copyright">
@@ -1148,6 +1195,38 @@
       copyright: "© 2025 Wonder-herb Health Products Ltd. All Rights Reserved | Natural Yunzhi PSP Expert",
       filter_search_placeholder: "🔍 Search cases (disease / keyword)...", filter_reset: "Clear all filters", filter_by_disease: "Quick filter:", filter_all: "All Cases", result_prefix: "",
       result_suffix: " cases found"
+    },
+    de: {
+      nav_home: "Über uns",
+      nav_products: "Produkte",
+      nav_research: "Forschung",
+      nav_testing: "Tests",
+      nav_cases: "Fälle",
+      nav_brochure: "Broschüre",
+      nav_articles: "Artikel",
+      nav_faq: "FAQ",
+      nav_contact: "Kontakt",
+      header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
+      cases_page_title: "Typische Fälle",
+      cases_page_desc: "Real Recovery Stories · Yunzhi PSP Essence Helps Countless Patients Regain Health",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
+      footer_col1_text2: "GMP-zertifiziert in Kanada",
+      footer_col1_text3: "Doppelte Prüfung: Kanada & HK",
+      footer_contact_title: "Kontakt",
+      footer_whatsapp_label: "WhatsApp-Hotline",
+      footer_info_title: "Informationszentrum",
+      footer_link_research: "Forschung",
+      footer_link_testing: "Prüfberichte",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Fallstudien",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
+      filter_search_placeholder: "🔍 Search cases (disease / keyword)...",
+      filter_reset: "Clear all filters",
+      filter_by_disease: "Quick filter:",
+      filter_all: "All Cases",
+      result_prefix: "",
+      result_suffix: " cases found"
     }
   };
 
@@ -1155,21 +1234,21 @@
   // 病例数据 (中英文完整对照)
   // --------------------------------------------------------------
   const caseDataList = [
-    { zh: { title: "麥女士（77歲）", subtitle: "肛門惡性腫瘤", content: "<p>2025年體檢發現肛門長了惡性腫瘤，已擴散到附近的一粒淋巴。醫生安排做連續30次根治性的電療和化療...病人由第一天療程便開始服用每日3次（每次6粒雲芝 + 1粒T3）去減低療程的不適...醫生也不斷讚病人好叻，身體的接受程度更勝40歲的病人。</p>" }, en: { title: "Ms. Mak (77)", subtitle: "Anal Malignant Tumor", content: "<p>In 2025, a routine checkup revealed a malignant tumor in the anus that had spread to a nearby lymph node... She only felt mild discomfort at the radiotherapy site on day 22... The doctor praised her resilience.</p>" } },
-    { zh: { title: "陳小姐（55歲）", subtitle: "腹膜惡性腫瘤", content: "<p>2023年發現腹膜長了惡性腫瘤，沒有擴散，做了切除手術。手術後開始每天食雲芝（24粒）及T3（4粒）...照CT結果一切正常。</p>" }, en: { title: "Ms. Chan (55)", subtitle: "Peritoneal Malignancy", content: "<p>In 2023, she was diagnosed with a peritoneal malignant tumor without metastasis and underwent surgical removal. CT scans at 6 months and 15 months showed normal results.</p>" } },
-    { zh: { title: "Peter Hall（74歲）", subtitle: "前列腺惡性腫瘤", content: "<p>2010年發現前列腺疾病，格里森評分為7。服用PSP後PSA下降，MRI檢查未發現前列腺疾病。</p>" }, en: { title: "Peter Hall (74)", subtitle: "Prostate Cancer", content: "<p>In 2010, routine exams revealed prostate cancer with Gleason score 7. After PSP, PSA dropped and MRI showed no evidence of cancer.</p>" } },
-    { zh: { title: "吳先生（81歲）", subtitle: "肺惡性腫瘤", content: "<p>交通意外後發現肺部惡性腫瘤，手術切除部份後無法切除剩餘，開始服用雲芝糖肽至今十年，生活正常。</p>" }, en: { title: "Mr. Ng (81)", subtitle: "Lung Malignancy", content: "<p>After car accident, lung malignancy discovered. Post-surgery took Yunzhi PSP for ten years, living normally.</p>" } },
-    { zh: { title: "潘先生（92歲）", subtitle: "咽喉惡性腫瘤", content: "<p>二十年前咽喉頑疾，化療電療後服用康草堂雲芝糖肽二十年，一切正常。</p>" }, en: { title: "Mr. Poon (92)", subtitle: "Throat Cancer", content: "<p>Throat malignancy twenty years ago, after chemoradiotherapy took Yunzhi PSP for 20 years, remains healthy.</p>" } },
-    { zh: { title: "鄧女士（67歲）", subtitle: "大腸惡性腫瘤", content: "<p>2016年大腸頑症，復發後配合雲芝糖肽+T3，腫瘤由4.5cm縮至1.5cm。</p>" }, en: { title: "Ms. Tang (67)", subtitle: "Colorectal Cancer", content: "<p>Colorectal cancer recurrence, after Yunzhi PSP+T3 tumor shrank from 4.5cm to 1.5cm.</p>" } },
-    { zh: { title: "林女士（73歲）", subtitle: "大腸惡性腫瘤", content: "<p>2014年腸頑症第三期，術後服用雲芝十年無復發，免疫力顯著提升。</p>" }, en: { title: "Ms. Lam (73)", subtitle: "Colorectal Cancer", content: "<p>Stage 3 colon cancer, after surgery took Yunzhi for ten years, no recurrence.</p>" } },
-    { zh: { title: "陳先生（63歲）", subtitle: "胰臟惡性腫瘤", content: "<p>2023年胰臟頑症術後擴散肝臟，化療效果不佳，服用雲芝PSP+T3後明顯改善。</p>" }, en: { title: "Mr. Chan (63)", subtitle: "Pancreatic Cancer", content: "<p>Pancreatic cancer with liver metastasis, after Yunzhi PSP+T3 significant improvement.</p>" } },
-    { zh: { title: "謝先生（65歲）", subtitle: "胰臟惡性腫瘤", content: "<p>2014年胰臟癌擴散肺部，配合雲芝糖肽後CA19.9下降，腫瘤縮小。</p>" }, en: { title: "Mr. Tse (65)", subtitle: "Pancreatic Cancer", content: "<p>Pancreatic cancer with lung mets, CA19.9 dropped and tumor shrank.</p>" } },
-    { zh: { title: "王女士（60歲）", subtitle: "胰臟惡性腫瘤", content: "<p>2011年胰臟癌擴散無法手術，服用雲芝糖肽後正常生活至今。</p>" }, en: { title: "Ms. Wong (60)", subtitle: "Pancreatic Cancer", content: "<p>Inoperable pancreatic cancer, after Yunzhi PSP she lives normally.</p>" } },
-    { zh: { title: "周先生（40歲）", subtitle: "淋巴惡性腫瘤", content: "<p>2012年淋巴瘤化療不佳，服用雲芝+T3後好轉，恢復正常。</p>" }, en: { title: "Mr. Chow (40)", subtitle: "Lymphoma", content: "<p>Lymphoma, after Yunzhi+T3 condition improved and he returned to normal.</p>" } },
-    { zh: { title: "林先生（38歲）", subtitle: "腎惡性腫瘤", content: "<p>2011年腎癌術後擴散，服用雲芝糖肽後恢復上班，一切正常。</p>" }, en: { title: "Mr. Lam (38)", subtitle: "Renal Malignancy", content: "<p>Kidney cancer recurrence with mets, after Yunzhi PSP returned to work.</p>" } },
-    { zh: { title: "陳先生（52歲）", subtitle: "睪丸惡性腫瘤", content: "<p>2004年睪丸惡性腫瘤，化療期間服用雲芝，持續至今健康良好。</p>" }, en: { title: "Mr. Chan (52)", subtitle: "Testicular Cancer", content: "<p>Testicular cancer, took Yunzhi during chemo and remains healthy.</p>" } },
-    { zh: { title: "李先生（80歲）", subtitle: "口水腺惡性腫瘤", content: "<p>1998年口水腺癌術後服用雲芝二十多年。2023年舌癌，遺憾停用後不敵病魔。</p>" }, en: { title: "Mr. Lee (80)", subtitle: "Salivary Gland Cancer", content: "<p>Salivary gland cancer, took Yunzhi for 20+ years. Later tongue cancer, after discontinuing supplements passed away.</p>" } },
-    { zh: { title: "林女士（73歲）", subtitle: "結腸惡性腫瘤", content: "<p>2014年結腸癌第三期，術後服用雲芝PSP十年，免疫系統改善。</p>" }, en: { title: "Ms. Lam (73)", subtitle: "Colon Cancer", content: "<p>Stage 3 colon cancer, after taking PSP for ten years, immune system enhanced.</p>" } }
+    { zh: { title: "麥女士（77歲）", subtitle: "肛門惡性腫瘤", content: "<p>2025年體檢發現肛門長了惡性腫瘤，已擴散到附近的一粒淋巴。醫生安排做連續30次根治性的電療和化療...病人由第一天療程便開始服用每日3次（每次6粒雲芝 + 1粒T3）去減低療程的不適...醫生也不斷讚病人好叻，身體的接受程度更勝40歲的病人。</p>" }, en: { title: "Ms. Mak (77)", subtitle: "Anal Malignant Tumor", content: "<p>In 2025, a routine checkup revealed a malignant tumor in the anus that had spread to a nearby lymph node... She only felt mild discomfort at the radiotherapy site on day 22... The doctor praised her resilience.</p>" }, de: { title: "Ms. Mak (77)", subtitle: "Anal Malignant Tumor", content: "<p>In 2025, a routine checkup revealed a malignant tumor in the anus that had spread to a nearby lymph node... She only felt mild discomfort at the radiotherapy site on day 22... The doctor praised her resilience.</p>" } },
+    { zh: { title: "陳小姐（55歲）", subtitle: "腹膜惡性腫瘤", content: "<p>2023年發現腹膜長了惡性腫瘤，沒有擴散，做了切除手術。手術後開始每天食雲芝（24粒）及T3（4粒）...照CT結果一切正常。</p>" }, en: { title: "Ms. Chan (55)", subtitle: "Peritoneal Malignancy", content: "<p>In 2023, she was diagnosed with a peritoneal malignant tumor without metastasis and underwent surgical removal. CT scans at 6 months and 15 months showed normal results.</p>" }, de: { title: "Ms. Chan (55)", subtitle: "Peritoneal Malignancy", content: "<p>In 2023, she was diagnosed with a peritoneal malignant tumor without metastasis and underwent surgical removal. CT scans at 6 months and 15 months showed normal results.</p>" } },
+    { zh: { title: "Peter Hall（74歲）", subtitle: "前列腺惡性腫瘤", content: "<p>2010年發現前列腺疾病，格里森評分為7。服用PSP後PSA下降，MRI檢查未發現前列腺疾病。</p>" }, en: { title: "Peter Hall (74)", subtitle: "Prostate Cancer", content: "<p>In 2010, routine exams revealed prostate cancer with Gleason score 7. After PSP, PSA dropped and MRI showed no evidence of cancer.</p>" }, de: { title: "Peter Hall (74)", subtitle: "Prostate Cancer", content: "<p>In 2010, routine exams revealed prostate cancer with Gleason score 7. After PSP, PSA dropped and MRI showed no evidence of cancer.</p>" } },
+    { zh: { title: "吳先生（81歲）", subtitle: "肺惡性腫瘤", content: "<p>交通意外後發現肺部惡性腫瘤，手術切除部份後無法切除剩餘，開始服用雲芝糖肽至今十年，生活正常。</p>" }, en: { title: "Mr. Ng (81)", subtitle: "Lung Malignancy", content: "<p>After car accident, lung malignancy discovered. Post-surgery took Yunzhi PSP for ten years, living normally.</p>" }, de: { title: "Mr. Ng (81)", subtitle: "Lung Malignancy", content: "<p>After car accident, lung malignancy discovered. Post-surgery took Yunzhi PSP for ten years, living normally.</p>" } },
+    { zh: { title: "潘先生（92歲）", subtitle: "咽喉惡性腫瘤", content: "<p>二十年前咽喉頑疾，化療電療後服用康草堂雲芝糖肽二十年，一切正常。</p>" }, en: { title: "Mr. Poon (92)", subtitle: "Throat Cancer", content: "<p>Throat malignancy twenty years ago, after chemoradiotherapy took Yunzhi PSP for 20 years, remains healthy.</p>" }, de: { title: "Mr. Poon (92)", subtitle: "Throat Cancer", content: "<p>Throat malignancy twenty years ago, after chemoradiotherapy took Yunzhi PSP for 20 years, remains healthy.</p>" } },
+    { zh: { title: "鄧女士（67歲）", subtitle: "大腸惡性腫瘤", content: "<p>2016年大腸頑症，復發後配合雲芝糖肽+T3，腫瘤由4.5cm縮至1.5cm。</p>" }, en: { title: "Ms. Tang (67)", subtitle: "Colorectal Cancer", content: "<p>Colorectal cancer recurrence, after Yunzhi PSP+T3 tumor shrank from 4.5cm to 1.5cm.</p>" }, de: { title: "Ms. Tang (67)", subtitle: "Colorectal Cancer", content: "<p>Colorectal cancer recurrence, after Yunzhi PSP+T3 tumor shrank from 4.5cm to 1.5cm.</p>" } },
+    { zh: { title: "林女士（73歲）", subtitle: "大腸惡性腫瘤", content: "<p>2014年腸頑症第三期，術後服用雲芝十年無復發，免疫力顯著提升。</p>" }, en: { title: "Ms. Lam (73)", subtitle: "Colorectal Cancer", content: "<p>Stage 3 colon cancer, after surgery took Yunzhi for ten years, no recurrence.</p>" }, de: { title: "Ms. Lam (73)", subtitle: "Colorectal Cancer", content: "<p>Stage 3 colon cancer, after surgery took Yunzhi for ten years, no recurrence.</p>" } },
+    { zh: { title: "陳先生（63歲）", subtitle: "胰臟惡性腫瘤", content: "<p>2023年胰臟頑症術後擴散肝臟，化療效果不佳，服用雲芝PSP+T3後明顯改善。</p>" }, en: { title: "Mr. Chan (63)", subtitle: "Pancreatic Cancer", content: "<p>Pancreatic cancer with liver metastasis, after Yunzhi PSP+T3 significant improvement.</p>" }, de: { title: "Mr. Chan (63)", subtitle: "Pancreatic Cancer", content: "<p>Pancreatic cancer with liver metastasis, after Yunzhi PSP+T3 significant improvement.</p>" } },
+    { zh: { title: "謝先生（65歲）", subtitle: "胰臟惡性腫瘤", content: "<p>2014年胰臟癌擴散肺部，配合雲芝糖肽後CA19.9下降，腫瘤縮小。</p>" }, en: { title: "Mr. Tse (65)", subtitle: "Pancreatic Cancer", content: "<p>Pancreatic cancer with lung mets, CA19.9 dropped and tumor shrank.</p>" }, de: { title: "Mr. Tse (65)", subtitle: "Pancreatic Cancer", content: "<p>Pancreatic cancer with lung mets, CA19.9 dropped and tumor shrank.</p>" } },
+    { zh: { title: "王女士（60歲）", subtitle: "胰臟惡性腫瘤", content: "<p>2011年胰臟癌擴散無法手術，服用雲芝糖肽後正常生活至今。</p>" }, en: { title: "Ms. Wong (60)", subtitle: "Pancreatic Cancer", content: "<p>Inoperable pancreatic cancer, after Yunzhi PSP she lives normally.</p>" }, de: { title: "Ms. Wong (60)", subtitle: "Pancreatic Cancer", content: "<p>Inoperable pancreatic cancer, after Yunzhi PSP she lives normally.</p>" } },
+    { zh: { title: "周先生（40歲）", subtitle: "淋巴惡性腫瘤", content: "<p>2012年淋巴瘤化療不佳，服用雲芝+T3後好轉，恢復正常。</p>" }, en: { title: "Mr. Chow (40)", subtitle: "Lymphoma", content: "<p>Lymphoma, after Yunzhi+T3 condition improved and he returned to normal.</p>" }, de: { title: "Mr. Chow (40)", subtitle: "Lymphoma", content: "<p>Lymphoma, after Yunzhi+T3 condition improved and he returned to normal.</p>" } },
+    { zh: { title: "林先生（38歲）", subtitle: "腎惡性腫瘤", content: "<p>2011年腎癌術後擴散，服用雲芝糖肽後恢復上班，一切正常。</p>" }, en: { title: "Mr. Lam (38)", subtitle: "Renal Malignancy", content: "<p>Kidney cancer recurrence with mets, after Yunzhi PSP returned to work.</p>" }, de: { title: "Mr. Lam (38)", subtitle: "Renal Malignancy", content: "<p>Kidney cancer recurrence with mets, after Yunzhi PSP returned to work.</p>" } },
+    { zh: { title: "陳先生（52歲）", subtitle: "睪丸惡性腫瘤", content: "<p>2004年睪丸惡性腫瘤，化療期間服用雲芝，持續至今健康良好。</p>" }, en: { title: "Mr. Chan (52)", subtitle: "Testicular Cancer", content: "<p>Testicular cancer, took Yunzhi during chemo and remains healthy.</p>" }, de: { title: "Mr. Chan (52)", subtitle: "Testicular Cancer", content: "<p>Testicular cancer, took Yunzhi during chemo and remains healthy.</p>" } },
+    { zh: { title: "李先生（80歲）", subtitle: "口水腺惡性腫瘤", content: "<p>1998年口水腺癌術後服用雲芝二十多年。2023年舌癌，遺憾停用後不敵病魔。</p>" }, en: { title: "Mr. Lee (80)", subtitle: "Salivary Gland Cancer", content: "<p>Salivary gland cancer, took Yunzhi for 20+ years. Later tongue cancer, after discontinuing supplements passed away.</p>" }, de: { title: "Mr. Lee (80)", subtitle: "Salivary Gland Cancer", content: "<p>Salivary gland cancer, took Yunzhi for 20+ years. Later tongue cancer, after discontinuing supplements passed away.</p>" } },
+    { zh: { title: "林女士（73歲）", subtitle: "結腸惡性腫瘤", content: "<p>2014年結腸癌第三期，術後服用雲芝PSP十年，免疫系統改善。</p>" }, en: { title: "Ms. Lam (73)", subtitle: "Colon Cancer", content: "<p>Stage 3 colon cancer, after taking PSP for ten years, immune system enhanced.</p>" }, de: { title: "Ms. Lam (73)", subtitle: "Colon Cancer", content: "<p>Stage 3 colon cancer, after taking PSP for ten years, immune system enhanced.</p>" } }
   ];
 
   let currentLang = 'zh';
@@ -1300,18 +1379,24 @@
         el.innerHTML = translations[lang][key];
       }
     });
-    document.title = lang === 'zh' ? '典型病例 | 康草堂 Wonder Herb - 雲芝糖肽精華真實見證' : 'Case Studies | Wonder Herb - Yunzhi PSP Essence Real Testimonials';
-    document.documentElement.lang = lang === 'zh' ? 'zh' : 'en';
+    document.title = ({ zh: '典型病例 | 康草堂 Wonder Herb - 雲芝糖肽精華真實見證', en: 'Case Studies | Wonder Herb - Yunzhi PSP Essence Real Testimonials', de: 'Case Studies | Wonder Herb - Yunzhi PSP Essence Real Testimonials' })[lang] || 'Case Studies | Wonder Herb - Yunzhi PSP Essence Real Testimonials';
+    document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn');
     const enSpan = document.getElementById('langEnBtn');
     if (zhSpan && enSpan) {
-      if (lang === 'zh') { zhSpan.classList.add('active-lang'); enSpan.classList.remove('active-lang'); zhSpan.setAttribute('aria-current','true'); enSpan.setAttribute('aria-current','false'); }
-      else { enSpan.classList.add('active-lang'); zhSpan.classList.remove('active-lang'); enSpan.setAttribute('aria-current','true'); zhSpan.setAttribute('aria-current','false'); }
+      const deSpan = document.getElementById('langDeBtn');
+    if (zhSpan && enSpan) {
+      zhSpan.classList.toggle('active-lang', lang === 'zh');
+      enSpan.classList.toggle('active-lang', lang === 'en');
+      if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); }
+      zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false');
+      enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false');
+    }
     }
   }
 
   function setLanguage(lang) {
-    if (lang !== 'zh' && lang !== 'en') return;
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return;
     currentLang = lang;
     localStorage.setItem('wonderherb_lang', lang);
     currentSearchTerm = '';
@@ -1321,7 +1406,7 @@
 
   function initLanguageAndFilters() {
     const savedLang = localStorage.getItem('wonderherb_lang');
-    if (savedLang === 'zh' || savedLang === 'en') currentLang = savedLang;
+    if (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de') currentLang = savedLang;
     else currentLang = 'zh';
     currentSearchTerm = '';
     currentDiseaseFilter = '';
@@ -1345,14 +1430,14 @@
     if (!toggle || !panel) return;
     const closeMenu = () => {
       toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單');
+      toggle.setAttribute('aria-label', ({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單');
       panel.classList.remove('is-open');
       document.body.classList.remove('menu-open');
     };
     toggle.addEventListener('click', () => {
       const isOpen = panel.classList.toggle('is-open');
       toggle.setAttribute('aria-expanded', String(isOpen));
-      toggle.setAttribute('aria-label', isOpen ? (document.documentElement.lang === 'en' ? 'Close menu' : '關閉選單') : (document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單'));
+      toggle.setAttribute('aria-label', isOpen ? (({ zh: '關閉選單', en: 'Close menu', de: 'Menü schließen' })[document.documentElement.lang] || '關閉選單') : (({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單'));
       document.body.classList.toggle('menu-open', isOpen);
     });
     panel.querySelectorAll('a').forEach(link => { link.addEventListener('click', closeMenu); });
@@ -1375,6 +1460,11 @@
     const enBtn = document.getElementById('langEnBtn');
     if (zhBtn) zhBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('zh'); });
     if (enBtn) enBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('en'); });
+      const deBtn = document.getElementById('langDeBtn');
+      if (deBtn) {
+        deBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('de'); });
+        deBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('de'); } });
+      }
   });
   window.addEventListener('storage', (e) => { if (e.key === 'wonderHerbCart') updateCartCountBadge(); });
 </script>

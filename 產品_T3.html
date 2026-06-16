@@ -36,7 +36,7 @@
         "@type": "ContactPoint",
         "telephone": "+85293318571",
         "contactType": "customer service",
-        "availableLanguage": ["Chinese", "English"]
+        "availableLanguage": ["Chinese", "English", "German"]
       },
       "sameAs": [
         "https://www.facebook.com/wonderherbhealth",
@@ -531,95 +531,144 @@
 
     /* Footer */
     footer {
-      background: #1f2c1c;
-      color: #ddd;
-      padding: 48px 0 24px;
-      margin-top: 40px;
+        background: #1f2c1c;
+        color: #ddd;
+        padding: 48px 0 32px;
+        margin-top: 0px;
     }
+
     .footer-inner {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 32px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 32px;
     }
+
     .footer-col {
-      flex: 1;
-      min-width: 180px;
+        flex: 1;
+        min-width: 180px;
     }
+
     .footer-col h4 {
-      color: #ffffff;
-      margin-bottom: 16px;
+        color: #ffffff;
+        margin-bottom: 16px;
     }
+
     .footer-col a {
-      color: #ddd;
-      text-decoration: none;
+        color: #ddd;
+        text-decoration: none;
     }
+
     .footer-col a:hover {
-      color: #ffffff;
+        color: #ffffff;
     }
+
     .footer-social a {
-      color: #ddd;
-      font-size: 1.4rem;
-      margin-right: 16px;
-      transition: 0.2s;
-      display: inline-block;
-      text-decoration: none;
+        color: #ddd;
+        font-size: 1.4rem;
+        margin-right: 16px;
+        transition: 0.2s;
+        text-decoration: none;
+        display: inline-block;
     }
+
     .footer-social a:hover {
-      color: #ffd966;
+        color: #ffd966;
     }
+
     .copyright {
-      text-align: center;
-      padding-top: 32px;
-      border-top: 1px solid #3a4a36;
-      margin-top: 32px;
-      font-size: 0.85rem;
+        text-align: center;
+        padding-top: 32px;
+        border-top: 1px solid #3a4a36;
+        margin-top: 32px;
+        font-size: 0.85rem;
     }
+
     .last-update {
-      margin-top: 8px;
-      font-size: 0.7rem;
-      color: #a8b7a4;
-      letter-spacing: 0.3px;
+        margin-top: 8px;
+        font-size: 0.7rem;
+        color: #a8b7a4;
+        letter-spacing: 0.3px;
     }
+
+
+    /* Shared small-screen footer layout */
+    @media (max-width: 768px) {
+        footer {
+            padding: 32px 0 32px !important;
+        }
+        .footer-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+        .footer-col {
+            text-align: left;
+        }
+        .footer-brand-detail {
+            display: none;
+        }
+        .footer-contact {
+            display: none;
+        }
+        .footer-col:last-child {
+            display: none;
+        }
+        footer .container ul {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        footer .container ul li + li {
+            margin-top: 6px !important;
+        }
+        .footer-social {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
+        }
+    }
+
     .back-to-top {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background-color: #2d5e3b;
-      color: white;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      font-size: 1.5rem;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 99;
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #2d5e3b;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 1.5rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 99;
     }
     .back-to-top.show {
-      opacity: 1;
-      visibility: visible;
+        opacity: 1;
+        visibility: visible;
     }
     .back-to-top:hover {
-      background-color: #1e4028;
-      transform: translateY(-3px);
+        background-color: #1e4028;
+        transform: translateY(-3px);
     }
     /* 屏幕阅读器专用文字 */
     .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
     }
     @media (max-width: 1024px) {
       .container { padding: 0 20px; }
@@ -627,13 +676,16 @@
       .nav-menu ul { gap: 16px; }
     }
     @media (max-width: 768px) {
-      .container { padding: 0 18px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .product-grid { grid-template-columns: 1fr; gap: 24px; }
       .header-inner { padding: 12px 0; flex-wrap: wrap; }
       .nav-menu ul { gap: 12px; justify-content: center; flex-wrap: wrap; }
       .nav-menu a { font-size: 0.95rem; }
       .header-actions { gap: 12px; width: 100%; justify-content: center; flex-wrap: wrap; }
-      .btn-contact { padding: 8px 16px; font-size: 0.9rem; }
+      .btn-contact { padding: 8px 16px; font-size: 0.9rem; white-space: normal; max-width: 100%; }
       .product-title { font-size: 1.9rem; }
       .product-price { font-size: 1.7rem; }
       .section-title { font-size: 1.5rem; }
@@ -646,15 +698,18 @@
       .footer-col { flex: 0 1 100%; text-align: center; }
     }
     @media (max-width: 640px) {
-      .container { padding: 0 16px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .logo img { height: 45px; }
       .nav-menu a { font-size: 0.9rem; }
       .product-title { font-size: 1.6rem; }
       .product-price { font-size: 1.5rem; }
       .product-short-desc { font-size: 0.95rem; }
       .quantity-input { font-size: 0.95rem; }
-      .btn-primary { font-size: 0.95rem; padding: 12px 24px; }
-      .btn-secondary { font-size: 0.95rem; padding: 10px 20px; }
+      .btn-primary { font-size: 0.95rem; padding: 12px 24px; white-space: normal; max-width: 100%; }
+      .btn-secondary { font-size: 0.95rem; padding: 10px 20px; white-space: normal; max-width: 100%; }
       .section-title { font-size: 1.3rem; padding-left: 12px; }
       .product-details-card { padding: 24px; }
       .quality-highlight { padding: 24px; }
@@ -672,15 +727,18 @@
       .last-update { font-size: 0.65rem; }
     }
     @media (max-width: 480px) {
-      .container { padding: 0 14px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .logo img { height: 40px; }
       .nav-menu a { font-size: 0.85rem; }
       .product-title { font-size: 1.4rem; }
       .product-price { font-size: 1.3rem; }
       .product-short-desc { font-size: 0.9rem; }
       .quantity-input { font-size: 0.9rem; }
-      .btn-primary { font-size: 0.9rem; padding: 10px 18px; }
-      .btn-secondary { font-size: 0.9rem; padding: 8px 16px; }
+      .btn-primary { font-size: 0.9rem; padding: 10px 18px; white-space: normal; max-width: 100%; }
+      .btn-secondary { font-size: 0.9rem; padding: 8px 16px; white-space: normal; max-width: 100%; }
       .section-title { font-size: 1.15rem; }
       .product-details-card { padding: 18px; margin-bottom: 24px; }
       .quality-highlight { padding: 18px; }
@@ -696,15 +754,18 @@
       .last-update { font-size: 0.6rem; }
     }
     @media (max-width: 380px) {
-      .container { padding: 0 12px; }
+      .container { padding: 0 30px; }
+        .logo {
+            margin-left: 25px;
+        }
       .logo img { height: 35px; }
       .nav-menu a { font-size: 0.8rem; }
       .product-title { font-size: 1.2rem; }
       .product-price { font-size: 1.1rem; }
       .product-short-desc { font-size: 0.85rem; }
       .quantity-input { font-size: 0.85rem; }
-      .btn-primary { font-size: 0.85rem; padding: 8px 14px; }
-      .btn-secondary { font-size: 0.85rem; padding: 6px 12px; }
+      .btn-primary { font-size: 0.85rem; padding: 8px 14px; white-space: normal; max-width: 100%; }
+      .btn-secondary { font-size: 0.85rem; padding: 6px 12px; white-space: normal; max-width: 100%; }
       .section-title { font-size: 1rem; }
       .product-details-card { padding: 16px; margin-bottom: 20px; }
       .quality-highlight { padding: 14px; }
@@ -914,6 +975,7 @@
         }
 
         .main-header .logo {
+            margin-left: 25px;
             flex: 0 0 auto;
         }
 
@@ -922,6 +984,7 @@
         }
 
         .menu-toggle {
+            margin-right: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -954,6 +1017,7 @@
             align-items: stretch;
             justify-content: flex-start;
             flex-wrap: nowrap;
+            margin-left: 25px;
         }
 
         .main-header .nav-menu li {
@@ -981,8 +1045,8 @@
     footer {
         background: #1f2c1c;
         color: #ddd;
-        padding: 48px 0 24px;
-        margin-top: 40px;
+        padding: 48px 0 32px;
+        margin-top: 0px;
     }
 
     .footer-inner {
@@ -1043,15 +1107,38 @@
     /* Shared small-screen footer layout */
     @media (max-width: 768px) {
         footer {
-            padding: 30px 0 16px !important;
+            padding: 32px 0 32px !important;
         }
         .footer-inner {
-            gap: 24px !important;
-            flex-wrap: wrap !important;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
         }
         .footer-col {
-            flex: 0 1 100% !important;
-            text-align: center !important;
+            text-align: left;
+        }
+        .footer-brand-detail {
+            display: none;
+        }
+        .footer-contact {
+            display: none;
+        }
+        .footer-col:last-child {
+            display: none;
+        }
+        footer .container ul {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        footer .container ul li + li {
+            margin-top: 6px !important;
+        }
+        .footer-social {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
         }
     }
 </style>
@@ -1063,7 +1150,8 @@
     <div class="lang-selector" aria-label="語言切換器" role="group">
       <i class="fas fa-globe" aria-hidden="true"></i>
       <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span>
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
     </div>
   </div>
 </div>
@@ -1218,14 +1306,16 @@
   <div class="container footer-inner">
     <div class="footer-col">
       <h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4>
-      <p data-i18n="footer_col1_text1">以人為本，天然高效。</p>
-      <p data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
-      <p data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
+      <p class="footer-brand-tagline" data-i18n="footer_col1_text1">以人為本，天然高效。</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_contact_title">聯絡我們</h4>
-      <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
-      <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      <div class="footer-contact">
+        <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
+        <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      </div>
       <div class="footer-social">
         <a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
         <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -1234,12 +1324,14 @@
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_info_title">資訊中心</h4>
-      <ul style="list-style: none;">
-        <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
-        <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
-        <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
-        <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
-      </ul>
+      <div class="footer-links">
+        <ul style="list-style: none;">
+          <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
+          <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
+          <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
+          <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="container copyright">
@@ -1336,6 +1428,72 @@
       footer_link_research: "Research", footer_link_testing: "Testing Reports", footer_link_faq: "FAQ", footer_link_cases: "Case Studies",
       copyright: "© 2025 Wonder-herb Health Products Ltd. All Rights Reserved | Natural Yunzhi PSP Expert",
       last_update_text: "📅 Last Updated: June 2, 2026 | Product information is reviewed regularly based on latest scientific data."
+    },
+    de: {
+      nav_home: "Über uns",
+      nav_products: "Produkte",
+      nav_research: "Forschung",
+      nav_testing: "Tests",
+      nav_cases: "Fälle",
+      nav_brochure: "Broschüre",
+      nav_articles: "Artikel",
+      nav_faq: "FAQ",
+      nav_contact: "Kontakt",
+      header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
+      product_title_main: "T3 Tocotrienols",
+      product_title_badge: " | QUT Clinical Evidence",
+      product_price: "HK$1,900.00 <span style='font-size:1rem; font-weight:normal;'>/ 120 softgels</span>",
+      product_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> 60x High Activity · Cancer Stem Cell Inhibition · Cardiovascular Support",
+      quantity_label: "Quantity:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> Add to Cart",
+      detail_btn: "More Details <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Certified",
+      badge_absorption: "60x Absorption",
+      badge_university: "University Study",
+      intro_title: "📖 Product Introduction",
+      intro_p1: "<strong>Tocotrienols (T3)</strong> are the most bioactive members of the vitamin E family. Clinical research conducted by <strong>Queensland University of Technology (QUT) Prostate Cancer Forschung Centre</strong> confirms that T3 possesses anti-cancer and cancer stem cell inhibition properties. Its unique chemical structure enables cellular uptake up to 70 times higher than ordinary vitamin E, allowing rapid absorption by the body.",
+      intro_p2: "Wonder Herb T3 uses high-purity natural extracts, free from Alpha-Tocopherol interference, ensuring maximum antioxidant and immune-modulating benefits.",
+      benefits_title: "✨ Key Benefits & Features",
+      benefits_list: "<li><strong>Powerful Antioxidant:</strong> 60 times stronger than synthetic vitamin E, protecting cells from free radicals</li><li><strong>Inhibits Cancer Progression:</strong> Helps suppress tumor growth and slow abnormal cell spread</li><li><strong>Cardiovascular Health:</strong> Lowers cholesterol, supports cardiovascular and metabolic health</li><li><strong>Arterial Protection:</strong> Significant benefits in preventing atherosclerosis</li><li><strong>Hematopoietic Stem Cell Protection:</strong> Protects stem cells, prevents gastrointestinal and vascular damage</li><li><strong>Neuro-anti-inflammatory:</strong> Anti-inflammatory and neuroprotective effects, supports brain health</li>",
+      suitable_title: "👤 Who Should Use",
+      suitable_list: "<li>Cancer patients and those in recovery (adjuvant therapy)</li><li>Individuals with family history of cancer</li><li>Low immunity, chronic fatigue or inflammatory conditions</li><li>Those concerned with cardiovascular health, high cholesterol</li><li>Wellness and anti-aging purposes</li>",
+      note_badge: "Note",
+      note_text: "Pregnant or nursing women, and those taking anticoagulant medication, please consult your doctor first.",
+      research_title: "📚 Scientific Evidence",
+      research_text: "According to studies published by QUT in international journals, T3 selectively induces cancer cell apoptosis while protecting normal cells. Animal studies show that T3 supplementation significantly reduces tumor burden and improves inflammatory markers. Wonder Herb T3 adheres to strict purity standards, ensuring every softgel meets research-grade activity.",
+      spec_title: "📦 Specifications",
+      spec_text: "✔ 120 softgels per bottle (standard pack, approx. 1-2 months supply)",
+      dosage_title: "💊 Recommended Dosage",
+      dosage_list: "<li><strong>Wellness support:</strong> 1 softgel daily with meals</li><li><strong>Cancer adjuvant (chemo/radiotherapy/targeted therapy):</strong> 3 times daily, 1 softgel each time (total 3 per day)</li><li><strong>Post-surgery / Immune boost:</strong> 2 softgels daily</li>",
+      dosage_note: "<em>※ Please consult your doctor or healthcare professional. Can be taken with Yunzhi PSP for enhanced effect.</em>",
+      trust1_title: "Universitätsforschung",
+      trust1_desc: "Validiert in HK/Kanada",
+      trust2_title: "Doppelte Labortests",
+      trust2_desc: "Kanada + Hongkong",
+      trust3_title: "GMP-zertifiziert",
+      trust3_desc: "Health Canada reguliert",
+      trust4_title: "20.000+ Patienten",
+      trust4_desc: "Echte Genesungsgeschichten",
+      related_title: "🌟 You May Also Like",
+      related_psp_name: "Yunzhi PSP Essence",
+      related_psp_desc: "Boosts immunity · Reduces chemo side effects",
+      related_hepa_name: "Hepatitis B Clear",
+      related_hepa_desc: "Natural liver support formula",
+      related_trial_name: "Yunzhi PSP Trial Pack",
+      related_trial_desc: "First trial, fast results",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
+      footer_col1_text2: "GMP-zertifiziert in Kanada",
+      footer_col1_text3: "Doppelte Prüfung: Kanada & HK",
+      footer_contact_title: "Kontakt",
+      footer_whatsapp_label: "WhatsApp-Hotline",
+      footer_info_title: "Informationszentrum",
+      footer_link_research: "Forschung",
+      footer_link_testing: "Prüfberichte",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Fallstudien",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
+      last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
     }
   };
 
@@ -1349,32 +1507,23 @@
         el.innerHTML = translations[lang][key];
       }
     });
-    if (lang === 'zh') {
-      document.title = 'T3 三烯生育醇 | Wonder Herb – 天然抗氧化·頑疾輔助專家';
-      document.documentElement.lang = 'zh';
-    } else {
-      document.title = 'T3 Tocotrienols | Wonder Herb – Natural Antioxidant & Cancer Support';
-      document.documentElement.lang = 'en';
-    }
+    document.title = ({ zh: 'T3 三烯生育醇 | Wonder Herb – 天然抗氧化·頑疾輔助專家', en: 'T3 Tocotrienols | Wonder Herb – Natural Antioxidant & Cancer Support', de: 'T3 Tocotrienols | Wonder Herb – Natural Antioxidant & Cancer Support' })[lang] || 'T3 Tocotrienols | Wonder Herb – Natural Antioxidant & Cancer Support'; document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn');
     const enSpan = document.getElementById('langEnBtn');
     if (zhSpan && enSpan) {
-      if (lang === 'zh') { 
-        zhSpan.classList.add('active-lang'); 
-        zhSpan.setAttribute('aria-current', 'true');
-        enSpan.classList.remove('active-lang'); 
-        enSpan.setAttribute('aria-current', 'false');
-      } else { 
-        enSpan.classList.add('active-lang'); 
-        enSpan.setAttribute('aria-current', 'true');
-        zhSpan.classList.remove('active-lang'); 
-        zhSpan.setAttribute('aria-current', 'false');
-      }
+      const deSpan = document.getElementById('langDeBtn');
+    if (zhSpan && enSpan) {
+      zhSpan.classList.toggle('active-lang', lang === 'zh');
+      enSpan.classList.toggle('active-lang', lang === 'en');
+      if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); }
+      zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false');
+      enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false');
+    }
     }
   }
 
   function setLanguage(lang) {
-    if (lang !== 'zh' && lang !== 'en') return;
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return;
     currentLang = lang;
     localStorage.setItem('wonderherb_lang', lang);
     applyStaticTranslation(currentLang);
@@ -1382,7 +1531,7 @@
 
   function initLanguage() {
     const saved = localStorage.getItem('wonderherb_lang');
-    if (saved === 'zh' || saved === 'en') currentLang = saved;
+    if (saved === 'zh' || saved === 'en' || saved === 'de') currentLang = saved;
     else currentLang = 'zh';
     applyStaticTranslation(currentLang);
   }
@@ -1396,6 +1545,11 @@
     }
     if (enBtn) {
       enBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('en'); });
+      const deBtn = document.getElementById('langDeBtn');
+      if (deBtn) {
+        deBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('de'); });
+        deBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('de'); } });
+      }
       enBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('en'); } });
     }
   }
@@ -1463,14 +1617,14 @@
     if (!toggle || !panel) return;
     const closeMenu = () => {
       toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單');
+      toggle.setAttribute('aria-label', ({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單');
       panel.classList.remove('is-open');
       document.body.classList.remove('menu-open');
     };
     toggle.addEventListener('click', () => {
       const isOpen = panel.classList.toggle('is-open');
       toggle.setAttribute('aria-expanded', String(isOpen));
-      toggle.setAttribute('aria-label', isOpen ? (document.documentElement.lang === 'en' ? 'Close menu' : '關閉選單') : (document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單'));
+      toggle.setAttribute('aria-label', isOpen ? (({ zh: '關閉選單', en: 'Close menu', de: 'Menü schließen' })[document.documentElement.lang] || '關閉選單') : (({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單'));
       document.body.classList.toggle('menu-open', isOpen);
     });
     panel.querySelectorAll('a').forEach(link => { link.addEventListener('click', closeMenu); });

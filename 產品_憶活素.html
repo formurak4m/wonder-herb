@@ -36,7 +36,7 @@
         "@type": "ContactPoint",
         "telephone": "+85293318571",
         "contactType": "customer service",
-        "availableLanguage": ["Chinese", "English"]
+        "availableLanguage": ["Chinese", "English", "German"]
       },
       "sameAs": [
         "https://www.facebook.com/wonderherbhealth",
@@ -561,8 +561,8 @@
       footer {
           background: #1f2c1c;
           color: #ddd;
-          padding: 48px 0 24px;
-          margin-top: 40px;
+          padding: 48px 0 32px;
+          margin-top: 0px;
       }
 
       .footer-inner {
@@ -656,7 +656,10 @@
           .nav-menu ul { gap: 16px; }
       }
       @media (max-width: 768px) {
-          .container { padding: 0 18px; }
+          .container { padding: 0 30px; }
+          .logo {
+              margin-left: 25px;
+          }
           .product-grid { grid-template-columns: 1fr; gap: 24px; }
           .header-inner { padding: 12px 0; flex-wrap: wrap; }
           .nav-menu ul { gap: 12px; justify-content: center; flex-wrap: wrap; }
@@ -675,15 +678,18 @@
           .footer-col { flex: 0 1 100%; text-align: center; }
       }
       @media (max-width: 640px) {
-          .container { padding: 0 16px; }
+          .container { padding: 0 30px; }
+          .logo {
+              margin-left: 25px;
+          }
           .logo img { height: 45px; }
           .nav-menu a { font-size: 0.9rem; }
           .product-title { font-size: 1.6rem; }
           .product-price { font-size: 1.5rem; }
           .product-short-desc { font-size: 0.95rem; }
           .quantity-input { font-size: 0.95rem; }
-          .btn-primary { font-size: 0.95rem; padding: 12px 24px; }
-          .btn-secondary { font-size: 0.95rem; padding: 10px 20px; }
+          .btn-primary { font-size: 0.95rem; padding: 12px 24px; white-space: normal; max-width: 100%; }
+          .btn-secondary { font-size: 0.95rem; padding: 10px 20px; white-space: normal; max-width: 100%; }
           .section-title { font-size: 1.3rem; padding-left: 12px; }
           .product-details-card { padding: 24px; }
           .quality-highlight { padding: 24px; }
@@ -701,15 +707,18 @@
           .last-update { font-size: 0.65rem; }
       }
       @media (max-width: 480px) {
-          .container { padding: 0 14px; }
+          .container { padding: 0 30px; }
+          .logo {
+              margin-left: 25px;
+          }
           .logo img { height: 40px; }
           .nav-menu a { font-size: 0.85rem; }
           .product-title { font-size: 1.4rem; }
           .product-price { font-size: 1.3rem; }
           .product-short-desc { font-size: 0.9rem; }
           .quantity-input { font-size: 0.9rem; }
-          .btn-primary { font-size: 0.9rem; padding: 10px 18px; }
-          .btn-secondary { font-size: 0.9rem; padding: 8px 16px; }
+          .btn-primary { font-size: 0.9rem; padding: 10px 18px; white-space: normal; max-width: 100%; }
+          .btn-secondary { font-size: 0.9rem; padding: 8px 16px; white-space: normal; max-width: 100%; }
           .section-title { font-size: 1.15rem; }
           .product-details-card { padding: 18px; margin-bottom: 24px; }
           .quality-highlight { padding: 18px; }
@@ -725,15 +734,18 @@
           .last-update { font-size: 0.6rem; }
       }
       @media (max-width: 380px) {
-          .container { padding: 0 12px; }
+          .container { padding: 0 30px; }
+          .logo {
+              margin-left: 25px;
+          }
           .logo img { height: 35px; }
           .nav-menu a { font-size: 0.8rem; }
           .product-title { font-size: 1.2rem; }
           .product-price { font-size: 1.1rem; }
           .product-short-desc { font-size: 0.85rem; }
           .quantity-input { font-size: 0.85rem; }
-          .btn-primary { font-size: 0.85rem; padding: 8px 14px; }
-          .btn-secondary { font-size: 0.85rem; padding: 6px 12px; }
+          .btn-primary { font-size: 0.85rem; padding: 8px 14px; white-space: normal; max-width: 100%; }
+          .btn-secondary { font-size: 0.85rem; padding: 6px 12px; white-space: normal; max-width: 100%; }
           .section-title { font-size: 1rem; }
           .product-details-card { padding: 16px; margin-bottom: 20px; }
           .quality-highlight { padding: 14px; }
@@ -940,6 +952,7 @@
         }
 
         .main-header .logo {
+            margin-left: 25px;
             flex: 0 0 auto;
         }
 
@@ -948,6 +961,7 @@
         }
 
         .menu-toggle {
+            margin-right: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -980,6 +994,7 @@
             align-items: stretch;
             justify-content: flex-start;
             flex-wrap: nowrap;
+            margin-left: 25px;
         }
 
         .main-header .nav-menu li {
@@ -1007,8 +1022,8 @@
     footer {
         background: #1f2c1c;
         color: #ddd;
-        padding: 48px 0 24px;
-        margin-top: 40px;
+        padding: 48px 0 32px;
+        margin-top: 0px;
     }
 
     .footer-inner {
@@ -1069,15 +1084,38 @@
     /* Shared small-screen footer layout */
     @media (max-width: 768px) {
         footer {
-            padding: 30px 0 16px !important;
+            padding: 32px 0 32px !important;
         }
         .footer-inner {
-            gap: 24px !important;
-            flex-wrap: wrap !important;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
         }
         .footer-col {
-            flex: 0 1 100% !important;
-            text-align: center !important;
+            text-align: left;
+        }
+        .footer-brand-detail {
+            display: none;
+        }
+        .footer-contact {
+            display: none;
+        }
+        .footer-col:last-child {
+            display: none;
+        }
+        footer .container ul {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        footer .container ul li + li {
+            margin-top: 6px !important;
+        }
+        .footer-social {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
         }
     }
 </style>
@@ -1089,7 +1127,8 @@
     <div class="lang-selector" aria-label="語言切換器" role="group">
       <i class="fas fa-globe" aria-hidden="true"></i>
       <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span>
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
     </div>
   </div>
 </div>
@@ -1208,14 +1247,16 @@
   <div class="container footer-inner">
     <div class="footer-col">
       <h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4>
-      <p data-i18n="footer_col1_text1">以人為本，天然高效。</p>
-      <p data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
-      <p data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
+      <p class="footer-brand-tagline" data-i18n="footer_col1_text1">以人為本，天然高效。</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_contact_title">聯絡我們</h4>
-      <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
-      <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      <div class="footer-contact">
+        <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
+        <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      </div>
       <div class="footer-social">
         <a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
         <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -1224,12 +1265,14 @@
     </div>
     <div class="footer-col">
       <h4 data-i18n="footer_info_title">資訊中心</h4>
-      <ul style="list-style: none;">
-        <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
-        <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
-        <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
-        <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
-      </ul>
+      <div class="footer-links">
+        <ul style="list-style: none;">
+          <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
+          <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
+          <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
+          <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="container copyright">
@@ -1292,19 +1335,85 @@
       footer_contact_title: "Contact Us", footer_whatsapp_label: "WhatsApp Hotline", footer_info_title: "Information",
       footer_link_research: "Research", footer_link_testing: "Testing Reports", footer_link_faq: "FAQ", footer_link_cases: "Case Studies",
       copyright: "© 2025 Wonder-herb Health Products Ltd. All Rights Reserved | Natural Yunzhi PSP Expert", last_update_text: "📅 Last Updated: June 2, 2026 | Product information reviewed regularly."
+    },
+    de: {
+      nav_home: "Über uns",
+      nav_products: "Produkte",
+      nav_research: "Forschung",
+      nav_testing: "Tests",
+      nav_cases: "Fälle",
+      nav_brochure: "Broschüre",
+      nav_articles: "Artikel",
+      nav_faq: "FAQ",
+      nav_contact: "Kontakt",
+      header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
+      product_title_main: "MemoProve",
+      product_title_badge: " | EVER PHARMA Formula",
+      product_price: "HK$520.00 <span style='font-size:1rem; font-weight:normal;'>/ 60 capsules</span>",
+      product_short_desc: "<i class='fas fa-brain' style='color:#2d5e3b;'></i> Brain Cell Repair · Memory & Focus Enhancement",
+      quantity_label: "Quantity:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> Add to Cart",
+      detail_btn: "More Details <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Certified",
+      badge_clinical: "Clinical Support",
+      badge_natural: "Natural",
+      intro_title: "📖 Product Introduction",
+      intro_p1: "<strong>MemoProve</strong> is a patented formula (Peptone) developed by EVER PHARMA Austria. It helps repair and restore brain cells, significantly enhancing cognitive performance, memory, and concentration.",
+      intro_p2: "Many brain supplements lack clinical data. Wonder Herb's MemoProve uses high-quality ingredients, rigorously tested in Europe for safety and efficacy.",
+      benefits_title: "✨ Key Benefits & Features",
+      benefits_list: "<li><strong>Repairs brain cells:</strong> Helps restore damaged neurons, slows brain aging</li><li><strong>Enhances memory:</strong> Improves short-term and long-term memory</li><li><strong>Increases focus:</strong> Boosts concentration and reduces distraction</li><li><strong>Natural compound:</strong> Derived from natural Peptone, safe and non-habit forming</li><li><strong>Science-backed:</strong> Proven by clinical studies</li>",
+      suitable_title: "👤 Who Should Use",
+      suitable_list: "<li>Individuals with memory decline or forgetfulness</li><li>Students and professionals needing high concentration</li><li>Seniors wanting to maintain brain health</li><li>Those under high work pressure</li><li>Wellness and cognitive enhancement seekers</li>",
+      note_badge: "Note",
+      note_text: "Pregnant or nursing women, and those taking anticoagulant medication, please consult your doctor first.",
+      research_title: "📚 Scientific Evidence",
+      research_text: "EVER PHARMA Austria conducted double-blind, placebo-controlled trials showing 35% memory improvement and 42% focus improvement after 12 weeks, with no adverse effects.",
+      spec_title: "📦 Specifications",
+      spec_text: "✔ 60 capsules per bottle (approx. 1-2 months supply)<br>✔ Vegetable capsules, suitable for vegetarians",
+      dosage_title: "💊 Recommended Dosage",
+      dosage_list: "<li><strong>General wellness:</strong> 1 capsule daily after meal</li><li><strong>Memory boost / high-stress:</strong> 2 capsules daily (morning & evening)</li><li><strong>Seniors / cognitive decline:</strong> 2 capsules daily, best results with 3 months continuous use</li>",
+      dosage_note: "<em>※ Please consult your doctor. Can be taken with other Wonder Herb products with no known interactions.</em>",
+      trust1_title: "Universitätsforschung",
+      trust1_desc: "Validiert in HK/Kanada",
+      trust2_title: "Doppelte Labortests",
+      trust2_desc: "Kanada + Hongkong",
+      trust3_title: "GMP-zertifiziert",
+      trust3_desc: "Health Canada reguliert",
+      trust4_title: "20.000+ Patienten",
+      trust4_desc: "Echte Genesungsgeschichten",
+      related_title: "🌟 You May Also Like",
+      related_psp_name: "Yunzhi PSP Essence",
+      related_psp_desc: "Boosts immunity · Reduces chemo side effects",
+      related_t3_name: "T3 Tocotrienols",
+      related_t3_desc: "60x antioxidant · Cancer support",
+      related_hepa_name: "Yigan Qing",
+      related_hepa_desc: "Herbal liver support formula",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
+      footer_col1_text2: "GMP-zertifiziert in Kanada",
+      footer_col1_text3: "Doppelte Prüfung: Kanada & HK",
+      footer_contact_title: "Kontakt",
+      footer_whatsapp_label: "WhatsApp-Hotline",
+      footer_info_title: "Informationszentrum",
+      footer_link_research: "Forschung",
+      footer_link_testing: "Prüfberichte",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Fallstudien",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
+      last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
     }
   };
 
   let currentLang = 'zh';
   function applyStaticTranslation(lang) {
     document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][key] !== undefined) el.innerHTML = translations[lang][key]; });
-    document.title = lang === 'zh' ? '憶活素 MemoProve | Wonder Herb – 天然腦部保健・提升記憶力與專注力' : 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer';
+    document.title = ({ zh: '憶活素 MemoProve | Wonder Herb – 天然腦部保健・提升記憶力與專注力', en: 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer', de: 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer' })[lang] || 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer';
     document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn'), enSpan = document.getElementById('langEnBtn');
-    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
+    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
   }
-  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
-  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' ? saved : 'zh'); }
+  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
+  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' ? saved : 'zh'); }
 
   // 购物车
   const currentProduct = { id: 5, name: "憶活素 MemoProve", price: 520, image: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg" };
@@ -1325,21 +1434,21 @@
     if (!toggle || !panel) return;
     const closeMenu = () => {
       toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單');
+      toggle.setAttribute('aria-label', ({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單');
       panel.classList.remove('is-open');
       document.body.classList.remove('menu-open');
     };
     toggle.addEventListener('click', () => {
       const isOpen = panel.classList.toggle('is-open');
       toggle.setAttribute('aria-expanded', String(isOpen));
-      toggle.setAttribute('aria-label', isOpen ? (document.documentElement.lang === 'en' ? 'Close menu' : '關閉選單') : (document.documentElement.lang === 'en' ? 'Open menu' : '開啟選單'));
+      toggle.setAttribute('aria-label', isOpen ? (({ zh: '關閉選單', en: 'Close menu', de: 'Menü schließen' })[document.documentElement.lang] || '關閉選單') : (({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單'));
       document.body.classList.toggle('menu-open', isOpen);
     });
     panel.querySelectorAll('a').forEach(link => { link.addEventListener('click', closeMenu); });
     window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMenu(); });
   }
 
-  window.addEventListener('load', () => { bindMobileMenu(); loadCart(); initLanguage(); document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); });
+  window.addEventListener('load', () => { bindMobileMenu(); loadCart(); initLanguage(); document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); }); });
   window.addEventListener('storage', e => { if (e.key === 'wonderHerbCart') loadCart(); });
 </script>
 </body>
