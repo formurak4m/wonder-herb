@@ -816,8 +816,8 @@
                 padding: 48px 0 32px;
             }
             .back-to-top {
-                bottom: 20px;
-                right: 12px;
+                bottom: max(20px, env(safe-area-inset-bottom, 0px));
+                right: max(12px, calc((100vw - 44px) / 2 - 116px));
                 width: 44px;
                 height: 44px;
                 font-size: 1.3rem;
@@ -841,8 +841,8 @@
                 text-align: center;
             }
             .back-to-top {
-                bottom: 20px;
-                right: 12px;
+                bottom: max(20px, env(safe-area-inset-bottom, 0px));
+                right: max(12px, calc((100vw - 44px) / 2 - 116px));
                 width: 44px;
                 height: 44px;
                 font-size: 1.3rem;
@@ -1084,8 +1084,8 @@
                 height: 45px;
             }
             .back-to-top {
-                bottom: 16px;
-                right: 10px;
+                bottom: max(16px, env(safe-area-inset-bottom, 0px));
+                right: max(10px, calc((100vw - 40px) / 2 - 110px));
                 width: 40px;
                 height: 40px;
                 font-size: 1.2rem;
