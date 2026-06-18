@@ -816,13 +816,6 @@
             footer {
                 padding: 48px 0 32px;
             }
-            .back-to-top {
-                bottom: max(20px, env(safe-area-inset-bottom, 0px));
-                right: 12px;
-                width: 44px;
-                height: 44px;
-                font-size: 1.3rem;
-            }
             .footer-inner {
                 gap: 24px;
                 flex-wrap: wrap;
@@ -840,13 +833,6 @@
             .footer-col {
                 flex: 0 1 100%;
                 text-align: center;
-            }
-            .back-to-top {
-                bottom: max(20px, env(safe-area-inset-bottom, 0px));
-                right: 12px;
-                width: 44px;
-                height: 44px;
-                font-size: 1.3rem;
             }
             section {
                 padding: 25px 0;
@@ -1083,13 +1069,6 @@
             }
             .logo img {
                 height: 45px;
-            }
-            .back-to-top {
-                bottom: max(16px, env(safe-area-inset-bottom, 0px));
-                right: 10px;
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
             }
             section {
                 padding: 20px 0;
@@ -2008,6 +1987,66 @@
             transform: translateY(-6px) scale(1.1);
             box-shadow: 0 10px 24px rgba(45, 94, 59, 0.35);
         }
+        @media (max-width: 1024px) {
+            .container { padding: 0 20px; }
+            .hero-grid { gap: 32px; }
+            .nav-menu ul { gap: 16px; }
+            .back-to-top {
+                bottom: 20px;
+                right: 12px;
+                width: 44px;
+                height: 44px;
+                font-size: 1.2rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .hero-grid {
+                align-items: flex-start;
+                gap: 32px;
+            }
+            .hero-content {
+                padding-top: 0;
+            }
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .back-to-top {
+                bottom: 18px;
+                right: 10px;
+                width: 42px;
+                height: 42px;
+                font-size: 1.1rem;
+            }
+        }
+        @media (max-width: 640px) {
+            .container { padding: 0 30px; }
+            .back-to-top {
+                bottom: 16px;
+                right: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .back-to-top {
+                bottom: 14px;
+                right: 8px;
+                width: 36px;
+                height: 36px;
+                font-size: 0.95rem;
+            }
+        }
+        @media (max-width: 380px) {
+            .container { padding: 0 22px; }
+            .back-to-top {
+                bottom: 12px;
+                right: 8px;
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+        }
         .last-update {
             font-size: 0.7rem;
             color: #a8b7a4;
@@ -2683,7 +2722,7 @@
   </div>
 </footer>
 
-    <a href="#" id="backToTop" class="back-to-top" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
+    <a href="#" id="backToTop" class="back-to-top" role="button" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
 
     <script>
         const translations = {

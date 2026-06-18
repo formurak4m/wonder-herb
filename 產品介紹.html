@@ -629,84 +629,80 @@
 
     /* Back to top */
     .back-to-top {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #2d5e3b;
-      color: white;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s;
-      z-index: 99;
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #2d5e3b;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 1.5rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.45s var(--jelly-spring-gentle);
+        z-index: 99;
+        box-shadow: 0 4px 16px rgba(45, 94, 59, 0.3);
     }
-
     .back-to-top.show {
-      opacity: 1;
-      visibility: visible;
+        opacity: 1;
+        visibility: visible;
     }
-
+    .back-to-top:hover {
+        background-color: #1e4028;
+        transform: translateY(-6px) scale(1.1);
+        box-shadow: 0 10px 24px rgba(45, 94, 59, 0.35);
+    }
     @media (max-width: 1024px) {
-      .container { padding: 0 20px; }
-      .nav-menu ul { gap: 16px; }
+        .back-to-top {
+            bottom: 20px;
+            right: 12px;
+            width: 44px;
+            height: 44px;
+            font-size: 1.2rem;
+        }
     }
     @media (max-width: 768px) {
-      .container { padding: 0 30px; }
-        .logo {
-            margin-left: 25px;
+        .back-to-top {
+            bottom: 18px;
+            right: 10px;
+            width: 42px;
+            height: 42px;
+            font-size: 1.1rem;
         }
-      .header-inner { padding: 12px 0; flex-wrap: wrap; }
-      .nav-menu ul { gap: 12px; justify-content: center; flex-wrap: wrap; }
-      .nav-menu a { font-size: 0.95rem; }
-      .header-actions { gap: 12px; width: 100%; justify-content: center; flex-wrap: wrap; }
-      .btn-contact { padding: 8px 16px; font-size: 0.9rem; white-space: normal; max-width: 100%; }
-      .page-header h1 { font-size: 2rem; }
-      footer { padding: 30px 0 16px; }
-      .footer-inner { gap: 24px; flex-wrap: wrap; }
-      .footer-col { flex: 0 1 100%; text-align: center; }
-      .back-to-top { bottom: 20px; right: 12px; width: 44px; height: 44px; }
     }
     @media (max-width: 640px) {
-      .container { padding: 0 30px; }
-        .logo {
-            margin-left: 25px;
+        .back-to-top {
+            bottom: 16px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
         }
-      .page-header h1 { font-size: 1.6rem; }
-      .page-header p { font-size: 0.95rem; }
-      .logo img { height: 45px; }
-      .product-title { font-size: 1.15rem; }
-      .product-price { font-size: 1.1rem; }
     }
     @media (max-width: 480px) {
-      .container { padding: 0 30px; }
-        .logo {
-            margin-left: 25px;
+        .back-to-top {
+            bottom: 14px;
+            right: 8px;
+            width: 36px;
+            height: 36px;
+            font-size: 0.95rem;
         }
-      .page-header h1 { font-size: 1.4rem; }
-      .page-header p { font-size: 0.9rem; }
-      .product-title { font-size: 1.05rem; }
-      .product-price { font-size: 1rem; }
-      .product-desc { font-size: 0.85rem; }
-      .nav-menu a { font-size: 0.85rem; }
-      .footer-col { font-size: 0.85rem; }
-      .back-to-top { bottom: 16px; right: 10px; width: 40px; height: 40px; font-size: 1.2rem; }
-      .top-bar { font-size: 0.8rem; padding: 6px 0; }
     }
     @media (max-width: 380px) {
-      .container { padding: 0 30px; }
-        .logo {
-            margin-left: 25px;
+        .back-to-top {
+            bottom: 12px;
+            right: 8px;
+            width: 36px;
+            height: 36px;
+            font-size: 0.9rem;
         }
-      .page-header h1 { font-size: 1.3rem; }
-      .product-title { font-size: 1rem; }
     }
-  
+
     /* Shared header/footer styles */
     .top-bar {
         background-color: #2d5e3b;
@@ -1178,7 +1174,7 @@
   </div>
 </footer>
 
-  <a href="#" id="backToTop" class="back-to-top" role="button" aria-label="回到顶部"><i class="fas fa-chevron-up"></i></a>
+  <a href="#" id="backToTop" class="back-to-top" role="button" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
 
   <script>
     const translations = {

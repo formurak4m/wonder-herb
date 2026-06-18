@@ -965,11 +965,12 @@
           margin-top: 8px;
       }
 
+      /* Back to Top */
       .back-to-top {
           position: fixed;
           bottom: 30px;
           right: 30px;
-          background: linear-gradient(135deg, #2d5e3b, #3a7048);
+          background: #2d5e3b;
           color: white;
           width: 50px;
           height: 50px;
@@ -978,121 +979,66 @@
           align-items: center;
           justify-content: center;
           text-decoration: none;
-          font-size: 1.3rem;
+          font-size: 1.5rem;
           opacity: 0;
           visibility: hidden;
-          transition: all 0.3s;
+          transition: all 0.45s var(--jelly-spring-gentle);
           z-index: 99;
+          box-shadow: 0 4px 16px rgba(45, 94, 59, 0.3);
       }
-
       .back-to-top.show {
           opacity: 1;
           visibility: visible;
       }
-
+      .back-to-top:hover {
+          background-color: #1e4028;
+          transform: translateY(-6px) scale(1.1);
+          box-shadow: 0 10px 24px rgba(45, 94, 59, 0.35);
+      }
       @media (max-width: 1024px) {
-          .container { padding: 0 20px; }
-          .cart-grid { gap: 24px; }
-          .nav-menu ul { gap: 16px; }
+          .back-to-top {
+              bottom: 20px;
+              right: 12px;
+              width: 44px;
+              height: 44px;
+              font-size: 1.2rem;
+          }
       }
       @media (max-width: 768px) {
-          .container { padding: 0 30px; }
-          .logo {
-              margin-left: 25px;
+          .back-to-top {
+              bottom: 18px;
+              right: 10px;
+              width: 42px;
+              height: 42px;
+              font-size: 1.1rem;
           }
-          .cart-grid { grid-template-columns: 1fr; gap: 24px; }
-          .header-inner { padding: 12px 0; flex-wrap: wrap; }
-          .nav-menu ul { gap: 12px; justify-content: center; flex-wrap: wrap; }
-          .nav-menu a { font-size: 0.95rem; }
-          .header-actions { gap: 12px; width: 100%; justify-content: center; flex-wrap: wrap; }
-          .btn-contact { padding: 8px 16px; font-size: 0.9rem; white-space: normal; max-width: 100%; }
-
-          .cart-header { display: none; }
-          .cart-item {
-              display: grid;
-              grid-template-columns: 1fr;
-              gap: 14px;
-              padding: 22px 18px;
-              position: relative;
-          }
-          .item-info {
-              display: flex;
-              align-items: flex-start;
-              gap: 14px;
-              width: 100%;
-          }
-          .item-image { width: 80px; height: 80px; }
-          .item-details { flex: 1; }
-          .item-details h3 { font-size: 1rem; margin-bottom: 6px; }
-          .item-details p { margin-top: 4px; }
-          .remove-item {
-              position: absolute;
-              top: 16px;
-              right: 16px;
-              justify-self: auto;
-              width: 38px;
-              height: 38px;
-          }
-          .item-price,
-          .item-quantity,
-          .item-total {
-              grid-column: auto;
-              order: initial;
-          }
-          .item-price,
-          .item-total {
-              display: flex;
-              justify-content: space-between;
-              font-size: 0.95rem;
-          }
-          .item-quantity {
-              justify-content: flex-start;
-              gap: 8px;
-              flex-wrap: wrap;
-          }
-          .item-quantity input { width: 48px; }
-          .cart-summary { position: static; top: auto; }
-          .checkout-btn { font-size: 0.98rem; padding: 14px; }
-
-          footer { padding: 30px 0 16px; }
-          .footer-inner { gap: 24px; flex-wrap: wrap; }
-          .footer-col { flex: 0 1 100%; text-align: center; }
-
-          .back-to-top { bottom: 20px; right: 12px; width: 44px; height: 44px; }
       }
       @media (max-width: 640px) {
-          .container { padding: 0 30px; }
-          .logo {
-              margin-left: 25px;
+          .back-to-top {
+              bottom: 16px;
+              right: 10px;
+              width: 40px;
+              height: 40px;
+              font-size: 1rem;
           }
-          .cart-item { padding: 18px; }
-          .item-image { width: 70px; height: 70px; }
-          .item-details h3 { font-size: 0.95rem; }
-          .checkout-btn { padding: 13px; }
       }
       @media (max-width: 480px) {
-          .container { padding: 0 30px; }
-          .logo {
-              margin-left: 25px;
+          .back-to-top {
+              bottom: 14px;
+              right: 8px;
+              width: 36px;
+              height: 36px;
+              font-size: 0.95rem;
           }
-          .cart-item { padding: 16px; font-size: 0.88rem; }
-          .item-details h3 { font-size: 0.9rem; }
-          .cart-summary { font-size: 0.9rem; }
-          .checkout-btn { font-size: 0.9rem; }
-          .nav-menu a { font-size: 0.85rem; }
-          .footer-col { font-size: 0.85rem; }
-          .top-bar { font-size: 0.8rem; padding: 6px 0; }
-          .item-info { flex-direction: column; align-items: flex-start; }
-          .item-quantity { width: 100%; justify-content: flex-start; }
-          .back-to-top { bottom: 16px; right: 10px; width: 40px; height: 40px; }
       }
       @media (max-width: 380px) {
-          .container { padding: 0 30px; }
-          .logo {
-              margin-left: 25px;
+          .back-to-top {
+              bottom: 12px;
+              right: 8px;
+              width: 36px;
+              height: 36px;
+              font-size: 0.9rem;
           }
-          .cart-item { padding: 14px; font-size: 0.85rem; }
-          .item-details h3 { font-size: 0.85rem; }
       }
 
     /* Shared header/footer styles */
@@ -1541,7 +1487,7 @@
   </div>
 </footer>
 
-<a href="#" id="backToTop" class="back-to-top" aria-label="回到頂端"><i class="fas fa-chevron-up"></i></a>
+<a href="#" id="backToTop" class="back-to-top" role="button" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
 <div id="checkoutModal" class="modal-overlay" aria-hidden="true"><div class="checkout-modal" id="modalContent" role="dialog" aria-modal="true" aria-label="結帳對話框"></div></div>
 
 <script>
