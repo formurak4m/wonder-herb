@@ -517,6 +517,45 @@
     .case-content p {
       margin-bottom: 1rem;
     }
+    .case-summary {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      line-clamp: 4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .case-full {
+      display: none;
+      padding-top: 12px;
+    }
+    .case-full.expanded {
+      display: block;
+    }
+    .read-more-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #2d5e3b;
+      font-weight: 600;
+      font-size: 0.95rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 0;
+      margin-top: 8px;
+      transition: color 0.2s;
+    }
+    .read-more-btn:hover {
+      color: #1e4028;
+      text-decoration: underline;
+    }
+    .read-more-btn i {
+      transition: transform 0.3s;
+    }
+    .read-more-btn.expanded i {
+      transform: rotate(180deg);
+    }
     /* Footer */
     footer {
       background: #1f2c1c;
@@ -1200,7 +1239,8 @@
       footer_link_faq: "常見問題", footer_link_cases: "典型病例",
       copyright: "© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家",
       filter_search_placeholder: "🔍 搜尋病例 (病名/內容)...", filter_reset: "清除所有篩選", filter_by_disease: "快速篩選病症：", filter_all: "全部病例", result_prefix: "共 ",
-      result_suffix: " 個病例"
+      result_suffix: " 個病例",
+      read_more: "閱讀更多", read_less: "收合"
     },
     en: {
       nav_home: "About Us", nav_products: "Products", nav_research: "Research", nav_testing: "Testing",
@@ -1214,7 +1254,8 @@
       footer_link_faq: "FAQ", footer_link_cases: "Case Studies",
       copyright: "© 2025 Wonder-herb Health Products Ltd. All Rights Reserved | Natural Yunzhi PSP Expert",
       filter_search_placeholder: "🔍 Search cases (disease / keyword)...", filter_reset: "Clear all filters", filter_by_disease: "Quick filter:", filter_all: "All Cases", result_prefix: "",
-      result_suffix: " cases found"
+      result_suffix: " cases found",
+      read_more: "Read more", read_less: "Read less"
     },
     de: {
       nav_home: "Über uns",
@@ -1246,29 +1287,317 @@
       filter_by_disease: "Quick filter:",
       filter_all: "All Cases",
       result_prefix: "",
-      result_suffix: " cases found"
+      result_suffix: " cases found",
+      read_more: "Mehr lesen",
+      read_less: "Weniger"
     }
   };
 
   // --------------------------------------------------------------
-  // 病例数据 (中英文完整对照)
+  // 病例数据 (包含摘要与完整内容)
   // --------------------------------------------------------------
+  
   const caseDataList = [
-    { zh: { title: "麥女士（77歲）", subtitle: "肛門惡性腫瘤", content: "<p>2025年體檢發現肛門長了惡性腫瘤，已擴散到附近的一粒淋巴。醫生安排做連續30次根治性的電療和化療...病人由第一天療程便開始服用每日3次（每次6粒雲芝 + 1粒T3）去減低療程的不適...醫生也不斷讚病人好叻，身體的接受程度更勝40歲的病人。</p>" }, en: { title: "Ms. Mak (77)", subtitle: "Anal Malignant Tumor", content: "<p>In 2025, a routine checkup revealed a malignant tumor in the anus that had spread to a nearby lymph node... She only felt mild discomfort at the radiotherapy site on day 22... The doctor praised her resilience.</p>" }, de: { title: "Ms. Mak (77)", subtitle: "Anal Malignant Tumor", content: "<p>In 2025, a routine checkup revealed a malignant tumor in the anus that had spread to a nearby lymph node... She only felt mild discomfort at the radiotherapy site on day 22... The doctor praised her resilience.</p>" } },
-    { zh: { title: "陳小姐（55歲）", subtitle: "腹膜惡性腫瘤", content: "<p>2023年發現腹膜長了惡性腫瘤，沒有擴散，做了切除手術。手術後開始每天食雲芝（24粒）及T3（4粒）...照CT結果一切正常。</p>" }, en: { title: "Ms. Chan (55)", subtitle: "Peritoneal Malignancy", content: "<p>In 2023, she was diagnosed with a peritoneal malignant tumor without metastasis and underwent surgical removal. CT scans at 6 months and 15 months showed normal results.</p>" }, de: { title: "Ms. Chan (55)", subtitle: "Peritoneal Malignancy", content: "<p>In 2023, she was diagnosed with a peritoneal malignant tumor without metastasis and underwent surgical removal. CT scans at 6 months and 15 months showed normal results.</p>" } },
-    { zh: { title: "Peter Hall（74歲）", subtitle: "前列腺惡性腫瘤", content: "<p>2010年發現前列腺疾病，格里森評分為7。服用PSP後PSA下降，MRI檢查未發現前列腺疾病。</p>" }, en: { title: "Peter Hall (74)", subtitle: "Prostate Cancer", content: "<p>In 2010, routine exams revealed prostate cancer with Gleason score 7. After PSP, PSA dropped and MRI showed no evidence of cancer.</p>" }, de: { title: "Peter Hall (74)", subtitle: "Prostate Cancer", content: "<p>In 2010, routine exams revealed prostate cancer with Gleason score 7. After PSP, PSA dropped and MRI showed no evidence of cancer.</p>" } },
-    { zh: { title: "吳先生（81歲）", subtitle: "肺惡性腫瘤", content: "<p>交通意外後發現肺部惡性腫瘤，手術切除部份後無法切除剩餘，開始服用雲芝糖肽至今十年，生活正常。</p>" }, en: { title: "Mr. Ng (81)", subtitle: "Lung Malignancy", content: "<p>After car accident, lung malignancy discovered. Post-surgery took Yunzhi PSP for ten years, living normally.</p>" }, de: { title: "Mr. Ng (81)", subtitle: "Lung Malignancy", content: "<p>After car accident, lung malignancy discovered. Post-surgery took Yunzhi PSP for ten years, living normally.</p>" } },
-    { zh: { title: "潘先生（92歲）", subtitle: "咽喉惡性腫瘤", content: "<p>二十年前咽喉頑疾，化療電療後服用康草堂雲芝糖肽二十年，一切正常。</p>" }, en: { title: "Mr. Poon (92)", subtitle: "Throat Cancer", content: "<p>Throat malignancy twenty years ago, after chemoradiotherapy took Yunzhi PSP for 20 years, remains healthy.</p>" }, de: { title: "Mr. Poon (92)", subtitle: "Throat Cancer", content: "<p>Throat malignancy twenty years ago, after chemoradiotherapy took Yunzhi PSP for 20 years, remains healthy.</p>" } },
-    { zh: { title: "鄧女士（67歲）", subtitle: "大腸惡性腫瘤", content: "<p>2016年大腸頑症，復發後配合雲芝糖肽+T3，腫瘤由4.5cm縮至1.5cm。</p>" }, en: { title: "Ms. Tang (67)", subtitle: "Colorectal Cancer", content: "<p>Colorectal cancer recurrence, after Yunzhi PSP+T3 tumor shrank from 4.5cm to 1.5cm.</p>" }, de: { title: "Ms. Tang (67)", subtitle: "Colorectal Cancer", content: "<p>Colorectal cancer recurrence, after Yunzhi PSP+T3 tumor shrank from 4.5cm to 1.5cm.</p>" } },
-    { zh: { title: "林女士（73歲）", subtitle: "大腸惡性腫瘤", content: "<p>2014年腸頑症第三期，術後服用雲芝十年無復發，免疫力顯著提升。</p>" }, en: { title: "Ms. Lam (73)", subtitle: "Colorectal Cancer", content: "<p>Stage 3 colon cancer, after surgery took Yunzhi for ten years, no recurrence.</p>" }, de: { title: "Ms. Lam (73)", subtitle: "Colorectal Cancer", content: "<p>Stage 3 colon cancer, after surgery took Yunzhi for ten years, no recurrence.</p>" } },
-    { zh: { title: "陳先生（63歲）", subtitle: "胰臟惡性腫瘤", content: "<p>2023年胰臟頑症術後擴散肝臟，化療效果不佳，服用雲芝PSP+T3後明顯改善。</p>" }, en: { title: "Mr. Chan (63)", subtitle: "Pancreatic Cancer", content: "<p>Pancreatic cancer with liver metastasis, after Yunzhi PSP+T3 significant improvement.</p>" }, de: { title: "Mr. Chan (63)", subtitle: "Pancreatic Cancer", content: "<p>Pancreatic cancer with liver metastasis, after Yunzhi PSP+T3 significant improvement.</p>" } },
-    { zh: { title: "謝先生（65歲）", subtitle: "胰臟惡性腫瘤", content: "<p>2014年胰臟癌擴散肺部，配合雲芝糖肽後CA19.9下降，腫瘤縮小。</p>" }, en: { title: "Mr. Tse (65)", subtitle: "Pancreatic Cancer", content: "<p>Pancreatic cancer with lung mets, CA19.9 dropped and tumor shrank.</p>" }, de: { title: "Mr. Tse (65)", subtitle: "Pancreatic Cancer", content: "<p>Pancreatic cancer with lung mets, CA19.9 dropped and tumor shrank.</p>" } },
-    { zh: { title: "王女士（60歲）", subtitle: "胰臟惡性腫瘤", content: "<p>2011年胰臟癌擴散無法手術，服用雲芝糖肽後正常生活至今。</p>" }, en: { title: "Ms. Wong (60)", subtitle: "Pancreatic Cancer", content: "<p>Inoperable pancreatic cancer, after Yunzhi PSP she lives normally.</p>" }, de: { title: "Ms. Wong (60)", subtitle: "Pancreatic Cancer", content: "<p>Inoperable pancreatic cancer, after Yunzhi PSP she lives normally.</p>" } },
-    { zh: { title: "周先生（40歲）", subtitle: "淋巴惡性腫瘤", content: "<p>2012年淋巴瘤化療不佳，服用雲芝+T3後好轉，恢復正常。</p>" }, en: { title: "Mr. Chow (40)", subtitle: "Lymphoma", content: "<p>Lymphoma, after Yunzhi+T3 condition improved and he returned to normal.</p>" }, de: { title: "Mr. Chow (40)", subtitle: "Lymphoma", content: "<p>Lymphoma, after Yunzhi+T3 condition improved and he returned to normal.</p>" } },
-    { zh: { title: "林先生（38歲）", subtitle: "腎惡性腫瘤", content: "<p>2011年腎癌術後擴散，服用雲芝糖肽後恢復上班，一切正常。</p>" }, en: { title: "Mr. Lam (38)", subtitle: "Renal Malignancy", content: "<p>Kidney cancer recurrence with mets, after Yunzhi PSP returned to work.</p>" }, de: { title: "Mr. Lam (38)", subtitle: "Renal Malignancy", content: "<p>Kidney cancer recurrence with mets, after Yunzhi PSP returned to work.</p>" } },
-    { zh: { title: "陳先生（52歲）", subtitle: "睪丸惡性腫瘤", content: "<p>2004年睪丸惡性腫瘤，化療期間服用雲芝，持續至今健康良好。</p>" }, en: { title: "Mr. Chan (52)", subtitle: "Testicular Cancer", content: "<p>Testicular cancer, took Yunzhi during chemo and remains healthy.</p>" }, de: { title: "Mr. Chan (52)", subtitle: "Testicular Cancer", content: "<p>Testicular cancer, took Yunzhi during chemo and remains healthy.</p>" } },
-    { zh: { title: "李先生（80歲）", subtitle: "口水腺惡性腫瘤", content: "<p>1998年口水腺癌術後服用雲芝二十多年。2023年舌癌，遺憾停用後不敵病魔。</p>" }, en: { title: "Mr. Lee (80)", subtitle: "Salivary Gland Cancer", content: "<p>Salivary gland cancer, took Yunzhi for 20+ years. Later tongue cancer, after discontinuing supplements passed away.</p>" }, de: { title: "Mr. Lee (80)", subtitle: "Salivary Gland Cancer", content: "<p>Salivary gland cancer, took Yunzhi for 20+ years. Later tongue cancer, after discontinuing supplements passed away.</p>" } },
-    { zh: { title: "林女士（73歲）", subtitle: "結腸惡性腫瘤", content: "<p>2014年結腸癌第三期，術後服用雲芝PSP十年，免疫系統改善。</p>" }, en: { title: "Ms. Lam (73)", subtitle: "Colon Cancer", content: "<p>Stage 3 colon cancer, after taking PSP for ten years, immune system enhanced.</p>" }, de: { title: "Ms. Lam (73)", subtitle: "Colon Cancer", content: "<p>Stage 3 colon cancer, after taking PSP for ten years, immune system enhanced.</p>" } }
+    {
+      zh: {
+        title: "麥女士（77歲）",
+        subtitle: "肛門惡性腫瘤",
+        summary: "2025年體檢發現肛門惡性腫瘤並擴散至淋巴，接受30次根治性電療化療。由化療首日開始每日服用3次雲芝+T3，至第22天僅輕微不適，化療期間更無需服用止嘔止痾藥。醫生驚嘆其身體耐受度勝過40歲病人。",
+        content: "<p>2025年體檢發現肛門長了惡性腫瘤，已擴散到附近的一粒淋巴。醫生安排做連續30次根治性的電療和化療。醫生告知病人，大約在一星期後便會感到不適。</p><p>病人由第一天療程便開始服用每日3次（每次6粒雲芝 + 1粒T3）去減低療程的不適。</p><p>結果病人到了第22天，才輕微感覺到電療的部位有輕微不適。</p><p>至於化療方面，直至第15天，病人完全感覺不到有什麼不適，醫生便由每天1000 mg的劑量增加至1150 mg 。加量之後病人仍然沒有感到任何不適，也不用服止嘔和止痾藥。</p><p>醫生也不斷讚病人好叻，身體的接受程度更勝40歲的病人。</p>"
+      },
+      en: {
+        title: "Ms. Mak (77)",
+        subtitle: "Anal Malignant Tumor",
+        summary: "In 2025, discovered anal malignant tumor with lymph node spread. Underwent 30 sessions of chemoradiotherapy. Started Yunzhi+T3 from day 1. Only mild discomfort on day 22. No anti-nausea medication needed. Doctor praised her resilience exceeding that of a 40-year-old.",
+        content: "<p>In 2025, a routine checkup revealed a malignant tumor in the anus that had spread to a nearby lymph node. The doctor arranged 30 consecutive sessions of radical radiotherapy and chemotherapy.</p><p>The patient started taking Yunzhi+T3 (6 Yunzhi + 1 T3, 3 times daily) from the very first day of treatment to reduce side effects.</p><p>Result: The patient only felt mild discomfort at the radiotherapy site on day 22.</p><p>Regarding chemotherapy, until day 15, the patient felt no discomfort at all. The doctor then increased the dosage from 1000mg to 1150mg daily. Even after the increase, the patient still experienced no discomfort and required no anti-nausea or anti-diarrhea medication.</p><p>The doctor repeatedly praised the patient, saying her body's tolerance was even better than that of a 40-year-old patient.</p>"
+      },
+      de: {
+        title: "Ms. Mak (77)",
+        subtitle: "Analer bösartiger Tumor",
+        summary: "Im Jahr 2025 wurde ein bösartiger Analtumor mit Lymphknotenbefall entdeckt. 30 Strahlen- und Chemotherapien. Begann Yunzhi+T3 ab dem 1. Tag. Erst am 22. Tag leichtes Unwohlsein. Keine Medikamente gegen Übelkeit nötig. Arzt lobte ihre Belastbarkeit.",
+        content: "<p>Im Jahr 2025 wurde bei einer Routineuntersuchung ein bösartiger Tumor im After festgestellt, der sich auf einen nahegelegenen Lymphknoten ausgebreitet hatte. Der Arzt veranlasste 30 aufeinanderfolgende Sitzungen mit radikaler Strahlentherapie und Chemotherapie.</p><p>Die Patientin begann am ersten Behandlungstag mit der Einnahme von Yunzhi+T3 (6 Yunzhi + 1 T3, dreimal täglich), um Nebenwirkungen zu reduzieren.</p><p>Ergebnis: Die Patientin verspürte erst am 22. Tag leichtes Unwohlsein an der Strahlentherapiestelle.</p><p>Bezüglich der Chemotherapie verspürte die Patientin bis zum 15. Tag keinerlei Beschwerden. Der Arzt erhöhte daraufhin die Dosierung von 1000 mg auf 1150 mg täglich. Selbst nach der Erhöhung verspürte die Patientin keine Beschwerden und benötigte keine Medikamente gegen Übelkeit oder Durchfall.</p><p>Der Arzt lobte die Patientin wiederholt und sagte, ihre körperliche Verträglichkeit sei sogar besser als die eines 40-Jährigen.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "陳小姐（55歲）",
+        subtitle: "腹膜惡性腫瘤",
+        summary: "2023年確診腹膜惡性腫瘤，手術切除後開始服用雲芝+T3。初期每日24粒雲芝及4粒T3，一年後逐步減量。CT追蹤顯示一切正常，現每日維持9粒雲芝及2粒T3鞏固健康。",
+        content: "<p>2023年發現腹膜長了惡性腫瘤，沒有擴散，做了切除手術。</p><p>手術後開始每天食雲芝（24粒）及T3（4粒）。食了一年後改為雲芝（15粒）及T3（3粒），食了半年後降至雲芝（9粒）及T3（2粒）。</p><p>在初期半年照CT結果正常、之後九個月再次照CT結果一切正常。</p><p>現時每日仍然在食雲芝（9粒）及T3（2粒）以作鞏固。</p>"
+      },
+      en: {
+        title: "Ms. Chan (55)",
+        subtitle: "Peritoneal Malignancy",
+        summary: "Diagnosed with peritoneal malignancy in 2023, underwent surgical removal. Started 24 Yunzhi + 4 T3 daily, gradually reduced over 1.5 years. CT scans at 6 and 15 months showed normal results. Now maintains 9 Yunzhi + 2 T3 daily for maintenance.",
+        content: "<p>In 2023, she was diagnosed with a peritoneal malignant tumor without metastasis and underwent surgical removal.</p><p>After surgery, she started taking 24 Yunzhi and 4 T3 daily. After one year, reduced to 15 Yunzhi and 3 T3. After another six months, reduced further to 9 Yunzhi and 2 T3.</p><p>CT scans at 6 months and 15 months showed completely normal results.</p><p>Currently continues with 9 Yunzhi and 2 T3 daily for maintenance.</p>"
+      },
+      de: {
+        title: "Ms. Chan (55)",
+        subtitle: "Peritoneales Malignom",
+        summary: "2023 Diagnose eines peritonealen bösartigen Tumors, chirurgische Entfernung. Begann mit 24 Yunzhi + 4 T3 täglich, über 1,5 Jahre schrittweise reduziert. CT-Untersuchungen nach 6 und 15 Monaten normal. Erhält jetzt 9 Yunzhi + 2 T3 zur Erhaltung.",
+        content: "<p>Im Jahr 2023 wurde ein peritonealer bösartiger Tumor ohne Metastasierung diagnostiziert und chirurgisch entfernt.</p><p>Nach der Operation begann sie mit der Einnahme von 24 Yunzhi und 4 T3 täglich. Nach einem Jahr reduziert auf 15 Yunzhi und 3 T3. Nach weiteren sechs Monaten weiter reduziert auf 9 Yunzhi und 2 T3.</p><p>CT-Scans nach 6 und 15 Monaten zeigten vollständig normale Ergebnisse.</p><p>Zurzeit setzt sie 9 Yunzhi und 2 T3 täglich zur Erhaltung fort.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "Peter Hall（74歲）",
+        subtitle: "前列腺惡性腫瘤",
+        summary: "2010年確診前列腺癌，格里森評分7。服用PSP後PSA由高位下降，2012年活檢32個樣本全部正常。減少劑量後PSA回升，重新增加PSP並加用T3後PSA再次受控，MRI未發現前列腺疾病。",
+        content: "<p>2010年的例行體檢和隨後的活檢發現前列腺疾病，格里森評分為7。</p><p>患者從2011年8月開始服用PSP（每日12粒）。三個月後，PSA被發現下降至3.1。</p><p>2012年4月進行的第二次活檢確認32個樣本均正常。隨後，患者從2013年初開始減少PSP的攝入（每日9粒）。</p><p>隨訪PSA顯示，他減少PSP攝入後，PSA持續增加至7。隨後，他增加了PSP的攝入量（每日12粒），並同時開始服用T3。</p><p>三個月後進行了MRI檢查，未發現前列腺疾病，相應的PSA測試顯示血清PSA從7降至5.2。</p>"
+      },
+      en: {
+        title: "Peter Hall (74)",
+        subtitle: "Prostate Cancer",
+        summary: "2010 diagnosis of prostate cancer, Gleason score 7. PSA dropped after PSP, 2012 biopsy of 32 samples all normal. Reducing dosage caused PSA to rise. Increasing PSP+T3 brought PSA back under control, MRI showed no prostate disease.",
+        content: "<p>In 2010, routine examination and subsequent biopsy revealed prostate disease with Gleason score 7.</p><p>The patient started taking PSP (12 tablets daily) from August 2011. Three months later, PSA was found to have dropped to 3.1.</p><p>A second biopsy performed in April 2012 confirmed all 32 samples were normal. Subsequently, the patient reduced PSP intake to 9 tablets daily from early 2013.</p><p>Follow-up PSA showed that after reducing PSP, PSA continued to rise to 7. The patient then increased PSP intake to 12 tablets daily while simultaneously starting T3.</p><p>Three months later, MRI examination found no evidence of prostate disease, and corresponding PSA test showed serum PSA dropped from 7 to 5.2.</p>"
+      },
+      de: {
+        title: "Peter Hall (74)",
+        subtitle: "Prostatakrebs",
+        summary: "2010 Diagnose Prostatakrebs, Gleason-Score 7. PSA nach PSP gesunken, 2012 Biopsie von 32 Proben alle normal. Dosisreduzierung ließ PSA steigen. Erhöhung von PSP+T3 brachte PSA wieder unter Kontrolle, MRT zeigte keine Prostatakrankheit.",
+        content: "<p>Im Jahr 2010 ergab die Routineuntersuchung und anschließende Biopsie eine Prostataerkrankung mit Gleason-Score 7.</p><p>Der Patient begann im August 2011 mit der Einnahme von PSP (12 Tabletten täglich). Drei Monate später wurde festgestellt, dass das PSA auf 3,1 gesunken war.</p><p>Eine zweite Biopsie im April 2012 bestätigte, dass alle 32 Proben normal waren. Anschließend reduzierte der Patient ab Anfang 2013 die PSP-Einnahme auf 9 Tabletten täglich.</p><p>Die Nachsorge zeigte, dass nach der Reduzierung von PSP das PSA auf 7 stieg. Der Patient erhöhte dann die PSP-Einnahme wieder auf 12 Tabletten täglich und begann gleichzeitig mit der Einnahme von T3.</p><p>Drei Monate später ergab die MRT-Untersuchung keinen Hinweis auf eine Prostataerkrankung, und der entsprechende PSA-Test zeigte, dass das Serum-PSA von 7 auf 5,2 gesunken war.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "吳先生（81歲）",
+        subtitle: "肺惡性腫瘤",
+        summary: "約十年前因交通意外發現肺部惡性腫瘤，手術切除部分後腫瘤如滿天星覆蓋肺部無法繼續切除。術後即開始服用雲芝糖肽及T3，十年來生活一切正常，腫瘤受控，成功與頑症共存。",
+        content: "<p>約十年前因交通意外撞傷肺部，到醫院檢查發覺肺部長了惡性腫瘤，手術切除部分腫瘤後，發現尚有腫瘤像滿天星般覆蓋肺部範圍，無法切除，也沒有進行化療或其他西醫形式治療。</p><p>手術後馬上開始服用康草堂雲芝糖肽（每日24粒）及T3（每日4粒），一直堅持多年直至現在。</p><p>生活一切正常，肺部的腫瘤也一直受控。吳先生非常感恩在過往十年沒有受過任何放化療的痛苦，一直與頑症共存。</p>"
+      },
+      en: {
+        title: "Mr. Ng (81)",
+        subtitle: "Lung Malignancy",
+        summary: "About 10 years ago discovered lung malignancy after car accident. Surgery removed part but tumors spread like stars across lungs, inoperable. Started Yunzhi+T3 immediately after surgery. Living normally for 10 years with controlled tumors, successfully coexisting with illness.",
+        content: "<p>About ten years ago, after a car accident injured his lungs, hospital examination revealed malignant lung tumors. After surgical removal of part of the tumors, it was discovered that tumors were scattered like stars across the lung area, making further surgery impossible. No chemotherapy or other Western medicine treatment was performed.</p><p>Immediately after surgery, he started taking Wonder Herb Yunzhi PSP (24 tablets daily) and T3 (4 tablets daily), persisting for many years until now.</p><p>Life is completely normal, and the lung tumors remain under control. Mr. Ng is deeply grateful that over the past ten years he has not suffered from any radiotherapy or chemotherapy, successfully coexisting with the illness.</p>"
+      },
+      de: {
+        title: "Mr. Ng (81)",
+        subtitle: "Lungenmalignom",
+        summary: "Vor etwa 10 Jahren nach Autounfall Lungenmalignom entdeckt. Operation entfernte Teile, aber Tumoren wie Sterne über Lunge verteilt, inoperabel. Begann sofort nach OP mit Yunzhi+T3. 10 Jahre normales Leben mit kontrollierten Tumoren.",
+        content: "<p>Vor etwa zehn Jahren wurde nach einem Autounfall bei einer Krankenhausuntersuchung ein bösartiger Lungentumor entdeckt. Nach teilweiser chirurgischer Entfernung der Tumoren wurde festgestellt, dass Tumoren wie Sterne über den Lungenbereich verstreut waren, was eine weitere Operation unmöglich machte. Es wurde keine Chemotherapie oder andere westliche medizinische Behandlung durchgeführt.</p><p>Unmittelbar nach der Operation begann er mit der Einnahme von Wonder Herb Yunzhi PSP (24 Tabletten täglich) und T3 (4 Tabletten täglich), was er viele Jahre bis heute fortsetzt.</p><p>Das Leben ist völlig normal, und die Lungentumoren bleiben unter Kontrolle. Herr Ng ist zutiefst dankbar, dass er in den letzten zehn Jahren keine Strahlen- oder Chemotherapie erdulden musste und erfolgreich mit der Krankheit koexistiert.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "潘先生（92歲）",
+        subtitle: "咽喉惡性腫瘤",
+        summary: "二十年前確診咽喉頑疾，經化療電療後開始服用康草堂雲芝糖肽，每天9粒堅持了二十年，身體一切正常。其胞弟同期患肝癌，服用數月後停藥不幸復發離世，形成強烈對比。",
+        content: "<p>二十年前患上咽喉頑疾，經過化療及電療後，開始服用康草堂雲芝糖肽，一直堅持了二十年（每天9粒），身體一切正常。</p><p>潘先生的胞弟同樣在二十年前患上肝臟頑症，服用雲肽幾個月時間便停掉，停掉後不幸復發，終告離世。</p>"
+      },
+      en: {
+        title: "Mr. Poon (92)",
+        subtitle: "Throat Cancer",
+        summary: "Diagnosed with throat cancer 20 years ago. After chemoradiotherapy, took Yunzhi PSP 9 tablets daily for 20 years, remaining healthy. His brother had liver cancer at the same time, stopped PSP after a few months, relapsed and passed away - a stark contrast.",
+        content: "<p>Twenty years ago, he was diagnosed with throat illness. After chemotherapy and radiotherapy, he started taking Wonder Herb Yunzhi PSP and persisted for twenty years (9 tablets daily), remaining in perfect health.</p><p>Mr. Poon's younger brother also had liver illness twenty years ago. He took Yunzhi PSP for a few months then stopped. After stopping, he unfortunately relapsed and eventually passed away.</p>"
+      },
+      de: {
+        title: "Mr. Poon (92)",
+        subtitle: "Rachenkrebs",
+        summary: "Vor 20 Jahren Diagnose Rachenkrebs. Nach Chemo- und Strahlentherapie 9 Yunzhi PSP täglich, 20 Jahre lang gesund geblieben. Sein Bruder hatte Leberkrebs, stoppte PSP nach wenigen Monaten, erlitt Rückfall und starb - ein deutlicher Gegensatz.",
+        content: "<p>Vor zwanzig Jahren wurde bei ihm eine Rachenkrankheit diagnostiziert. Nach Chemotherapie und Strahlentherapie begann er mit der Einnahme von Wonder Herb Yunzhi PSP und setzte dies zwanzig Jahre lang fort (9 Tabletten täglich), wobei er kerngesund blieb.</p><p>Herrn Poons jüngerer Bruder hatte vor zwanzig Jahren ebenfalls eine Lebererkrankung. Er nahm Yunzhi PSP einige Monate lang ein und hörte dann auf. Nach dem Absetzen erlitt er leider einen Rückfall und verstarb schließlich.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "鄧女士（67歲）",
+        subtitle: "大腸惡性腫瘤",
+        summary: "2016年確診大腸癌，手術及兩年標靶藥後復發。2023年加用雲芝糖肽+T3後，腫瘤標記物CA19.9由51.8降至29，腫瘤由4.5cm大幅縮小至1.5cm。同一標靶藥已使用超過四年，證明長期配合功效。",
+        content: "<p>2016年患上大腸頑症，經手術切除後服用了兩年標靶藥。停藥一年之後便復發，醫生再以另一隻標靶藥作治療。</p><p>2023年開始服用康草堂雲芝糖肽（每日21粒）及T3（每日3粒）。</p><p>指數CA19.9由2023年的51.8降低至2025年5月的29。腫瘤也由4.5cm縮細至1.5cm。</p><p>由於鄧女士已服用同一款標靶藥超過四年時間，事實證明康草堂雲芝糖肽和T3，配合標靶藥去控制病情有長期的功效。</p>"
+      },
+      en: {
+        title: "Ms. Tang (67)",
+        subtitle: "Colorectal Cancer",
+        summary: "Diagnosed with colorectal cancer in 2016, surgery and 2 years of targeted therapy, then recurrence. After adding Yunzhi+T3 in 2023, tumor marker CA19.9 dropped from 51.8 to 29, tumor shrunk from 4.5cm to 1.5cm. Same targeted drug used for 4+ years proves long-term efficacy.",
+        content: "<p>In 2016, she developed colorectal illness. After surgical removal, she took targeted therapy for two years. After stopping for one year, the cancer recurred, and the doctor treated with another targeted drug.</p><p>In 2023, she started taking Wonder Herb Yunzhi PSP (21 tablets daily) and T3 (3 tablets daily).</p><p>The marker CA19.9 dropped from 51.8 in 2023 to 29 in May 2025. The tumor also shrank from 4.5cm to 1.5cm.</p><p>Since Ms. Tang has been taking the same targeted drug for more than four years, evidence proves that Wonder Herb Yunzhi PSP and T3, combined with targeted drugs, have long-term efficacy in controlling the condition.</p>"
+      },
+      de: {
+        title: "Ms. Tang (67)",
+        subtitle: "Dickdarmkrebs",
+        summary: "2016 Diagnose Dickdarmkrebs, OP und 2 Jahre zielgerichtete Therapie, dann Rückfall. Nach Zugabe von Yunzhi+T3 2023 fiel Tumormarker CA19.9 von 51,8 auf 29, Tumor schrumpfte von 4,5 cm auf 1,5 cm. Dasselbe Medikament seit über 4 Jahren zeigt langfristige Wirksamkeit.",
+        content: "<p>Im Jahr 2016 erkrankte sie an Dickdarmkrebs. Nach chirurgischer Entfernung nahm sie zwei Jahre lang zielgerichtete Medikamente ein. Nach einem Jahr Absetzen trat ein Rückfall auf, und der Arzt behandelte mit einem anderen zielgerichteten Medikament.</p><p>Im Jahr 2023 begann sie mit der Einnahme von Wonder Herb Yunzhi PSP (21 Tabletten täglich) und T3 (3 Tabletten täglich).</p><p>Der Marker CA19.9 sank von 51,8 im Jahr 2023 auf 29 im Mai 2025. Der Tumor schrumpfte auch von 4,5 cm auf 1,5 cm.</p><p>Da Frau Tang dasselbe zielgerichtete Medikament seit mehr als vier Jahren einnimmt, beweist dies, dass Wonder Herb Yunzhi PSP und T3 in Kombination mit zielgerichteten Medikamenten eine langfristige Wirksamkeit bei der Krankheitskontrolle haben.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "林女士（73歲）",
+        subtitle: "大腸惡性腫瘤",
+        summary: "2014年確診腸癌第三期，手術後開始服用康草堂雲芝糖肽，至今十年癌症無復發。每次醫院驗指數均在正常範圍且偏低。十年來傷風感冒發燒基本消除，整體健康比從前更好。",
+        content: "<p>2014年確診腸頑症第三期，手術之後，經親戚介紹，便開始服用康草堂雲芝糖肽。</p><p>已經十年過去，癌症一直沒有復發，而且每次在醫院驗指數，每次指數都在正常範圍以內，而且指數相對較低。</p><p>康草堂雲芝糖肽除了對頑症有幫助，自從食了康草堂雲芝，林女士過去十年的傷風、感冒、發燒也基本上沒有了，感覺身體比之前更健康。</p>"
+      },
+      en: {
+        title: "Ms. Lam (73)",
+        subtitle: "Colorectal Cancer",
+        summary: "Diagnosed with stage 3 colon cancer in 2014, started Yunzhi PSP after surgery. 10 years cancer-free with normal, low test markers. Essentially no colds, flu or fever for 10 years. Overall health better than before.",
+        content: "<p>In 2014, she was diagnosed with stage 3 intestinal cancer. After surgery, upon her relative's recommendation, she started taking Wonder Herb Yunzhi PSP.</p><p>Ten years have passed, the cancer has never recurred, and every hospital test shows indices within normal range and relatively low.</p><p>Besides helping with the illness, since taking Wonder Herb Yunzhi, Ms. Lam has basically had no colds, flu, or fever for the past ten years, feeling healthier than before.</p>"
+      },
+      de: {
+        title: "Ms. Lam (73)",
+        subtitle: "Dickdarmkrebs",
+        summary: "2014 Diagnose Darmkrebs Stadium 3, begann nach OP mit Yunzhi PSP. 10 Jahre krebsfrei mit normalen, niedrigen Werten. Fast keine Erkältungen, Grippe oder Fieber seit 10 Jahren. Gesamte Gesundheit besser als zuvor.",
+        content: "<p>Im Jahr 2014 wurde bei ihr Darmkrebs im Stadium 3 diagnostiziert. Nach der Operation begann sie auf Empfehlung eines Verwandten mit der Einnahme von Wonder Herb Yunzhi PSP.</p><p>Zehn Jahre sind vergangen, der Krebs ist nie wieder aufgetreten, und jeder Krankenhaustest zeigt Werte im normalen Bereich und relativ niedrig.</p><p>Abgesehen von der Hilfe bei der Krankheit hatte Frau Lam seit der Einnahme von Wonder Herb Yunzhi in den letzten zehn Jahren praktisch keine Erkältungen, Grippe oder Fieber mehr und fühlt sich gesünder als zuvor.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "陳先生（63歲）",
+        subtitle: "胰臟惡性腫瘤",
+        summary: "2023年確診胰臟癌，手術後休養期間腫瘤擴散至肝臟，化療指數不跌反升四倍，副作用令病人非常辛苦。服用康草堂雲芝PSP+T3數天後明顯改善，恢復正常睡眠和進食。",
+        content: "<p>2023年確診胰臟頑症，沒有擴散，經外科醫生安排做切除手術，休養三個月後複診發覺在休養期間腫瘤已擴散到肝臟。</p><p>此時醫生只能安排做化療，做了數次之後，指數不跌反升了四倍，加上化療的副作用令病人非常辛苦。</p><p>之後開始服用康草堂雲芝PSP（每日9粒）及T3（每日3粒），服用數天後，病人已明顯感覺有改善（晚上能入睡和能夠正常服用三餐）。</p>"
+      },
+      en: {
+        title: "Mr. Chan (63)",
+        subtitle: "Pancreatic Cancer",
+        summary: "Diagnosed with pancreatic cancer in 2023, surgery, then metastasis to liver during recovery. Chemotherapy markers rose 4x instead of falling, severe side effects. After starting Yunzhi PSP+T3, significant improvement within days - able to sleep and eat normally.",
+        content: "<p>In 2023, he was diagnosed with pancreatic cancer without metastasis. After surgical removal arranged by the surgeon, follow-up during recovery revealed tumor had spread to the liver.</p><p>The doctor could only arrange chemotherapy at this point. After several sessions, markers rose 4x instead of falling, plus chemotherapy side effects made the patient very miserable.</p><p>After starting Wonder Herb Yunzhi PSP (9 tablets daily) and T3 (3 tablets daily), within a few days the patient clearly felt improvement (able to sleep at night and eat three regular meals).</p>"
+      },
+      de: {
+        title: "Mr. Chan (63)",
+        subtitle: "Bauchspeicheldrüsenkrebs",
+        summary: "2023 Diagnose Bauchspeicheldrüsenkrebs, OP, dann Metastasierung in Leber während Erholung. Chemotherapie-Marker stiegen 4-fach statt zu fallen, starke Nebenwirkungen. Nach Beginn mit Yunzhi PSP+T3 deutliche Besserung innerhalb weniger Tage - kann wieder schlafen und essen.",
+        content: "<p>Im Jahr 2023 wurde bei ihm Bauchspeicheldrüsenkrebs ohne Metastasierung diagnostiziert. Nach der vom Chirurgen arrangierten Entfernungsoperation zeigte die Nachuntersuchung während der Erholung, dass sich der Tumor in die Leber ausgebreitet hatte.</p><p>Der Arzt konnte zu diesem Zeitpunkt nur eine Chemotherapie anordnen. Nach mehreren Sitzungen stiegen die Marker 4-fach an, statt zu fallen, und die Nebenwirkungen der Chemotherapie machten dem Patienten sehr zu schaffen.</p><p>Nach Beginn der Einnahme von Wonder Herb Yunzhi PSP (9 Tabletten täglich) und T3 (3 Tabletten täglich) verspürte der Patient innerhalb weniger Tage deutliche Besserung (konnte nachts schlafen und drei reguläre Mahlzeiten zu sich nehmen).</p>"
+      }
+    },
+    {
+      zh: {
+        title: "謝先生（65歲）",
+        subtitle: "胰臟惡性腫瘤",
+        summary: "2014年確診胰臟癌擴散至肺部，CA19.9高達3800，腫瘤4cm。化療配合雲芝糖肽+T3後，指數逐步下降至36，腫瘤縮至2cm，肺部擴散腫瘤全部消失，至今一切正常。",
+        content: "<p>2014年發現患上胰臟頑症並擴散至肺部。指數CA19.9為3800，腫瘤4cm，2014年4月開始進行化療。</p><p>同時用康草堂雲芝糖肽（每日15粒）+T3（每日3粒）配合治療。</p><p>療程檢驗指數CA19.9逐漸由2300下降至36。3個療程後腫瘤縮細至2cm，擴散肺腫瘤全部消失。</p><p>直至現在一切正常，病人繼續服用康草堂雲芝糖肽（每日9粒）+T3（每日2粒）。</p>"
+      },
+      en: {
+        title: "Mr. Tse (65)",
+        subtitle: "Pancreatic Cancer",
+        summary: "Diagnosed with pancreatic cancer metastasized to lungs in 2014, CA19.9 was 3800, tumor 4cm. With chemo and Yunzhi+T3, marker gradually dropped to 36, tumor shrank to 2cm, lung mets completely disappeared. All normal today.",
+        content: "<p>In 2014, diagnosed with pancreatic illness metastasized to lungs. CA19.9 was 3800, tumor 4cm. Chemotherapy started in April 2014.</p><p>Simultaneously used Wonder Herb Yunzhi PSP (15 tablets daily) + T3 (3 tablets daily) alongside treatment.</p><p>During treatment, CA19.9 gradually dropped from 2300 to 36. After 3 treatment cycles, tumor shrunk to 2cm, and lung metastatic tumors completely disappeared.</p><p>Until now, everything is normal. Patient continues taking Wonder Herb Yunzhi PSP (9 tablets daily) + T3 (2 tablets daily).</p>"
+      },
+      de: {
+        title: "Mr. Tse (65)",
+        subtitle: "Bauchspeicheldrüsenkrebs",
+        summary: "2014 Diagnose Bauchspeicheldrüsenkrebs mit Lungenmetastasen, CA19.9 war 3800, Tumor 4 cm. Mit Chemo und Yunzhi+T3 sank der Marker schrittweise auf 36, Tumor schrumpfte auf 2 cm, Lungenmetastasen verschwanden vollständig. Heute alles normal.",
+        content: "<p>Im Jahr 2014 wurde bei ihm eine Bauchspeicheldrüsenkrankheit mit Metastasen in der Lunge diagnostiziert. CA19.9 lag bei 3800, Tumor 4 cm. Die Chemotherapie begann im April 2014.</p><p>Gleichzeitig verwendete er Wonder Herb Yunzhi PSP (15 Tabletten täglich) + T3 (3 Tabletten täglich) zur Unterstützung der Behandlung.</p><p>Während der Behandlung sank CA19.9 schrittweise von 2300 auf 36. Nach 3 Behandlungszyklen schrumpfte der Tumor auf 2 cm und die Lungenmetastasen verschwanden vollständig.</p><p>Bis heute ist alles normal. Der Patient nimmt weiterhin Wonder Herb Yunzhi PSP (9 Tabletten täglich) + T3 (2 Tabletten täglich) ein.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "王女士（60歲）",
+        subtitle: "胰臟惡性腫瘤",
+        summary: "2011年確診胰臟癌，手術時發現已擴散至四個器官無法繼續手術，西醫基本放棄治療。立即服用雲芝糖肽配合中成藥，沒有進行電化療，至今病人仍如常生活，見證雲芝糖肽的絕對療效。",
+        content: "<p>2011年証實患上胰臟頑症，瑪麗醫院進行手術切除，開刀時發現已擴散至四個器官，不能繼續手術。</p><p>西醫基本巳放棄治療，馬上服用雲芝糖肽（每日24粒）配合部份中成藥治療。</p><p>病人沒有進行電療及化療，所以康草堂雲芝糖肽起了絕對性的療效，至今病人仍如常生活一切正常。</p>"
+      },
+      en: {
+        title: "Ms. Wong (60)",
+        subtitle: "Pancreatic Cancer",
+        summary: "Diagnosed with pancreatic cancer in 2011. During surgery, discovered metastasis to 4 organs, surgery stopped. Western medicine essentially gave up. Started Yunzhi PSP immediately, no chemo/radiation. Living normally today - testimony to Yunzhi's absolute efficacy.",
+        content: "<p>In 2011, she was diagnosed with pancreatic illness. Surgery was performed at Queen Mary Hospital. During surgery, discovered metastasis to four organs, making further surgery impossible.</p><p>Western medicine essentially gave up treatment. She immediately started taking Yunzhi PSP (24 tablets daily) combined with some Chinese medicine.</p><p>The patient did not undergo radiotherapy or chemotherapy, so Wonder Herb Yunzhi PSP played an absolutely critical therapeutic role. Today the patient still lives normally and is in good health.</p>"
+      },
+      de: {
+        title: "Ms. Wong (60)",
+        subtitle: "Bauchspeicheldrüsenkrebs",
+        summary: "2011 Diagnose Bauchspeicheldrüsenkrebs. Während OP Metastasen in 4 Organen entdeckt, OP gestoppt. Westliche Medizin gab praktisch auf. Begann sofort mit Yunzhi PSP, keine Chemo/Strahlentherapie. Lebt heute normal - Zeugnis für absolute Wirksamkeit von Yunzhi.",
+        content: "<p>Im Jahr 2011 wurde bei ihr eine Bauchspeicheldrüsenkrankheit diagnostiziert. Eine Operation wurde im Queen Mary Hospital durchgeführt. Während der Operation wurden Metastasen in vier Organen entdeckt, was weitere Operationen unmöglich machte.</p><p>Die westliche Medizin gab die Behandlung praktisch auf. Sie begann sofort mit der Einnahme von Yunzhi PSP (24 Tabletten täglich) in Kombination mit einigen chinesischen Arzneimitteln.</p><p>Die Patientin erhielt keine Strahlen- oder Chemotherapie, daher spielte Wonder Herb Yunzhi PSP eine absolut entscheidende therapeutische Rolle. Heute lebt die Patientin noch normal und ist gesund.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "周先生（40歲）",
+        subtitle: "淋巴惡性腫瘤",
+        summary: "2012年確診淋巴瘤，化療2次效果不佳後停止，同年開始服用雲芝+T3。2014年曾連續發燒20多天，醫生懷疑復發需電化療，經專家分析後推翻復發結論採用其他方案，7天後退燒康復，至今一切正常。",
+        content: "<p>2012年証實患上淋巴頑疾，因化療2次效果不佳便停止療程。於同年10月服用康草堂雲芝糖肽PSP（每日21粒）+ T3（每日3粒）效果良好。</p><p>至2014年7月，患者連續發燒二十多天不退，右鼻孔閉塞呼吸不暢順，且帶有臭味液體流出，經腫瘤科醫生檢查證實為淋巴頑疾復發，必須同時進行電療及化療。</p><p>經專家及多方面分析後，推翻復發結論，採用另一方案針對性治療。7天後患者退燒及右鼻孔呼吸暢通，其後一切正常。</p>"
+      },
+      en: {
+        title: "Mr. Chow (40)",
+        subtitle: "Lymphoma",
+        summary: "Diagnosed with lymphoma in 2012, stopped chemo after 2 ineffective sessions, started Yunzhi+T3. In 2014, 20+ days fever, suspected relapse requiring chemo/radiation. Expert analysis ruled out relapse, alternative treatment given. Fever resolved in 7 days, normal since.",
+        content: "<p>In 2012, he was diagnosed with lymphoma. After two sessions of ineffective chemotherapy, the treatment was stopped. In October of the same year, he started taking Wonder Herb Yunzhi PSP (21 tablets daily) + T3 (3 tablets daily) with good results.</p><p>By July 2014, the patient had persistent fever for over 20 days, right nostril blocked with foul-smelling discharge, oncologist confirmed lymphoma recurrence requiring combined chemo/radiation.</p><p>After expert and multi-faceted analysis, the relapse conclusion was overturned and an alternative targeted treatment plan was adopted. Within 7 days, fever resolved and nasal breathing improved, everything normal since.</p>"
+      },
+      de: {
+        title: "Mr. Chow (40)",
+        subtitle: "Lymphom",
+        summary: "2012 Diagnose Lymphom,停止化療2次無效後停止,同年開始Yunzhi+T3。2014年發燒20多天,懷疑復發需化放療。專家分析推翻復發結論,alternative Behandlung。7天後退燒,此後正常。",
+        content: "<p>Im Jahr 2012 wurde bei ihm ein Lymphom diagnostiziert. Nach zwei Sitzungen unwirksamer Chemotherapie wurde die Behandlung eingestellt. Im Oktober desselben Jahres begann er mit der Einnahme von Wonder Herb Yunzhi PSP (21 Tabletten täglich) + T3 (3 Tabletten täglich) mit guten Ergebnissen.</p><p>Bis Juli 2014 litt der Patient über 20 Tage an anhaltendem Fieber, rechtes Nasenloch verstopft mit übelriechendem Ausfluss, Onkologe bestätigte Lymphom-Rezidiv, das kombinierte Chemo-/Strahlentherapie erfordert.</p><p>Nach Experten- und Mehrfachanalyse wurde die Rezidivschlussfolgerung widerlegt und ein alternatives gezieltes Behandlungskonzept angewandt. Innerhalb von 7 Tagen klang das Fieber ab und die Nasenatmung verbesserte sich, seither alles normal.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "林先生（38歲）",
+        subtitle: "腎惡性腫瘤",
+        summary: "2011年確診腎癌，手術後一年復發擴散至淋巴、胰臟及肺部（12cm），西醫放棄治療。2012年3月起服用雲芝糖肽+T3，至今一切正常，病人已恢復上班。",
+        content: "<p>2011年証實患上腎臟頑症。經手術切除1年後覆發並擴散到淋巴、胰臟及肺部（12cm），西醫也放棄治療。</p><p>由2012年3月起，開始服用康草堂雲芝糖肽（每日24粒）+T3（每日4粒）。</p><p>至今一切正常，病人已恢復上班。</p>"
+      },
+      en: {
+        title: "Mr. Lam (38)",
+        subtitle: "Renal Malignancy",
+        summary: "Diagnosed with kidney cancer in 2011. One year after surgery, recurrence with metastasis to lymph nodes, pancreas and lungs (12cm). Western medicine gave up. Started Yunzhi+T3 from March 2012. Everything normal today, patient returned to work.",
+        content: "<p>In 2011, he was diagnosed with kidney illness. One year after surgical removal, recurrence with metastasis to lymph nodes, pancreas and lungs (12cm). Western medicine also gave up treatment.</p><p>From March 2012, he started taking Wonder Herb Yunzhi PSP (24 tablets daily) + T3 (4 tablets daily).</p><p>Until now, everything is normal, and the patient has returned to work.</p>"
+      },
+      de: {
+        title: "Mr. Lam (38)",
+        subtitle: "Nierenmalignom",
+        summary: "2011 Diagnose Nierenkrebs. Ein Jahr nach OP Rückfall mit Metastasen in Lymphknoten, Bauchspeicheldrüse und Lunge (12 cm). Westliche Medizin gab auf. Begann im März 2012 mit Yunzhi+T3. Heute alles normal, Patient wieder bei der Arbeit.",
+        content: "<p>Im Jahr 2011 wurde bei ihm eine Nierenerkrankung diagnostiziert. Ein Jahr nach der chirurgischen Entfernung kam es zu einem Rückfall mit Metastasen in Lymphknoten, Bauchspeicheldrüse und Lunge (12 cm). Auch die westliche Medizin gab die Behandlung auf.</p><p>Ab März 2012 begann er mit der Einnahme von Wonder Herb Yunzhi PSP (24 Tabletten täglich) + T3 (4 Tabletten täglich).</p><p>Bis heute ist alles normal, und der Patient ist wieder zur Arbeit zurückgekehrt.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "陳先生（52歲）",
+        subtitle: "睪丸惡性腫瘤",
+        summary: "2004年確診睪丸惡性腫瘤，化療期間開始服用雲芝以減低副作用，化療後持續服用至今。現每日8粒維持健康，見證康草堂雲芝糖肽長期保護的功效。",
+        content: "<p>2004年確診，醫生告知化驗結果證實是一隻較為惡毒的頑症，手術後需再接受化療。</p><p>陳先生於化療期間開始服用康草堂雲芝糖PSP以減低化療期間的副作用。化療後持續服用康草堂雲芝糖PSP（每日18粒），為減低復發的機會。</p><p>到今天陳先生仍每日繼續服用康草堂雲芝糖PSP（每日8粒）。</p>"
+      },
+      en: {
+        title: "Mr. Chan (52)",
+        subtitle: "Testicular Cancer",
+        summary: "Diagnosed with testicular cancer in 2004. Started Yunzhi during chemo to reduce side effects. Continued after chemo to prevent recurrence. Now maintains 8 tablets daily for long-term health protection.",
+        content: "<p>Diagnosed in 2004. Doctors confirmed an aggressive form of cancer requiring chemotherapy after surgery.</p><p>Mr. Chan started taking Wonder Herb Yunzhi PSP during chemotherapy to reduce side effects. After chemo, continued taking Yunzhi PSP (18 tablets daily) to reduce recurrence risk.</p><p>Today Mr. Chan still takes Wonder Herb Yunzhi PSP daily (8 tablets).</p>"
+      },
+      de: {
+        title: "Mr. Chan (52)",
+        subtitle: "Hodentumor",
+        summary: "2004 Diagnose Hodenkrebs. Begann während Chemo mit Yunzhi, um Nebenwirkungen zu reduzieren. Setzte nach Chemo fort, um Rückfall zu verhindern. Erhält jetzt täglich 8 Tabletten für langfristigen Gesundheitsschutz.",
+        content: "<p>Diagnose im Jahr 2004. Ärzte bestätigten eine aggressive Krebsform, die nach der Operation eine Chemotherapie erforderte.</p><p>Herr Chan begann während der Chemotherapie mit der Einnahme von Wonder Herb Yunzhi PSP, um Nebenwirkungen zu reduzieren. Nach der Chemotherapie setzte er die Einnahme von Yunzhi PSP (18 Tabletten täglich) fort, um das Rückfallrisiko zu verringern.</p><p>Heute nimmt Herr Chan weiterhin täglich Wonder Herb Yunzhi PSP ein (8 Tabletten).</p>"
+      }
+    },
+    {
+      zh: {
+        title: "李先生（80歲）",
+        subtitle: "口水腺惡性腫瘤",
+        summary: "1998年確診口水腺癌，手術後服用雲芝不到一個月暗沉減退、精神好轉，劑量由每天18粒逐漸減至8粒持續二十多年。2023年確診舌癌，按醫囑停用所有保健品包括雲芝，遺憾未能戰勝癌症。",
+        content: "<p>李先生本身是牙醫，1998年不幸患上口水腺頑疾。手術之後，他開始服用雲芝糖肽，不到一個月，臉上的暗沉便明顯減退，精神好轉，甚至恢復了診所裡繁重的工作。服用量從每天18粒逐漸減少到八粒，就這樣持續了二十多年。</p><p>直到2023年，李先生感到口腔不適，起初以為是普通潰瘍，用漱口水亦無法緩解，後來確診為舌癌。他再次尋訪二十五年前為他診治的腫瘤科醫生，醫生見到他時十分驚訝，直言：「你還活著，簡直是奇蹟。」</p><p>隨後，李先生接受了手術切除，但拒絕化療，只選擇免疫治療，希望能控制殘餘的癌細胞。由於醫生建議他停用所有保健品及中藥（包括雲芝PSP），他也遵照醫囑暫停服用。</p><p>遺憾的是，歷經一系列治療後，他最終未能戰勝癌症。</p>"
+      },
+      en: {
+        title: "Mr. Lee (80)",
+        subtitle: "Salivary Gland Cancer",
+        summary: "Diagnosed with salivary gland cancer in 1998. After surgery, Yunzhi within 1 month reduced pallor, improved energy. From 18 tablets daily gradually reduced to 8 for 20+ years. 2023 tongue cancer diagnosis, followed doctor's advice to stop all supplements including Yunzhi. Unfortunately lost battle with cancer.",
+        content: "<p>Mr. Lee, a dentist himself, was unfortunate to develop salivary gland cancer in 1998. After surgery, he started taking Yunzhi PSP. Within less than a month, facial pallor noticeably reduced and energy improved, even returning to heavy work at his clinic. Dosage gradually reduced from 18 tablets daily to 8 tablets over 20+ years.</p><p>Until 2023, Mr. Lee felt oral discomfort, initially thought to be ordinary ulcers. Mouthwash didn't help, later diagnosed as tongue cancer. He revisited the oncologist who treated him 25 years ago. The doctor was very surprised seeing him, saying: 'You're still alive, it's a miracle.'</p><p>Subsequently, Mr. Lee underwent surgical removal but refused chemotherapy, choosing only immunotherapy hoping to control remaining cancer cells. Since the doctor advised him to stop all health supplements and Chinese medicine (including Yunzhi PSP), he followed the advice and discontinued use.</p><p>Unfortunately, after a series of treatments, he ultimately lost his battle with cancer.</p>"
+      },
+      de: {
+        title: "Mr. Lee (80)",
+        subtitle: "Speicheldrüsenkrebs",
+        summary: "1998 Diagnose Speicheldrüsenkrebs. Nach OP verbesserte Yunzhi innerhalb 1 Monats Blässe und Energie. Von 18 auf 8 Tabletten täglich über 20+ Jahre reduziert. 2023 Zungenkrebs-Diagnose, folgte Arztanweisung alle Nahrungsergänzungsmittel einschließlich Yunzhi abzusetzen. Starb leider an Krebs.",
+        content: "<p>Herr Lee, selbst Zahnarzt, erkrankte 1998 leider an Speicheldrüsenkrebs. Nach der Operation begann er mit der Einnahme von Yunzhi PSP. Innerhalb eines Monats verbesserten sich Blässe und Energie merklich, und er kehrte sogar zu schwerer Arbeit in seiner Klinik zurück. Die Dosis wurde über mehr als 20 Jahre allmählich von 18 auf 8 Tabletten täglich reduziert.</p><p>Bis 2023 fühlte sich Herr Lee unwohl im Mund, anfangs以为是 gewöhnliche Geschwüre. Mundwasser half nicht, später als Zungenkrebs diagnostiziert. Er besuchte den Onkologen, der ihn vor 25 Jahren behandelt hatte. Der Arzt war sehr überrascht und sagte: 'Du lebst noch, das ist ein Wunder.'</p><p>Anschließend unterzog sich Herr Lee einer chirurgischen Entfernung, lehnte aber eine Chemotherapie ab und wählte nur Immuntherapie, um die verbleibenden Krebszellen zu kontrollieren. Da der Arzt ihm riet, alle Nahrungsergänzungsmittel und chinesischen Arzneimittel (einschließlich Yunzhi PSP) abzusetzen, folgte er dem Rat und setzte die Einnahme aus.</p><p>Leider verlor er nach einer Reihe von Behandlungen seinen Kampf gegen den Krebs.</p>"
+      }
+    },
+    {
+      zh: {
+        title: "林女士（73歲）",
+        subtitle: "結腸惡性腫瘤",
+        summary: "2014年確診結腸癌第三期，手術後開始服用康草堂雲芝PSP，十年來癌症無復發，每次醫院檢驗指數均在正常偏低範圍。免疫系統顯著改善，感冒發燒幾乎消除，整體健康比以前更好。",
+        content: "<p>林女士在2014年被診斷為結腸的第三期惡性病症。手術後，她開始服用康草堂雲芝PSP。</p><p>十年後，沒有復發的跡象，並且在定期檢查中，她的測試結果始終正常且低於標準值。</p><p>自從服用PSP以來，她的免疫系統顯著改善。她幾乎不再感冒或發燒，整體健康狀況比以前更好，反映了她的堅韌和積極態度。</p>"
+      },
+      en: {
+        title: "Ms. Lam (73)",
+        subtitle: "Colon Cancer",
+        summary: "Diagnosed with stage 3 colon cancer in 2014. Started Yunzhi PSP after surgery. 10 years cancer-free, test results consistently normal and below standard. Significantly improved immune system, rarely gets sick. Better overall health than before.",
+        content: "<p>Ms. Lam was diagnosed with stage 3 colon malignancy in 2014. After surgery, she started taking Wonder Herb Yunzhi PSP.</p><p>Ten years later, no signs of recurrence, and during regular checkups, her test results have always been normal and below standard values.</p><p>Since taking PSP, her immune system has significantly improved. She rarely gets colds or fever, and overall health is better than before, reflecting her resilience and positive attitude.</p>"
+      },
+      de: {
+        title: "Ms. Lam (73)",
+        subtitle: "Dickdarmkrebs",
+        summary: "2014 Diagnose Dickdarmkrebs Stadium 3. Begann nach OP mit Yunzhi PSP. 10 Jahre krebsfrei, Testergebnisse konsequent normal und unter Standardwerten. Deutlich verbessertes Immunsystem, selten krank. Bessere Gesundheit als zuvor.",
+        content: "<p>Frau Lam wurde 2014 mit Stadium 3 Dickdarmkrebs diagnostiziert. Nach der Operation begann sie mit der Einnahme von Wonder Herb Yunzhi PSP.</p><p>Zehn Jahre später gibt es keine Anzeichen eines Rückfalls, und bei regelmäßigen Untersuchungen sind ihre Testergebnisse stets normal und unter Standardwerten.</p><p>Seit der Einnahme von PSP hat sich ihr Immunsystem deutlich verbessert. Sie bekommt selten Erkältungen oder Fieber, und ihre allgemeine Gesundheit ist besser als zuvor, was ihre Widerstandsfähigkeit und positive Einstellung widerspiegelt.</p>"
+      }
+    }
   ];
 
   let currentLang = 'zh';
@@ -1308,6 +1637,9 @@
       container.innerHTML = `<div style="text-align:center; padding: 60px 20px; background:#faf7f2; border-radius: 40px;"><i class="fas fa-search" style="font-size: 2rem; color:#b7aa99;" aria-hidden="true"></i><p style="margin-top: 16px; font-size:1.1rem; color:#6b5e55;">${lang === 'zh' ? '沒有找到相關病例' : 'No matching cases found'}</p></div>`;
       return;
     }
+    const t = translations[lang] || translations.zh;
+    const moreText = t.read_more || '閱讀更多';
+    const lessText = t.read_less || '收合';
     const html = casesArray.map((c, idx) => {
       const data = c[lang];
       if (!data) return '';
@@ -1315,11 +1647,41 @@
         <article class="case-card" aria-labelledby="case-title-${idx}" role="listitem">
           <h2 class="case-title" id="case-title-${idx}">${escapeHtml(data.title)}</h2>
           <p class="case-subtitle">${escapeHtml(data.subtitle)}</p>
-          <div class="case-content">${data.content}</div>
+          <div class="case-content">
+            <div class="case-summary" data-idx="${idx}">${escapeHtml(data.summary)}</div>
+            <div class="case-full" id="case-full-${idx}" data-idx="${idx}">${data.content}</div>
+            <button class="read-more-btn" data-target="${idx}" data-lang="${lang}" aria-expanded="false" aria-controls="case-full-${idx}">
+              <span class="read-more-text">${moreText}</span> <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
         </article>
       `;
     }).join('');
     container.innerHTML = html;
+    
+    // Bind read more buttons
+    container.querySelectorAll('.read-more-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const btnLang = this.getAttribute('data-lang') || 'zh';
+        const btnT = translations[btnLang] || translations.zh;
+        const btnMoreText = btnT.read_more || '閱讀更多';
+        const btnLessText = btnT.read_less || '收合';
+        
+        const idx = this.getAttribute('data-target');
+        const fullContent = document.getElementById('case-full-' + idx);
+        const isExpanded = this.classList.toggle('expanded');
+        
+        this.setAttribute('aria-expanded', isExpanded);
+        if (fullContent) {
+          fullContent.classList.toggle('expanded', isExpanded);
+        }
+        
+        const textSpan = this.querySelector('.read-more-text');
+        if (textSpan) {
+          textSpan.textContent = isExpanded ? btnLessText : btnMoreText;
+        }
+      });
+    });
   }
 
   function escapeHtml(str) {
