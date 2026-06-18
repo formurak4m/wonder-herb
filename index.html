@@ -721,6 +721,9 @@
             .hero-stats {
                 gap: 20px;
             }
+            .stat-item {
+                flex: 1 1 auto;
+            }
             .stat-number {
                 font-size: 1.5rem;
             }
@@ -1128,14 +1131,14 @@
             }
             .hero-stats {
                 display: flex;
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
                 gap: 10px;
                 margin-bottom: 14px;
                 justify-content: center;
             }
             .stat-item {
-                flex: 1 1 45%;
-                min-width: 140px;
+                flex: 1 1 30%;
+                min-width: 120px;
             }
             .cta-group {
                 gap: 10px;
@@ -1198,14 +1201,14 @@
             }
             .hero-stats {
                 display: flex;
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
                 gap: 6px;
                 margin-bottom: 12px;
                 justify-content: center;
             }
             .stat-item {
-                flex: 1 1 45%;
-                min-width: 130px;
+                flex: 1 1 30%;
+                min-width: 110px;
             }
             .stat-number {
                 font-size: 1.1rem;
@@ -1341,6 +1344,7 @@
             z-index: 1;
             pointer-events: none;
             display: block;
+            padding: 0;
         }
         @media (hover: none) and (pointer: coarse) {
             #heroCanvas {
