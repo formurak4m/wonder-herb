@@ -813,6 +813,15 @@
     .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+    .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -1137,10 +1146,13 @@
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1478,12 +1490,273 @@
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
       last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      product_title_main: "Cápsulas Hep BQ",
+      product_title_badge: "Soporte Hepático Natural",
+      product_price: "HK$1,880.00 <span style='font-size:1rem; font-weight:normal;'>/ 300 cápsulas</span>",
+      product_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Fórmula Herbal Natural · Inhibición de HBV · Soporte del Hígado",
+      quantity_label: "Cantidad:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> Añadir al carrito",
+      detail_btn: "Más Detalles <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Certificado",
+      badge_herbal: "Fórmula Herbal",
+      badge_natural: "100% Natural",
+      intro_title: "📖 Introducción del Producto",
+      intro_p1: "<strong>Las cápsulas Hep BQ</strong> son una fórmula herbal natural diseñada específicamente para apoyar la salud del hígado. Desarrollada utilizando hierbas tradicionales con propiedades hepatoprotectoras comprovadas.",
+      intro_p2: "Esta fórmula ayuda a inhibir el virus de la hepatitis B (HBV) y proporciona soporte hepático integral.",
+      benefits_title: "✨ Beneficios y Características Clave",
+      benefits_list: "<li><strong>Soporte del Hígado:</strong> Protege las células hepáticas del daño</li><li><strong>Inhibición de HBV:</strong> Ayuda a suprimir la replicación del virus de la hepatitis B</li><li><strong>Reducción de la Fibrosis:</strong> Puede ayudar a reducir la fibrosis hepática</li><li><strong>Antioxidante:</strong> Protege el hígado del estrés oxidativo</li>",
+      suitable_title: "👤 Quién Debe Usar",
+      suitable_list: "<li>Portadores del virus de la hepatitis B</li><li>Aquellos con función hepática comprometida</li><li>Personas que buscan apoyo hepático preventivo</li>",
+      note_badge: "Nota",
+      note_text: "Consulte a su médico antes de usar si está tomando otros medicamentos.",
+      research_title: "📚 Evidencia Científica",
+      research_text: "La fórmula ha sido estudiada por la Universidad de Medicina de Shenyang, confirmando su eficacia en el soporte hepático.",
+      spec_title: "📦 Especificaciones",
+      spec_text: "✔ 300 cápsulas por frasco",
+      dosage_title: "💊 dosificación Recomendada",
+      dosage_list: "<li><strong>Adultos:</strong> Según las indicaciones del médico</li><li><strong>Para mejores resultados:</strong> Usar continuamente durante 6 meses</li>",
+      dosage_note: "<em>※ Por favor consulte a su médico para obtener la dosificación adecuada.</em>",
+      trust1_title: "Investigación Universitaria",
+      trust1_desc: "Validado por Shenyang Medical University",
+      trust2_title: "Fórmula Herbal",
+      trust2_desc: "100% natural",
+      trust3_title: "GMP Certificado",
+      trust3_desc: "Producido en Canadá",
+      trust4_title: "Calidad Garantizada",
+      trust4_desc: "Doble prueba",
+      related_title: "🌟 También le Puede Gustar",
+      related_psp_name: "Esencia Yunzhi PSP",
+      related_psp_desc: "Refuerza la inmunidad",
+      related_t3_name: "T3 Tocotrienoles",
+      related_t3_desc: "Antioxidante potente",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados",
+      last_update_text: "📅 Última actualización: 2 de junio de 2026 | La información se actualiza regularmente."
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      product_title_main: "Cápsules Hep BQ",
+      product_title_badge: "Soutien Hépatique Naturel",
+      product_price: "HK$1,880.00 <span style='font-size:1rem; font-weight:normal;'>/ 300 gélules</span>",
+      product_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Formule Herbagère Naturelle · Inhibition du VHB · Soutien du Foie",
+      quantity_label: "Quantité:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> Ajouter au panier",
+      detail_btn: "Plus de Détails <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Certifié",
+      badge_herbal: "Formule Herbagère",
+      badge_natural: "100% Naturel",
+      intro_title: "📖 Introduction du Produit",
+      intro_p1: "<strong>Les gélules Hep BQ</strong> sont une formule herbagère naturelle conçue spécifiquement pour soutenir la santé du foie.",
+      intro_p2: "Cette formule aide à inhiber le virus de l'hépatite B (VHB) et fournit un soutien hépatique complet.",
+      benefits_title: "✨ Avantages et Caractéristiques Clés",
+      benefits_list: "<li><strong>Soutien du Foie:</strong> Protège les cellules hépatiques</li><li><strong>Inhibition du VHB:</strong> Aide à supprimer la réplication du virus de l'hépatite B</li><li><strong>Réduction de la Fibrose:</strong> Peut aider à réduire la fibrose hépatique</li><li><strong>Antioxydant:</strong> Protège le foie du stress oxydatif</li>",
+      suitable_title: "👤 Qui Doit Utiliser",
+      suitable_list: "<li>Porteurs du virus de l'hépatite B</li><li>Ceux avec une fonction hépatique compromise</li><li>Personnes cherchant un soutien hépatique préventif</li>",
+      note_badge: "Note",
+      note_text: "Consultez votre médecin avant d'utiliser si vous prenez d'autres médicaments.",
+      research_title: "📚 Preuves Scientifiques",
+      research_text: "La formule a été étudiée par l'Université de Médecine de Shenyang.",
+      spec_title: "📦 Spécifications",
+      spec_text: "✔ 300 gélules par flacon",
+      dosage_title: "💊 Dosage Recommandé",
+      dosage_list: "<li><strong>Adultes:</strong> Selon les indications du médecin</li>",
+      dosage_note: "<em>※ Veuillez consulter votre médecin pour le dosage approprié.</em>",
+      trust1_title: "Recherche Universitaire",
+      trust1_desc: "Validé par Shenyang Medical University",
+      trust2_title: "Formule Herbagère",
+      trust2_desc: "100% naturel",
+      trust3_title: "GMP Certifié",
+      trust3_desc: "Produit au Canada",
+      trust4_title: "Qualité Garantie",
+      trust4_desc: "Double test",
+      related_title: "🌟 Vous Aimerez Aussi",
+      related_psp_name: "Essence Yunzhi PSP",
+      related_psp_desc: "Renforce l'immunité",
+      related_t3_name: "T3 Tocotriénols",
+      related_t3_desc: "Antioxydant puissant",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés",
+      last_update_text: "📅 Dernière mise à jour: 2 juin 2026 | Les informations sont régulièrement mises à jour."
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      product_title_main: "乙肝清カプセル",
+      product_title_badge: "自然な肝支援",
+      product_price: "HK$1,880.00 <span style='font-size:1rem; font-weight:normal;'>/ 300カプセル</span>",
+      product_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> 自然なHerb処方 · HBV阻害 · 肝支援",
+      quantity_label: "数量：",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> カートに追加",
+      detail_btn: "詳細を見る <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP認証",
+      badge_herbal: "Herb処方",
+      badge_natural: "100% 自然",
+      intro_title: "📖 製品紹介",
+      intro_p1: "<strong>乙肝清カプセル</strong>は、肝臓の健康を支援するために специально設計された自然なHerb処方です。",
+      intro_p2: "この処方はB型肝炎ウイルス（HBV）の阻害特性を提供します。",
+      benefits_title: "✨ 主なベネフィットと特徴",
+      benefits_list: "<li><strong>肝支援：</strong>肝細胞を保護</li><li><strong>HBV阻害：</strong>B型肝炎ウイルスの複製を抑制</li><li><strong>線維化軽減：</strong>肝線維化を軽減する可能性</li><li><strong>抗酸化：</strong>酸化ストレスから肝臓を保護</li>",
+      suitable_title: "👤 こんな方におすすめ",
+      suitable_list: "<li>B型肝炎ウイルス保有者</li><li>肝機能が低下している方</li><li>予防的な肝支援を探している方</li>",
+      note_badge: "注意",
+      note_text: "他の薬を服用している場合は、使用前に医師にご相談ください。",
+      research_title: "📚 科学的な証拠",
+      research_text: "処方は沈阳医科大学によって研究されています。",
+      spec_title: "📦 仕様",
+      spec_text: "✔ 1ボトル300カプセル",
+      dosage_title: "💊 推奨用量",
+      dosage_list: "<li><strong>大人：</strong>医師の指示に従ってください</li>",
+      dosage_note: "<em>※ 適切な用量については医師にご相談ください。</em>",
+      trust1_title: "大学研究",
+      trust1_desc: "沈阳医科大学によって検証",
+      trust2_title: "Herb処方",
+      trust2_desc: "100% 自然",
+      trust3_title: "GMP認証",
+      trust3_desc: "カナダで製造",
+      trust4_title: "品質保証",
+      trust4_desc: "二重検査",
+      related_title: "🌟 こちらもおすすめ",
+      related_psp_name: "雲芝PSP精华",
+      related_psp_desc: "免疫力を強化",
+      related_t3_name: "T3トコトリエノール",
+      related_t3_desc: "強力な抗酸化作用",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有",
+      last_update_text: "📅 最終更新：2026年6月2日 | 情報は定期的に更新されています。"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      product_title_main: "Капсулы Hep BQ",
+      product_title_badge: "Естественная Поддержка Печени",
+      product_price: "HK$1,880.00 <span style='font-size:1rem; font-weight:normal;'>/ 300 капсул</span>",
+      product_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Натуральная Травяная Формула · Ингибирование HBV · Поддержка Печени",
+      quantity_label: "Количество:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> В корзину",
+      detail_btn: "Подробнее <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Сертифицировано",
+      badge_herbal: "Травяная Формула",
+      badge_natural: "100% Натурально",
+      intro_title: "📖 Введение в Продукт",
+      intro_p1: "<strong>Капсулы Hep BQ</strong> — это натуральная травяная формула, специально разработанная для поддержки здоровья печени.",
+      intro_p2: "Эта формула помогает ингибировать вирус гепатита B (HBV) и обеспечивает комплексную поддержку печени.",
+      benefits_title: "✨ Ключевые Преимущества и Характеристики",
+      benefits_list: "<li><strong>Поддержка Печени:</strong> Защищает клетки печени</li><li><strong>Ингибирование HBV:</strong> Помогает подавлять репликацию вируса гепатита B</li><li><strong>Снижение Фиброза:</strong> Может помочь уменьшить фиброз печени</li><li><strong>Антиоксидант:</strong> Защищает печень от окислительного стресса</li>",
+      suitable_title: "👤 Кому Следует Использовать",
+      suitable_list: "<li>Носители вируса гепатита B</li><li>Люди с нарушенной функцией печени</li><li>Люди, ищущие профилактическую поддержку печени</li>",
+      note_badge: "Примечание",
+      note_text: "Проконсультируйтесь с врачом перед использованием, если вы принимаете другие лекарства.",
+      research_title: "📚 Научные Доказательства",
+      research_text: "Формула была изучена Университетом медицины Шэньян.",
+      spec_title: "📦 Характеристики",
+      spec_text: "✔ 300 капсул во флаконе",
+      dosage_title: "💊 Рекомендуемая Дозировка",
+      dosage_list: "<li><strong>Взрослые:</strong> Согласно указаниям врача</li>",
+      dosage_note: "<em>※ Пожалуйста, проконсультируйтесь с врачом для правильной дозировки.</em>",
+      trust1_title: "Университетские Исследования",
+      trust1_desc: "Подтверждено Shenyang Medical University",
+      trust2_title: "Травяная Формула",
+      trust2_desc: "100% натурально",
+      trust3_title: "GMP Сертифицировано",
+      trust3_desc: "Произведено в Канаде",
+      trust4_title: "Гарантия Качества",
+      trust4_desc: "Двойной тест",
+      related_title: "🌟 Вам Также Может Понравиться",
+      related_psp_name: "Эссенция Yunzhi PSP",
+      related_psp_desc: "Укрепляет иммунитет",
+      related_t3_name: "Токотриенолы T3",
+      related_t3_desc: "Мощный антиоксидант",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены",
+      last_update_text: "📅 Последнее обновление: 2 июня 2026 г. | Информация регулярно обновляется."
     }
   };
 
   let currentLang = 'zh';
 
   function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
     const elements = document.querySelectorAll('[data-i18n]');
     elements.forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -1491,7 +1764,7 @@
         el.innerHTML = translations[lang][key];
       }
     });
-    document.title = ({ zh: '乙肝清 | 康草堂 Wonder Herb – 天然草本護肝·抑制HBV病毒', en: 'Hep BQ capsules | Wonder Herb – Natural Liver Support · HBV Inhibition', de: 'Hep BQ capsules | Wonder Herb – Natural Liver Support · HBV Inhibition' })[lang] || 'Hep BQ capsules | Wonder Herb – Natural Liver Support · HBV Inhibition'; document.documentElement.lang = lang;
+    document.title = ({ zh: '乙肝清 | 康草堂 Wonder Herb – 天然草本護肝·抑制HBV病毒', en: 'Hep BQ capsules | Wonder Herb – Natural Liver Support · HBV Inhibition', de: 'Hep BQ capsules | Wonder Herb – Natural Liver Support · HBV Inhibition', es: 'Cápsulas Hep BQ | Wonder Herb – Soporte Natural del Hígado · Inhibición de HBV', fr: 'Cápsules Hep BQ | Wonder Herb – Soutien Hépatique Naturel · Inhibition du VHB', ja: '乙肝清カプセル | Wonder Herb – 自然な肝支援·HBV阻害', ru: 'Капсулы Hep BQ | Wonder Herb – Естественная Поддержка Печени · Ингибирование HBV' })[lang] || 'Hep BQ capsules | Wonder Herb – Natural Liver Support · HBV Inhibition'; document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn');
     const enSpan = document.getElementById('langEnBtn');
     if (zhSpan && enSpan) {
@@ -1500,6 +1773,10 @@
       zhSpan.classList.toggle('active-lang', lang === 'zh');
       enSpan.classList.toggle('active-lang', lang === 'en');
       if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); }
+      const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); }
+      const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); }
+      const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); }
+      const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); }
       zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false');
       enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false');
     }
@@ -1507,7 +1784,7 @@
   }
 
   function setLanguage(lang) {
-    if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return;
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return;
     currentLang = lang;
     localStorage.setItem('wonderherb_lang', lang);
     applyStaticTranslation(currentLang);
@@ -1515,7 +1792,7 @@
 
   function initLanguage() {
     const saved = localStorage.getItem('wonderherb_lang');
-    if (saved === 'zh' || saved === 'en' || saved === 'de') currentLang = saved;
+    if (saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru') currentLang = saved;
     else currentLang = 'zh';
     applyStaticTranslation(currentLang);
   }
@@ -1533,6 +1810,26 @@
       if (deBtn) {
         deBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('de'); });
         deBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('de'); } });
+      }
+      const esBtn = document.getElementById('langEsBtn');
+      if (esBtn) {
+        esBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('es'); });
+        esBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('es'); } });
+      }
+      const frBtn = document.getElementById('langFrBtn');
+      if (frBtn) {
+        frBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('fr'); });
+        frBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('fr'); } });
+      }
+      const jaBtn = document.getElementById('langJaBtn');
+      if (jaBtn) {
+        jaBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ja'); });
+        jaBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ja'); } });
+      }
+      const ruBtn = document.getElementById('langRuBtn');
+      if (ruBtn) {
+        ruBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ru'); });
+        ruBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ru'); } });
       }
       enBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('en'); } });
     }

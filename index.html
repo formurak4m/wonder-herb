@@ -2266,6 +2266,15 @@
     .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+    .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -2592,10 +2601,13 @@
     <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -2800,6 +2812,290 @@
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
       trust_heading_sr: "Qualitätsvertrauens-Siegel"
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      hero_badge: "⭐ Clínicamente probado · GMP Canadá",
+      hero_title_main: "Esencia Yunzhi PSP<span style='color:#9b2e2e;'>+T3</span><br>Fórmula natural de apoyo",
+      hero_desc: "Más de 20 años de experiencia, estudios universitarios confirman que la fórmula única duplica la eficacia. Doble análisis, ingredientes activos >90%.",
+      hero_stat1_label: "Ingredientes activos",
+      hero_stat2_label: "Experiencia clínica",
+      hero_stat3_label: "GMP certificado",
+      hero_cta_primary: "<i class='fab fa-whatsapp'></i> Consultar · Plan de recuperación",
+      hero_cta_secondary: "Explorar productos",
+      company_title: "🌿 Wonder Herb · Ciencia herbaria centrada en el paciente",
+      company_subtitle: "Integrando Medicina Tradicional China y Occidental para soluciones naturales de alta actividad",
+      company_text1: "Wonder Herb Health Products Ltd es una empresa de productos herbales centrada en el paciente, combinando MTC y estándares modernos, utilizando ingredientes naturales de alta calidad y alta actividad. Cada lote se analiza doblemente en Canadá y Hong Kong para garantizar los niveles de contenido activo.",
+      company_text2: "Con más de 20 años de experiencia, ayudamos a los pacientes a aliviar las molestias del tratamiento y fortalecer la inmunidad.",
+      company_text3: "Nuestros productos incluyen Esencia Yunzhi PSP, T3, PT3 y cápsulas Hep BQ. Fórmulas únicas mejoran la terapia convencional.",
+      company_text4: "Los estudios universitarios confirman que la fórmula 'Wonder Herb Yunzhi PSP + T3' duplica la eficacia en comparación con el PSP solo.",
+      company_text5: "Para garantizar la calidad, todos los productos Wonder Herb se fabrican en una instalación certificada GMP en Canadá.",
+      products_section_title: "✨ Productos signature",
+      product_trial_title: "Yunzhi PSP (Paquete de prueba)",
+      product_trial_desc: "60 cápsulas, primera prueba, polisacárido-péptido >1,8× estándar nacional.",
+      product_std_title: "Yunzhi PSP (Paquete estándar)",
+      product_std_desc: "500 cápsulas, inmunomodulación a largo plazo.",
+      product_t3_title: "Fórmula PSP + T3",
+      product_t3_desc: "Fórmula sinérgica probada por universidades, duplica la eficacia.",
+      product_hepa_title: "Cápsulas Hep BQ",
+      product_hepa_desc: "Apoyo hepático natural, inhibe el VHB.",
+      product_memo_title: "MemoProve",
+      product_memo_desc: "Fórmula austríaca, repara células cerebrales.",
+      product_pt3_title: "PT3 (Solo clínicas)",
+      product_pt3_desc: "Fórmula profesional en clínicas seleccionadas.",
+      quality_prefix: "📢 Según las normas nacionales de medicamentos, el contenido de Yunzhi PSP no debe ser inferior al 49,5% (polisacáridos ≥38%, péptidos de proteína ≥11,5%),",
+      quality_highlight_span: "El contenido de ingredientes activos de Wonder Herb supera el 90% — máxima pureza, absorción óptima.",
+      trust1_title: "Investigación universitaria",
+      trust1_desc: "Validado en HK/Canadá",
+      trust2_title: "Análisis de doble laboratorio",
+      trust2_desc: "Canadá + Hong Kong",
+      trust3_title: "GMP certificado",
+      trust3_desc: "Regulado por Salud Canadá",
+      trust4_title: "20.000+ pacientes",
+      trust4_desc: "Historias reales de recuperación",
+      featured_cases_title: "📋 Historias reales de recuperación",
+      featured_cases_sub: "Vea cómo la Esencia Yunzhi PSP ayuda a los pacientes a mejorar la inmunidad y la calidad de vida",
+      featured_cases_more: "Ver más casos →",
+      case_title: "📖 Testimonios reales y casos",
+      case_desc: "Cientos de casos y artículos de WeChat muestran cómo Yunzhi PSP mejora la calidad de vida.",
+      case_btn_cases: "📄 Ver casos",
+      case_btn_brochure: "📘 Descargar folleto",
+      case_btn_wechat: "<i class='fab fa-weixin'></i> Artículos WeChat",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Paciente primero, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Análisis doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de análisis",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados | Experto en Yunzhi PSP natural",
+      trust_heading_sr: "Insignias de confianza de calidad"
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      hero_badge: "⭐ Cliniquement prouvé · GMP Canada",
+      hero_title_main: "Essence Yunzhi PSP<span style='color:#9b2e2e;'>+T3</span><br>Formule de soutien naturel",
+      hero_desc: "Plus de 20 ans d'expérience, des études universitaires confirment que la formule unique double l'efficacité. Tests doubles, ingrédients actifs >90%.",
+      hero_stat1_label: "Ingrédients actifs",
+      hero_stat2_label: "Expérience clinique",
+      hero_stat3_label: "GMP certifié",
+      hero_cta_primary: "<i class='fab fa-whatsapp'></i> Demander · Plan de récupération",
+      hero_cta_secondary: "Explorer les produits",
+      company_title: "🌿 Wonder Herb · Science herbaliste centrée sur le patient",
+      company_subtitle: "Intégration de la MTC et de la médecine occidentale pour des solutions naturelles hautement actives",
+      company_text1: "Wonder Herb Health Products Ltd est une entreprise de produits à base de plantes centrée sur le patient, combinant la MTC et les normes modernes, utilisant des ingrédients naturels de haute qualité et de haute activité. Chaque lot est testé deux fois au Canada et à Hong Kong pour garantir les niveaux de contenu actif.",
+      company_text2: "Avec plus de 20 ans d'expérience, nous aidons les patients à soulager l'inconfort du traitement et à renforcer l'immunité.",
+      company_text3: "Nos produits incluent l'Essence Yunzhi PSP, T3, PT3 et les gélules Hep BQ. Des formules uniques améliorent la thérapie conventionnelle.",
+      company_text4: "Des études universitaires confirment que la formule 'Wonder Herb Yunzhi PSP + T3' double l'efficacité par rapport au PSP seul.",
+      company_text5: "Pour garantir la qualité, tous les produits Wonder Herb sont fabriqués dans une installation certifiée GMP au Canada.",
+      products_section_title: "✨ Produits signature",
+      product_trial_title: "Yunzhi PSP (Pack d'essai)",
+      product_trial_desc: "60 gélules, premier essai, polysaccharide-peptide >1,8× norme nationale.",
+      product_std_title: "Yunzhi PSP (Pack standard)",
+      product_std_desc: "500 gélules, immunomodulation à long terme.",
+      product_t3_title: "Formule PSP + T3",
+      product_t3_desc: "Formule synergique prouvée par les universités, double l'efficacité.",
+      product_hepa_title: "Gélules Hep BQ",
+      product_hepa_desc: "Soutien hépatique naturel, inhibe le VHB.",
+      product_memo_title: "MemoProve",
+      product_memo_desc: "Formule autrichienne, répare les cellules cérébrales.",
+      product_pt3_title: "PT3 (Cliniques uniquement)",
+      product_pt3_desc: "Formule professionnelle dans des cliniques sélectionnées.",
+      quality_prefix: "📢 Selon les normes nationales sur les médicaments, la teneur en Yunzhi PSP ne doit pas être inférieure à 49,5% (polysaccharides ≥38%, peptides protéiques ≥11,5%),",
+      quality_highlight_span: "La teneur en ingrédients actifs de Wonder Herb dépasse 90% — pureté maximale, absorption optimale.",
+      trust1_title: "Recherche universitaire",
+      trust1_desc: "Validé à HK/Canada",
+      trust2_title: "Tests de laboratoire doubles",
+      trust2_desc: "Canada + Hong Kong",
+      trust3_title: "GMP certifié",
+      trust3_desc: "Réglementé par Santé Canada",
+      trust4_title: "20 000+ patients",
+      trust4_desc: "Histoires réelles de récupération",
+      featured_cases_title: "📋 Histoires réelles de récupération",
+      featured_cases_sub: "Découvrez comment l'Essence Yunzhi PSP aide les patients à améliorer l'immunité et la qualité de vie",
+      featured_cases_more: "Voir plus de cas →",
+      case_title: "📖 Témoignages réels et cas",
+      case_desc: "Des centaines de cas et d'articles WeChat montrent comment Yunzhi PSP améliore la qualité de vie.",
+      case_btn_cases: "📄 Voir les cas",
+      case_btn_brochure: "📘 Télécharger la brochure",
+      case_btn_wechat: "<i class='fab fa-weixin'></i> Articles WeChat",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Patient d'abord, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Tests doubles: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de tests",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés | Expert Yunzhi PSP naturel",
+      trust_heading_sr: "Badges de confiance qualité"
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      hero_badge: "⭐ 臨床実証済み · GMPカナダ",
+      hero_title_main: "霊芝PSPエッセンンス<span style='color:#9b2e2e;'>+T3</span><br>ナチュラルサポート処方",
+      hero_desc: "20年以上の実績、大学研究により独自処方が効果を倍増させることが実証されています。二重検査、有効成分>90%。",
+      hero_stat1_label: "有効成分",
+      hero_stat2_label: "臨床経験",
+      hero_stat3_label: "GMP認証",
+      hero_cta_primary: "<i class='fab fa-whatsapp'></i> ご相談 · 回復プラン",
+      hero_cta_secondary: "製品を見る",
+      company_title: "🌿 Wonder Herb · 患者中心の漢方を科学する",
+      company_subtitle: "中医と西医を統合し、高活性ナチュラルソリューションを提供",
+      company_text1: "Wonder Herb Health Products Ltdは、患者中心の漢方を扱う企業で、中医と現代基準を組み合わせ、高品質・高活性の天然原料を使用しています。各バッチはカナダと香港で二重検査され、有効成分レベルを保証します。",
+      company_text2: "20年以上の経験により、治療の不快感を和らげ、免疫力を高めるお手伝いをしています。",
+      company_text3: "当社の製品には、霊芝PSPエッセンンス、T3、PT3、Hep BQカプセルが含まれています。独自処方が従来の療法を高めます。",
+      company_text4: "大学の研究により、「Wonder Herb霊芝PSP + T3」処方がPSP単独と比較して効果を倍増させることが実証されています。",
+      company_text5: "品質を保証するため、すべてのWonder Herb製品はカナダのGMP認定工場で製造されています。",
+      products_section_title: "✨ シグネチャー製品",
+      product_trial_title: "霊芝PSP（試用パック）",
+      product_trial_desc: "60カプセル、初めての方に、多糖体ペプチド>国家基準の1.8倍。",
+      product_std_title: "霊芝PSP（通常パック）",
+      product_std_desc: "500カプセル、長期免疫調整。",
+      product_t3_title: "PSP + T3 処方",
+      product_t3_desc: "大学実証の相乗効果処方、効果を倍増。",
+      product_hepa_title: "Hep BQカプセル",
+      product_hepa_desc: "ナチュラル肝サポート、HBVを抑制。",
+      product_memo_title: "MemoProve",
+      product_memo_desc: "オーストリア開発、脳細胞を修復。",
+      product_pt3_title: "PT3（クリニック限定）",
+      product_pt3_desc: "プロフェッショナル処方は選定されたクリニックのみ。",
+      quality_prefix: "📢 国薬基準によると、霊芝PSP含有率は49.5%以上（多糖体≥38%、蛋白質ペプチド≥11.5%）が必要です。",
+      quality_highlight_span: "Wonder Herbの有効成分含有率は90%以上 — 最高純度、最適な吸収。",
+      trust1_title: "大学研究",
+      trust1_desc: "香港/カナダで検証済み",
+      trust2_title: "二重ラボ検査",
+      trust2_desc: "カナダ + 香港",
+      trust3_title: "GMP認証",
+      trust3_desc: "カナダ保健省規制",
+      trust4_title: "20,000人以上",
+      trust4_desc: "実際の回復ストーリー",
+      featured_cases_title: "📋 実際の回復ストーリー",
+      featured_cases_sub: "霊芝PSPエッセンンスが患者様の免疫と生活の質をどのように改善するかをご覧ください",
+      featured_cases_more: "もっと見る →",
+      case_title: "📖 実際の推薦と症例",
+      case_desc: "数百件の症例と微信記事が、霊芝PSPが生活の質をいかに改善するかを示しています。",
+      case_btn_cases: "📄 症例を見る",
+      case_btn_brochure: "📘 パンフレットをダウンロード",
+      case_btn_wechat: "<i class='fab fa-weixin'></i> 微信記事",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、ナチュラルで効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsAppホットライン",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有 | ナチュラル霊芝PSPの専門家",
+      trust_heading_sr: "品質信頼マーク"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      hero_badge: "⭐ Клинически доказано · GMP Канада",
+      hero_title_main: "Эссенция Юньчжи PSP<span style='color:#9b2e2e;'>+T3</span><br>Натуральная поддерживающая формула",
+      hero_desc: "Более 20 лет опыта, университетские исследования подтверждают, что уникальная формула удваивает эффективность. Двойной анализ, активные ингредиенты >90%.",
+      hero_stat1_label: "Активные ингредиенты",
+      hero_stat2_label: "Клинический опыт",
+      hero_stat3_label: "GMP сертифицировано",
+      hero_cta_primary: "<i class='fab fa-whatsapp'></i> Консультация · План восстановления",
+      hero_cta_secondary: "Смотреть продукты",
+      company_title: "🌿 Wonder Herb · Научный подход к травам",
+      company_subtitle: "Интеграция ТКМ и западной медицины для высокоактивных натуральных решений",
+      company_text1: "Wonder Herb Health Products Ltd — это компания по производству травяных продуктов, ориентированная на пациента, объединяющая ТКМ и современные стандарты с использованием высококачественных высокоактивных натуральных ингредиентов. Каждая партия проходит двойной анализ в Канаде и Гонконге для обеспечения уровня активного содержания.",
+      company_text2: "Более 20 лет опыта помогает пациентам облегчить дискомфорт лечения и укрепить иммунитет.",
+      company_text3: "Наши продукты включают Эссенцию Юньчжи PSP, T3, PT3 и капсулы Hep BQ. Уникальные формулы улучшают традиционную терапию.",
+      company_text4: "Университетские исследования подтверждают, что формула 'Wonder Herb Юньчжи PSP + T3' удваивает эффективность по сравнению с одним PSP.",
+      company_text5: "Для обеспечения качества все продукты Wonder Herb производятся на GMP-сертифицированном предприятии в Канаде.",
+      products_section_title: "✨ Фирменные продукты",
+      product_trial_title: "Юньчжи PSP (пробный набор)",
+      product_trial_desc: "60 капсул, первая проба, полисахарид-пептид >1,8× национальный стандарт.",
+      product_std_title: "Юньчжи PSP (стандартный набор)",
+      product_std_desc: "500 капсул, долгосрочная иммуномодуляция.",
+      product_t3_title: "Формула PSP + T3",
+      product_t3_desc: "Университетская синергетическая формула удваивает эффективность.",
+      product_hepa_title: "Капсулы Hep BQ",
+      product_hepa_desc: "Натуральная поддержка печени, подавляет HBV.",
+      product_memo_title: "MemoProve",
+      product_memo_desc: "Австрийская формула, восстанавливает клетки мозга.",
+      product_pt3_title: "PT3 (только клиники)",
+      product_pt3_desc: "Профессиональная формула в выбранных клиниках.",
+      quality_prefix: "📢 Согласно национальным стандартам лекарств, содержание Юньчжи PSP не должно быть ниже 49,5% (полисахариды ≥38%, белковые пептиды ≥11,5%).",
+      quality_highlight_span: "Содержание активных ингредиентов Wonder Herb превышает 90% — высочайшая чистота, оптимальное усвоение.",
+      trust1_title: "Университетские исследования",
+      trust1_desc: "Проверено в ГК/Канаде",
+      trust2_title: "Двойной лабораторный анализ",
+      trust2_desc: "Канада + Гонконг",
+      trust3_title: "GMP сертификация",
+      trust3_desc: "Регулируется Минздравом Канады",
+      trust4_title: "20 000+ пациентов",
+      trust4_desc: "Реальные истории выздоровления",
+      featured_cases_title: "📋 Реальные истории выздоровления",
+      featured_cases_sub: "Узнайте, как Эссенция Юньчжи PSP помогает пациентам улучшить иммунитет и качество жизни",
+      featured_cases_more: "Смотреть больше случаев →",
+      case_title: "📖 Реальные отзывы и случаи",
+      case_desc: "Сотни случаев и статей WeChat показывают, как Юньчжи PSP улучшает качество жизни.",
+      case_btn_cases: "📄 Смотреть случаи",
+      case_btn_brochure: "📘 Скачать брошюру",
+      case_btn_wechat: "<i class='fab fa-weixin'></i> Статьи WeChat",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент прежде всего, натурально и эффективно.",
+      footer_col1_text2: "GMP сертификация в Канаде",
+      footer_col1_text3: "Двойной анализ: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об анализах",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены | Эксперт по натуральному Юньчжи PSP",
+      trust_heading_sr: "Знаки качества"
     }
         };
         const productsData = [
@@ -2811,9 +3107,9 @@
             { link: "產品_PT3.html", img: "https://static.wixstatic.com/media/b3683f_e63c67060cba4d83ba576a0086e7e613~mv2.jpg", titleKey: "product_pt3_title", descKey: "product_pt3_desc" }
         ];
         const caseDataList = [
-            { zh: { title: "麥女士（77歲）", subtitle: "肛門惡性腫瘤", content: "<p>2025年體檢發現肛門惡性腫瘤已擴散淋巴，療程首日服用雲芝+T3，僅第22天出現輕微不適，化療耐受度獲醫生讚賞。</p>" }, en: { title: "Ms. Mak (77)", subtitle: "Anal Malignant Tumor", content: "<p>Anal tumor with lymph spread, took Yunzhi+T3 from day1 of chemoradiotherapy, only mild discomfort on day22.</p>" }, de: { title: "Ms. Mak (77)", subtitle: "Anal Malignant Tumor", content: "<p>Anal tumor with lymph spread, took Yunzhi+T3 from day1 of chemoradiotherapy, only mild discomfort on day22.</p>" } },
-            { zh: { title: "陳小姐（55歲）", subtitle: "腹膜惡性腫瘤", content: "<p>手術切除後持續服用雲芝及T3，CT追蹤2年均正常，現維持低劑量鞏固。</p>" }, en: { title: "Ms. Chan (55)", subtitle: "Peritoneal Malignancy", content: "<p>Post-surgery took Yunzhi+T3, CT scans normal at 6 & 15 months.</p>" }, de: { title: "Ms. Chan (55)", subtitle: "Peritoneal Malignancy", content: "<p>Post-surgery took Yunzhi+T3, CT scans normal at 6 & 15 months.</p>" } },
-            { zh: { title: "Peter Hall（74歲）", subtitle: "前列腺惡性腫瘤", content: "<p>PSP服用後PSA下降，第二次活檢正常；減量後PSA回升，加回PSP+T3後再次受控。</p>" }, en: { title: "Peter Hall (74)", subtitle: "Prostate Cancer", content: "<p>PSP lowered PSA, second biopsy normal.</p>" }, de: { title: "Peter Hall (74)", subtitle: "Prostate Cancer", content: "<p>PSP lowered PSA, second biopsy normal.</p>" } }
+            { zh: { title: "麥女士（77歲）", subtitle: "肛門惡性腫瘤", content: "<p>2025年體檢發現肛門惡性腫瘤已擴散淋巴，療程首日服用雲芝+T3，僅第22天出現輕微不適，化療耐受度獲醫生讚賞。</p>" }, en: { title: "Ms. Mak (77)", subtitle: "Anal Malignant Tumor", content: "<p>Anal tumor with lymph spread, took Yunzhi+T3 from day1 of chemoradiotherapy, only mild discomfort on day22.</p>" }, de: { title: "Ms. Mak (77)", subtitle: "Anal Malignant Tumor", content: "<p>Anal tumor with lymph spread, took Yunzhi+T3 from day1 of chemoradiotherapy, only mild discomfort on day22.</p>" }, es: { title: "Sra. Mak (77)", subtitle: "Tumor maligno anal", content: "<p>Tumor anal con propagación linfática, tomó Yunzhi+T3 desde el día 1 de la quimiorradioterapia, solo leve malestar el día 22.</p>" }, fr: { title: "Mme Mak (77)", subtitle: "Tumeur maligne anale", content: "<p>Tumeur anale avec propagation lymphatique, a pris Yunzhi+T3 dès le jour 1 de la chimioradiothérapie, seulement un léger malaise au jour 22.</p>" }, ja: { title: "麥さん（77歳）", subtitle: "肛門悪性腫瘍", content: "<p>肛門腫瘍のリンパ転移、化学放射線療法初日から雲芝+T3を服用、22日目に軽い不快感のみ。</p>" }, ru: { title: "Г-жа Мак (77)", subtitle: "Злокачественная опухоль анального отдела", content: "<p>Опухоль анального отдела с лимфо spread, принимала Yunzhi+T3 с 1-го дня химиолучевой терапии, лишь легкий дискомфорт на 22-й день.</p>" } },
+            { zh: { title: "陳小姐（55歲）", subtitle: "腹膜惡性腫瘤", content: "<p>手術切除後持續服用雲芝及T3，CT追蹤2年均正常，現維持低劑量鞏固。</p>" }, en: { title: "Ms. Chan (55)", subtitle: "Peritoneal Malignancy", content: "<p>Post-surgery took Yunzhi+T3, CT scans normal at 6 & 15 months.</p>" }, de: { title: "Ms. Chan (55)", subtitle: "Peritoneal Malignancy", content: "<p>Post-surgery took Yunzhi+T3, CT scans normal at 6 & 15 months.</p>" }, es: { title: "Sra. Chan (55)", subtitle: "Neoplasia peritoneal", content: "<p>Después de la cirugía tomó Yunzhi+T3, TC normal a los 6 y 15 meses.</p>" }, fr: { title: "Mme Chan (55)", subtitle: "Tumeur péritonéale", content: "<p>Après la chirurgie, a pris Yunzhi+T3, TDM normale à 6 et 15 mois.</p>" }, ja: { title: "陳さん（55歳）", subtitle: "腹膜悪性腫瘍", content: "<p>術後雲芝+T3を服用、CT検査6ヶ月・15ヶ月で正常。</p>" }, ru: { title: "Г-жа Чан (55)", subtitle: "Перитонеальная злокачественная опухоль", content: "<p>После операции принимала Yunzhi+T3, КТ нормально через 6 и 15 месяцев.</p>" } },
+            { zh: { title: "Peter Hall（74歲）", subtitle: "前列腺惡性腫瘤", content: "<p>PSP服用後PSA下降，第二次活檢正常；減量後PSA回升，加回PSP+T3後再次受控。</p>" }, en: { title: "Peter Hall (74)", subtitle: "Prostate Cancer", content: "<p>PSP lowered PSA, second biopsy normal.</p>" }, de: { title: "Peter Hall (74)", subtitle: "Prostate Cancer", content: "<p>PSP lowered PSA, second biopsy normal.</p>" }, es: { title: "Peter Hall (74)", subtitle: "Cáncer de próstata", content: "<p>PSP redujo el PSA, segunda biopsia normal.</p>" }, fr: { title: "Peter Hall (74)", subtitle: "Cancer de la prostate", content: "<p>PSP a réduit le PSA, deuxième biopsie normale.</p>" }, ja: { title: "Peter Hall（74歳）", subtitle: "前立腺がん", content: "<p>PSPでPSAが低下、2回目の生検が正常。</p>" }, ru: { title: "Peter Hall (74)", subtitle: "Рак предстательной железы", content: "<p>PSP снизил ПСА, повторная биопсия нормальная.</p>" } }
         ];
         let currentLang = 'zh',
             currentProductIdx = 0;
@@ -2832,7 +3128,7 @@
             const mp = productsData[currentProductIdx],
                 lp = productsData[prev],
                 rp = productsData[next];
-            m.innerHTML = `<div class="product-img"><img src="${mp.img}" alt="${t[mp.titleKey]}"></div><h3>${t[mp.titleKey]}</h3><div class="product-description">${t[mp.descKey]}</div><a href="${mp.link}" class="btn-detail-main">${({ zh: '瞭解更多 <i class="fas fa-arrow-right"></i>', en: 'Learn More <i class="fas fa-arrow-right"></i>', de: 'Mehr erfahren <i class="fas fa-arrow-right"></i>' })[currentLang] || 'Learn More <i class="fas fa-arrow-right"></i>'}</a>`;
+            m.innerHTML = `<div class="product-img"><img src="${mp.img}" alt="${t[mp.titleKey]}"></div><h3>${t[mp.titleKey]}</h3><div class="product-description">${t[mp.descKey]}</div><a href="${mp.link}" class="btn-detail-main">${({ zh: '瞭解更多 <i class="fas fa-arrow-right"></i>', en: 'Learn More <i class="fas fa-arrow-right"></i>', de: 'Mehr erfahren <i class="fas fa-arrow-right"></i>', es: 'Saber más <i class="fas fa-arrow-right"></i>', fr: 'En savoir plus <i class="fas fa-arrow-right"></i>', ja: '詳細を見る <i class="fas fa-arrow-right"></i>', ru: 'Узнать больше <i class="fas fa-arrow-right"></i>' })[currentLang] || 'Learn More <i class="fas fa-arrow-right"></i>'}</a>`;
             l.innerHTML = `<div class="product-img"><img src="${lp.img}" alt="${t[lp.titleKey]}"></div><h4>${t[lp.titleKey]}</h4><div class="side-desc">${t[lp.descKey].substring(0,70)}${t[lp.descKey].length>70?'…':''}</div>`;
             r.innerHTML = `<div class="product-img"><img src="${rp.img}" alt="${t[rp.titleKey]}"></div><h4>${t[rp.titleKey]}</h4><div class="side-desc">${t[rp.descKey].substring(0,70)}${t[rp.descKey].length>70?'…':''}</div>`;
         }
@@ -2841,32 +3137,41 @@
             const grid = document.getElementById('featuredCasesGrid');
             if (!grid) return;
             grid.innerHTML = caseDataList.slice(0, 3).map((c, i) => { const d = c[lang]; if (!d) return ''; const div = document.createElement('div'); div.innerHTML = d.content; const plain = (div.textContent || '').substring(0, 110),
-                    excerpt = plain.length >= 110 ? plain + '…' : plain; return `<div class="mini-case-card reveal-on-scroll reveal-delay-${i+1}"><h3 class="mini-case-title">${escapeHtml(d.title)}</h3><div class="mini-case-subtitle">${escapeHtml(d.subtitle)}</div><div class="mini-case-excerpt">${escapeHtml(excerpt)}</div><a href="典型病例.html" class="read-more-link">${({ zh: '閱讀完整故事 →', en: 'Read full story →', de: 'Ganze Geschichte lesen →' })[lang] || 'Read full story →'}</a></div>`; }).join('');
+                    excerpt = plain.length >= 110 ? plain + '…' : plain; return `<div class="mini-case-card reveal-on-scroll reveal-delay-${i+1}"><h3 class="mini-case-title">${escapeHtml(d.title)}</h3><div class="mini-case-subtitle">${escapeHtml(d.subtitle)}</div><div class="mini-case-excerpt">${escapeHtml(excerpt)}</div><a href="典型病例.html" class="read-more-link">${({ zh: '閱讀完整故事 →', en: 'Read full story →', de: 'Ganze Geschichte lesen →', es: 'Leer historia completa →', fr: 'Lire l\'histoire complète →', ja: '全文を読む →', ru: 'Читать полную историю →' })[lang] || 'Read full story →'}</a></div>`; }).join('');
             setTimeout(() => { document.querySelectorAll('.reveal-on-scroll:not(.is-visible)').forEach(el => { if (window._revealObserver) window._revealObserver.observe(el); }); }, 100);
         }
 
         function applyStaticTranslation(lang) {
+            const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+            if (langFlags[lang]) {
+              const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+              Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+            }
             document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][k] !== undefined) el.innerHTML = translations[lang][k]; });
-            document.title = ({ zh: '康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選', en: 'Wonder Herb | Yunzhi PSP Essence Natural Support Formula', de: 'Wonder Herb | Yunzhi-PSP-Essenz – Natürliche Unterstützungsformel' })[lang] || 'Wonder Herb | Yunzhi PSP Essence Natural Support Formula';
+            document.title = ({ zh: '康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選', en: 'Wonder Herb | Yunzhi PSP Essence Natural Support Formula', de: 'Wonder Herb | Yunzhi-PSP-Essenz – Natürliche Unterstützungsformel', es: 'Wonder Herb | Esencia Yunzhi PSP Fórmula Natural de Apoyo', fr: 'Wonder Herb | Essence Yunzhi PSP Formule de Soutien Naturel', ja: 'Wonder Herb | 霊芝PSPエッセンンス ナチュラルサポート処方', ru: 'Wonder Herb | Эссенция Юньчжи PSP Натуральная Поддерживающая Формула' })[lang] || 'Wonder Herb | Yunzhi PSP Essence Natural Support Formula';
             document.documentElement.lang = lang;
             document.getElementById('langZhBtn').classList.toggle('active-lang', lang === 'zh');
             document.getElementById('langEnBtn').classList.toggle('active-lang', lang === 'en');
             document.getElementById('langDeBtn')?.classList.toggle('active-lang', lang === 'de');
+            document.getElementById('langEsBtn')?.classList.toggle('active-lang', lang === 'es');
+            document.getElementById('langFrBtn')?.classList.toggle('active-lang', lang === 'fr');
+            document.getElementById('langJaBtn')?.classList.toggle('active-lang', lang === 'ja');
+            document.getElementById('langRuBtn')?.classList.toggle('active-lang', lang === 'ru');
             renderProductTriple();
             renderFeaturedCases(lang);
             updateHeroCarouselAlt();
         }
 
-        function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
+        function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
 
         function updateCartCountBadge() { const b = document.getElementById('cartCountBadge'); if (!b) return; let t = 0; const s = localStorage.getItem('wonderHerbCart'); if (s) try { t = JSON.parse(s).reduce((a, i) => a + (i.quantity || 0), 0); } catch (e) {} b.innerText = t; }
 
         const heroImages = [
-            { src: "https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png", alt_zh: "康草堂 Wonder Herb 品牌形象", alt_en: "Wonder Herb Brand Image", alt_de: "Wonder Herb Brand Image" },
-            { src: "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg", alt_zh: "雲芝糖肽精華 PSP 標準裝", alt_en: "Yunzhi PSP Essence Standard Pack", alt_de: "Yunzhi PSP Essence Standard Pack" },
-            { src: "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png", alt_zh: "T3 三烯生育醇配方", alt_en: "T3 Tocotrienols Formula", alt_de: "T3 Tocotrienols Formula" },
-            { src: "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png", alt_zh: "乙肝清 草本護肝", alt_en: "Hep BQ capsules Herbal Liver Support", alt_de: "Hep BQ capsules Herbal Liver Support" },
-            { src: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg", alt_zh: "憶活素 MemoProve 腦部保健", alt_en: "MemoProve Brain Health", alt_de: "MemoProve Brain Health" }
+            { src: "https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png", alt_zh: "康草堂 Wonder Herb 品牌形象", alt_en: "Wonder Herb Brand Image", alt_de: "Wonder Herb Brand Image", alt_es: "Wonder Herb Marca Imagen", alt_fr: "Wonder Herb Image de marque", alt_ja: "Wonder Herb ブランドイメージ", alt_ru: "Wonder Herb Бренд Изображение" },
+            { src: "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg", alt_zh: "雲芝糖肽精華 PSP 標準裝", alt_en: "Yunzhi PSP Essence Standard Pack", alt_de: "Yunzhi PSP Essence Standard Pack", alt_es: "Yunzhi PSP Paquete Estándar", alt_fr: "Yunzhi PSP Paquet Standard", alt_ja: "霊芝PSP 通常パック", alt_ru: "Юньчжи PSP Стандартный Набор" },
+            { src: "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png", alt_zh: "T3 三烯生育醇配方", alt_en: "T3 Tocotrienols Formula", alt_de: "T3 Tocotrienols Formula", alt_es: "T3 Fórmula Tocotrienoles", alt_fr: "T3 Formule Tocotriénols", alt_ja: "T3 トコトリエノール処方", alt_ru: "T3 Формула Токотриенолов" },
+            { src: "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png", alt_zh: "乙肝清 草本護肝", alt_en: "Hep BQ capsules Herbal Liver Support", alt_de: "Hep BQ capsules Herbal Liver Support", alt_es: "Cápsulas Hep BQ Apoyo Hepático", alt_fr: "Gélules Hep BQ Soutien Hépatique", alt_ja: "Hep BQカプセル 肝サポート", alt_ru: "Капсулы Hep BQ Поддержка Печени" },
+            { src: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg", alt_zh: "憶活素 MemoProve 腦部保健", alt_en: "MemoProve Brain Health", alt_de: "MemoProve Brain Health", alt_es: "MemoProve Salud Cerebral", alt_fr: "MemoProve Santé Cérébrale", alt_ja: "MemoProve 脳の健康", alt_ru: "MemoProve Здоровье Мозга" }
         ];
         let heroCurrent = 0,
             heroInterval;
@@ -3069,7 +3374,7 @@
         function resetHeroTimer() { clearInterval(heroInterval);
             heroInterval = setInterval(nextHero, 5000); }
 
-        function updateHeroCarouselAlt() { document.querySelectorAll('#heroSlides .carousel-slide img').forEach((img, idx) => { if (heroImages[idx]) img.alt = currentLang === 'zh' ? heroImages[idx].alt_zh : heroImages[idx].alt_en; }); }
+        function updateHeroCarouselAlt() { document.querySelectorAll('#heroSlides .carousel-slide img').forEach((img, idx) => { if (heroImages[idx]) img.alt = currentLang === 'zh' ? heroImages[idx].alt_zh : heroImages[idx]['alt_' + currentLang] || heroImages[idx].alt_en; }); }
 
         function buildHeroCarousel() {
             const s = document.getElementById('heroSlides'),
@@ -3520,11 +3825,15 @@
             initJellyElasticity();
             initCaseStudiesJelly();
             const savedLang = localStorage.getItem('wonderherb_lang');
-            currentLang = (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de') ? savedLang : 'zh';
+            currentLang = (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de' || savedLang === 'es' || savedLang === 'fr' || savedLang === 'ja' || savedLang === 'ru') ? savedLang : 'zh';
             applyStaticTranslation(currentLang);
             document.getElementById('langZhBtn').addEventListener('click', () => setLanguage('zh'));
             document.getElementById('langEnBtn').addEventListener('click', () => setLanguage('en'));
-    document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); });
+            document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); });
+            document.getElementById('langEsBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('es'); });
+            document.getElementById('langFrBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('fr'); });
+            document.getElementById('langJaBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ja'); });
+            document.getElementById('langRuBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ru'); });
             window.addEventListener('storage', updateCartCountBadge);
             initHeroCanvas();
             initScrollReveal();

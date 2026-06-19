@@ -692,6 +692,15 @@
     .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+    .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -1016,10 +1025,13 @@
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1333,12 +1345,189 @@
       footer_link_faq: "FAQ",
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte"
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      faq_title: "Preguntas Frecuentes",
+      faq_subtitle: "Preguntas frecuentes sobre Yunzhi PSP, fórmula T3 y productos Wonder Herb — respondidas por expertos.",
+      faq_q1: "¿Qué es Yunzhi PSP?",
+      faq_a1: "<p>Yunzhi es un hongo poroso que se utiliza en las culturas asiáticas para apoyar a pacientes con cáncer. PSP significa Polisacárido + Péptido, un complejo activo extraído del micelio profundo de la cepa Yunzhi COV-1 y generalmente se denomina Yunzhi PSP.</p><p>Designaciones como Yunzhi (TCM), Trametes versicolor, Kawaratake (Japón) o Turkey Tail (Norteamérica) se refieren al mismo organismo. PSP y PSK son dos extractos activos de este hongo.</p>",
+      faq_q2: "¿Cómo se prueba la eficacia de Yunzhi PSP?",
+      faq_a2: "<p>Según los estándares nacionales de medicamentos, el contenido de Yunzhi PSP no debe ser inferior al 49,5% (Polisacáridos ≥38%, Péptidos proteicos ≥11,5%). <strong>El contenido de ingrediente activo de Wonder Herb supera el 90%</strong> — la máxima pureza para una absorción óptima. Cada lote se prueba dos veces en Canadá y Hong Kong para garantizar estrictos estándares de calidad.</p>",
+      faq_q3: "¿Qué evidencia respalda los beneficios de Yunzhi PSP?",
+      faq_a3: "<ul><li>En combinación con tratamientos convencionales contra el cáncer (quimioterapia, radioterapia, cirugía), Yunzhi PSP ha mostrado beneficios significativos. Los estudios clínicos sugieren una mejora en la tasa de supervivencia general en pacientes con cáncer que usan PSP como inmunoterapia adyuvante. En personas sanas, fortalece la inmunidad sin efectos secundarios.</li><li>PSP reduce los efectos secundarios del tratamiento, restaura la función inmunitaria celular, aumenta la tasa de supervivencia y disminuye la citotoxicidad de ciertos medicamentos anti-leucemia a través de interacciones del ciclo celular.</li><li>PSP alivia los síntomas comunes relacionados con el cáncer: fatiga, pérdida de apetito, dolor, ansiedad, insomnio, náuseas, vómitos y mejora la calidad de vida.</li><li>Estabiliza el recuento de leucocitos, aumenta la actividad de células NK y LAK, normaliza la proporción CD4+/CD8+ y mejora el estado de rendimiento de Karnofsky.</li></ul>",
+      faq_q4: "¿Tiene Yunzhi PSP efectos secundarios?",
+      faq_a4: "<p>Yunzhi PSP no afecta otros medicamentos y no influye en el metabolismo hepático. A diferencia de la quimioterapia, no destruye células sanas, sino que distingue entre células normales y anormales.</p><p>PSP ha sido reconocido por el Instituto Nacional del Cáncer de EE.UU. como un hongo medicinal para el apoyo al cáncer. Precaución: Dado que PSP modula la función inmunitaria, los receptores de trasplantes de órganos o personas bajo inmunosupresores deben consultar a su médico antes de usarlo.</p>",
+      faq_q5: "¿Qué diferencia a Yunzhi PSP de Wonder Herb de otras marcas?",
+      faq_a5: "<ul><li><strong>Tecnología de extracción única</strong>: Combina polisacáridos y péptidos para una absorción completa en el cuerpo. Un mayor contenido de polisacáridos por sí solo sin enlace de péptido es ineficaz.</li><li><strong>Micelio profundo de cepa COV-1</strong>: Los ingredientes activos se concentran en el micelio profundo (no en el cuerpo fructífero) y ofrecen potencia superior y actividad anticancerígena.</li><li><strong>5% de extracto de élite</strong>: No es una simple deshidratación; los ingredientes medicinales se aíslan y purifican — verdaderamente la esencia de Yunzhi.</li><li><strong>Ingredientes activos >90%</strong>: Uno de los contenidos más altos del mercado.</li><li><strong>GMP certificado en Canadá</strong>: Fabricado bajo estrictas directrices canadienses de GMP.</li></ul>",
+      highlight_title: "¿Se puede tomar Yunzhi durante el tratamiento del cáncer?",
+      highlight_desc: "Un especialista lo explica en su página web personal. Haga clic a continuación para ver el video y leer respuestas detalladas.",
+      wechat_btn_text: "Artículo de WeChat: Respuestas de un especialista",
+      research_title: "Investigación universitaria",
+      research_desc: "Los estudios universitarios confirman que la fórmula única 'Wonder Herb Yunzhi PSP + T3' duplica la eficacia en comparación con el PSP puro. Numerosos artículos internacionales respaldan los significativos beneficios inmunomoduladores, antitumorales y adyuvantes del Yunzhi PSP. Los detalles se encuentran en la <a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">página de informes de investigación</a>.",
+      research_link: "Página de informes de investigación",
+      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> Descubrir productos",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados"
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      faq_title: "Questions Fréquentes",
+      faq_subtitle: "Questions fréquentes sur Yunzhi PSP, la formule T3 et les produits Wonder Herb — répondues par des experts.",
+      faq_q1: "Qu'est-ce que Yunzhi PSP?",
+      faq_a1: "<p>Yunzhi est un champignon poreux utilisé dans les cultures asiatiques pour soutenir les patients atteints de cancer. PSP signifie Polysaccharide + Peptide, un complexe actif extrait du mycélium profond de la souche Yunzhi COV-1 et généralement appelé Yunzhi PSP.</p><p>Des désignations comme Yunzhi (MTC), Trametes versicolor, Kawaratake (Japon) ou Turkey Tail (Amérique du Nord) désignent le même organisme. PSP et PSK sont deux extraits actifs de ce champignon.</p>",
+      faq_q2: "Comment l'efficacité du Yunzhi PSP est-elle testée?",
+      faq_a2: "<p>Selon les normes nationales des médicaments, la teneur en Yunzhi PSP ne doit pas être inférieure à 49,5% (Polysaccharides ≥38%, Peptides protéiques ≥11,5%). <strong>La teneur en ingrédients actifs de Wonder Herb dépasse 90%</strong> — pureté maximale pour une absorption optimale. Chaque lot est testé deux fois au Canada et à Hong Kong pour garantir des normes de qualité strictes.</p>",
+      faq_q3: "Quelles preuves soutiennent les avantages du Yunzhi PSP?",
+      faq_a3: "<ul><li>En combinaison avec les traitements conventionnels contre le cancer (chimiothérapie, radiothérapie, chirurgie), Yunzhi PSP a montré des avantages significatifs. Les études cliniques suggèrent une amélioration du taux de survie global chez les patients atteints de cancer utilisant le PSP comme immunothérapie adjuvante. Chez les personnes en bonne santé, il renforce l'immunité sans effets secondaires.</li><li>Le PSP réduit les effets secondaires du traitement, restaure la fonction immunologique cellulaire, augmente le taux de survie et diminue la cytotoxicité de certains médicaments anti-leucémie par des interactions du cycle cellulaire.</li><li>Le PSP soulage les symptômes courants liés au cancer: fatigue, perte d'appétit, douleur, anxiété, insomnie, nausées, vomissements et améliore la qualité de vie.</li><li>Il stabilise le nombre de leucocytes, augmente l'activité des cellules NK et LAK, normalise le rapport CD4+/CD8+ et améliore l'indice de performance de Karnofsky.</li></ul>",
+      faq_q4: "Le Yunzhi PSP a-t-il des effets secondaires?",
+      faq_a4: "<p>Le Yunzhi PSP n'affecte pas les autres médicaments et n'influence pas le métabolisme hépatique. Contrairement à la chimiothérapie, il ne détruit pas les cellules saines, mais fait la distinction entre les cellules normales et anormales.</p><p>Le PSP a été reconnu par le National Cancer Institute des États-Unis comme un champignon médicinal pour le soutien anticancer. Attention: Comme le PSP module la fonction immunologique, les receveurs de transplantations d'organes ou les personnes sous immunosuppresseurs doivent consulter leur médecin avant de l'utiliser.</p>",
+      faq_q5: "Qu'est-ce qui différencie Yunzhi PSP de Wonder Herb des autres marques?",
+      faq_a5: "<ul><li><strong>Technologie d'extraction unique</strong>: Combine les polysaccharides et les peptides pour une absorption complète dans le corps. Une proportion plus élevée de polysaccharides seule sans liaison peptidique est inefficace.</li><li><strong>Mycélium profond de la souche COV-1</strong>: Les ingrédients actifs se concentrent dans le mycélium profond (pas dans le corps fructifère) et offrent une puissance supérieure et une activité anticancer.</li><li><strong>5% d'extrait d'élite</strong>: Pas une simple déshydration; les ingrédients médicinaux sont isolés et purifiés — vraiment l'essence de Yunzhi.</li><li><strong>Ingrédients actifs >90%</strong>: L'une des teneurs les plus élevées du marché.</li><li><strong>GMP certifié au Canada</strong>: Fabriqué selon des directives GMP canadiennes strictes.</li></ul>",
+      highlight_title: "Peut-on prendre Yunzhi pendant le traitement du cancer?",
+      highlight_desc: "Un spécialiste l'explique sur son site web personnel. Cliquez ci-dessous pour regarder la vidéo et lire des réponses détaillées.",
+      wechat_btn_text: "Article WeChat: Réponses d'un spécialiste",
+      research_title: "Recherche universitaire",
+      research_desc: "Les études universitaires confirment que la formule unique 'Wonder Herb Yunzhi PSP + T3' double l'efficacité par rapport au PSP pur. De nombreux articles internationaux soutiennent les avantages significatifs immunomodulateurs, antitumoraux et adjuvants du Yunzhi PSP. Les détails se trouvent sur la <a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">page des rapports de recherche</a>.",
+      research_link: "Page des rapports de recherche",
+      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> Découvrir les produits",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés"
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      faq_title: "よくある質問",
+      faq_subtitle: "雲芝PSP、T3処方、Wonder Herb製品に関するよくある質問 — 専門家が回答。",
+      faq_q1: "雲芝PSPとは何ですか？",
+      faq_a1: "<p>雲芝はアジアの文化でがん患者の支援に使用される多孔質のきのこです。PSPは多糖類+ペプチドを指し雲芝COV-1株の深い菌糸体から抽出された活性複合体で、一般的に雲芝PSPと呼ばれています。</p><p>雲芝（中医）、Trametes versicolor、Kawaratake（日本）、Turkey Tail（北米）这些都是指同一生物です。PSPとPSKはこのきのこから抽出された2つの活性成分です。</p>",
+      faq_q2: "雲芝PSPの有効性はどのように試験されますか？",
+      faq_a2: "<p>国家医薬品基準によると、雲芝PSP含有量は49.5%以上（多糖類≥38%、タンパク質ペプチド≥11.5%）必要があります。<strong>Wonder Herbの有効成分含有量は90%以上</strong> — 最適な吸収のための最高純度。各ロットはカナダと香港で二重に検査され、厳格な品質基準を保証しています。</p>",
+      faq_q3: "雲芝PSPのベネフィットを裏付ける証拠は何ですか？",
+      faq_a3: "<ul><li>通常の癌治療（化学療法、放射線療法、手術）と組み合わせると、雲芝PSPは有意なベネフィットを示しています。臨床研究は、PSPを輔助免疫療法として使用している癌患者の全生存率改善を示唆しています。健康者では副作用なしで免疫力を強化します。</li><li>PSPは治療の副作用を軽減し、細胞性免疫機能を回復させ、生存率を高め、細胞周期の相互作用を通じて特定の抗白血病剤の細胞毒性を低下させます。</li><li>PSPは一般的な癌関連症状を緩和します：疲労、食欲不振、痛み、不安、不眠症、吐き気、嘔吐、生活の質を向上させます。</li><li>白血球数を安定させ、NK細胞やLAK細胞の活性を高め、CD4+/CD8+比率を正常化し、カーナフスキー性能状態を改善します。</li></ul>",
+      faq_q4: "雲芝PSPに副作用はありますか？",
+      faq_a4: "<p>雲芝PSPは他の薬に影響を与えず、肝臓の代謝にも影響しません。化学療法とは異なり、正常な細胞を破壊せず、正常細胞と異常細胞を区別します。</p><p>PSPは米国国立癌研究所により癌支援用Medicinal茸として認定されています。注意：PSPは免疫機能を調整するため、臓器移植を受けた人や免疫抑制剤を使用している人は使用前に医師に相談する必要があります。</p>",
+      faq_q5: "Wonder Herbの雲芝PSPは他のブランドとどう違うのですか？",
+      faq_a5: "<ul><li><strong>独自の抽出技術</strong>：多糖類とペプチドを組み合わせて体内での完全な吸収を実現。ペプチド結合なしでは、多糖類だけでは効果がありません。</li><li><strong>COV-1株の深い菌糸体</strong>：有効成分富含在深い菌糸体（子実体ではない）に、最高水準の効果と抗がん活性を提供します。</li><li><strong>5%のエリート抽出物</strong>：単純な脱水ではなく、薬用有効成分が分離精製されます — 本当に雲芝の精华です。</li><li><strong>有効成分>90%</strong>：市場で最高水準の含有量。</li><li><strong>カナダGMP認証</strong>：カナダの厳格なGMPガイドラインに基づいて製造。</li></ul>",
+      highlight_title: "癌治療中に雲芝を飲むことができますか？",
+      highlight_desc: "専門医が個人のウェブサイトで説明しています。下をクリックしてビデオを見て、詳しい回答を読んでください。",
+      wechat_btn_text: "微信記事：専門医の回答",
+      research_title: "大学研究",
+      research_desc: "大学研究により、独自処方の'Wonder Herb 雲芝PSP + T3'が純粋なPSPと比較して効果が2倍になることが確認されています。雲芝PSPの有意な免疫調節、抗腫瘍、輔助療法のベネフィットを裏付ける多くの国際論文があります。詳しい内容は<a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">研究レポートページ</a>をご覧ください。",
+      research_link: "研究レポートページ",
+      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> 製品を探す",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      faq_title: "Часто задаваемые вопросы",
+      faq_subtitle: "Часто задаваемые вопросы о Yunzhi PSP, формуле T3 и продуктах Wonder Herb — ответы от экспертов.",
+      faq_q1: "Что такое Yunzhi PSP?",
+      faq_a1: "<p>Yunzhi — это пористый гриб, который используется в азиатских культурах для поддержки пациентов с раком. PSP означает Полисахарид + Пептид, активный комплекс, извлекаемый из глубокого мицелия штамма Yunzhi COV-1, обычно называемый Yunzhi PSP.</p><p>Такие обозначения как Yunzhi (ТКМ), Trametes versicolor, Kawaratake (Япония) или Turkey Tail (Северная Америка) относятся к одному и тому же организму. PSP и PSK — это два активных экстракта этого гриба.</p>",
+      faq_q2: "Как тестируется эффективность Yunzhi PSP?",
+      faq_a2: "<p>Согласно национальным стандартам лекарств, содержание Yunzhi PSP не должно быть ниже 49,5% (Полисахариды ≥38%, Белковые пептиды ≥11,5%). <strong>Содержание активных ингредиентов Wonder Herb превышает 90%</strong> — высочайшая чистота для оптимального усвоения. Каждая партия дважды тестируется в Канаде и Гонконге для обеспечения строгих стандартов качества.</p>",
+      faq_q3: "Какие доказательства подтверждают преимущества Yunzhi PSP?",
+      faq_a3: "<ul><li>В сочетании с conventional лечением рака (химиотерапия, лучевая терапия, хирургия) Yunzhi PSP показал значительные преимущества. Клинические исследования предполагают улучшение общей выживаемости у онкологических больных, использующих PSP в качестве адъювантной иммунотерапии. У здоровых людей он укрепляет иммунитет без побочных эффектов.</li><li>PSP снижает побочные эффекты лечения, восстанавливает клеточную иммунную функцию, повышает показатели выживаемости и снижает цитотоксичность certain противоопухолевых препаратов через взаимодействия клеточного цикла.</li><li>PSP облегчает общие симптомы, связанные с раком: усталость, потеря аппетита, боль, тревога, бессонница, тошнота, рвота и улучшает качество жизни.</li><li>Он стабилизирует количество лейкоцитов, увеличивает активность NK- и LAK-клеток, нормализует соотношение CD4+/CD8+ и улучшает индекс Карновского.</li></ul>",
+      faq_q4: "Есть ли у Yunzhi PSP побочные эффекты?",
+      faq_a4: "<p>Yunzhi PSP не влияет на другие лекарства и не влияет на печеночный метаболизм. В отличие от химиотерапии он не разрушает здоровые клетки, а различает нормальные и аномальные клетки.</p><p>PSP был признан Национальным институтом рака США как лекарственный гриб для поддержки при раке. Внимание: Поскольку PSP модулирует иммунную функцию, реципиенты трансплантатов органов или люди, принимающие иммуносупрессоры, должны проконсультироваться с врачом перед его использованием.</p>",
+      faq_q5: "Чем Yunzhi PSP от Wonder Herb отличается от других брендов?",
+      faq_a5: "<ul><li><strong>Уникальная технология экстракции</strong>: Сочетает полисахариды и пептиды для полного усвоения в организме. Более высокое содержание полисахаридов само по себе без пептидной связи неэффективно.</li><li><strong>Глубокий мицелий штамма COV-1</strong>: Активные ингредиенты концентрируются в глубоком мицелии (не в плодовом теле) и обеспечивают превосходную эффективность и противоопухолевую активность.</li><li><strong>5% элитного экстракта</strong>: Не простая дегидратация; лекарственные ингредиенты выделяются и очищаются — поистине эссенция Yunzhi.</li><li><strong>Активные ингредиенты >90%</strong>: Одно из самых высоких содержаний на рынке.</li><li><strong>GMP сертифицировано в Канаде</strong>: Производится в соответствии со строгими канадскими стандартами GMP.</li></ul>",
+      highlight_title: "Можно ли принимать Yunzhi во время лечения рака?",
+      highlight_desc: "Специалист объясняет это на своем личном сайте. Нажмите ниже, чтобы посмотреть видео и прочитать подробные ответы.",
+      wechat_btn_text: "Статья WeChat: Ответы специалиста",
+      research_title: "Университетские исследования",
+      research_desc: "Университетские исследования подтверждают, что уникальная формула 'Wonder Herb Yunzhi PSP + T3' удваивает эффективность по сравнению с чистым PSP. Многочисленные международные статьи подтверждают значительные иммуномодулирующие, противоопухолевые и адъювантные преимущества Yunzhi PSP. Подробности см. на <a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">странице исследовательских отчетов</a>.",
+      research_link: "Страница исследовательских отчетов",
+      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> Открыть продукты",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены"
     }
   };
 
   let currentLang = 'zh';
 
   function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
     const elements = document.querySelectorAll('[data-i18n]');
     elements.forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -1346,7 +1535,7 @@
         el.innerHTML = translations[lang][key];
       }
     });
-    document.title = ({ zh: '常見問題 | 康草堂 Wonder Herb - 雲芝糖肽精華專業解答', en: 'FAQ | Wonder Herb - Yunzhi PSP Essence Expert Answers', de: 'FAQ | Wonder Herb - Yunzhi-PSP-Essenz Expertenantworten' })[lang] || 'FAQ | Wonder Herb - Yunzhi PSP Essence Expert Answers'; document.documentElement.lang = lang;
+    document.title = ({ zh: '常見問題 | 康草堂 Wonder Herb - 雲芝糖肽精華專業解答', en: 'FAQ | Wonder Herb - Yunzhi PSP Essence Expert Answers', de: 'FAQ | Wonder Herb - Yunzhi-PSP-Essenz Expertenantworten', es: 'Preguntas Frecuentes | Wonder Herb - Yunzhi PSP Essence', fr: 'Questions Fréquentes | Wonder Herb - Yunzhi PSP Essence', ja: 'よくある質問 | Wonder Herb - 雲芝糖肽精華', ru: 'Часто задаваемые вопросы | Wonder Herb - Yunzhi PSP Essence' })[lang] || 'FAQ | Wonder Herb - Yunzhi PSP Essence Expert Answers'; document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn');
     const enSpan = document.getElementById('langEnBtn');
     if (zhSpan && enSpan) {
@@ -1355,6 +1544,10 @@
       zhSpan.classList.toggle('active-lang', lang === 'zh');
       enSpan.classList.toggle('active-lang', lang === 'en');
       if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); }
+      const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); }
+      const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); }
+      const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); }
+      const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); }
       zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false');
       enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false');
     }
@@ -1362,7 +1555,7 @@
   }
 
   function setLanguage(lang) {
-    if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return;
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return;
     currentLang = lang;
     localStorage.setItem('wonderherb_lang', lang);
     applyStaticTranslation(currentLang);
@@ -1370,7 +1563,7 @@
 
   function initLanguage() {
     const savedLang = localStorage.getItem('wonderherb_lang');
-    if (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de') currentLang = savedLang;
+    if (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de' || savedLang === 'es' || savedLang === 'fr' || savedLang === 'ja' || savedLang === 'ru') currentLang = savedLang;
     else currentLang = 'zh';
     applyStaticTranslation(currentLang);
   }
@@ -1388,6 +1581,26 @@
       if (deBtn) {
         deBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('de'); });
         deBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('de'); } });
+      }
+      const esBtn = document.getElementById('langEsBtn');
+      if (esBtn) {
+        esBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('es'); });
+        esBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('es'); } });
+      }
+      const frBtn = document.getElementById('langFrBtn');
+      if (frBtn) {
+        frBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('fr'); });
+        frBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('fr'); } });
+      }
+      const jaBtn = document.getElementById('langJaBtn');
+      if (jaBtn) {
+        jaBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ja'); });
+        jaBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ja'); } });
+      }
+      const ruBtn = document.getElementById('langRuBtn');
+      if (ruBtn) {
+        ruBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ru'); });
+        ruBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ru'); } });
       }
       enBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('en'); } });
     }

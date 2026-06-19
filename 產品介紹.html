@@ -742,6 +742,15 @@
     .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+    .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -1066,10 +1075,13 @@
   <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1270,6 +1282,130 @@
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
       last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      page_title: "Productos",
+      page_subtitle: "Fábrica GMP canadiense · Ingredientes activos >90% · Comprobado por universidades",
+      modal_quantity_label: "Cantidad:",
+      modal_add_btn: "Añadir al carrito",
+      quickview_btn: "<i class='fas fa-eye'></i> Vista rápida",
+      detail_btn: "<i class='fas fa-info-circle'></i> Detalles",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados",
+      last_update_text: "📅 Última actualización: 2 de junio de 2026 | Información del producto actualizada regularmente."
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      page_title: "Produits",
+      page_subtitle: "Usine GMP canadienne · Ingrédients actifs >90% · Prouvé par les universités",
+      modal_quantity_label: "Quantité:",
+      modal_add_btn: "Ajouter au panier",
+      quickview_btn: "<i class='fas fa-eye'></i> Aperçu",
+      detail_btn: "<i class='fas fa-info-circle'></i> Détails",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés",
+      last_update_text: "📅 Dernière mise à jour: 2 juin 2026 | Informations sur les produits mises à jour régulièrement."
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      page_title: "製品シリーズ",
+      page_subtitle: "カナダGMP工場 · 有効成分 >90% · 大学研究実証",
+      modal_quantity_label: "数量：",
+      modal_add_btn: "カートに追加",
+      quickview_btn: "<i class='fas fa-eye'></i> クイックビュー",
+      detail_btn: "<i class='fas fa-info-circle'></i> 詳細",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有",
+      last_update_text: "📅 最終更新：2026年6月2日 | 製品情報は定期的に更新されています。"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      page_title: "Продукты",
+      page_subtitle: "Канадский GMP-завод · Активные ингредиенты >90% · Подтверждено университетами",
+      modal_quantity_label: "Количество:",
+      modal_add_btn: "В корзину",
+      quickview_btn: "<i class='fas fa-eye'></i> Быстрый просмотр",
+      detail_btn: "<i class='fas fa-info-circle'></i> Подробнее",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены",
+      last_update_text: "📅 Последнее обновление: 2 июня 2026 г. | Информация о продукте регулярно обновляется."
     }
     };
 
@@ -1289,6 +1425,46 @@
         { id: 4, name: "Hep BQ capsules", price: 1880, priceText: "HK$1,880.00", desc: "Natural herbal liver-support formula, enhances liver metabolism, targets hepatitis B and liver dysfunction.", image: "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png", badge: null, link: "產品_乙肝清.html" },
         { id: 5, name: "MemoProve", price: 520, priceText: "HK$520.00", desc: "Austrian EVER PHARMA formula helps repair brain cells, enhance memory and concentration, rigorously tested in Europe.", image: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg", badge: null, link: "產品_憶活素.html" },
         { id: 6, name: "PT3 (Clinic Only)", price: 0, priceText: "Clinic Only", desc: "Professional-grade formula available only at selected TCM & Western medicine clinics. Please consult your doctor.", image: "https://static.wixstatic.com/media/b3683f_e63c67060cba4d83ba576a0086e7e613~mv2.jpg", badge: "Clinic Only", link: "產品_PT3.html" }
+      ],
+      de: [
+        { id: 1, name: "Yunzhi PSP Essence - Testpackung", price: 680, priceText: "HK$680.00", desc: "Polysaccharid-Peptid-Gehalt >1,8× nationaler Standard, verbessert Immunzellaktivität, reduziert Nebenwirkungen.", image: "https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg", badge: null, link: "產品_雲芝糖肽精華_A.html" },
+        { id: 2, name: "Yunzhi PSP Essence – Standardpackung", price: 3800, priceText: "HK$3,800.00", desc: "Stärkt Immunregulation, ideal für Langzeit-Adjuvans-Therapie. Chargen双重geprüft, Wirkstoffe >90%.", image: "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg", badge: null, link: "產品_雲芝糖肽精華_B.html" },
+        { id: 3, name: "T3 Formel", price: 1900, priceText: "HK$1,900.00", desc: "Universitätlich bewiesene synergistische Formel verdoppelt Wirksamkeit.", image: "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png", badge: null, link: "產品_T3.html" },
+        { id: 4, name: "Hep BQ capsules", price: 1880, priceText: "HK$1,880.00", desc: "Natürliche Kräuterformel zur Leberunterstützung.", image: "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png", badge: null, link: "產品_乙肝清.html" },
+        { id: 5, name: "MemoProve", price: 520, priceText: "HK$520.00", desc: "Österreichische Formel zur Reparatur von Gehirnzellen.", image: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg", badge: null, link: "產品_憶活素.html" },
+        { id: 6, name: "PT3 (Nur Kliniken)", price: 0, priceText: "Nur Kliniken", desc: "Professionelle Formel nur in ausgewählten Kliniken erhältlich.", image: "https://static.wixstatic.com/media/b3683f_e63c67060cba4d83ba576a0086e7e613~mv2.jpg", badge: "Nur Kliniken", link: "產品_PT3.html" }
+      ],
+      es: [
+        { id: 1, name: "Esencia Yunzhi PSP - Paquete de prueba", price: 680, priceText: "HK$680.00", desc: "Contenido de polisacárido-péptido >1,8× estándar nacional, mejora la actividad celular inmune.", image: "https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg", badge: null, link: "產品_雲芝糖肽精華_A.html" },
+        { id: 2, name: "Esencia Yunzhi PSP – Paquete estándar", price: 3800, priceText: "HK$3,800.00", desc: "Fortalecer la regulación inmune, ideal para terapia adyuvante a largo plazo.", image: "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg", badge: null, link: "產品_雲芝糖肽精華_B.html" },
+        { id: 3, name: "Fórmula T3", price: 1900, priceText: "HK$1,900.00", desc: "Fórmula sinérgica probada por universidades duplica la eficacia.", image: "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png", badge: null, link: "產品_T3.html" },
+        { id: 4, name: "Cápsulas Hep BQ", price: 1880, priceText: "HK$1,880.00", desc: "Fórmula herbal natural para apoyo hepático.", image: "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png", badge: null, link: "產品_乙肝清.html" },
+        { id: 5, name: "MemoProve", price: 520, priceText: "HK$520.00", desc: "Fórmula austríaca para reparar células cerebrales.", image: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg", badge: null, link: "產品_憶活素.html" },
+        { id: 6, name: "PT3 (Solo clínicas)", price: 0, priceText: "Solo clínicas", desc: "Fórmula profesional solo disponible en clínicas seleccionadas.", image: "https://static.wixstatic.com/media/b3683f_e63c67060cba4d83ba576a0086e7e613~mv2.jpg", badge: "Solo clínicas", link: "產品_PT3.html" }
+      ],
+      fr: [
+        { id: 1, name: "Essence Yunzhi PSP - Pack d'essai", price: 680, priceText: "HK$680.00", desc: "Polysaccharide-peptide >1,8× norme nationale, améliore l'activité cellulaire immunitaire.", image: "https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg", badge: null, link: "產品_雲芝糖肽精華_A.html" },
+        { id: 2, name: "Essence Yunzhi PSP – Pack standard", price: 3800, priceText: "HK$3,800.00", desc: "Renforcer la régulation immunitaire, idéal pour la thérapie adjuvante à long terme.", image: "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg", badge: null, link: "產品_雲芝糖肽精華_B.html" },
+        { id: 3, name: "Formule T3", price: 1900, priceText: "HK$1,900.00", desc: "Formule synergique prouvée par les universités, double l'efficacité.", image: "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png", badge: null, link: "產品_T3.html" },
+        { id: 4, name: "Gélules Hep BQ", price: 1880, priceText: "HK$1,880.00", desc: "Formule herbal naturelle pour le soutien hépatique.", image: "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png", badge: null, link: "產品_乙肝清.html" },
+        { id: 5, name: "MemoProve", price: 520, priceText: "HK$520.00", desc: "Formule autrichienne pour réparer les cellules cérébrales.", image: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg", badge: null, link: "產品_憶活素.html" },
+        { id: 6, name: "PT3 (Cliniques uniquement)", price: 0, priceText: "Cliniques uniquement", desc: "Formule professionnelle disponible uniquement dans les cliniques sélectionnées.", image: "https://static.wixstatic.com/media/b3683f_e63c67060cba4d83ba576a0086e7e613~mv2.jpg", badge: "Cliniques uniquement", link: "產品_PT3.html" }
+      ],
+      ja: [
+        { id: 1, name: "霊芝PSPエッセンンス - 試用パック", price: 680, priceText: "HK$680.00", desc: "多糖体ペプチド含有量が国家基準の1.8倍以上、免疫細胞活性を向上。", image: "https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg", badge: null, link: "產品_雲芝糖肽精華_A.html" },
+        { id: 2, name: "霊芝PSPエッセンンス – 通常パック", price: 3800, priceText: "HK$3,800.00", desc: "免疫調整を強化、長期補助療法に最適。", image: "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg", badge: null, link: "產品_雲芝糖肽精華_B.html" },
+        { id: 3, name: "T3 処方", price: 1900, priceText: "HK$1,900.00", desc: "大学実証の相乗効果処方が効果を倍増。", image: "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png", badge: null, link: "產品_T3.html" },
+        { id: 4, name: "Hep BQカプセル", price: 1880, priceText: "HK$1,880.00", desc: "ナチュラル肝サポート処方は。", image: "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png", badge: null, link: "產品_乙肝清.html" },
+        { id: 5, name: "MemoProve", price: 520, priceText: "HK$520.00", desc: "オーストリア開発の脳細胞修復 формула。", image: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg", badge: null, link: "產品_憶活素.html" },
+        { id: 6, name: "PT3（クリニック限定）", price: 0, priceText: "クリニック限定", desc: "プロフェッショナル処方は選定されたクリニックのみ。", image: "https://static.wixstatic.com/media/b3683f_e63c67060cba4d83ba576a0086e7e613~mv2.jpg", badge: "クリニック限定", link: "產品_PT3.html" }
+      ],
+      ru: [
+        { id: 1, name: "Эссенция Юньчжи PSP - Пробный набор", price: 680, priceText: "HK$680.00", desc: "Содержание полисахарид-пептида >1,8× национальный стандарт, улучшает активность иммунных клеток.", image: "https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg", badge: null, link: "產品_雲芝糖肽精華_A.html" },
+        { id: 2, name: "Эссенция Юньчжи PSP – Стандартный набор", price: 3800, priceText: "HK$3,800.00", desc: "Укрепление иммунной регуляции, идеально для долгосрочной адъювантной терапии.", image: "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg", badge: null, link: "產品_雲芝糖肽精華_B.html" },
+        { id: 3, name: "Формула T3", price: 1900, priceText: "HK$1,900.00", desc: "Университетская синергетическая формула удваивает эффективность.", image: "https://static.wixstatic.com/media/b3683f_ffb7f1a2da0f4a7f8c64094367adfa9d~mv2.png", badge: null, link: "產品_T3.html" },
+        { id: 4, name: "Капсулы Hep BQ", price: 1880, priceText: "HK$1,880.00", desc: "Натуральная травяная формула для поддержки печени.", image: "https://static.wixstatic.com/media/b3683f_8c51741560ba4f7c920ce088fdf6c8fc~mv2.png", badge: null, link: "產品_乙肝清.html" },
+        { id: 5, name: "MemoProve", price: 520, priceText: "HK$520.00", desc: "Австрийская формула для восстановления клеток мозга.", image: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg", badge: null, link: "產品_憶活素.html" },
+        { id: 6, name: "PT3 (Только клиники)", price: 0, priceText: "Только клиники", desc: "Профессиональная формула доступна только в выбранных клиниках.", image: "https://static.wixstatic.com/media/b3683f_e63c67060cba4d83ba576a0086e7e613~mv2.jpg", badge: "Только клиники", link: "產品_PT3.html" }
       ]
     };
 
@@ -1364,16 +1540,21 @@
     document.querySelector('.close-modal').addEventListener('click', closeModal);
     window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    function applyStaticTranslation(lang) {
-      document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][key] !== undefined) { if (key !== 'quickview_btn' && key !== 'detail_btn') el.innerHTML = translations[lang][key]; } });
-      document.title = ({ zh: '產品介紹 | Wonder Herb - 雲芝糖肽精華', en: 'Products | Wonder Herb - Yunzhi PSP Essence', de: 'Products | Wonder Herb - Yunzhi PSP Essence' })[lang] || 'Products | Wonder Herb - Yunzhi PSP Essence';
+  function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
+    document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][key] !== undefined) { if (key !== 'quickview_btn' && key !== 'detail_btn') el.innerHTML = translations[lang][key]; } });
+      document.title = ({ zh: '產品介紹 | Wonder Herb - 雲芝糖肽精華', en: 'Products | Wonder Herb - Yunzhi PSP Essence', de: 'Products | Wonder Herb - Yunzhi PSP Essence', es: 'Products | Wonder Herb - Yunzhi PSP Essence', fr: 'Products | Wonder Herb - Yunzhi PSP Essence', ja: '製品 | Wonder Herb - 雲芝糖肽精華', ru: 'Products | Wonder Herb - Yunzhi PSP Essence' })[lang] || 'Products | Wonder Herb - Yunzhi PSP Essence';
       document.documentElement.lang = lang;
       const zhSpan = document.getElementById('langZhBtn'),
         enSpan = document.getElementById('langEnBtn');
-      if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
+      if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); } const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); } const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); } const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
     }
 
-    function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return;
+    function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return;
       currentLang = lang;
       localStorage.setItem('wonderherb_lang', lang);
       applyStaticTranslation(currentLang);
@@ -1382,7 +1563,7 @@
       document.querySelector('#modalAddToCart span').innerHTML = translations[currentLang].modal_add_btn; }
 
     function initLanguage() { const saved = localStorage.getItem('wonderherb_lang');
-      setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' ? saved : 'zh'); }
+      setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru' ? saved : 'zh'); }
 
     function bindLanguageSwitcher() {
       document.getElementById('langZhBtn').addEventListener('click', e => { e.preventDefault();
@@ -1391,6 +1572,14 @@
         setLanguage('en'); });
       document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault();
         setLanguage('de'); });
+      document.getElementById('langEsBtn')?.addEventListener('click', e => { e.preventDefault();
+        setLanguage('es'); });
+      document.getElementById('langFrBtn')?.addEventListener('click', e => { e.preventDefault();
+        setLanguage('fr'); });
+      document.getElementById('langJaBtn')?.addEventListener('click', e => { e.preventDefault();
+        setLanguage('ja'); });
+      document.getElementById('langRuBtn')?.addEventListener('click', e => { e.preventDefault();
+        setLanguage('ru'); });
     }
 
     function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]); }

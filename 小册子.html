@@ -587,6 +587,15 @@
     .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+    .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -923,10 +932,13 @@
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1140,6 +1152,126 @@
       footer_link_faq: "FAQ",
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte"
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      brochure_title: "Folleto de Producto",
+      brochure_subtitle: "Información Detallada del Producto · Guía Profesional de Yunzhi PSP",
+      brochure_gallery_title: "Galería de Folletos",
+      brochure_card1_title: "Folleto · Portada e Introducción del Producto",
+      brochure_card2_title: "Folleto · Investigación e Ingredientes",
+      brochure_zoom_hint: "<i class='fas fa-search-plus'></i> Clic para ampliar",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados"
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      brochure_title: "Brochure Produit",
+      brochure_subtitle: "Informations Détaillées sur les Produits · Guide Professionnel du Yunzhi PSP",
+      brochure_gallery_title: "Galerie de Brochures",
+      brochure_card1_title: "Brochure · Couverture et Introduction du Produit",
+      brochure_card2_title: "Brochure · Recherche et Ingrédients",
+      brochure_zoom_hint: "<i class='fas fa-search-plus'></i> Cliquer pour agrandir",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés"
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      brochure_title: "製品パンフレット",
+      brochure_subtitle: "詳細な製品情報 · 雲芝PSPプロフェッショナルガイド",
+      brochure_gallery_title: "パンフレットギャラリー",
+      brochure_card1_title: "パンフレット · 表紙と製品紹介",
+      brochure_card2_title: "パンフレット · 研究と成分",
+      brochure_zoom_hint: "<i class='fas fa-search-plus'></i> クリックして拡大",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      brochure_title: "Брошюра о Продукте",
+      brochure_subtitle: "Подробная Информация о Продукте · Профессиональное Руководство по Yunzhi PSP",
+      brochure_gallery_title: "Галерея Брошюр",
+      brochure_card1_title: "Брошюра · Обложка и Введение в Продукт",
+      brochure_card2_title: "Брошюра · Исследования и Ингредиенты",
+      brochure_zoom_hint: "<i class='fas fa-search-plus'></i> Нажмите для увеличения",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены"
     }
   };
 
@@ -1148,6 +1280,11 @@
 
   // 应用静态文本翻译 (所有 data-i18n 元素)
   function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
     const elements = document.querySelectorAll('[data-i18n]');
     elements.forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -1156,7 +1293,7 @@
       }
     });
     // 更新页面标题
-    document.title = ({ zh: '小册子 | 康草堂 Wonder Herb - 雲芝糖肽精華產品指南', en: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide', de: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide' })[lang] || 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide'; document.documentElement.lang = lang;
+    document.title = ({ zh: '小册子 | 康草堂 Wonder Herb - 雲芝糖肽精華產品指南', en: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide', de: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide', es: 'Folleto | Wonder Herb - Yunzhi PSP Essence Product Guide', fr: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide', ja: 'パンフレット | Wonder Herb - 雲芝糖肽精華製品ガイド', ru: 'Брошюра | Wonder Herb - Yunzhi PSP Essence Product Guide' })[lang] || 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide'; document.documentElement.lang = lang;
     // 更新语言切换按钮高亮样式及ARIA状态
     const zhSpan = document.getElementById('langZhBtn');
     const enSpan = document.getElementById('langEnBtn');
@@ -1166,6 +1303,10 @@
       zhSpan.classList.toggle('active-lang', lang === 'zh');
       enSpan.classList.toggle('active-lang', lang === 'en');
       if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); }
+      const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); }
+      const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); }
+      const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); }
+      const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); }
       zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false');
       enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false');
     }
@@ -1174,7 +1315,7 @@
 
   // 设置语言并持久化
   function setLanguage(lang) {
-    if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return;
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return;
     currentLang = lang;
     localStorage.setItem('wonderherb_lang', lang);
     applyStaticTranslation(currentLang);
@@ -1183,7 +1324,7 @@
   // 初始化语言 (读取 localStorage 或默认中文)
   function initLanguage() {
     const savedLang = localStorage.getItem('wonderherb_lang');
-    if (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de') {
+    if (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de' || savedLang === 'es' || savedLang === 'fr' || savedLang === 'ja' || savedLang === 'ru') {
       currentLang = savedLang;
     } else {
       currentLang = 'zh';
@@ -1205,6 +1346,84 @@
       if (deBtn) {
         deBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('de'); });
         deBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('de'); } });
+      }
+      const esBtn = document.getElementById('langEsBtn');
+      if (esBtn) {
+        esBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('es'); });
+        esBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('es'); } });
+      }
+      const frBtn = document.getElementById('langFrBtn');
+      if (frBtn) {
+        frBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('fr'); });
+        frBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('fr'); } });
+      }
+      const jaBtn = document.getElementById('langJaBtn');
+      if (jaBtn) {
+        jaBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ja'); });
+        jaBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ja'); } });
+      }
+      const ruBtn = document.getElementById('langRuBtn');
+      if (ruBtn) {
+        ruBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ru'); });
+        ruBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ru'); } });
+      }
+      enBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('en'); } });
+    }
+  }
+
+  // 设置语言并持久化
+  function setLanguage(lang) {
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return;
+    currentLang = lang;
+    localStorage.setItem('wonderherb_lang', lang);
+    applyStaticTranslation(currentLang);
+  }
+
+  // 初始化语言 (读取 localStorage 或默认中文)
+  function initLanguage() {
+    const savedLang = localStorage.getItem('wonderherb_lang');
+    if (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de' || savedLang === 'es' || savedLang === 'fr' || savedLang === 'ja' || savedLang === 'ru') {
+      currentLang = savedLang;
+    } else {
+      currentLang = 'zh';
+    }
+    applyStaticTranslation(currentLang);
+  }
+
+  // 绑定语言切换按钮事件
+  function bindLanguageSwitcher() {
+    const zhBtn = document.getElementById('langZhBtn');
+    const enBtn = document.getElementById('langEnBtn');
+    if (zhBtn) {
+      zhBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('zh'); });
+      zhBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('zh'); } });
+    }
+    if (enBtn) {
+      enBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('en'); });
+      const deBtn = document.getElementById('langDeBtn');
+      if (deBtn) {
+        deBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('de'); });
+        deBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('de'); } });
+      }
+      const esBtn = document.getElementById('langEsBtn');
+      if (esBtn) {
+        esBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('es'); });
+        esBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('es'); } });
+      }
+      const frBtn = document.getElementById('langFrBtn');
+      if (frBtn) {
+        frBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('fr'); });
+        frBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('fr'); } });
+      }
+      const jaBtn = document.getElementById('langJaBtn');
+      if (jaBtn) {
+        jaBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ja'); });
+        jaBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ja'); } });
+      }
+      const ruBtn = document.getElementById('langRuBtn');
+      if (ruBtn) {
+        ruBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ru'); });
+        ruBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ru'); } });
       }
       enBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('en'); } });
     }

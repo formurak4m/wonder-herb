@@ -87,9 +87,18 @@
       }
 
       .lang-selector span {
-          cursor: pointer;
-          transition: opacity 0.2s;
-      }
+        cursor: pointer;
+        transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
+    }
 
       .lang-selector span:hover {
           opacity: 0.8;
@@ -1077,9 +1086,18 @@
         cursor: pointer;
     }
 
-    .lang-selector span {
+      .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -1404,10 +1422,13 @@
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1631,6 +1652,310 @@
       remove_item_label: "Artikel entfernen",
       increase_qty_label: "Menge erhöhen",
       decrease_qty_label: "Menge verringern"
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      cart_header_product: "Producto",
+      cart_header_unit_price: "Precio unitario",
+      cart_header_qty: "Cantidad",
+      cart_header_total: "Total",
+      empty_cart_title: "Tu carrito está vacío",
+      empty_cart_desc: "Descubre nuestra esencia Yunzhi PSP.",
+      empty_cart_btn: "Seguir comprando <i class='fas fa-arrow-right'></i>",
+      summary_title: "Resumen del pedido",
+      subtotal_label: "Subtotal",
+      checkout_btn: "Proceder al pago",
+      secure_note: "<i class='fas fa-lock'></i> Pago seguro",
+      product_badge_psp: "Ingrediente activo >90% · GMP certificado",
+      product_badge_memoprove: "Investigación austríaca · Clínicamente probado",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados",
+      last_updated: "Última actualización: 2 de junio de 2025",
+      modal_title: "Pago exprés",
+      modal_subtitle: "Complete sus datos para finalizar el pedido",
+      step_shipping: "Envío",
+      step_payment: "Pago",
+      step_review: "Confirmar",
+      order_summary_label: "Resumen del pedido",
+      total_due: "Total a pagar",
+      contact_email: "Correo electrónico",
+      contact_phone: "Teléfono",
+      marketing_ok: "Recibir actualizaciones por WhatsApp y correo electrónico",
+      shipping_section: "Detalles de envío",
+      first_name: "Nombre",
+      last_name: "Apellido",
+      address_line1: "Dirección (calle y número)",
+      address_line2: "Dirección detallada / Código de locker",
+      district: "Distrito (ej. Central, Wan Chai)",
+      save_info: "Guardar esta información para la próxima vez",
+      sms_ok: "Recibir ofertas por SMS",
+      shipping_method: "Método de envío",
+      shipping_std: "Estándar (gratis)",
+      shipping_exp: "Express (+HK$30)",
+      shipping_selfpick: "Estación/Locker (+HK$15)",
+      payment_section: "Método de pago",
+      card_payment: "Tarjeta de crédito",
+      paypal_payment: "PayPal",
+      card_number: "Número de tarjeta",
+      expiry: "Fecha de caducidad (MM/AA)",
+      cvv: "CVV",
+      use_billing_addr: "Usar la dirección de envío como dirección de facturación",
+      submit_order: "Confirmar pago · Realizar pedido",
+      paypal_simulate: "Pagar con PayPal",
+      paypal_redirect: "Se le redirigirá de forma segura a PayPal",
+      fill_required: "Por favor complete correo electrónico, teléfono y nombre.",
+      fill_card: "Por favor ingrese el número de tarjeta.",
+      order_success_card: "¡Pedido realizado! Gracias (tarjeta de crédito).",
+      order_success_paypal: "Redirigiendo a PayPal... (Demo)",
+      remove_item_label: "Eliminar artículo",
+      increase_qty_label: "Aumentar cantidad",
+      decrease_qty_label: "Disminuir cantidad"
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      cart_header_product: "Produit",
+      cart_header_unit_price: "Prix unitaire",
+      cart_header_qty: "Quantité",
+      cart_header_total: "Total",
+      empty_cart_title: "Votre panier est vide",
+      empty_cart_desc: "Découvrez notre essence Yunzhi PSP.",
+      empty_cart_btn: "Continuer mes achats <i class='fas fa-arrow-right'></i>",
+      summary_title: "Résumé de la commande",
+      subtotal_label: "Sous-total",
+      checkout_btn: "Passer à la caisse",
+      secure_note: "<i class='fas fa-lock'></i> Paiement sécurisé",
+      product_badge_psp: "Ingrédient actif >90% · GMP certifié",
+      product_badge_memoprove: "Recherche autrichienne · Cliniquement prouvé",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés",
+      last_updated: "Dernière mise à jour: 2 juin 2025",
+      modal_title: "Paiement express",
+      modal_subtitle: "Remplissez vos informations pour finaliser la commande",
+      step_shipping: "Livraison",
+      step_payment: "Paiement",
+      step_review: "Confirmer",
+      order_summary_label: "Résumé de la commande",
+      total_due: "Total à payer",
+      contact_email: "E-mail",
+      contact_phone: "Téléphone",
+      marketing_ok: "Recevoir les mises à jour par WhatsApp et e-mail",
+      shipping_section: "Détails de livraison",
+      first_name: "Prénom",
+      last_name: "Nom",
+      address_line1: "Adresse (rue et numéro)",
+      address_line2: "Adresse détaillée / Code casier",
+      district: "Quartier (ex. Central, Wan Chai)",
+      save_info: "Enregistrer ces informations pour la prochaine fois",
+      sms_ok: "Recevoir des offres par SMS",
+      shipping_method: "Mode d'expédition",
+      shipping_std: "Standard (gratuit)",
+      shipping_exp: "Express (+HK$30)",
+      shipping_selfpick: "Station/Locker (+HK$15)",
+      payment_section: "Mode de paiement",
+      card_payment: "Carte de crédit",
+      paypal_payment: "PayPal",
+      card_number: "Numéro de carte",
+      expiry: "Date d'expiration (MM/AA)",
+      cvv: "CVV",
+      use_billing_addr: "Utiliser l'adresse de livraison comme adresse de facturation",
+      submit_order: "Confirmer le paiement · Passer la commande",
+      paypal_simulate: "Payer avec PayPal",
+      paypal_redirect: "Vous serez redirigé de manière sécurisée vers PayPal",
+      fill_required: "Veuillez remplir l'e-mail, le téléphone et le prénom.",
+      fill_card: "Veuillez entrer le numéro de carte.",
+      order_success_card: "Commande passée! Merci (carte de crédit).",
+      order_success_paypal: "Redirection vers PayPal... (Démo)",
+      remove_item_label: "Supprimer l'article",
+      increase_qty_label: "Augmenter la quantité",
+      decrease_qty_label: "Diminuer la quantité"
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      cart_header_product: "製品",
+      cart_header_unit_price: "単価",
+      cart_header_qty: "数量",
+      cart_header_total: "合計",
+      empty_cart_title: "カートは空です",
+      empty_cart_desc: "雲芝PSP精华看看吧。",
+      empty_cart_btn: "ショッピングを続ける <i class='fas fa-arrow-right'></i>",
+      summary_title: "注文概要",
+      subtotal_label: "小計",
+      checkout_btn: "チェックアウト",
+      secure_note: "<i class='fas fa-lock'></i> 安全なお支払い",
+      product_badge_psp: "有効成分 >90% · GMP認証",
+      product_badge_memoprove: "奥地利の研究 · 臨床実証済み",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有",
+      last_updated: "最終更新：2025年6月2日",
+      modal_title: "エクスプレスチェックアウト",
+      modal_subtitle: "注文を完了するためにデータを入力してください",
+      step_shipping: "配送",
+      step_payment: "お支払い",
+      step_review: "確認",
+      order_summary_label: "注文概要",
+      total_due: "合計金額",
+      contact_email: "メールアドレス",
+      contact_phone: "電話番号",
+      marketing_ok: "WhatsAppとメールで更新を受け取る",
+      shipping_section: "配送詳細",
+      first_name: "名",
+      last_name: "姓",
+      address_line1: "住所（通りと番号）",
+      address_line2: "詳細な住所 / Lockerコード",
+      district: "地域（例：Central、Wan Chai）",
+      save_info: "この情報を保存する",
+      sms_ok: "SMSでオファーを受け取る",
+      shipping_method: "配送方法",
+      shipping_std: "標準（無料）",
+      shipping_exp: "エクスプレス（+HK$30）",
+      shipping_selfpick: "ステーション/Locker（+HK$15）",
+      payment_section: "お支払い方法",
+      card_payment: "クレジットカード",
+      paypal_payment: "PayPal",
+      card_number: "カード番号",
+      expiry: "有効期限（MM/年）",
+      cvv: "CVV",
+      use_billing_addr: "配送先を請求先住所として使用",
+      submit_order: "お支払いの確認 · 注文する",
+      paypal_simulate: "PayPalで支払う",
+      paypal_redirect: "安全にPayPalにリダイレクトされます",
+      fill_required: "メールアドレス、電話番号、名を入力してください。",
+      fill_card: "カード番号を入力してください。",
+      order_success_card: "ご注文完了！ありがとうございます（クレジットカード）。",
+      order_success_paypal: "PayPalにリダイレクト中...（デモ）",
+      remove_item_label: "アイテムを削除",
+      increase_qty_label: "数量を増やす",
+      decrease_qty_label: "数量を減らす"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      cart_header_product: "Продукт",
+      cart_header_unit_price: "Цена за единицу",
+      cart_header_qty: "Количество",
+      cart_header_total: "Итого",
+      empty_cart_title: "Ваша корзина пуста",
+      empty_cart_desc: "Откройте для себя нашу эссенцию Yunzhi PSP.",
+      empty_cart_btn: "Продолжить покупки <i class='fas fa-arrow-right'></i>",
+      summary_title: "Сводка заказа",
+      subtotal_label: "Подытог",
+      checkout_btn: "Оформить заказ",
+      secure_note: "<i class='fas fa-lock'></i> Безопасная оплата",
+      product_badge_psp: "Активный ингредиент >90% · GMP сертифицировано",
+      product_badge_memoprove: "Австрийские исследования · Клинически подтверждено",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены",
+      last_updated: "Последнее обновление: 2 июня 2025 г.",
+      modal_title: "Экспресс-оплата",
+      modal_subtitle: "Заполните свои данные для оформления заказа",
+      step_shipping: "Доставка",
+      step_payment: "Оплата",
+      step_review: "Подтверждение",
+      order_summary_label: "Сводка заказа",
+      total_due: "Итого к оплате",
+      contact_email: "Электронная почта",
+      contact_phone: "Телефон",
+      marketing_ok: "Получать обновления через WhatsApp и эл. почту",
+      shipping_section: "Детали доставки",
+      first_name: "Имя",
+      last_name: "Фамилия",
+      address_line1: "Адрес (улица и номер дома)",
+      address_line2: "Подробный адрес / КодLocker",
+      district: "Район (например, Central, Wan Chai)",
+      save_info: "Сохранить эту информацию для следующего раза",
+      sms_ok: "Получать предложения по SMS",
+      shipping_method: "Способ доставки",
+      shipping_std: "Стандартный (бесплатно)",
+      shipping_exp: "Экспресс (+HK$30)",
+      shipping_selfpick: "Станция/Locker (+HK$15)",
+      payment_section: "Способ оплаты",
+      card_payment: "Кредитная карта",
+      paypal_payment: "PayPal",
+      card_number: "Номер карты",
+      expiry: "Срок действия (ММ/ГГ)",
+      cvv: "CVV",
+      use_billing_addr: "Использовать адрес доставки как платежный адрес",
+      submit_order: "Подтвердить оплату · Разместить заказ",
+      paypal_simulate: "Оплатить через PayPal",
+      paypal_redirect: "Вы будете безопасно перенаправлены на PayPal",
+      fill_required: "Пожалуйста, заполните эл. почту, телефон и имя.",
+      fill_card: "Пожалуйста, введите номер карты.",
+      order_success_card: "Заказ размещен! Спасибо (кредитная карта).",
+      order_success_paypal: "Перенаправление на PayPal... (Демо)",
+      remove_item_label: "Удалить товар",
+      increase_qty_label: "Увеличить количество",
+      decrease_qty_label: "Уменьшить количество"
     }
   };
 
@@ -1907,25 +2232,34 @@
   function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m] || m); }
 
   function applyStaticTranslation(lang){
-    document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
       const key=el.getAttribute('data-i18n');
       if(translations[lang]?.[key]!==undefined) el.innerHTML=translations[lang][key];
     });
-    document.title = ({ zh: '購物車 | Wonder Herb – 雲芝糖肽精華', en: 'Shopping Cart | Wonder Herb – Yunzhi PSP Essence', de: 'Warenkorb | Wonder Herb – Yunzhi-PSP-Essenz' })[lang] || 'Shopping Cart | Wonder Herb – Yunzhi PSP Essence';
+    document.title = ({ zh: '購物車 | Wonder Herb – 雲芝糖肽精華', en: 'Shopping Cart | Wonder Herb – Yunzhi PSP Essence', de: 'Warenkorb | Wonder Herb – Yunzhi-PSP-Essenz', es: 'Carrito | Wonder Herb – Yunzhi PSP Essence', fr: 'Panier | Wonder Herb – Yunzhi PSP Essence', ja: 'カート | Wonder Herb – 雲芝糖肽精華', ru: 'Корзина | Wonder Herb – Yunzhi PSP Essence' })[lang] || 'Shopping Cart | Wonder Herb – Yunzhi PSP Essence';
     document.documentElement.lang=lang;
     const zhSpan=document.getElementById('langZhBtn'), enSpan=document.getElementById('langEnBtn'), deSpan=document.getElementById('langDeBtn');
     if(zhSpan&&enSpan){
       zhSpan.classList.toggle('active-lang', lang==='zh');
       enSpan.classList.toggle('active-lang', lang==='en');
       if(deSpan){ deSpan.classList.toggle('active-lang', lang==='de'); deSpan.setAttribute('aria-current', lang==='de'?'true':'false'); }
+      const esSpan=document.getElementById('langEsBtn'); if(esSpan){ esSpan.classList.toggle('active-lang', lang==='es'); esSpan.setAttribute('aria-current', lang==='es'?'true':'false'); }
+      const frSpan=document.getElementById('langFrBtn'); if(frSpan){ frSpan.classList.toggle('active-lang', lang==='fr'); frSpan.setAttribute('aria-current', lang==='fr'?'true':'false'); }
+      const jaSpan=document.getElementById('langJaBtn'); if(jaSpan){ jaSpan.classList.toggle('active-lang', lang==='ja'); jaSpan.setAttribute('aria-current', lang==='ja'?'true':'false'); }
+      const ruSpan=document.getElementById('langRuBtn'); if(ruSpan){ ruSpan.classList.toggle('active-lang', lang==='ru'); ruSpan.setAttribute('aria-current', lang==='ru'?'true':'false'); }
       zhSpan.setAttribute('aria-current', lang==='zh'?'true':'false');
       enSpan.setAttribute('aria-current', lang==='en'?'true':'false');
     }
     updateCartBadge();
   }
-  function setLanguage(lang){ if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return; currentLang=lang; localStorage.setItem('wonderherb_lang',lang); applyStaticTranslation(currentLang); renderCart(); }
-  function initLanguage(){ const saved=localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de'?saved:'zh'); }
-  function bindLanguageSwitcher(){ document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); }); }
+  function setLanguage(lang){ if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return; currentLang=lang; localStorage.setItem('wonderherb_lang',lang); applyStaticTranslation(currentLang); renderCart(); }
+  function initLanguage(){ const saved=localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru'?saved:'zh'); }
+  function bindLanguageSwitcher(){ document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); }); document.getElementById('langEsBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('es'); }); document.getElementById('langFrBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('fr'); }); document.getElementById('langJaBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ja'); }); document.getElementById('langRuBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ru'); }); }
 
   window.addEventListener('storage',(e)=>{ if(e.key==='wonderHerbCart') loadCart(); });
   const backBtn=document.getElementById('backToTop');

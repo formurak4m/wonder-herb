@@ -693,6 +693,15 @@
     .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+    .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -1017,10 +1026,13 @@
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1333,12 +1345,265 @@
       footer_link_faq: "FAQ",
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte"
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      pt3_title: "PT3",
+      pt3_subtitle: "Yunzhi PSP + T3 | Fórmula de Investigación Universitaria",
+      pt3_price: "HK$0.00 <span style='font-size:1rem; font-weight:normal;'>/ 300 cápsulas</span>",
+      pt3_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Queensland University of Technology + HKU · Varias veces más efectivo que el PSP solo",
+      pt3_clinic_note: "<i class='fas fa-hospital-user'></i> Disponible solo en clínicas seleccionadas de TCM y medicina occidental",
+      pt3_outofstock_btn: "<i class='fas fa-ban'></i> Agotado (Solo Clínicas)",
+      pt3_detail_btn: "Más Detalles <i class='fas fa-chevron-down'></i>",
+      badge1: "Estudio Clínico Universitario",
+      badge2: "Sinergia PSP+T3",
+      badge3: "Reducir Riesgo de Recurrencia",
+      intro_title: "📖 Introducción del Producto",
+      intro_p1: "<strong>PT3 (Yunzhi PSP + T3)</strong> es desarrollado conjuntamente por el Prostate Cancer Forschung Center de Queensland University of Technology (Australia) y The University of Hong Kong.",
+      intro_p2: "La investigación muestra que los ingredientes activos de PT3 son varias veces más efectivos que el PSP solo.",
+      benefits_title: "✨ Beneficios Clave",
+      benefits_list: "<li>rico en antioxidantes</li><li>Varias veces más efectivo que el PSP solo</li><li>Puede usarse con tratamientos convencionales</li><li>Reduce los efectos secundarios del tratamiento</li><li>Disminuye el riesgo de recurrencia</li>",
+      spec_title: "📦 Especificaciones",
+      spec_text: "✔ 300 cápsulas por frasco<br>✔ Fórmula desarrollada por universidades, disponible solo en clínicas seleccionadas",
+      warning_title: "⚠️ Precauciones",
+      warning_badge: "Importante",
+      warning_text: "No adecuado para receptores de trasplantes de órganos",
+      dosage_title: "💊 Dosificación Recomendada",
+      dosage_text: "Consulte a su médico para consejos personalizados.",
+      clinic_only_note: "<em>※ PT3 es un producto de adjuvant supervisado por médicos, no disponible para compra directa en línea.</em>",
+      trust_qut: "Queensland University of Tech",
+      trust_qut_desc: "Centro de Investigación de Cáncer de Próstata",
+      trust_hku: "Universidad de Hong Kong",
+      trust_hku_desc: "Investigación Conjunta",
+      trust_journal: "Publicación Internacional 2014",
+      trust_journal_desc: "Plos One y otros",
+      trust_synergy: "Eficacia Potenciada",
+      trust_synergy_desc: "Efecto Sinérgico PSP + T3",
+      related_title: "🌟 También le Puede Gustar",
+      product_trial_name: "Esencia Yunzhi PSP (Pack de Prueba)",
+      product_trial_desc: "60 cápsulas, ideal para probar",
+      product_std_name: "Esencia Yunzhi PSP (Pack Estándar)",
+      product_std_desc: "500 cápsulas, inmunomodulación a largo plazo",
+      product_t3_name: "T3 Tocotrienoles",
+      product_t3_desc: "Fórmula sinérgica comprobada por universidades",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados"
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      pt3_title: "PT3",
+      pt3_subtitle: "Yunzhi PSP + T3 | Formule de Recherche Universitaire",
+      pt3_price: "HK$0.00 <span style='font-size:1rem; font-weight:normal;'>/ 300 gélules</span>",
+      pt3_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Queensland University of Technology + HKU · Plusieurs fois plus efficace que le PSP seul",
+      pt3_clinic_note: "<i class='fas fa-hospital-user'></i> Disponible uniquement dans des cliniques sélectionnées de MTC et médecine occidentale",
+      pt3_outofstock_btn: "<i class='fas fa-ban'></i> Rupture de stock (Cliniques Uniquement)",
+      pt3_detail_btn: "Plus de Détails <i class='fas fa-chevron-down'></i>",
+      badge1: "Étude Clinique Universitaire",
+      badge2: "Synergie PSP+T3",
+      badge3: "Réduire le Risque de Récurrence",
+      intro_title: "📖 Introduction du Produit",
+      intro_p1: "<strong>PT3 (Yunzhi PSP + T3)</strong> est développé conjointement par le Prostate Cancer Forschung Center de Queensland University of Technology (Australie) et The University of Hong Kong.",
+      intro_p2: "La recherche montre que les ingrédients actifs de PT3 sont plusieurs fois plus efficaces que le PSP seul.",
+      benefits_title: "✨ Avantages Clés",
+      benefits_list: "<li>riche en antioxydants</li><li>Plusieurs fois plus efficace que le PSP seul</li><li>Peut être utilisé avec des traitements conventionnels</li><li>Réduit les effets secondaires du traitement</li><li>Diminue le risque de récurrence</li>",
+      spec_title: "📦 Spécifications",
+      spec_text: "✔ 300 gélules par flacon<br>✔ Formule développée par des universités, disponible uniquement dans des cliniques sélectionnées",
+      warning_title: "⚠️ Précautions",
+      warning_badge: "Important",
+      warning_text: "Non adapté aux receveurs de transplantations d'organes",
+      dosage_title: "💊 Dosage Recommandé",
+      dosage_text: "Veuillez consulter votre médecin.",
+      clinic_only_note: "<em>※ PT3 est un produit adjuvant supervisé par des médecins, non disponible à l'achat direct en ligne.</em>",
+      trust_qut: "Queensland University of Tech",
+      trust_qut_desc: "Centre de Recherche sur le Cancer de la Prostate",
+      trust_hku: "Université de Hong Kong",
+      trust_hku_desc: "Recherche Conjointe",
+      trust_journal: "Publication Internationale 2014",
+      trust_journal_desc: "Plos One et autres",
+      trust_synergy: "Efficacité Potentialisée",
+      trust_synergy_desc: "Effet Synergique PSP + T3",
+      related_title: "🌟 Vous Aimerez Aussi",
+      product_trial_name: "Essence Yunzhi PSP (Pack d'Essai)",
+      product_trial_desc: "60 gélules, idéal pour essayer",
+      product_std_name: "Essence Yunzhi PSP (Pack Standard)",
+      product_std_desc: "500 gélules, immunomodulation à long terme",
+      product_t3_name: "T3 Tocotriénols",
+      product_t3_desc: "Formule synergique prouvée par les universités",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés"
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      pt3_title: "PT3",
+      pt3_subtitle: "雲芝PSP + T3 | 大学研究処方",
+      pt3_price: "HK$0.00 <span style='font-size:1rem; font-weight:normal;'>/ 300カプセル</span>",
+      pt3_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Queensland University of Technology + HKU · PSPaloneより数倍効果的",
+      pt3_clinic_note: "<i class='fas fa-hospital-user'></i> 指定中西医医院のみ販売",
+      pt3_outofstock_btn: "<i class='fas fa-ban'></i> 在庫切れ（医院のみ）",
+      pt3_detail_btn: "詳細を見る <i class='fas fa-chevron-down'></i>",
+      badge1: "大学臨床研究",
+      badge2: "PSP+T3相乗効果",
+      badge3: "再発リスク軽減",
+      intro_title: "📖 製品紹介",
+      intro_p1: "<strong>PT3（雲芝PSP + T3）</strong>はQueensland University of Technology（オーストラリア）の前立腺癌研究センターと香港大学により共同開発されました。",
+      intro_p2: "研究によると、PT3の有効成分はPSPaloneより数倍効果的です。",
+      benefits_title: "✨ 主なベネフィット",
+      benefits_list: "<li>抗酸化物質豊富</li><li>PSPaloneより数倍効果的</li><li>従来の治療に使用可能</li><li>治療副作用を軽減</li><li>再発リスクを低下</li>",
+      spec_title: "📦 仕様",
+      spec_text: "✔ 1ボトル300カプセル<br>✔ 大学開発処方、指定病院でのみ利用可能",
+      warning_title: "⚠️ 注意事項",
+      warning_badge: "重要",
+      warning_text: "臓器移植を受けた方には適していません",
+      dosage_title: "💊 推奨用量",
+      dosage_text: "医師にご相談ください。",
+      clinic_only_note: "<em>※ PT3は医師の指導下的補助製品であり、直接オンライン購入はできません。</em>",
+      trust_qut: "Queensland University of Tech",
+      trust_qut_desc: "前立腺癌研究センター",
+      trust_hku: "香港大学",
+      trust_hku_desc: "共同研究",
+      trust_journal: "2014年国際論文",
+      trust_journal_desc: "Plos Oneなど",
+      trust_synergy: "増強された有効性",
+      trust_synergy_desc: "PSP + T3相乗効果",
+      related_title: "🌟 こちらもおすすめ",
+      product_trial_name: "雲芝PSP精华（体験パック）",
+      product_trial_desc: "60カプセル、試してみるのに最適",
+      product_std_name: "雲芝PSP精华（通常パック）",
+      product_std_desc: "500カプセル、長期免疫調節",
+      product_t3_name: "T3トコトリエノール",
+      product_t3_desc: "大学実証の相乗処方",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      pt3_title: "PT3",
+      pt3_subtitle: "Yunzhi PSP + T3 | Университетская Исследовательская Формула",
+      pt3_price: "HK$0.00 <span style='font-size:1rem; font-weight:normal;'>/ 300 капсул</span>",
+      pt3_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Queensland University of Technology + HKU · В несколько раз эффективнее, чем PSP отдельно",
+      pt3_clinic_note: "<i class='fas fa-hospital-user'></i> Доступно только в выбранных клиниках TCM и западной медицины",
+      pt3_outofstock_btn: "<i class='fas fa-ban'></i> Нет в наличии (Только Клиники)",
+      pt3_detail_btn: "Подробнее <i class='fas fa-chevron-down'></i>",
+      badge1: "Университетское Клиническое Исследование",
+      badge2: "Синергия PSP+T3",
+      badge3: "Снизить Риск Рецидива",
+      intro_title: "📖 Введение в Продукт",
+      intro_p1: "<strong>PT3 (Yunzhi PSP + T3)</strong> совместно разработан Prostate Cancer Forschung Center Квинслендского технологического университета (Австралия) и Гонконгским университетом.",
+      intro_p2: "Исследования показывают, что активные ингредиенты PT3 в несколько раз эффективнее, чем PSP отдельно.",
+      benefits_title: "✨ Ключевые Преимущества",
+      benefits_list: "<li>богат антиоксидантами</li><li>В несколько раз эффективнее, чем PSP отдельно</li><li>Может использоваться с conventional лечением</li><li>Уменьшает побочные эффекты лечения</li><li>Снижает риск рецидива</li>",
+      spec_title: "📦 Характеристики",
+      spec_text: "✔ 300 капсул во флаконе<br>✔ Формула, разработанная университетами, доступна только в выбранных клиниках",
+      warning_title: "⚠️ Меры предосторожности",
+      warning_badge: "Важно",
+      warning_text: "Не подходит для реципиентов трансплантатов органов",
+      dosage_title: "💊 Рекомендуемая Дозировка",
+      dosage_text: "Пожалуйста, проконсультируйтесь с врачом.",
+      clinic_only_note: "<em>※ PT3 — это продукт adjuvant под наблюдением врача, недоступен для прямой онлайн-покупки.</em>",
+      trust_qut: "Queensland University of Tech",
+      trust_qut_desc: "Центр Исследования Рака Простаты",
+      trust_hku: "Гонконгский Университет",
+      trust_hku_desc: "Совместное Исследование",
+      trust_journal: "Международная Публикация 2014",
+      trust_journal_desc: "Plos One и другие",
+      trust_synergy: "Усиленная Эффективность",
+      trust_synergy_desc: "Синергетический Эффект PSP + T3",
+      related_title: "🌟 Вам Также Может Понравиться",
+      product_trial_name: "Эссенция Yunzhi PSP (Пробный Набор)",
+      product_trial_desc: "60 капсул, идеально для пробы",
+      product_std_name: "Эссенция Yunzhi PSP (Стандартный Набор)",
+      product_std_desc: "500 капсул, долгосрочная иммуномодуляция",
+      product_t3_name: "Токотриенолы T3",
+      product_t3_desc: "Синергетическая формула, подтвержденная университетами",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены"
     }
   };
 
   let currentLang = 'zh';
 
   function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
     const elements = document.querySelectorAll('[data-i18n]');
     elements.forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -1346,7 +1611,7 @@
         el.innerHTML = translations[lang][key];
       }
     });
-    document.title = ({ zh: 'PT3 (雲芝糖肽PSP結合T3) | 大學科研配方 | Wonder Herb', en: 'PT3 (Yunzhi PSP + T3) | University Research Formula | Wonder Herb', de: 'PT3 (Yunzhi PSP + T3) | University Research Formula | Wonder Herb' })[lang] || 'PT3 (Yunzhi PSP + T3) | University Research Formula | Wonder Herb'; document.documentElement.lang = lang;
+    document.title = ({ zh: 'PT3 (雲芝糖肽PSP結合T3) | 大學科研配方 | Wonder Herb', en: 'PT3 (Yunzhi PSP + T3) | University Research Formula | Wonder Herb', de: 'PT3 (Yunzhi PSP + T3) | University Research Formula | Wonder Herb', es: 'PT3 (Yunzhi PSP + T3) | Fórmula de Investigación Universitaria | Wonder Herb', fr: 'PT3 (Yunzhi PSP + T3) | Formule de Recherche Universitaire | Wonder Herb', ja: 'PT3（雲芝PSP + T3）| 大学研究処方 | Wonder Herb', ru: 'PT3 (Yunzhi PSP + T3) | Университетская Исследовательская Формула | Wonder Herb' })[lang] || 'PT3 (Yunzhi PSP + T3) | University Research Formula | Wonder Herb'; document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn');
     const enSpan = document.getElementById('langEnBtn');
     if (zhSpan && enSpan) {
@@ -1355,6 +1620,10 @@
       zhSpan.classList.toggle('active-lang', lang === 'zh');
       enSpan.classList.toggle('active-lang', lang === 'en');
       if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); }
+      const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); }
+      const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); }
+      const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); }
+      const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); }
       zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false');
       enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false');
     }
@@ -1362,7 +1631,7 @@
   }
 
   function setLanguage(lang) {
-    if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return;
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return;
     currentLang = lang;
     localStorage.setItem('wonderherb_lang', lang);
     applyStaticTranslation(currentLang);
@@ -1370,7 +1639,7 @@
 
   function initLanguage() {
     const saved = localStorage.getItem('wonderherb_lang');
-    if (saved === 'zh' || saved === 'en' || saved === 'de') currentLang = saved;
+    if (saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru') currentLang = saved;
     else currentLang = 'zh';
     applyStaticTranslation(currentLang);
   }
@@ -1388,6 +1657,26 @@
       if (deBtn) {
         deBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('de'); });
         deBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('de'); } });
+      }
+      const esBtn = document.getElementById('langEsBtn');
+      if (esBtn) {
+        esBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('es'); });
+        esBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('es'); } });
+      }
+      const frBtn = document.getElementById('langFrBtn');
+      if (frBtn) {
+        frBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('fr'); });
+        frBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('fr'); } });
+      }
+      const jaBtn = document.getElementById('langJaBtn');
+      if (jaBtn) {
+        jaBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ja'); });
+        jaBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ja'); } });
+      }
+      const ruBtn = document.getElementById('langRuBtn');
+      if (ruBtn) {
+        ruBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ru'); });
+        ruBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ru'); } });
       }
       enBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('en'); } });
     }

@@ -196,9 +196,18 @@
       }
 
       .lang-selector span {
-          cursor: pointer;
-          transition: opacity 0.2s;
-      }
+        cursor: pointer;
+        transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
+    }
 
       .lang-selector span:hover {
           opacity: 0.8;
@@ -703,9 +712,18 @@
         cursor: pointer;
     }
 
-    .lang-selector span {
+      .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -1030,10 +1048,13 @@
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1311,19 +1332,288 @@
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
       last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      product_title_main: "MemoProve",
+      product_title_badge: " | Fórmula EVER PHARMA",
+      product_price: "HK$520.00 <span style='font-size:1rem; font-weight:normal;'>/ 30 cápsulas</span>",
+      product_short_desc: "<i class='fas fa-brain' style='color:#2d5e3b;'></i> Reparación de Células Cerebrales · Memoria y Enfoque",
+      quantity_label: "Cantidad:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> Añadir al carrito",
+      detail_btn: "Más Detalles <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Certificado",
+      badge_clinical: "Soporte Clínico",
+      badge_natural: "Natural",
+      intro_title: "📖 Introducción del Producto",
+      intro_p1: "<strong>MemoProve</strong> es una fórmula patentada desarrollada por EVER PHARMA Austria. Ayuda a reparar y restaurar las células cerebrales, mejorando significativamente el rendimiento cognitivo, la memoria y la concentración.",
+      intro_p2: "Wonder Herb's MemoProve utiliza ingredientes de alta calidad, rigurosamente probados en Europa.",
+      benefits_title: "✨ Beneficios y Características Clave",
+      benefits_list: "<li><strong>Repara células cerebrales:</strong> Ayuda a restaurar neuronas dañadas</li><li><strong>Mejora la memoria:</strong> Mejora la memoria a corto y largo plazo</li><li><strong> Aumenta el enfoque:</strong> Mejora la concentración</li><li><strong>Compuesto natural:</strong> Derivado de Peptona natural</li>",
+      suitable_title: "👤 Quién Debe Usar",
+      suitable_list: "<li>Individuos con decline de memoria</li><li>Estudiantes y profesionales</li><li>Mayores que mantienen la salud cerebral</li>",
+      note_badge: "Nota",
+      note_text: "Mujeres embarazadas o lactantes consulten a su médico.",
+      research_title: "📚 Evidencia Científica",
+      research_text: "EVER PHARMA Austria realizó ensayos doble ciego.",
+      spec_title: "📦 Especificaciones",
+      spec_text: "✔ 30 cápsulas por frasco",
+      dosage_title: "💊 Dosificación Recomendada",
+      dosage_list: "<li><strong>Bienestar general:</strong> 1 cápsula diaria después de comer</li>",
+      dosage_note: "<em>※ Consulte a su médico.</em>",
+      trust1_title: "Investigación Universitaria",
+      trust1_desc: "Validado",
+      trust2_title: "Pruebas de Laboratorio",
+      trust2_desc: "Canadá + HK",
+      trust3_title: "GMP Certificado",
+      trust3_desc: "Regulado",
+      trust4_title: "20.000+ Pacientes",
+      trust4_desc: "Historias de recuperación",
+      related_title: "🌟 También le Puede Gustar",
+      related_psp_name: "Esencia Yunzhi PSP",
+      related_psp_desc: "Refuerza la inmunidad",
+      related_t3_name: "T3 Tocotrienoles",
+      related_t3_desc: "60x antioxidante",
+      related_hepa_name: "Cápsulas Hep BQ",
+      related_hepa_desc: "Fórmula de soporte hepático",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados",
+      last_update_text: "📅 Última actualización: 2 de junio de 2026 | La información se actualiza regularmente."
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      product_title_main: "MemoProve",
+      product_title_badge: " | Formule EVER PHARMA",
+      product_price: "HK$520.00 <span style='font-size:1rem; font-weight:normal;'>/ 30 gélules</span>",
+      product_short_desc: "<i class='fas fa-brain' style='color:#2d5e3b;'></i> Réparation des Cellules Cérébrales · Mémoire et Concentration",
+      quantity_label: "Quantité:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> Ajouter au panier",
+      detail_btn: "Plus de Détails <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Certifié",
+      badge_clinical: "Support Clinique",
+      badge_natural: "Naturel",
+      intro_title: "📖 Introduction du Produit",
+      intro_p1: "<strong>MemoProve</strong> est une formule brevetée développée par EVER PHARMA Autriche. Aide à réparer et restaurer les cellules cérébrales.",
+      intro_p2: "Wonder Herb's MemoProve utilise des ingrédients de haute qualité.",
+      benefits_title: "✨ Avantages et Caractéristiques Clés",
+      benefits_list: "<li><strong>Répare les cellules cérébrales:</strong> Aide à restaurer les neurones</li><li><strong>Améliore la mémoire:</strong> Améliore la mémoire à court et long terme</li><li><strong>Augmente la concentration:</strong> Améliore la concentration</li>",
+      suitable_title: "👤 Qui Doit Utiliser",
+      suitable_list: "<li>Individus avec déclin de mémoire</li><li>Étudiants et professionnels</li><li>Seniors maintenant la santé cérébrale</li>",
+      note_badge: "Note",
+      note_text: "Femmes enceintes ou allaitantes consultez votre médecin.",
+      research_title: "📚 Preuves Scientifiques",
+      research_text: "EVER PHARMA Autriche a réalisé des essais en double aveugle.",
+      spec_title: "📦 Spécifications",
+      spec_text: "✔ 30 gélules par flacon",
+      dosage_title: "💊 Dosage Recommandé",
+      dosage_list: "<li><strong>Bien-être général:</strong> 1 gélule quotidienne après le repas</li>",
+      dosage_note: "<em>※ Veuillez consulter votre médecin.</em>",
+      trust1_title: "Recherche Universitaire",
+      trust1_desc: "Validé",
+      trust2_title: "Tests de Laboratoire",
+      trust2_desc: "Canada + HK",
+      trust3_title: "GMP Certifié",
+      trust3_desc: "Réglementé",
+      trust4_title: "20.000+ Patients",
+      trust4_desc: "Histoires de récupération",
+      related_title: "🌟 Vous Aimerez Aussi",
+      related_psp_name: "Essence Yunzhi PSP",
+      related_psp_desc: "Renforce l'immunité",
+      related_t3_name: "T3 Tocotriénols",
+      related_t3_desc: "60x antioxydant",
+      related_hepa_name: "Cápsules Hep BQ",
+      related_hepa_desc: "Formule de soutien hépatique",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés",
+      last_update_text: "📅 Dernière mise à jour: 2 juin 2026 | Les informations sont régulièrement mises à jour."
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      product_title_main: "MemoProve",
+      product_title_badge: " | EVER PHARMA処方",
+      product_price: "HK$520.00 <span style='font-size:1rem; font-weight:normal;'>/ 30カプセル</span>",
+      product_short_desc: "<i class='fas fa-brain' style='color:#2d5e3b;'></i> 脳細胞修復 · 記憶力と集中力向上",
+      quantity_label: "数量：",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> カートに追加",
+      detail_btn: "詳細を見る <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP認証",
+      badge_clinical: "臨床サポート",
+      badge_natural: "自然",
+      intro_title: "📖 製品紹介",
+      intro_p1: "<strong>MemoProve</strong>はEVER PHARMA Austriaにより開発された特許取得済み処方です。脳細胞の修復と回復を助け、認知機能、記憶力、集中力を大幅に向上させます。",
+      intro_p2: "Wonder HerbのMemoProveは高品質な原料を使用し、ヨーロッパで厳密に試験されています。",
+      benefits_title: "✨ 主なベネフィットと特徴",
+      benefits_list: "<li><strong>脳細胞を修復：</strong>損傷したニューロンの回復を助ける</li><li><strong>記憶力を向上：</strong>短期・長期記憶を改善</li><li><strong>集中力を増加：</strong>集中力を高め気を散らしにくくする</li>",
+      suitable_title: "👤 こんな方におすすめ",
+      suitable_list: "<li>記憶力の衰えを感じる方</li><li>学生や专业人士</li><li>脳の健康を維持したいお年寄り</li>",
+      note_badge: "注意",
+      note_text: "妊娠中・授乳中の方は医師にご相談ください。",
+      research_title: "📚 科学的な証拠",
+      research_text: "EVER PHARMA Austriaが二重盲検試験を実施。",
+      spec_title: "📦 仕様",
+      spec_text: "✔ 1ボトル30カプセル",
+      dosage_title: "💊 推奨用量",
+      dosage_list: "<li><strong>一般的な健康維持：</strong>食後に1日1カプセル</li>",
+      dosage_note: "<em>※ 医師にご相談ください。</em>",
+      trust1_title: "大学研究",
+      trust1_desc: "検証済み",
+      trust2_title: "ラボ検査",
+      trust2_desc: "カナダ + 香港",
+      trust3_title: "GMP認証",
+      trust3_desc: "規制済み",
+      trust4_title: "2万名以上の患者",
+      trust4_desc: "回復ストーリー",
+      related_title: "🌟 こちらもおすすめ",
+      related_psp_name: "雲芝PSP精华",
+      related_psp_desc: "免疫力を強化",
+      related_t3_name: "T3トコトリエノール",
+      related_t3_desc: "60倍抗酸化",
+      related_hepa_name: "乙肝清カプセル",
+      related_hepa_desc: "肝支援処方",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有",
+      last_update_text: "📅 最終更新：2026年6月2日 | 情報は定期的に更新されています。"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      product_title_main: "MemoProve",
+      product_title_badge: " | Формула EVER PHARMA",
+      product_price: "HK$520.00 <span style='font-size:1rem; font-weight:normal;'>/ 30 капсул</span>",
+      product_short_desc: "<i class='fas fa-brain' style='color:#2d5e3b;'></i> Восстановление Клеток Мозга · Память и Концентрация",
+      quantity_label: "Количество:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> В корзину",
+      detail_btn: "Подробнее <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Сертифицировано",
+      badge_clinical: "Клиническая Поддержка",
+      badge_natural: "Натурально",
+      intro_title: "📖 Введение в Продукт",
+      intro_p1: "<strong>MemoProve</strong> — это запатентованная формула, разработанная EVER PHARMA Austria. Помогает восстанавливать клетки мозга, значительно улучшая когнитивные функции, память и концентрацию.",
+      intro_p2: "MemoProve от Wonder Herb использует ингредиенты высокого качества, строго проверенные в Европе.",
+      benefits_title: "✨ Ключевые Преимущества и Характеристики",
+      benefits_list: "<li><strong>Восстанавливает клетки мозга:</strong> Помогает восстановить поврежденные нейроны</li><li><strong>Улучшает память:</strong> Улучшает кратковременную и долговременную память</li><li><strong>Увеличивает концентрацию:</strong> Улучшает концентрацию</li>",
+      suitable_title: "👤 Кому Следует Использовать",
+      suitable_list: "<li>Люди с decline памяти</li><li>Студенты и профессионалы</li><li>Пожилые люди, поддерживающие здоровье мозга</li>",
+      note_badge: "Примечание",
+      note_text: "Беременным или кормящим женщинам следует проконсультироваться с врачом.",
+      research_title: "📚 Научные Доказательства",
+      research_text: "EVER PHARMA Austria провела двойные слепые испытания.",
+      spec_title: "📦 Характеристики",
+      spec_text: "✔ 30 капсул во флаконе",
+      dosage_title: "💊 Рекомендуемая Дозировка",
+      dosage_list: "<li><strong>Общее здоровье:</strong> 1 капсула в день после еды</li>",
+      dosage_note: "<em>※ Пожалуйста, проконсультируйтесь с врачом.</em>",
+      trust1_title: "Университетские Исследования",
+      trust1_desc: "Подтверждено",
+      trust2_title: "Лабораторные Тесты",
+      trust2_desc: "Канада + ГК",
+      trust3_title: "GMP Сертифицировано",
+      trust3_desc: "Регулируется",
+      trust4_title: "20.000+ Пациентов",
+      trust4_desc: "Истории восстановления",
+      related_title: "🌟 Вам Также Может Понравиться",
+      related_psp_name: "Эссенция Yunzhi PSP",
+      related_psp_desc: "Укрепляет иммунитет",
+      related_t3_name: "Токотриенолы T3",
+      related_t3_desc: "60x антиоксидант",
+      related_hepa_name: "Капсулы Hep BQ",
+      related_hepa_desc: "Формула поддержки печени",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены",
+      last_update_text: "📅 Последнее обновление: 2 июня 2026 г. | Информация регулярно обновляется."
     }
   };
 
   let currentLang = 'zh';
   function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
     document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][key] !== undefined) el.innerHTML = translations[lang][key]; });
-    document.title = ({ zh: '憶活素 MemoProve | Wonder Herb – 天然腦部保健・提升記憶力與專注力', en: 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer', de: 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer' })[lang] || 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer';
+    document.title = ({ zh: '憶活素 MemoProve | Wonder Herb – 天然腦部保健・提升記憶力與專注力', en: 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer', de: 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer', es: 'MemoProve | Wonder Herb – Salud Cerebral Natural y Mejora de Memoria', fr: 'MemoProve | Wonder Herb – Santé Cérébrale Naturelle et Amélioration de la Mémoire', ja: 'MemoProve | Wonder Herb – 自然な脳の健康と記憶力向上', ru: 'MemoProve | Wonder Herb – Естественное Здоровье Мозга и Улучшение Памяти' })[lang] || 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer';
     document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn'), enSpan = document.getElementById('langEnBtn');
-    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
+    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); } const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); } const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); } const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
   }
-  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
-  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' ? saved : 'zh'); }
+  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
+  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru' ? saved : 'zh'); }
 
   // 购物车
   const currentProduct = { id: 5, name: "憶活素 MemoProve", price: 520, image: "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg" };
@@ -1358,7 +1648,7 @@
     window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMenu(); });
   }
 
-  window.addEventListener('load', () => { bindMobileMenu(); loadCart(); initLanguage(); document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); }); });
+  window.addEventListener('load', () => { bindMobileMenu(); loadCart(); initLanguage(); document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); }); document.getElementById('langEsBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('es'); }); document.getElementById('langFrBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('fr'); }); document.getElementById('langJaBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ja'); }); document.getElementById('langRuBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ru'); }); });
   window.addEventListener('storage', e => { if (e.key === 'wonderHerbCart') loadCart(); });
 </script>
 </body>

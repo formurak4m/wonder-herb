@@ -645,6 +645,15 @@
     .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+    .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -970,10 +979,13 @@
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1089,6 +1101,7 @@
       articles_page_title: "微信發表文章",
       articles_page_subtitle: "專業健康資訊 · 雲芝糖肽與免疫調節深度解析",
       articles_note: "中国简体版本 · 微信文章精選",
+      read_more: "閱讀全文",
       footer_col1_title: "康草堂 Wonder Herb",
       footer_col1_text1: "以人為本，天然高效。",
       footer_col1_text2: "加拿大GMP藥廠生產",
@@ -1116,6 +1129,7 @@
       articles_page_title: "WeChat Featured Articles",
       articles_page_subtitle: "Professional Health Insights · Deep Dive into Yunzhi PSP & Immune Modulation",
       articles_note: "Simplified Chinese Edition · Selected WeChat Articles",
+      read_more: "Read More",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "Patient-first, natural & effective.",
       footer_col1_text2: "GMP-certified in Canada",
@@ -1143,6 +1157,7 @@
       articles_page_title: "WeChat-Artikel",
       articles_page_subtitle: "Professionelle Gesundheitsinformationen · Yunzhi PSP und Immunmodulation im Detail",
       articles_note: "Vereinfachte chinesische Version · WeChat-Artikelauswahl",
+      read_more: "Weiterlesen",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
       footer_col1_text2: "GMP-zertifiziert in Kanada",
@@ -1155,65 +1170,232 @@
       footer_link_faq: "FAQ",
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte"
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      articles_page_title: "Artículos de WeChat",
+      articles_page_subtitle: "Información profesional de salud · Yunzhi PSP y modulación inmunológica en detalle",
+      articles_note: "Versión en chino simplificado · Selección de artículos de WeChat",
+      read_more: "Leer más",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados"
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      articles_page_title: "Articles WeChat",
+      articles_page_subtitle: "Informations de santé professionnelles · Yunzhi PSP et modulation immunitaire en détail",
+      articles_note: "Version chinoise simplifiée · Sélection d'articles WeChat",
+      read_more: "Lire la suite",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés"
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      articles_page_title: "微信記事",
+      articles_page_subtitle: "専門的な健康情報 · 雲芝PSPと免疫調節の詳細",
+      articles_note: "簡体字中国語版 · 微信記事の選択",
+      read_more: "続きを読む",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      articles_page_title: "Статьи WeChat",
+      articles_page_subtitle: "Профессиональная информация о здоровье · Yunzhi PSP и иммуномодуляция подробно",
+      articles_note: "Упрощенная китайская версия · Подборка статей WeChat",
+      read_more: "Читать далее",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены"
     }
   };
 
-  // 文章数据 (中英文对照)
+  // 文章数据 (多语言对照)
   const articlesData = [
     {
       url: "https://mp.weixin.qq.com/s/WIGSbLOIvkHAV2oZorPP4A",
       zh: { badge: "健康科普", title: "雲芝糖肽，到底對身體有什麼好處？", excerpt: "雲芝糖肽是從雲芝提取的精華，由多糖與蛋白肽結合而成。它並非直接治病的西藥，而是像為身體加裝護盾，透過激活免疫細胞來增強抵抗力、輔助頑症治療以減輕副作用、保護肝臟及抗疲勞。" },
-      en: { badge: "Health Science", title: "What Benefits Does Yunzhi PSP Offer to the Body?", excerpt: "Yunzhi PSP is an extract from the Yunzhi mushroom, combining polysaccharides and peptides. It doesn't directly treat diseases like pharmaceuticals but acts as a shield – activating immune cells, enhancing resistance, alleviating side effects of cancer therapy, protecting the liver, and fighting fatigue." }
+      en: { badge: "Health Science", title: "What Benefits Does Yunzhi PSP Offer to the Body?", excerpt: "Yunzhi PSP is an extract from the Yunzhi mushroom, combining polysaccharides and peptides. It doesn't directly treat diseases like pharmaceuticals but acts as a shield – activating immune cells, enhancing resistance, alleviating side effects of cancer therapy, protecting the liver, and fighting fatigue." },
+      de: { badge: "Gesundheitswissen", title: "Welche Vorteile bietet Yunzhi PSP dem Körper?", excerpt: "Yunzhi PSP ist ein Extrakt aus der Yunzhi-Pilz, der Polysaccharide und Peptide kombiniert. Es behandelt Krankheiten nicht direkt wie Pharmazeutika, sondern wirkt als Schutzschild – aktiviert Immunzellen, erhöht die Widerstandskraft, lindert Nebenwirkungen der Krebstherapie, schützt die Leber und bekämpft Müdigkeit." },
+      es: { badge: "Ciencia de la salud", title: "¿Qué beneficios ofrece Yunzhi PSP al cuerpo?", excerpt: "Yunzhi PSP es un extracto del hongo Yunzhi que combina polisacáridos y péptidos. No trata enfermedades directamente como los productos farmacéuticos, sino que actúa como un escudo: activa células inmunitarias, mejora la resistencia, alivia los efectos secundarios de la terapia contra el cáncer, protege el hígado y combate la fatiga." },
+      fr: { badge: "Science de la santé", title: "Quels avantages Yunzhi PSP offre-t-il au corps?", excerpt: "Yunzhi PSP est un extrait du champignon Yunzhi combinant des polysaccharidiques et des peptides. Il ne traite pas directement les maladies comme les produits pharmaceutiques mais agit comme un bouclier – active les cellules immunitaires, renforce la résistance, atténue les effets secondaires du traitement du cancer, protège le foie et combat la fatigue." },
+      ja: { badge: "健康科学", title: "雲芝PSPは身体にどのような効果をもたらしますか？", excerpt: "雲芝PSPは多糖類とペプチドを組み合わせた雲芝からの抽出物です。医薬品のように病気を直接治療するわけではありませんが、盾のように働きます - 免疫細胞を活性化し、抵抗力を高め、抗がん療法の副作用を軽減し、肝臓を保護し、疲労と戦います。" },
+      ru: { badge: "Наука о здоровье", title: "Какую пользу Yunzhi PSP приносит организму?", excerpt: "Yunzhi PSP – это экстракт гриба Юньчжи, сочетающий полисахариды и пептиды. Он не лечит болезни напрямую, как фармацевтические препараты, а действует как щит – активирует иммунные клетки, повышает сопротивляемость, облегчает побочные эффекты противораковой терапии, защищает печень и борется с усталостью." }
     },
     {
       url: "https://mp.weixin.qq.com/s/SoFUPFtW1um11AVTDUDOhw",
       zh: { badge: "癌症康復", title: "90%的惡性腫瘤患者死於癌症復發！這五大長生存「秘籍」快收藏", excerpt: "頑症復發主因包括治療不徹底、療法侷限、微轉移及癌細胞休眠，高峰期為術後1-3年。患者可透過心理、營養、免疫、腸道菌群及運動五大調節方式，增強免疫力，降低復發風險。" },
-      en: { badge: "Cancer Recovery", title: "90% of Cancer Deaths Are Due to Recurrence! 5 Key Strategies for Long-Term Survival", excerpt: "Major causes of recurrence include incomplete treatment, limited therapy, micrometastasis, and cancer cell dormancy, peaking 1-3 years after surgery. Five interventions – psychological support, nutrition, immunity, gut microbiome, and exercise – help boost immunity and reduce recurrence risk." }
+      en: { badge: "Cancer Recovery", title: "90% of Cancer Deaths Are Due to Recurrence! 5 Key Strategies for Long-Term Survival", excerpt: "Major causes of recurrence include incomplete treatment, limited therapy, micrometastasis, and cancer cell dormancy, peaking 1-3 years after surgery. Five interventions – psychological support, nutrition, immunity, gut microbiome, and exercise – help boost immunity and reduce recurrence risk." },
+      de: { badge: "Krebsrehabilitation", title: "90% der Krebstodesfälle durch Rückfall! 5 Schlüsselstrategien für langfristiges Überleben", excerpt: "Die Hauptursachen für Rückfälle sind unvollständige Behandlung, begrenzte Therapie, Mikrometastasen und Krebszellenschlaf, die 1-3 Jahre nach der Operation ihren Höhepunkt erreichen. Fünf Maßnahmen – psychologische Unterstützung, Ernährung, Immunität, Darmmikrobiom und Bewegung – stärken das Immunsystem und reduzieren das Rückfallrisiko." },
+      es: { badge: "Recuperación del cáncer", title: "¡90% de las muertes por cáncer son por recurrencia! 5 estrategias clave para la supervivencia a largo plazo", excerpt: "Las principales causas de recurrencia incluyen tratamiento incompleto, terapia limitada, micrometástasis y dormancia de células cancerosas, con peak 1-3 años después de la cirugía. Cinco intervenciones – apoyo psicológico, nutrición, inmunidad, microbioma intestinal y ejercicio – ayudan a impulsar el sistema inmunológico y reducir el riesgo de recurrencia." },
+      fr: { badge: "Récupération du cancer", title: "90% des décès par cancer sont dus à la récurrence! 5 stratégies clés pour la survie à long terme", excerpt: "Les principales causes de récurrence sont un traitement incomplet, une thérapie limitée, des micrométastases et la dormance des cellules cancéreuses, culminant 1-3 ans après la chirurgie. Cinq interventions – soutien psychologique, nutrition, immunité, microbiote intestinal et exercice – renforcent l'immunité et réduisent le risque de récurrence." },
+      ja: { badge: "がん回復", title: "がん死亡の90%は再発所致！長生きするための5つの重要な戦略", excerpt: "再発の主な原因には、不完全な治療、限られた療法、微小転移、がん細胞の休眠があり、術後1〜3年がピークです。5つの介入 - 心理的サポート、栄養、免疫、腸内細菌叢、運動 - は免疫力を高め、再発リスクを低減します。" },
+      ru: { badge: "Восстановление после рака", title: "90% смертей от рака из-за рецидива! 5 ключевых стратегий долгосрочного выживания", excerpt: "Основные причины рецидива включают неполное лечение, ограниченную терапию, микрометастазы и покоящиеся раковые клетки, пик приходится на 1-3 года после операции. Пять вмешательств – психологическая поддержка, питание, иммунитет, микробиом кишечника и физические упражнения – укрепляют иммунитет и снижают риск рецидива." }
     },
     {
       url: "https://mp.weixin.qq.com/s/iRtq56KgOvvBoCKUk9tkhg",
       zh: { badge: "醫學知識", title: "惡性腫瘤疾病為何捲土重來？揭密復發原因與因應之道", excerpt: "惡性腫瘤復發的原因複雜，手術雖能切除腫瘤，但微轉移細胞、腫瘤幹細胞及不良微環境可能導致復發。免疫系統在抗癌中至關重要，失衡時癌細胞乘虛而入。有效預防復發需透過術後輔助治療、免疫重建和生活方式干預。" },
-      en: { badge: "Medical Knowledge", title: "Why Does Cancer Recur? Uncovering Causes and Countermeasures", excerpt: "Recurrence is multifactorial: residual micrometastasis, cancer stem cells, and an immunosuppressive microenvironment. A well-functioning immune system is critical; when impaired, cancer can relapse. Prevention requires adjuvant therapy, immune reconstitution, and lifestyle modifications." }
+      en: { badge: "Medical Knowledge", title: "Why Does Cancer Recur? Uncovering Causes and Countermeasures", excerpt: "Recurrence is multifactorial: residual micrometastasis, cancer stem cells, and an immunosuppressive microenvironment. A well-functioning immune system is critical; when impaired, cancer can relapse. Prevention requires adjuvant therapy, immune reconstitution, and lifestyle modifications." },
+      de: { badge: "Medizinisches Wissen", title: "Warum kehrt Krebs zurück? Ursachen und Gegenmaßnahmen aufdecken", excerpt: "Rückfälle sind multifaktoriell: verbleibende Mikrometastasen, Krebsstammzellen und immunsuppressives Mikroenvironement. Ein gut funktionierendes Immunsystem ist entscheidend; wenn es beeinträchtigt ist, kann Krebs zurückkehren. Prävention erfordert adjuvante Therapie, Immunrekonstitution und Lebensstiländerungen." },
+      es: { badge: "Conocimiento médico", title: "¿Por qué reaparece el cáncer? Descubriendo causas y contramedidas", excerpt: "La recurrencia es multifactorial: metástasis residual, células madre cancerosas y microambiente inmunosupresor. Un sistema inmunológico que funcione bien es crítico; cuando está dañado, el cáncer puede reaparecer. La prevención requiere terapia adyuvante, reconstitución inmune y modificaciones del estilo de vida." },
+      fr: { badge: "Connaissances médicales", title: "Pourquoi le cancer réapparaît-il? Découvrir les causes et les contre-mesures", excerpt: "La récurrence est multifactorielle: métastases résiduelles, cellules souches cancéreuses et microenvironnement immunosuppresseur. Un système immunitaire bien fonctionnel est crucial; lorsqu'il est compromis, le cancer peut récidiver. La prévention nécessite une thérapie adjuvante, une reconstitution immunitaire et des modifications du mode de vie." },
+      ja: { badge: "医学知識", title: "なぜがんは再発するのですか？原因と対策を明らかにする", excerpt: "再発は多因子的です：残存する微小転移、がん幹細胞、免疫抑制微小環境。正常に機能する免疫システムは重要です；損なわれているとがんが再発する可能性があります。予防には補助療法、免疫の再構築、ライフスタイルの修正が必要です。" },
+      ru: { badge: "Медицинские знания", title: "Почему рак возвращается? Раскрытие причин и мер противодействия", excerpt: "Рецидив многогранен: остаточные микрометастазы, раковые стволовые клетки и иммуносупрессивное микроокружение. Хорошо функционирующая иммунная система имеет решающее значение; при ее нарушении рак может вернуться. Профилактика требует адъювантной терапии, восстановления иммунитета и изменения образа жизни." }
     },
     {
       url: "https://mp.weixin.qq.com/s/_MbJDuECts9FsbAfM4nquA",
       zh: { badge: "營養科學", title: "T3精華素 是什麼？", excerpt: "T3的抗氧化能力比一般維他命E強40到60倍，能有效清除體內的自由基，減少皺紋和曬斑，讓皮膚更緊緻、光彩照人。此外還能保護腦細胞，幫助預防阿爾茨海默症，促進記憶力。" },
-      en: { badge: "Nutrition Science", title: "What is T3 Essence?", excerpt: "T3 (Tocotrienol) has 40-60 times stronger antioxidant activity than ordinary vitamin E. It effectively scavenges free radicals, reduces wrinkles and age spots, tightens skin, protects brain cells, helps prevent Alzheimer's, and supports memory." }
+      en: { badge: "Nutrition Science", title: "What is T3 Essence?", excerpt: "T3 (Tocotrienol) has 40-60 times stronger antioxidant activity than ordinary vitamin E. It effectively scavenges free radicals, reduces wrinkles and age spots, tightens skin, protects brain cells, helps prevent Alzheimer's, and supports memory." },
+      de: { badge: "Ernährungswissenschaft", title: "Was ist T3-Essenz?", excerpt: "T3 (Tocotrienol) hat eine 40-60 mal stärkere Antioxidationsaktivität als gewöhnliches Vitamin E. Es entfernt effektiv freie Radikale, reduziert Falten und Altersflecken, strafft die Haut, schützt Gehirnzellen, hilft Alzheimer vorzubeugen und unterstützt das Gedächtnis." },
+      es: { badge: "Ciencia de la nutrición", title: "¿Qué es la esencia T3?", excerpt: "T3 (Tocotrienol) tiene una actividad antioxidante 40-60 veces más fuerte que la vitamina E ordinaria. Elimina efectivamente los radicales libres, reduce las arrugas y las manchas de la edad, tensa la piel, protege las células cerebrales, ayuda a prevenir el Alzheimer y apoya la memoria." },
+      fr: { badge: "Science de la nutrition", title: "Qu'est-ce que l'essence T3?", excerpt: "T3 (Tocotriénol) a une activité antioxydante 40 à 60 fois plus forte que la vitamine E ordinaire. Il élimine efficacement les radicaux libres, réduit les rides et les taches de vieillesse, tighten la peau, protège les cellules cérébrales, aide à prévenir Alzheimer et soutient la mémoire." },
+      ja: { badge: "栄養科学", title: "T3エッセンシアとは？", excerpt: "T3（トコトリエノール）は通常のビタミンEより40〜60倍強い抗酸化活性を持ちます。フリーラジカルを効果的に除去し、 wrinklesとしわや老年斑を改善し、肌を引き締め、脳細胞を保護し、アルツハイマーの予防を支援し、記憶力をサポートします。" },
+      ru: { badge: "Наука о питании", title: "Что такое T3 Эссенция?", excerpt: "T3 (токотриенол) обладает антиоксидантной активностью в 40-60 раз сильнее, чем обычный витамин Е. Он эффективно удаляет свободные радикалы, уменьшает морщины и возрастные пятна, подтягивает кожу, защищает клетки мозга, помогает предотвратить болезнь Альцгеймера и поддерживает память." }
     },
     {
       url: "https://mp.weixin.qq.com/s/-uDTPt3gziJgoJFuj53zag",
       zh: { badge: "免疫學", title: "身體的「清道夫」，就是你抗癌的第一道防線！", excerpt: "巨噬細胞是人體免疫系統的核心防禦力量，能吞噬病原體與異常細胞。研究顯示雲芝糖肽（PSP）可有效激活巨噬細胞，增強其清除能力並調節免疫反應，幫助身體重建防禦屏障。" },
-      en: { badge: "Immunology", title: "Your Body's 'Scavenger' – The First Line of Defense Against Cancer", excerpt: "Macrophages are key immune defenders that engulf pathogens and abnormal cells. Studies show Yunzhi PSP effectively activates macrophages, enhances their clearance capacity, modulates immune responses, and helps rebuild the body's defense barrier." }
+      en: { badge: "Immunology", title: "Your Body's 'Scavenger' – The First Line of Defense Against Cancer", excerpt: "Macrophages are key immune defenders that engulf pathogens and abnormal cells. Studies show Yunzhi PSP effectively activates macrophages, enhances their clearance capacity, modulates immune responses, and helps rebuild the body's defense barrier." },
+      de: { badge: "Immunologie", title: "Der 'Müllentsorger' Ihres Körpers – die erste Verteidigungslinie gegen Krebs!", excerpt: "Makrophagen sind wichtige Immunabwehrzellen, die Krankheitserreger und abnormale Zellen verschlingen. Studien zeigen, dass Yunzhi PSP Makrophagen effektiv aktiviert, ihre Clearance-Kapazität erhöht, Immunreaktionen moduliert und dem Körper hilft, die Verteidigungsbarriere wieder aufzubauen." },
+      es: { badge: "Inmunología", title: "¡El 'basurero' de tu cuerpo – la primera línea de defensa contra el cáncer!", excerpt: "Los macrófagos son defensas inmunitarias clave que engulfen patógenos y células anormales. Estudios muestran que Yunzhi PSP activa efectivamente los macrófagos, mejora su capacidad de eliminación, modula las respuestas inmunitarias y ayuda a reconstruir la barrera de defensa del cuerpo." },
+      fr: { badge: "Immunologie", title: "Le 'éboueurs' de votre corps – la première ligne de défense contre le cancer!", excerpt: "Les macrophages sont des défenses immunitaires clés qui engloutissent les agents pathogènes et les cellules anormales. Des études montrent que Yunzhi PSP active efficacement les macrophages, améliore leur capacité de clearance, module les réponses immunitaires et aide à reconstruire la barrière de défense du corps." },
+      ja: { badge: "免疫学", title: "あなたの体の「掃除屋」- がんに対する最初の防御線！", excerpt: "マクロファージは病原体や異常細胞を飲み込む重要な免疫防御です。研究によると、雲芝PSPはマクロファージを効果的に活性化し 그들의 제거 능력을 향상させ,免疫反応を調整し,体の防御障壁の再構築を助けます。" },
+      ru: { badge: "Иммунология", title: "'Мусорщик' вашего тела – первая линия защиты от рака!", excerpt: "Макрофаги – это ключевые иммунные защитники, которые поглощают патогены и аномальные клетки. Исследования показывают, что Yunzhi PSP эффективно активирует макрофаги, усиливает их очищающую способность, модулирует иммунные ответы и помогает восстановить защитный барьер организма." }
     },
     {
       url: "https://mp.weixin.qq.com/s/BzfVUYJmj2lScaiHKAR_Xw",
       zh: { badge: "雲芝研究", title: "雲芝多糖能恢復受損的免疫功能！", excerpt: "雲芝的核心價值在於其活性成分「多糖肽」（PSP/PSK），一方面強效激活巨噬細胞、NK細胞等免疫機能，另一方面直接誘導癌細胞凋亡並抑制腫瘤血管生成，是恢復受損免疫功能的關鍵輔助利器。" },
-      en: { badge: "Yunzhi Research", title: "Yunzhi Polysaccharide Restores Compromised Immune Function!", excerpt: "The core value of Yunzhi lies in its active ingredient – polysaccharide peptide (PSP/PSK). It strongly activates macrophages and NK cells while directly inducing cancer cell apoptosis and inhibiting tumor angiogenesis – a key adjuvant for restoring impaired immunity." }
+      en: { badge: "Yunzhi Research", title: "Yunzhi Polysaccharide Restores Compromised Immune Function!", excerpt: "The core value of Yunzhi lies in its active ingredient – polysaccharide peptide (PSP/PSK). It strongly activates macrophages and NK cells while directly inducing cancer cell apoptosis and inhibiting tumor angiogenesis – a key adjuvant for restoring impaired immunity." },
+      de: { badge: "Yunzhi-Forschung", title: "Yunzhi-Polysaccharid stellt geschädigte Immunfunktion wieder her!", excerpt: "Der Kernwert von Yunzhi liegt in seinem Wirkstoff – Polysaccharid-Peptid (PSP/PSK). Es aktiviert stark Makrophagen und NK-Zellen und induziert gleichzeitig direkt die Apoptose von Krebszellen und hemmt die Tumor-Angiogenese – ein Schlüsseladjuvans zur Wiederherstellung beeinträchtigter Immunität." },
+      es: { badge: "Investigación de Yunzhi", title: "¡El polisacárido de Yunzhi restaura la función inmunitaria comprometida!", excerpt: "El valor central de Yunzhi radica en su ingrediente activo – péptido polisacárido (PSP/PSK). Activa fuertemente macrófagos y células NK mientras induce directamente la apoptosis de células cancerosas e inhibe la angiogénesis tumoral – un adyuvante clave para restaurar la inmunidad deteriorada." },
+      fr: { badge: "Recherche Yunzhi", title: "Le polysaccharide Yunzhi restaure la fonction immunitaire compromise!", excerpt: "La valeur centrale de Yunzhi réside dans son ingrédient actif – peptide polysaccharidique (PSP/PSK). Il active fortement les macrophages et les cellules NK tout en induisant directement l'apoptose des cellules cancéreuses et en inhibant l'angiogenèse tumorale – un adjuvant clé pour restaurer l'immunité altérée." },
+      ja: { badge: "雲芝研究", title: "雲芝多糖は損傷した免疫機能を回復させます！", excerpt: "雲芝のコア価値は、その有効成分である多糖類ペプチド（PSP/PSK）にあります。それはマクロファージとNK細胞を強く活性化する一方で、がん細胞のアポトーシスを直接誘導し、腫瘍血管新生を阻害します - 障害された免疫力を回復させるための重要な輔助剤です。" },
+      ru: { badge: "Исследования Юньчжи", title: "Полисахарид Юньчжи восстанавливает нарушенную иммунную функцию!", excerpt: "Основная ценность Юньчжи заключается в его активном ингредиенте – полисахаридном пептиде (PSP/PSK). Он сильно активирует макрофаги и NK-клетки, одновременно напрямую индуцируя апоптоз раковых клеток и ингибируя ангиогенез опухоли – ключевой адъювант для восстановления нарушенного иммунитета." }
     },
     {
       url: "https://mp.weixin.qq.com/s/WIGSbLOIvkHAV2oZorPP4A",
       zh: { badge: "健康科普", title: "雲芝糖肽的全面健康效益", excerpt: "雲芝糖肽（PSP）是從雲芝提取的精華，由多糖與蛋白肽結合而成，非直接治病，而是為身體建立防護盾。增強免疫力、輔助癌症治療減輕副作用、保護肝臟及抗衰老，適合作為長期調養的天然保健選擇。" },
-      en: { badge: "Wellness", title: "Comprehensive Health Benefits of Yunzhi PSP", excerpt: "Yunzhi PSP is an extract combining polysaccharides and peptides. It doesn't directly cure diseases but builds a protective shield: boosts immunity, reduces cancer therapy side effects, protects the liver, and combats aging – an ideal natural health supplement for long-term wellness." }
+      en: { badge: "Wellness", title: "Comprehensive Health Benefits of Yunzhi PSP", excerpt: "Yunzhi PSP is an extract combining polysaccharides and peptides. It doesn't directly cure diseases but builds a protective shield: boosts immunity, reduces cancer therapy side effects, protects the liver, and combats aging – an ideal natural health supplement for long-term wellness." },
+      de: { badge: "Wellness", title: "Umfassende gesundheitliche Vorteile von Yunzhi PSP", excerpt: "Yunzhi PSP ist ein Extrakt, der Polysaccharide und Peptide kombiniert. Es heilt Krankheiten nicht direkt, sondern baut ein schützendes Schild auf: stärkt die Immunität, reduziert Nebenwirkungen der Krebstherapie, schützt die Leber und bekämpft das Altern – ein ideales natürliches Gesundheitsergänzungsmittel für langfristiges Wohlbefinden." },
+      es: { badge: "Bienestar", title: "Beneficios integrales para la salud de Yunzhi PSP", excerpt: "Yunzhi PSP es un extracto que combina polisacáridos y péptidos. No cura enfermedades directamente, sino que construye un escudo protector: refuerza la inmunidad, reduce los efectos secundarios del tratamiento del cáncer, protege el hígado y combate el envejecimiento – un suplemento de salud natural ideal para el bienestar a largo plazo." },
+      fr: { badge: "Bien-être", title: "Avantages complets pour la santé de Yunzhi PSP", excerpt: "Yunzhi PSP est un extrait combinant des polysaccharidiques et des peptides. Il ne guérit pas directement les maladies mais construit un bouclier protecteur: renforce l'immunité, réduit les effets secondaires du traitement du cancer, protège le foie et combat le vieillissement – un supplément de santé naturel idéal pour le bien-être à long terme." },
+      ja: { badge: "ウェルネス", title: "雲芝PSPの包括的な健康効果", excerpt: "雲芝PSPは多糖類とペプチドを組み合わせた抽出物です。病気を直接治療するわけではありませんが、保護盾を構築します：免疫力を高め、抗がん療法の副作用を軽減し、肝臓を保護し、老化と戦いまります - 長期的なウェルネスに理想的な天然健康補助食品です。" },
+      ru: { badge: "Здоровье", title: "Комплексные преимущества Yunzhi PSP для здоровья", excerpt: "Yunzhi PSP – это экстракт, сочетающий полисахариды и пептиды. Он не лечит болезни напрямую, а строит защитный щит: укрепляет иммунитет, снижает побочные эффекты противораковой терапии, защищает печень и борется со старением – идеальная натуральная пищевая добавка для долгосрочного здоровья." }
     },
     {
       url: "https://mp.weixin.qq.com/s/NvBYmy9B5MiGSqKjznbo6Q",
       zh: { badge: "抗衰老", title: "天然維生素E之王！ 1粒T3等於10倍抗氧化，吃下凍齡腦力", excerpt: "三烯生育醇（T3）是比常見α-生育酚更優越的「抗衰黃金」。其抗氧化力是普通維他命E的60倍，且為100%天然提取。T3能有效護心腦、增強免疫，結合雲芝糖肽（PSP）更能相輔相成。" },
-      en: { badge: "Anti-Aging", title: "King of Natural Vitamin E! 1 T3 Capsule = 10x Antioxidant Power", excerpt: "Tocotrienol (T3) is a superior 'anti-aging gold' compared to common alpha-tocopherol. Its antioxidant capacity is 60 times that of regular vitamin E, and it is 100% naturally sourced. T3 protects heart and brain health, boosts immunity, and works synergistically with Yunzhi PSP." }
+      en: { badge: "Anti-Aging", title: "King of Natural Vitamin E! 1 T3 Capsule = 10x Antioxidant Power", excerpt: "Tocotrienol (T3) is a superior 'anti-aging gold' compared to common alpha-tocopherol. Its antioxidant capacity is 60 times that of regular vitamin E, and it is 100% naturally sourced. T3 protects heart and brain health, boosts immunity, and works synergistically with Yunzhi PSP." },
+      de: { badge: "Anti-Aging", title: "König des natürlichen Vitamin E! 1 T3-Kapsel = 10-fache Antioxidantkraft", excerpt: "Tocotrienol (T3) ist ein überlegenes 'Anti-Aging-Gold' im Vergleich zu gewöhnlichem Alpha-Tocopherol. Seine Antioxidationskapazität ist 60-mal höher als die von gewöhnlichem Vitamin E, und es ist 100% natürlich gewonnen. T3 schützt Herz und Gehirn, stärkt die Immunität und wirkt synergistisch mit Yunzhi PSP." },
+      es: { badge: "Anti-envejecimiento", title: "¡Rey de la vitamina E natural! 1 cápsula de T3 = 10x poder antioxidante", excerpt: "Tocotrienol (T3) es un 'oro anti-envejecimiento' superior comparado con el alfa-tocoferol común. Su capacidad antioxidante es 60 veces mayor que la de la vitamina E regular, y es 100% de origen natural. T3 protege la salud del corazón y el cerebro, refuerza la inmunidad y funciona sinérgicamente con Yunzhi PSP." },
+      fr: { badge: "Anti-âge", title: "Roi de la vitamine E naturelle! 1 gélule T3 = 10x pouvoir antioxydant", excerpt: "Le Tocotriénol (T3) est un 'or anti-âge' supérieur par rapport à l'alpha-tocophérol courant. Sa capacité antioxidante est 60 fois celle de la vitamine E ordinaire, et il est 100% d'origine naturelle. T3 protège la santé cardiaque et cérébrale, renforce l'immunité et fonctionne synergiquement avec Yunzhi PSP." },
+      ja: { badge: "アンチエジング", title: "天然ビタミンEの王様！ 1粒のT3 = 10倍の抗酸化力", excerpt: "トコトリエノール（T3）は一般的なα-トコフェロールと比較して優れた「アンチエージングゴールド」です。その抗酸化力は通常のビタミンEの60倍で、100％天然來源です。T3は心臓と脳の健康を保護し、免疫力を高め、雲芝PSPと相乗的に機能します。" },
+      ru: { badge: "Антивозрастной", title: "Король натурального витамина Е! 1 капсула T3 = 10-кратная антиоксидантная сила", excerpt: "Токотриенол (T3) – это превосходное «антивозрастное золото» по сравнению с обычным альфа-токоферолом. Его антиоксидантная способность в 60 раз превышает таковую у обычного витамина Е, и он на 100% натурального происхождения. T3 защищает здоровье сердца и мозга, укрепляет иммунитет и работает синергически с Yunzhi PSP." }
     },
     {
       url: "https://mp.weixin.qq.com/s/d2pvy2IK1Z5kwbL0tKSVSA",
       zh: { badge: "傳統智慧", title: "從宮廷禦藥到對抗惡性腫瘤的先鋒", excerpt: "雲芝自古為宮廷御藥，現代研究證實其核心成分雲芝多糖（PSK/PSP）具卓越免疫調節作用。透過激活樹突細胞、巨噬細胞等免疫哨兵，多靶點抑制癌細胞增殖與轉移。" },
-      en: { badge: "Traditional Wisdom", title: "From Imperial Remedy to Pioneer Against Cancer", excerpt: "Yunzhi has been used as an imperial medicine for centuries. Modern research confirms its core components (PSK/PSP) possess outstanding immunomodulatory effects. By activating dendritic cells, macrophages and other immune sentinels, it inhibits cancer cell proliferation and metastasis via multiple pathways." }
+      en: { badge: "Traditional Wisdom", title: "From Imperial Remedy to Pioneer Against Cancer", excerpt: "Yunzhi has been used as an imperial medicine for centuries. Modern research confirms its core components (PSK/PSP) possess outstanding immunomodulatory effects. By activating dendritic cells, macrophages and other immune sentinels, it inhibits cancer cell proliferation and metastasis via multiple pathways." },
+      de: { badge: "Traditionelle Weisheit", title: "Vom kaiserlichen Heilmittel zum Pionier gegen Krebs", excerpt: "Yunzhi wird seit Jahrhunderten als kaiserliches Arzneimittel verwendet. Moderne Forschung bestätigt, dass seine Kernkomponenten (PSK/PSP) hervorragende immunmodulatorische Wirkungen haben. Durch die Aktivierung von Dendritenzellen, Makrophagen und anderen Immunwächtern hemmt es die Proliferation und Metastasierung von Krebszellen auf mehreren Wegen." },
+      es: { badge: "Sabiduría tradicional", title: "De remedio imperial a pionero contra el cáncer", excerpt: "Yunzhi se ha utilizado como medicina imperial durante siglos. La investigación moderna confirma que sus componentes centrales (PSK/PSP) poseen destacados efectos inmunomoduladores. Al activar células dendríticas, macrófagos y otros centinelas inmunitarios, inhibe la proliferación y metástasis de células cancerosas a través de múltiples vías." },
+      fr: { badge: "Sagesse traditionnelle", title: "Du remède impérial au pionnier contre le cancer", excerpt: "Yunzhi est utilisé comme médecine impériale depuis des siècles. La recherche moderne confirme que ses composants principaux (PSK/PSP) possèdent d'excellents effets immunomodulateurs. En activant les cellules dendritiques, les macrophages et d'autres sentinelles immunitaires, il inhibe la prolifération et la métastase des cellules cancéreuses par de multiples voies." },
+      ja: { badge: "伝統知", title: "宮廷の特効薬からがんとの戦いへの先駆者へ", excerpt: "雲芝は何世紀にもわたって宮廷医学として使用されてきました。現代の研究是其核心成分（PSK/PSP）が優れた免疫調節作用を持つことを確認しています。樹状細胞、マクロファージなどの免疫監視細胞を活性化することで、複数経路でがん細胞の増殖と転移を抑制します。" },
+      ru: { badge: "Традиционная мудрость", title: "От императорского лекарства к пионеру борьбы с раком", excerpt: "Юньчжи используется как императорское лекарство на протяжении веков. Современные исследования подтверждают, что его основные компоненты (PSK/PSP) обладают выдающимися иммуномодулирующими эффектами. Активируя дендритные клетки, макрофаги и другие иммунные стражи, он ингибирует пролиферацию и метастазирование раковых клеток по множеству путей." }
     },
     {
       url: "https://mp.weixin.qq.com/s/3N7Vv3drbi8D5PnIaggP7w",
       zh: { badge: "中藥知識", title: "每天認識一味中藥：雲芝－腫瘤患者的天然守護者", excerpt: "雲芝糖肽（PSP）被譽為「腫瘤患者天然守護者」，能直接抑制癌細胞生長、阻斷腫瘤血管，同時激活自然殺手細胞與T細胞，輔助放化療減輕副作用，臨床證實可提高生存率。" },
-      en: { badge: "Chinese Medicine", title: "Daily Herb: Yunzhi – Natural Guardian for Cancer Patients", excerpt: "Yunzhi PSP is hailed as a natural guardian for cancer patients. It directly inhibits cancer cell growth, blocks tumor angiogenesis, activates NK cells and T cells, reduces side effects of radio/chemotherapy, and has been clinically proven to improve survival rates." }
+      en: { badge: "Chinese Medicine", title: "Daily Herb: Yunzhi – Natural Guardian for Cancer Patients", excerpt: "Yunzhi PSP is hailed as a natural guardian for cancer patients. It directly inhibits cancer cell growth, blocks tumor angiogenesis, activates NK cells and T cells, reduces side effects of radio/chemotherapy, and has been clinically proven to improve survival rates." },
+      de: { badge: "Chinesische Medizin", title: "Tägliches Kraut: Yunzhi – Natürlicher Beschützer für Krebspatienten", excerpt: "Yunzhi PSP wird als natürlicher Beschützer für Krebspatienten gepriesen. Es hemmt direkt das Krebszellwachstum, blockiert die Tumor-Angiogenese, aktiviert NK-Zellen und T-Zellen, reduziert Nebenwirkungen von Radio-/Chemotherapie und wurde klinisch als verbessernde Überlebensraten nachgewiesen." },
+      es: { badge: "Medicina china", title: "Hierba diaria: Yunzhi – Guardián natural para pacientes con cáncer", excerpt: "Yunzhi PSP es elogiado como un guardián natural para pacientes con cáncer. Inhibe directamente el crecimiento de células cancerosas, bloquea la angiogénesis tumoral, activa células NK y células T, reduce los efectos secundarios de radio/quimioterapia y ha sido clínicamente probado para mejorar las tasas de supervivencia." },
+      fr: { badge: "Médecine chinoise", title: "Herbe quotidienne: Yunzhi – Gardien naturel pour les patients atteints de cancer", excerpt: "Yunzhi PSP est considérée comme un gardien naturel pour les patients atteints de cancer. Il inhibe directement la croissance des cellules cancéreuses, bloque l'angiogenèse tumorale, active les cellules NK et les cellules T, réduit les effets secondaires de la radio/chimiothérapie et a été cliniquement prouvé pour améliorer les taux de survie." },
+      ja: { badge: "中药知識", title: "毎日のherb: 雲芝 - がん患者の天然守護者", excerpt: "雲芝PSPはがん患者の天然守護者とされています。直接がん細胞の成長を阻害し、腫瘍血管新生を遮断し、NK細胞とT細胞を活性化し、放射性化学療法の副作用を軽減し、生存的改善を達成したことが臨床的に証明されています。" },
+      ru: { badge: "Китайская медицина", title: "Ежедневная трава: Юньчжи – Природный защитник для больных раком", excerpt: "Yunzhi PSP назван природным защитником для больных раком. Он напрямую ингибирует рост раковых клеток, блокирует ангиогенез опухоли, активирует NK-клетки и T-клетки, снижает побочные эффекты лучевой/химиотерапии и был клинически доказан для улучшения показателей выживаемости." }
     },
     {
       url: "https://mp.weixin.qq.com/s/yCojzqZerjSf815aDte3MA",
       zh: { badge: "前沿醫學", title: "外泌體療法在帕金森氏症的研究中展示了顯著的治療效果", excerpt: "此療法有效清除腦內有害物質，阻止α-突觸核蛋白異常堆積。同時外泌體能夠降低發炎因子，促進神經修復，活化多巴胺神經元的再生。臨床試驗顯示運動功能和生活品質均有明顯改善。" },
-      en: { badge: "Frontier Medicine", title: "Exosome Therapy Shows Remarkable Results in Parkinson's Research", excerpt: "This therapy effectively clears harmful substances in the brain and prevents abnormal aggregation of α-synuclein. Exosomes also reduce inflammatory factors, promote neural repair, and regenerate dopamine neurons. Clinical trials show significant improvements in motor function and quality of life." }
+      en: { badge: "Frontier Medicine", title: "Exosome Therapy Shows Remarkable Results in Parkinson's Research", excerpt: "This therapy effectively clears harmful substances in the brain and prevents abnormal aggregation of α-synuclein. Exosomes also reduce inflammatory factors, promote neural repair, and regenerate dopamine neurons. Clinical trials show significant improvements in motor function and quality of life." },
+      de: { badge: "Grenzmedizin", title: "Exosom-Therapie zeigt bemerkenswerte Ergebnisse in der Parkinson-Forschung", excerpt: "Diese Therapie entfernt effektiv schädliche Substanzen im Gehirn und verhindert die abnormale Aggregation von α-Synuclein. Exosomen reduzieren auch Entzündungsfaktoren, fördern die neuronale Reparatur und regenerieren Dopamin-Neuronen. Klinische Studien zeigen signifikante Verbesserungen der motorischen Funktion und Lebensqualität." },
+      es: { badge: "Medicina de frontera", title: "La terapia de exosomas muestra resultados notables en la investigación del Parkinson", excerpt: "Esta terapia elimina efectivamente sustancias dañinas en el cerebro y previene la agregación anormal de α-sinucleína. Los exosomas también reducen los factores inflamatorios, promueven la reparación neural y regeneran las neuronas dopaminérgicas. Los ensayos clínicos muestran mejoras significativas en la función motora y la calidad de vida." },
+      fr: { badge: "Médecine de pointe", title: "La thérapie par exosomes montre des résultats remarquables dans la recherche sur Parkinson", excerpt: "Cette thérapie élimine efficacement les substances nocives dans le cerveau et prévient l'agrégation anormale de l'α-synucléine. Les exosomes réduisent également les facteurs inflammatoires, favorisent la réparation neurale et régénèrent les neurones dopaminergiques. Les essais cliniques montrent des améliorations significatives de la fonction motrice et de la qualité de vie." },
+      ja: { badge: "フロンティア医学", title: "エキソーム療法はパーキンソン病研究で顕著な結果を示す", excerpt: "この療法は脳内の有害物質を効果的に除去し、α--synucleinの異常な凝集を防ぎます。エキソームはまた炎症性物質を減らし、神経修復を促進し、ドーパミン神経の再生を促します。臨床試験は運動機能と生活の質の有意な改善を示しています。" },
+      ru: { badge: "Передовой медицины", title: "Терапия экзосомами показывает замечательные результаты в исследовании болезни Паркинсона", excerpt: "Эта терапия эффективно удаляет вредные вещества в мозге и предотвращает аномальное накопление α-синуклеина. Экзосомы также снижают воспалительные факторы, способствуют нейральному восстановлению и регенерируют дофаминовые нейроны. Клинические испытания показывают значительное улучшение моторной функции и качества жизни." }
     }
   ];
 
@@ -1222,8 +1404,12 @@
   function renderArticles(lang) {
     const container = document.getElementById('articlesGrid');
     if (!container) return;
+    const readMoreText = translations[lang]?.read_more || translations['en'].read_more || 'Read More';
     const html = articlesData.map((article, index) => {
-      const data = article[lang];
+      // Fallback: try current lang, then 'en', then 'zh'
+      let data = article[lang];
+      if (!data) data = article['en'];
+      if (!data) data = article['zh'];
       if (!data) return '';
       return `
         <article class="article-card" role="listitem" aria-labelledby="article-title-${index}">
@@ -1231,7 +1417,7 @@
             <span class="badge-simple">${escapeHtml(data.badge)}</span>
             <h2 class="article-title" id="article-title-${index}">${escapeHtml(data.title)}</h2>
             <p class="article-excerpt">${escapeHtml(data.excerpt)}</p>
-            <div class="article-link">${lang === 'zh' ? '閱讀全文' : 'Read More'} <i class="fas fa-arrow-right"></i></div>
+            <div class="article-link">${readMoreText} <i class="fas fa-arrow-right"></i></div>
           </a>
         </article>
       `;
@@ -1250,6 +1436,11 @@
   }
 
   function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
     const elements = document.querySelectorAll('[data-i18n]');
     elements.forEach(el => {
       const key = el.getAttribute('data-i18n');
@@ -1257,7 +1448,7 @@
         el.innerHTML = translations[lang][key];
       }
     });
-    document.title = ({ zh: '微信發表文章 | 康草堂 Wonder Herb - 雲芝糖肽精華專業資訊', en: 'WeChat Articles | Wonder Herb - Yunzhi PSP Professional Insights', de: 'WeChat Articles | Wonder Herb - Yunzhi PSP Professional Insights' })[lang] || 'WeChat Articles | Wonder Herb - Yunzhi PSP Professional Insights'; document.documentElement.lang = lang;
+    document.title = ({ zh: '微信發表文章 | 康草堂 Wonder Herb - 雲芝糖肽精華專業資訊', en: 'WeChat Articles | Wonder Herb - Yunzhi PSP Professional Insights', de: 'WeChat Articles | Wonder Herb - Yunzhi PSP Professional Insights', es: 'Artículos de WeChat | Wonder Herb - Yunzhi PSP Professional Insights', fr: 'Articles WeChat | Wonder Herb - Yunzhi PSP Professional Insights', ja: '微信記事 | Wonder Herb - 雲芝PSP専門情報', ru: 'Статьи WeChat | Wonder Herb - Yunzhi PSP Professional Insights' })[lang] || 'WeChat Articles | Wonder Herb - Yunzhi PSP Professional Insights'; document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn');
     const enSpan = document.getElementById('langEnBtn');
     if (zhSpan && enSpan) {
@@ -1266,6 +1457,10 @@
       zhSpan.classList.toggle('active-lang', lang === 'zh');
       enSpan.classList.toggle('active-lang', lang === 'en');
       if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); }
+      const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); }
+      const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); }
+      const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); }
+      const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); }
       zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false');
       enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false');
     }
@@ -1273,7 +1468,7 @@
   }
 
   function setLanguage(lang) {
-    if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return;
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return;
     currentLang = lang;
     localStorage.setItem('wonderherb_lang', lang);
     applyStaticTranslation(currentLang);
@@ -1282,7 +1477,7 @@
 
   function initLanguage() {
     const savedLang = localStorage.getItem('wonderherb_lang');
-    if (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de') {
+    if (savedLang === 'zh' || savedLang === 'en' || savedLang === 'de' || savedLang === 'es' || savedLang === 'fr' || savedLang === 'ja' || savedLang === 'ru') {
       currentLang = savedLang;
     } else {
       currentLang = 'zh';
@@ -1304,6 +1499,26 @@
       if (deBtn) {
         deBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('de'); });
         deBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('de'); } });
+      }
+      const esBtn = document.getElementById('langEsBtn');
+      if (esBtn) {
+        esBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('es'); });
+        esBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('es'); } });
+      }
+      const frBtn = document.getElementById('langFrBtn');
+      if (frBtn) {
+        frBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('fr'); });
+        frBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('fr'); } });
+      }
+      const jaBtn = document.getElementById('langJaBtn');
+      if (jaBtn) {
+        jaBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ja'); });
+        jaBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ja'); } });
+      }
+      const ruBtn = document.getElementById('langRuBtn');
+      if (ruBtn) {
+        ruBtn.addEventListener('click', (e) => { e.preventDefault(); setLanguage('ru'); });
+        ruBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('ru'); } });
       }
       enBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setLanguage('en'); } });
     }

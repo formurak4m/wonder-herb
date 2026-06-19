@@ -182,9 +182,18 @@
       }
 
       .lang-selector span {
-          cursor: pointer;
-          transition: opacity 0.2s;
-      }
+        cursor: pointer;
+        transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
+    }
 
       .lang-selector span:hover {
           opacity: 0.8;
@@ -618,9 +627,18 @@
         cursor: pointer;
     }
 
-    .lang-selector span {
+      .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -945,10 +963,13 @@
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1186,25 +1207,214 @@
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
       last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      page_title: "Informes de Investigación",
+      page_subtitle: "Wonder Herb colabora con universidades renowned para la validación clínica del PSP de Yunzhi",
+      research_intro: "Wonder Herb collaborate con múltiples universidades. Los siguientes estudios utilizaron 'Wonder Herb Yunzhi PSP' o la fórmula compuesta proprietaria para validación clínica, demostrando eficacia significativa en la modulación immunológica, actividad antitumoral y terapia adyuvante.",
+      research_card1_title: "Estudio de Universidad de HK Reconocida",
+      research_card1_desc: "Investigación utilizando 'Wonder Herb Yunzhi PSP' demuestra la inhibición efectiva del crecimiento tumoral y la regulación del sistema inmunológico.",
+      research_card2_title: "Estudio de Universidad Australiana Reconocida",
+      research_card2_desc: "Valida independientemente la actividad antitumoral de Wonder Herb Yunzhi PSP, proporcionando una base científica sólida para la terapia adyuvante natural.",
+      research_card3_title: "Estudio Clínico de Cancer Gástrico",
+      research_card3_desc: "El estudio confirma que Yunzhi PSP proporciona beneficios terapéuticos adyuvantes para pacientes con cáncer gástrico, mejorando la calidad de vida.",
+      research_card4_title: "Supervivencia Postoperatoria en Cancer de Colon",
+      research_card4_desc: "Yunzhi PSP prolonga la supervivencia postoperatoria en pacientes con cáncer de colon y reduce el riesgo de recurrencia.",
+      research_card5_title: "Inducción de Apoptosis en Células de Cancer Colorrectal",
+      research_card5_desc: "Yunzhi PSP induce apoptosis en células de cáncer colorrectal mediante la modulación de la expresión de EGFR y PD-L1.",
+      research_card6_title: "Funciones Inmunomoduladoras y Antitumorales",
+      research_card6_desc: "Yunzhi PSP (PSP) exhibe funciones inmunomoduladoras y antitumorales significativas, adecuadas como terapia adyuvante.",
+      read_more: "Leer más →",
+      pdf_title: "📄 Descargar Informes de Investigación Detallados",
+      pdf_item1: "Estudio confirma eficacia sinergética de la fórmula 'Wonder Herb Yunzhi PSP + T3' (PDF)",
+      pdf_item2: "Investigación de Shenyang Medical University sobre 'Hep BQ capsules' (PDF)",
+      pdf_item3: "Yunzhi PSP mejora la eficacia de la quimioterapia y restaura la inmunosupresión inducida por ciclofosfamida",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados",
+      last_update_text: "📅 Última actualización: 2 de junio de 2026 | Informes de investigación actualizados regularmente."
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      page_title: "Rapports de Recherche",
+      page_subtitle: "Wonder Herb collabore avec des universités renommées pour la validation clinique du PSP Yunzhi",
+      research_intro: "Wonder Herb collabore avec plusieurs universités. Les études suivantes ont utilisé 'Wonder Herb Yunzhi PSP' ou la formule composée propriétaire pour la validation clinique, démontrant une efficacité significative dans la modulation immunitaire, l'activité antitumorale et la thérapie adjuvante.",
+      research_card1_title: "Étude d'Université de HK Reconnue",
+      research_card1_desc: "Recherche utilisant 'Wonder Herb Yunzhi PSP' prouve l'inhibition effective de la croissance tumorale et la régulation du système immunitaire.",
+      research_card2_title: "Étude d'Université Australienne Reconnue",
+      research_card2_desc: "Valide indépendamment l'activité antitumorale de Wonder Herb Yunzhi PSP, fournissant une base scientifique solide pour la thérapie adjuvante naturelle.",
+      research_card3_title: "Étude Clinique du Cancer Gastrique",
+      research_card3_desc: "L'étude confirme que Yunzhi PSP fournit des bénéfices thérapeutiques adjuvants pour les patients atteints de cancer gastrique, améliorant la qualité de vie.",
+      research_card4_title: "Survie Postopératoire dans le Cancer du Côlon",
+      research_card4_desc: "Yunzhi PSP prolonge la survie postopératoire chez les patients atteints de cancer du côlon et réduit le risque de récurrence.",
+      research_card5_title: "Induction de l'Apoptose dans les Cellules Cancéreuses Colorectales",
+      research_card5_desc: "Yunzhi PSP induit l'apoptose dans les cellules cancéreuses colorectales en modulant l'expression de l'EGFR et du PD-L1.",
+      research_card6_title: "Fonctions Immunomodulatrices et Antitumorales",
+      research_card6_desc: "Yunzhi PSP (PSP) présente des fonctions immunomodulatrices et antitumorales significatives, adaptées comme thérapie adjuvante.",
+      read_more: "Lire la suite →",
+      pdf_title: "📄 Télécharger les Rapports de Recherche Détaillés",
+      pdf_item1: "Étude confirme l'efficacité synergique de la formule 'Wonder Herb Yunzhi PSP + T3' (PDF)",
+      pdf_item2: "Recherche de Shenyang Medical University sur 'Hep BQ capsules' (PDF)",
+      pdf_item3: "Yunzhi PSP améliore l'efficacité de la chimiothérapie et restaure l'immunosuppression induite par le cyclophosphamide",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés",
+      last_update_text: "📅 Dernière mise à jour: 2 juin 2026 | Rapports de recherche mis à jour régulièrement."
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      page_title: "研究レポート",
+      page_subtitle: "Wonder Herbは雲芝PSPの臨床検証のため、複数の有名大学と協力しています",
+      research_intro: "Wonder Herbは複数の大学と協力しています。以下の研究では、'Wonder Herb 雲芝PSP'または独自複合処方が臨床検証に使用され、免疫調節、抗腫瘍活性、補助療法における顕著な有効性が実証されています。",
+      research_card1_title: "香港有名大学研究",
+      research_card1_desc: "'Wonder Herb 雲芝PSP'を使用した研究で、腫瘍成長の効果的な阻害と免疫系の調節が実証されています。",
+      research_card2_title: "オーストラリア有名大学研究",
+      research_card2_desc: "Wonder Herb 雲芝PSPの抗腫瘍活性を独立して検証し、天然補助療法のための堅実な科学的根拠を提供します。",
+      research_card3_title: "胃癌臨床研究",
+      research_card3_desc: "研究により、雲芝PSPが胃癌患者に補助療法上の利益をもたらし生活の質を向上させることを確認しました。",
+      research_card4_title: "結腸癌術後生存率",
+      research_card4_desc: "雲芝PSPは結腸癌患者の術後生存率を延長し、再発リスクを低下させます。",
+      research_card5_title: "大腸がん細胞のアポトーシス誘導",
+      research_card5_desc: "雲芝PSPはEGFRとPD-L1発現を調節することで大腸がん細胞にアポトーシスを誘導します。",
+      research_card6_title: "免疫調節・抗腫瘍機能",
+      research_card6_desc: "雲芝PSP（PSP）は顕著な免疫調節・抗腫瘍機能を示し、補助療法として適しています。",
+      read_more: "続きを読む →",
+      pdf_title: "📄 詳細研究レポートをダウンロード",
+      pdf_item1: "'Wonder Herb 雲芝PSP + T3'処方の相乗有効性を確認する研究（PDF）",
+      pdf_item2: "沈陽医科大学による'乙肝清カプセル'の研究（PDF）",
+      pdf_item3: "雲芝PSPは化学療法の有効性を高め、シクロホスファミド誘発免疫抑制を回復させます",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有",
+      last_update_text: "📅 最終更新：2026年6月2日 | 研究レポートが定期的に更新されています。"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      page_title: "Отчеты об Исследованиях",
+      page_subtitle: "Wonder Herb сотрудничает с известными университетами для клинической проверки PSP Yunzhi",
+      research_intro: "Wonder Herb сотрудничает с несколькими университетами. Следующие исследования использовали 'Wonder Herb Yunzhi PSP' или собственную составную формулу для клинической проверки, демонстрируя значительную эффективность в иммуномодуляции, противоопухолевой активности и адъювантной терапии.",
+      research_card1_title: "Исследование Известного Университета ГК",
+      research_card1_desc: "Исследование с использованием 'Wonder Herb Yunzhi PSP' доказывает эффективное ингибирование роста опухоли и регуляцию иммунной системы.",
+      research_card2_title: "Исследование Известного Австралийского Университета",
+      research_card2_desc: "Независимо подтверждает противоопухолевую активность Wonder Herb Yunzhi PSP, обеспечивая прочную научную основу для натуральной адъювантной терапии.",
+      research_card3_title: "Клиническое Исследование Ракa Желудка",
+      research_card3_desc: "Исследование подтверждает, что Yunzhi PSP обеспечивает адъювантные терапевтические преимущества для пациентов с раком желудка, улучшая качество жизни.",
+      research_card4_title: "Послеоперационная Выживаемость при Ракe Толстой Кишки",
+      research_card4_desc: "Yunzhi PSP продлевает послеоперационную выживаемость у пациентов с раком толстой кишки и снижает риск рецидива.",
+      research_card5_title: "Индукция Апоптоза в Клетках Ракa Толстой Кишки",
+      research_card5_desc: "Yunzhi PSP индуцирует апоптоз в клетках рака толстой кишки, модулируя экспрессию EGFR и PD-L1.",
+      research_card6_title: "Иммуномодулирующие и Противоопухолевые Функции",
+      research_card6_desc: "Yunzhi PSP (PSP) демонстрирует значительные иммуномодулирующие и противоопухолевые функции, подходящие в качестве адъювантной терапии.",
+      read_more: "Читать далее →",
+      pdf_title: "📄 Скачать Подробные Отчеты об Исследованиях",
+      pdf_item1: "Исследование подтверждает синергетическую эффективность формулы 'Wonder Herb Yunzhi PSP + T3' (PDF)",
+      pdf_item2: "Исследование Shenyang Medical University о 'Hep BQ capsules' (PDF)",
+      pdf_item3: "Yunzhi PSP усиливает эффективность химиотерапии и восстанавливает иммуносупрессию, вызванную циклофосфамидом",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены",
+      last_update_text: "📅 Последнее обновление: 2 июня 2026 г. | Отчеты об исследованиях регулярно обновляются."
     }
   };
 
   let currentLang = 'zh';
   function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
     document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][key] !== undefined) el.innerHTML = translations[lang][key]; });
-    document.title = ({ zh: '研究報告 | Wonder Herb - 雲芝糖肽精華', en: 'Research Reports | Wonder Herb - Yunzhi PSP Essence', de: 'Research Reports | Wonder Herb - Yunzhi PSP Essence' })[lang] || 'Research Reports | Wonder Herb - Yunzhi PSP Essence';
+    document.title = ({ zh: '研究報告 | Wonder Herb - 雲芝糖肽精華', en: 'Research Reports | Wonder Herb - Yunzhi PSP Essence', de: 'Research Reports | Wonder Herb - Yunzhi PSP Essence', es: 'Research Reports | Wonder Herb - Yunzhi PSP Essence', fr: 'Rapports de Recherche | Wonder Herb - Yunzhi PSP Essence', ja: '研究レポート | Wonder Herb - 雲芝糖肽精華', ru: 'Отчеты об Исследованиях | Wonder Herb - Yunzhi PSP Essence' })[lang] || 'Research Reports | Wonder Herb - Yunzhi PSP Essence';
     document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn'), enSpan = document.getElementById('langEnBtn');
-    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
+    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); } const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); } const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); } const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
   }
 
-  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(currentLang); }
-  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' ? saved : 'zh'); }
+  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(currentLang); }
+  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru' ? saved : 'zh'); }
 
   function bindLanguageSwitcher() {
     document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); });
     document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); });
     document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); });
+    document.getElementById('langEsBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('es'); });
+    document.getElementById('langFrBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('fr'); });
+    document.getElementById('langJaBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ja'); });
+    document.getElementById('langRuBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ru'); });
   }
 
   function updateCartCountBadge() {

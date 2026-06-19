@@ -158,9 +158,18 @@
       }
 
       .lang-selector span {
-          cursor: pointer;
-          transition: opacity 0.2s;
-      }
+        cursor: pointer;
+        transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
+    }
 
       .lang-selector span:hover {
           opacity: 0.8;
@@ -602,9 +611,18 @@
         cursor: pointer;
     }
 
-    .lang-selector span {
+      .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -929,10 +947,13 @@
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1166,24 +1187,197 @@
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
       last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      page_title: "Contacto",
+      page_subtitle: "Wonder Herb Sede de Asia y socios de distribución globales – Estamos encantados de recibir su consulta",
+      asia_title: "Sede de Asia",
+      asia_company: "Wonder Herb Health Products Ltd",
+      asia_address: "Hab. 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong<br>(Salida A del MTR Jordan)",
+      china_title: "Oficina en China",
+      china_address: "3er piso, Torre Este, Liuhua Junting, No. 73 Liuhua Road, Distrito Liwan, Guangzhou",
+      canada_title: "Distribución en Canadá",
+      canada_contact: "Contacto: Sra. Chen",
+      australia_title: "Distribución en Australia",
+      australia_contact: "Contacto: Sr. Yuan",
+      usa_title: "Distribución en EE.UU.",
+      map_caption: "<i class='fas fa-map-pin'></i> HQ de Asia: Hab. 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong",
+      cta_title: "¿Necesita asesoramiento profesional?",
+      cta_desc: "Nuestro equipo de asesores de salud estará encantado de responder sus preguntas sobre Yunzhi PSP Essence y el cuidado de apoyo del cáncer.",
+      cta_btn: "<i class='fab fa-whatsapp'></i> Contactar ahora por WhatsApp",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados",
+      last_update_text: "📅 Última actualización: 2 de junio de 2026 | La información de contacto se actualiza regularmente."
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      page_title: "Contact",
+      page_subtitle: "Wonder Herb Siège Asie et partenaires de distribution mondiaux – Nous sommes heureux de recevoir votre demande",
+      asia_title: "Siège Asie",
+      asia_company: "Wonder Herb Health Products Ltd",
+      asia_address: "Bureau 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong<br>(Sortie A du MTR Jordan)",
+      china_title: "Bureau en Chine",
+      china_address: "3ème étage, Tour Est, Liuhua Junting, No. 73 Liuhua Road, District Liwan, Guangzhou",
+      canada_title: "Distribution au Canada",
+      canada_contact: "Contact: Mme Chen",
+      australia_title: "Distribution en Australie",
+      australia_contact: "Contact: M. Yuan",
+      usa_title: "Distribution aux États-Unis",
+      map_caption: "<i class='fas fa-map-pin'></i> HQ d'Asie: Bureau 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong",
+      cta_title: "Besoin de conseils professionnels?",
+      cta_desc: "Notre équipe de conseillers en santé se fera un plaisir de répondre à vos questions sur Yunzhi PSP Essence et les soins de soutien contre le cancer.",
+      cta_btn: "<i class='fab fa-whatsapp'></i> Contactez maintenant via WhatsApp",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés",
+      last_update_text: "📅 Dernière mise à jour: 2 juin 2026 | Les informations de contact sont régulièrement mises à jour."
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      page_title: "お問い合わせ",
+      page_subtitle: "Wonder Herb アジア本部とグローバル配售パートナー — お問い合わせを楽しみにしております",
+      asia_title: "アジア本部",
+      asia_company: "Wonder Herb Health Products Ltd",
+      asia_address: "香港、九龍、ジェームズ・ロード301-309、チャンピオン・ビル딩8階803号室<br>（MRTジェームズ駅A出口）",
+      china_title: "中国オフィス",
+      china_address: "広州市荔湾区流花路73号、流花君亭東塔3階",
+      canada_title: "カナダ配售",
+      canada_contact: "連絡先：陳様",
+      australia_title: "オーストラリア配售",
+      australia_contact: "連絡先：袁様",
+      usa_title: "アメリカ配售",
+      map_caption: "<i class='fas fa-map-pin'></i> アジア本部：香港、九龍、ジェームズ・ロード301-309、チャンピオン・ビルディング8階803号室",
+      cta_title: "プロフェッショナルなご相談が必要ですか？",
+      cta_desc: "健康顧問チームが雲芝PSP精华と癌支援ケアに関するご質問にお答えします。",
+      cta_btn: "<i class='fab fa-whatsapp'></i> 今すぐWhatsAppで 연락",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有",
+      last_update_text: "📅 最終更新：2026年6月2日 | 連絡先情報は定期的に更新されています。"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      page_title: "Контакт",
+      page_subtitle: "Wonder Herb Штаб-квартира в Азии и глобальные партнеры по распространению – Мы рады вашему запросу",
+      asia_title: "Штаб-квартира в Азии",
+      asia_company: "Wonder Herb Health Products Ltd",
+      asia_address: "Ком. 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong<br>(Выход A MTR Jordan)",
+      china_title: "Офис в Китае",
+      china_address: "3-й этаж, Восточная башня, Liuhua Junting, No. 73 Liuhua Road, район Liwan, Guangzhou",
+      canada_title: "Распространение в Канаде",
+      canada_contact: "Контакт: Г-жа Чен",
+      australia_title: "Распространение в Австралии",
+      australia_contact: "Контакт: Г-н Юань",
+      usa_title: "Распространение в США",
+      map_caption: "<i class='fas fa-map-pin'></i> Азиатская штаб-квартира: Ком. 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong",
+      cta_title: "Нужна профессиональная консультация?",
+      cta_desc: "Наша команда консультантов по здоровью с радостью ответит на ваши вопросы о Yunzhi PSP Essence и поддерживающем уходе при раке.",
+      cta_btn: "<i class='fab fa-whatsapp'></i> Связаться сейчас через WhatsApp",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены",
+      last_update_text: "📅 Последнее обновление: 2 июня 2026 г. | Контактная информация регулярно обновляется."
     }
   };
 
   let currentLang = 'zh';
   function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
     document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][key] !== undefined) el.innerHTML = translations[lang][key]; });
-    document.title = ({ zh: '聯絡我們 | Wonder Herb - 雲芝糖肽精華', en: 'Contact Us | Wonder Herb - Yunzhi PSP Essence', de: 'Kontakt | Wonder Herb - Yunzhi-PSP-Essenz' })[lang] || 'Contact Us | Wonder Herb - Yunzhi PSP Essence';
+    document.title = ({ zh: '聯絡我們 | Wonder Herb - 雲芝糖肽精華', en: 'Contact Us | Wonder Herb - Yunzhi PSP Essence', de: 'Kontakt | Wonder Herb - Yunzhi-PSP-Essenz', es: 'Contacto | Wonder Herb - Yunzhi PSP Essence', fr: 'Contact | Wonder Herb - Yunzhi PSP Essence', ja: 'お問い合わせ | Wonder Herb - 雲芝糖肽精華', ru: 'Контакт | Wonder Herb - Yunzhi PSP Essence' })[lang] || 'Contact Us | Wonder Herb - Yunzhi PSP Essence';
     document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn'), enSpan = document.getElementById('langEnBtn');
-    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
+    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); } const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); } const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); } const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
   }
-  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
-  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' ? saved : 'zh'); }
+  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
+  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru' ? saved : 'zh'); }
 
   function bindLanguageSwitcher() {
     document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); });
     document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); });
     document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); });
+    document.getElementById('langEsBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('es'); });
+    document.getElementById('langFrBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('fr'); });
+    document.getElementById('langJaBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ja'); });
+    document.getElementById('langRuBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ru'); });
   }
 
   function updateCartCountBadge() {

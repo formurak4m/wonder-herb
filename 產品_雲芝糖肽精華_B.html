@@ -196,9 +196,18 @@
       }
 
       .lang-selector span {
-          cursor: pointer;
-          transition: opacity 0.2s;
-      }
+        cursor: pointer;
+        transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
+    }
 
       .lang-selector span:hover {
           opacity: 0.8;
@@ -701,9 +710,18 @@
         cursor: pointer;
     }
 
-    .lang-selector span {
+      .lang-selector span {
         cursor: pointer;
         transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      .lang-selector .flag-img {
+        height: 14px;
+        width: auto;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
     }
 
     .lang-selector span:hover {
@@ -1028,10 +1046,13 @@
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
-      <i class="fas fa-globe" aria-hidden="true"></i>
-      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang">中文</span> | 
-      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false">EN</span> | 
-      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false">DE</span>
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
     </div>
   </div>
 </div>
@@ -1309,19 +1330,288 @@
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
       last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      product_title_main: "Esencia Yunzhi PSP - Pack Estándar",
+      product_title_badge: "Extracto de Micelio Cov-1",
+      product_price: "HK$3,800.00 <span style='font-size:1rem; font-weight:normal;'>/ 500 cápsulas (Pack Estándar)</span>",
+      product_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Ingredientes Activos >90% · GMP Canadá · Sinergia Comprobada por Universidades",
+      quantity_label: "Cantidad:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> Añadir al carrito",
+      detail_btn: "Más Detalles <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Certificado",
+      badge_purity: "90%+ Activo",
+      badge_university: "Estudio Clínico",
+      intro_title: "📖 Introducción del Producto",
+      intro_p1: "<strong>Esencia Yunzhi PSP</strong> es un complejo polisacárido-péptido extraído del micelio profundo de la cepa Cov-1.",
+      intro_p2: "Según los estándares nacionales, el contenido de Yunzhi PSP supera el 90%.",
+      benefits_title: "✨ Beneficios y Características Clave",
+      benefits_list: "<li>Puede usarse junto con tratamientos convencionales</li><li>Reduce los efectos secundarios del tratamiento</li><li>Disminuye el riesgo de recurrencia</li><li>Refuerza la inmunidad</li><li>Concentración de ingrediente activo casi el doble del estándar nacional</li>",
+      suitable_title: "👤 Quién Debe Usar",
+      suitable_list: "<li>Individuos con historial familiar de cáncer</li><li>Aquellos con sistemas inmunológicos debilitados</li><li>Aquellos que buscan prevención del cáncer</li><li>Bienestar y mantenimiento de la salud</li>",
+      note_badge: "Nota",
+      note_text: "No adecuado para receptores de trasplantes de órganos.",
+      research_title: "📚 Evidencia Científica",
+      research_text: "Estudios publicados en <strong>Plos One</strong> demuestran la eficacia de Wonder Herb PSP.",
+      spec_title: "📦 Especificaciones",
+      spec_text: "✔ 500 cápsulas por frasco (Pack Estándar)",
+      dosage_title: "💊 Dosificación Recomendada",
+      dosage_list: "<li><strong>Antes/después de cirugía:</strong> 5 cápsulas, 4 veces al día</li><li><strong>Durante quimioterapia:</strong> 3 cápsulas, 3 veces al día</li><li><strong>Mantenimiento de bienestar:</strong> 3-4 cápsulas diarias</li>",
+      dosage_note: "<em>※ Por favor consulte a su médico.</em>",
+      trust1_title: "Investigación Universitaria",
+      trust1_desc: "Validado en HK/Canadá",
+      trust2_title: "Pruebas de Laboratorio Dobles",
+      trust2_desc: "Canadá + Hong Kong",
+      trust3_title: "GMP Certificado",
+      trust3_desc: "Regulado por Health Canada",
+      trust4_title: "20.000+ Pacientes",
+      trust4_desc: "Historias reales de recuperación",
+      related_title: "🌟 También le Puede Gustar",
+      related_std_name: "Esencia Yunzhi PSP (Pack de Prueba)",
+      related_std_desc: "60 cápsulas / Ideal para primeros usuarios",
+      related_t3_name: "Tocotrienoles T3",
+      related_t3_desc: "Comprobado por QUT, anticanceroso",
+      related_hepa_name: "Cápsulas Hep BQ",
+      related_hepa_desc: "Fórmula herbal de soporte hepático",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados",
+      last_update_text: "📅 Última actualización: 2 de junio de 2026 | La información se actualiza regularmente."
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      product_title_main: "Essence Yunzhi PSP - Pack Standard",
+      product_title_badge: "Extrait de Mycélium Cov-1",
+      product_price: "HK$3,800.00 <span style='font-size:1rem; font-weight:normal;'>/ 500 gélules (Pack Standard)</span>",
+      product_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Ingrédients Actifs >90% · GMP Canada · Synergie Prouvée par les Universités",
+      quantity_label: "Quantité:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> Ajouter au panier",
+      detail_btn: "Plus de Détails <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Certifié",
+      badge_purity: "90%+ Actif",
+      badge_university: "Étude Clinique",
+      intro_title: "📖 Introduction du Produit",
+      intro_p1: "<strong>Essence Yunzhi PSP</strong> est un complexe polysaccharide-peptide extrait du mycélium profond de la souche Cov-1.",
+      intro_p2: "Selon les normes nationales, la teneur en Yunzhi PSP dépasse 90%.",
+      benefits_title: "✨ Avantages et Caractéristiques Clés",
+      benefits_list: "<li>Peut être utilisé avec les traitements conventionnels</li><li>Réduit les effets secondaires du traitement</li><li>Diminue le risque de récurrence</li><li>Renforce l'immunité</li><li>Concentration en ingrédient actif presque le double de la norme nationale</li>",
+      suitable_title: "👤 Qui Doit Utiliser",
+      suitable_list: "<li>Individus avec des antécédents familiaux de cancer</li><li>Ceux dont le système immunitaire est affaibli</li><li>Ceux qui cherchent à prévenir le cancer</li><li>Bien-être et maintien de la santé</li>",
+      note_badge: "Note",
+      note_text: "Non adapté aux receveurs de transplantations d'organes.",
+      research_title: "📚 Preuves Scientifiques",
+      research_text: "Des études publiées dans <strong>Plos One</strong> démontrent l'efficacité de Wonder Herb PSP.",
+      spec_title: "📦 Spécifications",
+      spec_text: "✔ 500 gélules par flacon (Pack Standard)",
+      dosage_title: "💊 Dosage Recommandé",
+      dosage_list: "<li><strong>Avant/après chirurgie:</strong> 5 gélules, 4 fois par jour</li><li><strong>Pendant chimiothérapie:</strong> 3 gélules, 3 fois par jour</li><li><strong>Maintien du bien-être:</strong> 3-4 gélules par jour</li>",
+      dosage_note: "<em>※ Veuillez consulter votre médecin.</em>",
+      trust1_title: "Recherche Universitaire",
+      trust1_desc: "Validé à HK/Canada",
+      trust2_title: "Tests de Laboratoire Doubles",
+      trust2_desc: "Canada + Hong Kong",
+      trust3_title: "GMP Certifié",
+      trust3_desc: "Réglementé par Santé Canada",
+      trust4_title: "20.000+ Patients",
+      trust4_desc: "Vraies histoires de récupération",
+      related_title: "🌟 Vous Aimerez Aussi",
+      related_std_name: "Essence Yunzhi PSP (Pack d'Essai)",
+      related_std_desc: "60 gélules / Idéal pour les premiers utilisateurs",
+      related_t3_name: "Tocotriénols T3",
+      related_t3_desc: "Prouvé par QUT, anticancéreux",
+      related_hepa_name: "Cápsules Hep BQ",
+      related_hepa_desc: "Formule herbal de soutien hépatique",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés",
+      last_update_text: "📅 Dernière mise à jour: 2 juin 2026 | Les informations sont régulièrement mises à jour."
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      product_title_main: "雲芝PSP精华 - 通常パック",
+      product_title_badge: "COV-1菌糸体抽出物",
+      product_price: "HK$3,800.00 <span style='font-size:1rem; font-weight:normal;'>/ 500カプセル（通常パック）</span>",
+      product_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> 有効成分 >90% · GMPカナダ · 大学実証の相乗効果",
+      quantity_label: "数量：",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> カートに追加",
+      detail_btn: "詳細を見る <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP認証",
+      badge_purity: "90%+ 有効成分",
+      badge_university: "臨床研究",
+      intro_title: "📖 製品紹介",
+      intro_p1: "<strong>雲芝PSP精华</strong>はCOV-1株の深い菌糸体から抽出された多糖類ペプチド複合体です。",
+      intro_p2: "国家基準によると、雲芝PSP含有量は90%以上です。",
+      benefits_title: "✨ 主なベネフィットと特徴",
+      benefits_list: "<li>従来の治療に使用可能</li><li>治療副作用を軽減</li><li>再発リスクを低下</li><li>免疫力を強化</li><li>有効成分濃度は国家基準の約2倍</li>",
+      suitable_title: "👤 こんな方におすすめ",
+      suitable_list: "<li>がんの家系の方</li><li>免疫力が低下している方</li><li>がん予防を考えている方</li><li>健康維持</li>",
+      note_badge: "注意",
+      note_text: "臓器移植を受けた方には適していません。",
+      research_title: "📚 科学的な証拠",
+      research_text: "<strong>Plos One</strong>に掲載された研究がWonder Herb PSPの有効性を実証しています。",
+      spec_title: "📦 仕様",
+      spec_text: "✔ 1ボトル500カプセル（通常パック）",
+      dosage_title: "💊 推奨用量",
+      dosage_list: "<li><strong>手術前/後:</strong> 1日4回、各5カプセル</li><li><strong>化学療法中:</strong> 1日3回、各3カプセル</li><li><strong>健康維持:</strong> 1日3〜4カプセル</li>",
+      dosage_note: "<em>※ 医師にご相談ください。</em>",
+      trust1_title: "大学研究",
+      trust1_desc: "香港/カナダで検証",
+      trust2_title: "二重ラボ検査",
+      trust2_desc: "カナダ + 香港",
+      trust3_title: "GMP認証",
+      trust3_desc: "Health Canada規制",
+      trust4_title: "2万名以上の患者",
+      trust4_desc: "実際の回復ストーリー",
+      related_title: "🌟 こちらもおすすめ",
+      related_std_name: "雲芝PSP精华（体験パック）",
+      related_std_desc: "60カプセル / 初めての方におすすめ",
+      related_t3_name: "T3トコトリエノール",
+      related_t3_desc: "QUT実証、抗がん",
+      related_hepa_name: "乙肝清カプセル",
+      related_hepa_desc: "漢方の肝支援処方",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有",
+      last_update_text: "📅 最終更新：2026年6月2日 | 情報は定期的に更新されています。"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      product_title_main: "Эссенция Yunzhi PSP - Стандартный Набор",
+      product_title_badge: "Экстракт Мицелия Cov-1",
+      product_price: "HK$3,800.00 <span style='font-size:1rem; font-weight:normal;'>/ 500 капсул (Стандартный Набор)</span>",
+      product_short_desc: "<i class='fas fa-flask' style='color:#2d5e3b;'></i> Активные Ингредиенты >90% · GMP Канада · Синергия, Подтвержденная Университетами",
+      quantity_label: "Количество:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> В корзину",
+      detail_btn: "Подробнее <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Сертифицировано",
+      badge_purity: "90%+ Активность",
+      badge_university: "Клиническое Исследование",
+      intro_title: "📖 Введение в Продукт",
+      intro_p1: "<strong>Эссенция Yunzhi PSP</strong> — это полисахаридно-пептидный комплекс, извлеченный из глубокого мицелия штамма Cov-1.",
+      intro_p2: "Согласно национальным стандартам, содержание Yunzhi PSP превышает 90%.",
+      benefits_title: "✨ Ключевые Преимущества и Характеристики",
+      benefits_list: "<li>Может использоваться с conventional лечением</li><li>Уменьшает побочные эффекты лечения</li><li>Снижает риск рецидива</li><li>Укрепляет иммунитет</li><li>Концентрация активного ингредиента почти вдвое превышает национальный стандарт</li>",
+      suitable_title: "👤 Кому Следует Использовать",
+      suitable_list: "<li>Люди с семейным анамнезом рака</li><li>Люди с ослабленной иммунной системой</li><li>Люди, желающие предотвратить рак</li><li>Здоровье и поддержание благополучия</li>",
+      note_badge: "Примечание",
+      note_text: "Не подходит для реципиентов трансплантатов органов.",
+      research_title: "📚 Научные Доказательства",
+      research_text: "Исследования, опубликованные в <strong>Plos One</strong>, демонстрируют эффективность Wonder Herb PSP.",
+      spec_title: "📦 Характеристики",
+      spec_text: "✔ 500 капсул во флаконе (Стандартный Набор)",
+      dosage_title: "💊 Рекомендуемая Дозировка",
+      dosage_list: "<li><strong>До/после операции:</strong> 5 капсул, 4 раза в день</li><li><strong>Во время химиотерапии:</strong> 3 капсулы, 3 раза в день</li><li><strong>Поддержание здоровья:</strong> 3-4 капсулы в день</li>",
+      dosage_note: "<em>※ Пожалуйста, проконсультируйтесь с врачом.</em>",
+      trust1_title: "Университетские Исследования",
+      trust1_desc: "Подтверждено в ГК/Канаде",
+      trust2_title: "Двойные Лабораторные Тесты",
+      trust2_desc: "Канада + Гонконг",
+      trust3_title: "GMP Сертифицировано",
+      trust3_desc: "Регулируется Health Canada",
+      trust4_title: "20.000+ Пациентов",
+      trust4_desc: "Реальные истории выздоровления",
+      related_title: "🌟 Вам Также Может Понравиться",
+      related_std_name: "Эссенция Yunzhi PSP (Пробный Набор)",
+      related_std_desc: "60 капсул / Идеально для первых пользователей",
+      related_t3_name: "Токотриенолы T3",
+      related_t3_desc: "Подтверждено QUT, антираковые",
+      related_hepa_name: "Капсулы Hep BQ",
+      related_hepa_desc: "Травяная формула для поддержки печени",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены",
+      last_update_text: "📅 Последнее обновление: 2 июня 2026 г. | Информация регулярно обновляется."
     }
   };
 
   let currentLang = 'zh';
   function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+    }
     document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][key] !== undefined) el.innerHTML = translations[lang][key]; });
-    document.title = ({ zh: '雲芝糖肽精華 (PSP) 標準裝 | Wonder Herb – 天然雲芝糖肽專家', en: 'Yunzhi PSP Essence Standard Pack | Wonder Herb – Natural Yunzhi PSP Expert', de: 'Yunzhi PSP Essence Standard Pack | Wonder Herb – Natural Yunzhi PSP Expert' })[lang] || 'Yunzhi PSP Essence Standard Pack | Wonder Herb – Natural Yunzhi PSP Expert';
+    document.title = ({ zh: '雲芝糖肽精華 (PSP) 標準裝 | Wonder Herb – 天然雲芝糖肽專家', en: 'Yunzhi PSP Essence Standard Pack | Wonder Herb – Natural Yunzhi PSP Expert', de: 'Yunzhi PSP Essence Standard Pack | Wonder Herb – Natural Yunzhi PSP Expert', es: 'Esencia Yunzhi PSP Pack Estándar | Wonder Herb', fr: 'Essence Yunzhi PSP Pack Standard | Wonder Herb', ja: '雲芝PSP精华 通常パック | Wonder Herb', ru: 'Эссенция Yunzhi PSP Стандартный Набор | Wonder Herb' })[lang] || 'Yunzhi PSP Essence Standard Pack | Wonder Herb – Natural Yunzhi PSP Expert';
     document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn'), enSpan = document.getElementById('langEnBtn');
-    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
+    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); } const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); } const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); } const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
   }
-  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
-  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' ? saved : 'zh'); }
+  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
+  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru' ? saved : 'zh'); }
 
   const currentProduct = { id: 2, name: "雲芝糖肽精華 (PSP) – 標準裝", price: 3800, image: "https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg" };
   let cartItems = [];
@@ -1354,7 +1644,7 @@
     window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMenu(); });
   }
 
-  window.addEventListener('load', () => { bindMobileMenu(); loadCart(); initLanguage(); document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); }); });
+  window.addEventListener('load', () => { bindMobileMenu(); loadCart(); initLanguage(); document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); }); document.getElementById('langEsBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('es'); }); document.getElementById('langFrBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('fr'); }); document.getElementById('langJaBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ja'); }); document.getElementById('langRuBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ru'); }); });
   window.addEventListener('storage', e => { if (e.key === 'wonderHerbCart') loadCart(); });
 </script>
 </body>
