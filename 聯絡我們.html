@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title id="pageTitle">聯絡我們 | Wonder Herb - 雲芝糖肽精華</title>
   <meta name="description" content="康草堂 Wonder Herb 聯絡資訊：亞洲總部、中國辦事處、加拿大、澳洲及美國分銷商聯絡方式。專業雲芝糖肽產品諮詢。">
   
@@ -387,11 +387,28 @@
           padding: 70px 0;
       }
 
+      @media (max-width: 768px) {
+          .contact-section {
+              padding: 40px 0;
+          }
+          .contact-card {
+              padding: 20px 16px;
+          }
+      }
+
       .contact-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
           gap: 32px;
           margin-bottom: 48px;
+      }
+
+      @media (max-width: 768px) {
+          .contact-grid {
+              grid-template-columns: 1fr;
+              gap: 20px;
+              margin-bottom: 32px;
+          }
       }
 
       .contact-card {
@@ -451,6 +468,13 @@
           color: #4a4a48;
       }
 
+      @media (max-width: 768px) {
+          .contact-detail {
+              margin-left: 12px;
+              margin-right: 12px;
+          }
+      }
+
       .contact-detail i {
           width: 20px;
           color: #2d5e3b;
@@ -478,6 +502,15 @@
           overflow: hidden;
       }
 
+      @media (max-width: 768px) {
+          .map-placeholder {
+              border-radius: 16px;
+              height: 200px;
+              margin-left: 4px;
+              margin-right: 4px;
+          }
+      }
+
       .map-placeholder iframe {
           width: 100%;
           height: 100%;
@@ -500,6 +533,18 @@
           color: white;
           margin-top: 20px;
           margin-bottom: 40px;
+      }
+
+      @media (max-width: 768px) {
+          .cta-banner {
+              border-radius: 20px;
+              padding: 32px 20px;
+              margin-left: 4px;
+              margin-right: 4px;
+          }
+          .cta-banner h2 {
+              font-size: 1.4rem;
+          }
       }
 
       .cta-banner h2 {
