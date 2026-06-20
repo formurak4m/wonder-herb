@@ -757,14 +757,81 @@
         .back-to-top { bottom: 16px; right: 10px; width: 40px; height: 40px; font-size: 1rem; }
     }
     @media (max-width: 480px) {
-        .top-bar {
-            font-size: 0.78rem;
-            padding: 4px 0;
-        }
         .back-to-top { bottom: 14px; right: 8px; width: 36px; height: 36px; font-size: 0.95rem; }
     }
     @media (max-width: 380px) {
         .back-to-top { bottom: 12px; right: 8px; width: 36px; height: 36px; font-size: 0.9rem; }
+    }
+
+    /* ===== Product Detail Page Mobile Responsive ===== */
+    @media (max-width: 768px) {
+        .product-grid {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+            margin: 24px 0 40px;
+        }
+        .product-gallery { padding: 16px; border-radius: 20px; }
+        .main-image { margin-bottom: 12px; border-radius: 16px; }
+        .main-image img { max-height: 320px; }
+        .thumbnail-list { gap: 10px; }
+        .thumbnail { width: 64px; height: 64px; border-radius: 12px; }
+        .product-info { gap: 14px; }
+        .product-title { font-size: 1.6rem; line-height: 1.3; }
+        .product-price { font-size: 1.5rem; }
+        .product-short-desc { font-size: 0.88rem; padding-left: 12px; margin: 4px 0; }
+        .quantity-selector { gap: 12px; }
+        .quantity-input { width: 70px; padding: 8px; font-size: 0.95rem; }
+        .action-buttons { flex-direction: column; gap: 12px; margin: 12px 0; }
+        .btn-primary { font-size: 0.95rem; padding: 12px 20px; width: 100%; }
+        .btn-secondary { font-size: 0.95rem; padding: 10px 18px; width: 100%; justify-content: center; }
+        .trust-badges { gap: 20px; margin: 24px 0; }
+        .badge-item i { font-size: 2rem; }
+        .related-grid { gap: 16px; flex-wrap: wrap; }
+        .related-card { flex: 1 1 calc(50% - 8px); min-width: 0; padding: 16px; border-radius: 16px; }
+        .related-card h3 { font-size: 1rem; }
+        .related-card p { font-size: 0.78rem; }
+        .section-title { font-size: 1.4rem; padding-left: 12px; margin-bottom: 16px; }
+        .product-details-card { padding: 20px; margin-bottom: 24px; border-radius: 20px; }
+        .product-details-card ul, .product-details-card ol { margin-left: 18px; margin-bottom: 12px; }
+        .product-details-card li, .product-details-card p { font-size: 0.88rem; }
+    }
+    @media (max-width: 480px) {
+        .product-grid { gap: 16px !important; margin: 16px 0 32px; }
+        .product-gallery { padding: 12px; border-radius: 16px; }
+        .main-image { margin-bottom: 10px; border-radius: 12px; }
+        .main-image img { max-height: 260px; }
+        .thumbnail { width: 56px; height: 56px; border-radius: 10px; }
+        .thumbnail-list { gap: 8px; }
+        .product-info { gap: 10px; }
+        .product-title { font-size: 1.3rem; }
+        .product-price { font-size: 1.25rem; }
+        .product-short-desc { font-size: 0.82rem; padding-left: 10px; }
+        .quantity-selector { gap: 10px; }
+        .quantity-selector label { font-size: 0.9rem; }
+        .quantity-input { width: 60px; padding: 7px; font-size: 0.9rem; }
+        .action-buttons { gap: 10px; margin: 10px 0; }
+        .btn-primary { font-size: 0.9rem; padding: 11px 16px; }
+        .btn-secondary { font-size: 0.9rem; padding: 9px 16px; }
+        .trust-badges { gap: 16px; margin: 16px 0; flex-wrap: wrap; }
+        .badge-item { max-width: 130px; }
+        .badge-item i { font-size: 1.7rem; margin-bottom: 6px; }
+        .badge-item span { font-size: 0.78rem; }
+        .related-grid { gap: 12px; }
+        .related-card { flex: 1 1 calc(50% - 6px); padding: 12px; border-radius: 14px; }
+        .related-card i { font-size: 1.5rem; }
+        .related-card h3 { font-size: 0.9rem; margin: 8px 0 4px; }
+        .related-card p { font-size: 0.72rem; }
+        .related-card span { font-size: 0.85rem; }
+        .section-title { font-size: 1.2rem; padding-left: 10px; margin-bottom: 12px; }
+        .product-details-card { padding: 16px; margin-bottom: 20px; border-radius: 16px; }
+        .product-details-card li, .product-details-card p { font-size: 0.85rem; }
+    }
+    @media (max-width: 380px) {
+        .product-title { font-size: 1.15rem; }
+        .product-price { font-size: 1.1rem; }
+        .related-grid { flex-direction: column; }
+        .related-card { flex: 1 1 100%; }
+        .badge-item { max-width: 110px; }
     }
 
     /* Shared header/footer styles */
