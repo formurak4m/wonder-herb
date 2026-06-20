@@ -163,6 +163,7 @@
           display: flex;
           justify-content: flex-end;
           gap: 20px;
+          padding: 0 25px;
       }
 
       .top-bar a {
@@ -203,6 +204,93 @@
       .lang-selector .active-lang {
           font-weight: 700;
           text-decoration: underline;
+      }
+
+      /* Mobile Language Dropdown */
+      .lang-selector-mobile {
+          display: none;
+          position: relative;
+          z-index: 101;
+      }
+
+      .lang-selector-mobile .lang-current {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          background: rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 20px;
+          padding: 6px 32px 6px 10px;
+          cursor: pointer;
+          color: #fff;
+          font-size: 0.8rem;
+          white-space: nowrap;
+      }
+
+      .lang-selector-mobile .lang-current::after {
+          content: '▼';
+          font-size: 0.6rem;
+          margin-left: 4px;
+      }
+
+      .lang-selector-mobile .lang-current img {
+          height: 14px;
+          width: auto;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
+
+      .lang-selector-mobile .lang-dropdown {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          background: #2d5e3b;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 10px;
+          padding: 8px 0;
+          min-width: 140px;
+          z-index: 10000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+
+      .lang-selector-mobile .lang-dropdown.show {
+          display: block;
+      }
+
+      .lang-selector-mobile .lang-dropdown button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          width: 100%;
+          padding: 8px 12px;
+          background: none;
+          border: none;
+          color: #fff;
+          font-size: 0.85rem;
+          cursor: pointer;
+          text-align: left;
+      }
+
+      .lang-selector-mobile .lang-dropdown button:hover,
+      .lang-selector-mobile .lang-dropdown button.active {
+          background: rgba(255, 255, 255, 0.15);
+      }
+
+      .lang-selector-mobile .lang-dropdown button img {
+          height: 14px;
+          width: auto;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
+
+      @media (max-width: 768px) {
+          .lang-selector {
+              display: none !important;
+          }
+          .lang-selector-mobile {
+              display: block !important;
+          }
       }
 
       /* Main Header 与其他页面完全一致 */
@@ -573,6 +661,10 @@
           }
       }
       @media (max-width: 480px) {
+          .top-bar {
+              font-size: 0.78rem;
+              padding: 4px 0;
+          }
           .back-to-top {
               bottom: 14px;
               right: 8px;
@@ -604,6 +696,7 @@
         display: flex;
         justify-content: flex-end;
         gap: 20px;
+        padding: 0 25px;
     }
 
     .top-bar a {
@@ -970,6 +1063,20 @@
       <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
       <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
       <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
+    </div>
+    <div class="lang-selector-mobile" aria-label="語言切換">
+      <div class="lang-current" id="langCurrentBtn" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+        <img src="https://flagcdn.com/w20/hk.png" alt="" id="langCurrentFlag"> <span id="langCurrentText">中文</span>
+      </div>
+      <div class="lang-dropdown" role="listbox" id="langDropdown">
+        <button type="button" data-lang="zh" role="option"><img src="https://flagcdn.com/w20/hk.png" alt=""> 中文</button>
+        <button type="button" data-lang="en" role="option"><img src="https://flagcdn.com/w20/gb.png" alt=""> English</button>
+        <button type="button" data-lang="de" role="option"><img src="https://flagcdn.com/w20/de.png" alt=""> Deutsch</button>
+        <button type="button" data-lang="es" role="option"><img src="https://flagcdn.com/w20/es.png" alt=""> Español</button>
+        <button type="button" data-lang="fr" role="option"><img src="https://flagcdn.com/w20/fr.png" alt=""> Français</button>
+        <button type="button" data-lang="ja" role="option"><img src="https://flagcdn.com/w20/jp.png" alt=""> 日本語</button>
+        <button type="button" data-lang="ru" role="option"><img src="https://flagcdn.com/w20/ru.png" alt=""> Русский</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1396,6 +1503,14 @@
     if (langFlags[lang]) {
       const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
       Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+      const curFlag = document.getElementById('langCurrentFlag');
+      const curText = document.getElementById('langCurrentText');
+      if (curFlag) curFlag.src = langFlags[lang].flag;
+      if (curText) curText.textContent = langFlags[lang].text.replace(/^\s/, '');
+      const dropdownBtns = document.querySelectorAll('#langDropdown button');
+      dropdownBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
     }
     document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][key] !== undefined) el.innerHTML = translations[lang][key]; });
     document.title = ({ zh: '研究報告 | Wonder Herb - 雲芝糖肽精華', en: 'Research Reports | Wonder Herb - Yunzhi PSP Essence', de: 'Research Reports | Wonder Herb - Yunzhi PSP Essence', es: 'Research Reports | Wonder Herb - Yunzhi PSP Essence', fr: 'Rapports de Recherche | Wonder Herb - Yunzhi PSP Essence', ja: '研究レポート | Wonder Herb - 雲芝糖肽精華', ru: 'Отчеты об Исследованиях | Wonder Herb - Yunzhi PSP Essence' })[lang] || 'Research Reports | Wonder Herb - Yunzhi PSP Essence';
@@ -1449,7 +1564,7 @@
     window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMenu(); });
   }
 
-  window.addEventListener('load', () => { bindMobileMenu(); updateCartCountBadge(); initLanguage(); bindLanguageSwitcher(); });
+  window.addEventListener('load', () => { bindMobileMenu(); updateCartCountBadge(); initLanguage(); bindLanguageSwitcher(); const langCurrentBtn = document.getElementById('langCurrentBtn'); const langDropdown = document.getElementById('langDropdown'); if (langCurrentBtn && langDropdown) { langCurrentBtn.addEventListener('click', (e) => { e.stopPropagation(); const isOpen = langDropdown.classList.toggle('show'); langCurrentBtn.setAttribute('aria-expanded', isOpen); }); langCurrentBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const isOpen = langDropdown.classList.toggle('show'); langCurrentBtn.setAttribute('aria-expanded', isOpen); } }); langDropdown.querySelectorAll('button').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const newLang = btn.getAttribute('data-lang'); if (newLang) { setLanguage(newLang); langDropdown.classList.remove('show'); langCurrentBtn.setAttribute('aria-expanded', 'false'); } }); }); document.addEventListener('click', (e) => { if (!langCurrentBtn.contains(e.target) && !langDropdown.contains(e.target)) { langDropdown.classList.remove('show'); langCurrentBtn.setAttribute('aria-expanded', 'false'); } }); } });
   window.addEventListener('pageshow', updateCartCountBadge);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) updateCartCountBadge(); });
 </script>
