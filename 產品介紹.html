@@ -889,7 +889,7 @@
     }
 
     .logo img {
-        height: 55px;
+        height: 50px;
         width: auto;
         display: block;
     }
@@ -1000,6 +1000,14 @@
         justify-content: flex-end;
     }
 
+    .mobile-contact-btn {
+        display: none;
+    }
+
+    .header-right-icons {
+        display: none;
+    }
+
     @media (max-width: 768px) {
         .main-header .header-inner {
             flex-wrap: wrap;
@@ -1015,15 +1023,46 @@
         }
 
         .main-header .logo img {
-            height: 45px;
+            height: 35px;
         }
 
         .menu-toggle {
+            margin-left: 6px;
             margin-right: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex: 0 0 auto;
+        }
+
+        .header-right-icons {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .header-right-icons .mobile-cart-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #2d5e3b;
+            position: relative;
+            text-decoration: none;
+            padding: 6px 8px;
+        }
+
+        .header-right-icons .mobile-cart-link .cart-count {
+            position: absolute;
+            top: -2px;
+            right: 0px;
+            background: #9b2e2e;
+            color: white;
+            font-size: 0.6rem;
+            border-radius: 30px;
+            padding: 1px 4px;
+            min-width: 14px;
+            text-align: center;
         }
 
         .main-header .header-nav-panel {
@@ -1075,9 +1114,37 @@
             padding-top: 10px;
             border-top: 1px solid #e8dfd2;
         }
+
+        .main-header .header-actions .cart-icon,
+        .main-header .header-actions .btn-contact {
+            display: none;
+        }
+
+        .main-header .header-nav-panel.is-open .nav-menu {
+            padding-bottom: 60px;
+        }
+
+        .main-header .header-nav-panel.is-open .mobile-contact-btn {
+            display: flex;
+        }
+
+        .mobile-contact-btn {
+            display: none;
+            background: #2d5e3b;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 20px;
+            border-radius: 15px;
+            margin-top: 4px;
+        }
     }
 
-    footer {
+  footer {
         background: #1f2c1c;
         color: #ddd;
         padding: 48px 0 32px;
@@ -1276,9 +1343,12 @@
     <div class="logo">
       <a href="index.html"><img src="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png" alt="康草堂 Wonder Herb 官方標誌"></a>
     </div>
-    <button type="button" class="menu-toggle" id="menuToggle" aria-label="開啟選單" aria-expanded="false" aria-controls="headerNavPanel">
-      <i class="fas fa-bars" aria-hidden="true"></i>
-    </button>
+    <div class="header-right-icons">
+      <a href="購物車.html" class="mobile-cart-link" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="mobileCartCountBadge" class="cart-count">0</span></a>
+      <button type="button" class="menu-toggle" id="menuToggle" aria-label="開啟選單" aria-expanded="false" aria-controls="headerNavPanel">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
     <div class="header-nav-panel" id="headerNavPanel">
     <nav class="nav-menu" aria-label="主導航">
       <ul>
@@ -1294,12 +1364,15 @@
       </ul>
     </nav>
     <div class="header-actions">
-      <a href="https://wa.me/85293318571/" target="_blank" class="social-icon" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://wa.me/85293318571/" target="_blank" class="social-icon" aria-label="WhatsApp" style="padding-left: 6px;"><i class="fab fa-whatsapp"></i></a>
       <a href="https://www.facebook.com/wonderherbhealth" target="_blank" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" class="social-icon" aria-label="Instagram" style="padding-right: 6px;"><i class="fab fa-instagram"></i></a>
       <a href="購物車.html" class="cart-icon" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="cartCountBadge" class="cart-count">0</span></a>
       <a href="https://wa.me/85293318571/" class="btn-contact" data-i18n="header_contact_btn">諮詢專員 <i class="fas fa-arrow-right"></i></a>
     </div>
+    <a href="產品介紹.html" class="mobile-contact-btn" target="_blank">
+      <i class="fas fa-shopping-bag" aria-hidden="true"></i> 網上商店 <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </a>
     </div>
   </div>
 </header>
@@ -1664,7 +1737,10 @@
       updateCartBadge(); }
 
     function updateCartBadge() { const total = cartItems.reduce((sum, i) => sum + i.quantity, 0);
-      document.getElementById('cartCountBadge').innerText = total; }
+      const badge = document.getElementById('cartCountBadge');
+      if (badge) badge.innerText = total;
+      const mobileBadge = document.getElementById('mobileCartCountBadge');
+      if (mobileBadge) mobileBadge.innerText = total; }
 
     function addToCart(productId, quantity, productObj) {
       if (productObj.price === 0) { alert(currentLang === 'zh' ? '此產品僅限診所購買，請諮詢您的醫生。' : 'This product is available only at clinics.'); return false; }
