@@ -1356,9 +1356,6 @@
             .case-studies-section-video {
                 display: none;
             }
-            .case-studies-section-overlay {
-                background: rgba(254, 252, 248, 0.45);
-            }
         }
         .container {
             max-width: 1280px;
@@ -1562,7 +1559,7 @@
         }
         .featured-card .product-img {
             height: 220px;
-            background: rgba(250, 245, 238, 0.4);
+            background: rgba(240, 250, 247, 0.5);
             backdrop-filter: blur(6px);
             border-radius: 28px;
             display: flex;
@@ -1579,7 +1576,7 @@
         }
         .side-card .product-img {
             height: 110px;
-            background: rgba(250, 245, 238, 0.4);
+            background: rgba(240, 250, 247, 0.5);
             backdrop-filter: blur(4px);
             border-radius: 20px;
             display: flex;
@@ -1806,7 +1803,6 @@
             position: absolute;
             inset: 0;
             z-index: 1;
-            background: rgba(0, 0, 0, 0.04);
             pointer-events: none;
         }
 
@@ -2019,7 +2015,7 @@
             transform: translateY(-3px) scale(1.12);
         }
         .copyright {
-            text-align: justify;
+            text-align: center;
             padding-top: 32px;
             border-top: 1px solid #3a4a36;
             margin-top: 32px;
@@ -2398,10 +2394,49 @@
             background-color: #1e4028;
             transform: translateY(-2px);
         }
-    
+
+    /* Announcement Bar */
+    .announcement-bar {
+        background: linear-gradient(90deg, #30442b 0%, #2d5e3b 50%, #32482d 100%);
+        color: #fff;
+        padding: 0;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .announcement-track {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        animation: scroll-announcement 20s linear infinite;
+    }
+    .announcement-track span {
+        display: inline-block;
+        padding: 8px 48px;
+        font-size: 0.88rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        color: #f5e6c8;
+    }
+    .announcement-track span::before {
+        content: '✦';
+        margin-right: 12px;
+        color: #ffd966;
+        font-size: 0.75rem;
+    }
+    .announcement-track span::after {
+        content: '✦';
+        margin-left: 12px;
+        color: #ffd966;
+        font-size: 0.75rem;
+    }
+    @keyframes scroll-announcement {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+
     /* Shared header/footer styles */
     .top-bar {
-        background-color: #2d5e3b;
+        background-color: #233c2a;
         color: #fff;
         font-size: 0.85rem;
         padding: 8px 0;
@@ -2785,7 +2820,7 @@
     }
 
     .copyright {
-        text-align: justify;
+        text-align: center;
         padding-top: 32px;
         border-top: 1px solid #3a4a36;
         margin-top: 32px;
@@ -2837,6 +2872,42 @@
             gap: 16px;
         }
     }
+
+    /* Mobile Fixed Contact Button */
+    .mobile-fixed-contact-btn {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #157538;
+        color: white;
+        text-align: center;
+        padding: 14px 20px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1rem;
+        z-index: 9999;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-fixed-contact-btn:hover {
+        background-color: #0b4320;
+        color: white;
+    }
+
+    .mobile-fixed-contact-btn i {
+        font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-fixed-contact-btn {
+            display: flex;
+        }
+    }
 </style>
 </head>
 <body>
@@ -2867,6 +2938,15 @@
         <button type="button" data-lang="ru" role="option"><img src="https://flagcdn.com/w20/ru.png" alt=""> Русский</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="announcement-bar" aria-label="公告">
+  <div class="announcement-track">
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
   </div>
 </div>
 
@@ -2997,9 +3077,6 @@
     <p class="last-update">📅 最後更新：<time datetime="2026-06-08">2026年6月8日</time></p>
   </div>
 </footer>
-
-    <a href="#" id="backToTop" class="back-to-top" role="button" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
-
     <script>
         const translations = {
             zh: { nav_home: "關於我們", nav_products: "產品介紹", nav_research: "研究報告", nav_testing: "成份檢測", nav_cases: "典型病例", nav_brochure: "小册子", nav_articles: "文章", nav_faq: "常見問題", nav_contact: "聯絡我們", header_contact_btn: "諮詢專員 <i class='fas fa-arrow-right'></i>", hero_badge: "⭐ 臨床驗證 · 加拿大GMP藥廠", hero_title_main: "雲芝糖肽精華 PSP<span style='color:#9b2e2e;'>+T3</span><br>天然輔助方案", hero_desc: "超過20年經驗，大學研究證實獨特配方功效倍增。每批產品雙重檢測，有效成份 >90% — 遠超國家標準。", hero_stat1_label: "有效成份含量", hero_stat2_label: "臨床經驗", hero_stat3_label: "加拿大認證藥廠", hero_cta_primary: "<i class='fab fa-whatsapp'></i> 立即查詢 · 康復方案", hero_cta_secondary: "了解產品系列", company_title: "🌿 康草堂 · 以人為本的中草藥科研", company_subtitle: "結合中西醫學理論，為頑疾患者提供高活性、純天然輔助方案", company_text1: "康草堂 (Wonder Herb Health Products Ltd) 是以人為本的中草藥製品公司，沿用中草藥附以西藥治療效益的前題，結合中西藥平衡理論，採用品質上乘且活性含量極高的中草藥，每一批次都經過加拿大及香港雙重檢測，確保活性含量水平，協助慢性頑疾患者改善健康。", company_text2: "累積二十餘年經驗，協助各類頑疾患者舒緩療程不適，提升免疫力。", company_text3: "康草堂的產品包括「雲芝糖肽精華 PSP」，T3，PT3 及乙肝清 。產品多樣性能切合不同人仕的需要。獨特配方有助提升常規治療效益。", company_text4: "經大學研究證實，「康草堂雲芝糖肽精華 PSP + T3」的獨特配方，比單一服用雲芝糖肽精華PSP功效倍增。", company_text5: "為確保產品的質量，康草堂的產品均由加拿大GMP藥厰按加拿大優良的生產規範(GMP)指引下生產。", products_section_title: "✨ 皇牌產品系列", product_trial_title: "雲芝糖肽精華 (試用裝)", product_trial_desc: "60粒裝，初次體驗佳，多醣肽含量超國家標準1.8倍。", product_std_title: "雲芝糖肽精華 PSP (標準裝)", product_std_desc: "500粒裝，強化免疫調節，適合長期輔助療程。", product_t3_title: "PSP + T3 配方", product_t3_desc: "大學證實複合配方功效倍增，頑疾輔助首選。", product_hepa_title: "乙肝清", product_hepa_desc: "天然草本護肝，抑制HBV，減輕肝纖維化。", product_memo_title: "憶活素 MemoProve", product_memo_desc: "奧地利研發，修復腦細胞，提升記憶力與專注力。", product_pt3_title: "PT3 (指定診所發售)", product_pt3_desc: "專業級配方，只在指定中西醫診所出售，請諮詢醫生。", quality_prefix: "📢 根據國家藥品標準，雲芝糖肽的含量不得低於49.5%（多醣≥38%，蛋白肽≥11.5%），", quality_highlight_span: "康草堂產品的「有效成份」含量高達90%以上 —— 純度最高，吸收最好。", trust1_title: "大學臨床研究", trust1_desc: "香港/加拿大學術驗證", trust2_title: "雙重含量檢測", trust2_desc: "加拿大 + 香港實驗室", trust3_title: "GMP 認證藥廠", trust3_desc: "加拿大衛生部監管", trust4_title: "20,000+ 患者信賴", trust4_desc: "真實病例改善回饋", featured_cases_title: "📋 真實康復故事精選", featured_cases_sub: "見證雲芝糖肽精華 PSP 如何幫助患者提升免疫力，改善生活品質", featured_cases_more: "查看更多典型病例 →", case_title: "📖 真實康復見證 & 典型病例", case_desc: "數百份典型病例與微信文章，展現雲芝糖肽如何幫助患者提升生活品質。立即參考成功經驗，為您或家人尋求最佳輔助方案。", case_btn_cases: "📄 瀏覽典型病例", case_btn_brochure: "📘 下載小冊子", case_btn_wechat: "<i class='fab fa-weixin'></i> 微信發表文章", footer_col1_title: "康草堂 Wonder Herb", footer_col1_text1: "以人為本，天然高效。", footer_col1_text2: "加拿大GMP藥廠生產", footer_col1_text3: "香港及加拿大雙重檢測", footer_contact_title: "聯絡我們", footer_whatsapp_label: "WhatsApp 專線", footer_info_title: "資訊中心", footer_link_research: "研究報告", footer_link_testing: "有效成份檢測", footer_link_faq: "常見問題", footer_link_cases: "典型病例", copyright: "© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家",
@@ -4148,5 +4225,6 @@
             cleanupJellyElasticity();
             cleanupCaseStudiesJelly(); });
     </script>
+<a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> 立即諮詢</a>
 </body>
 </html>

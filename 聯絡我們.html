@@ -126,6 +126,45 @@
           padding: 0 24px;
       }
 
+      /* Announcement Bar */
+      .announcement-bar {
+          background: linear-gradient(90deg, #1f2c1c 0%, #2d5e3b 50%, #1f2c1c 100%);
+          color: #fff;
+          padding: 0;
+          overflow: hidden;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+      .announcement-track {
+          display: flex;
+          align-items: center;
+          white-space: nowrap;
+          animation: scroll-announcement 20s linear infinite;
+      }
+      .announcement-track span {
+          display: inline-block;
+          padding: 8px 48px;
+          font-size: 0.88rem;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+          color: #f5e6c8;
+      }
+      .announcement-track span::before {
+          content: '✦';
+          margin-right: 12px;
+          color: #ffd966;
+          font-size: 0.75rem;
+      }
+      .announcement-track span::after {
+          content: '✦';
+          margin-left: 12px;
+          color: #ffd966;
+          font-size: 0.75rem;
+      }
+      @keyframes scroll-announcement {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+      }
+
       /* Top Bar 保持不变 */
       .top-bar {
           background-color: #2d5e3b;
@@ -133,6 +172,8 @@
           font-size: 0.85rem;
           padding: 8px 0;
           text-align: right;
+          position: relative;
+          z-index: 1000;
       }
 
       .top-bar .container {
@@ -396,14 +437,14 @@
 
       /* Contact Grid */
       .contact-section {
-          padding: 40px 0;
+          padding: 5px 0;
       }
 
       @media (max-width: 768px) {
           .page-header h1 { font-size: 2rem; }
           .page-header p { font-size: 0.95rem; }
           .contact-section {
-              padding: 40px 0;
+              padding: 5px 0;
           }
           .contact-card {
               padding: 20px 16px;
@@ -649,88 +690,39 @@
           letter-spacing: 0.3px;
       }
 
-      /* Back to Top */
-      .back-to-top {
+      /* Mobile Fixed Contact Button */
+      .mobile-fixed-contact-btn {
+          display: none;
           position: fixed;
-          bottom: 30px;
-          right: 30px;
-          background: #2d5e3b;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background-color: #157538;
           color: white;
-          width: 50px;
-          height: 50px;
-          border-radius: 50%;
-          display: flex;
+          text-align: center;
+          padding: 14px 20px;
+          text-decoration: none;
+          font-weight: 700;
+          font-size: 1rem;
+          z-index: 9999;
+          box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+          gap: 8px;
           align-items: center;
           justify-content: center;
-          text-decoration: none;
-          font-size: 1.5rem;
-          opacity: 0;
-          visibility: hidden;
-          transition: all 0.45s var(--jelly-spring-gentle);
-          z-index: 99;
-          box-shadow: 0 4px 16px rgba(45, 94, 59, 0.3);
       }
-      .back-to-top.show {
-          opacity: 1;
-          visibility: visible;
+
+      .mobile-fixed-contact-btn:hover {
+          background-color: #0b4320;
+          color: white;
       }
-      .back-to-top:hover {
-          background-color: #1e4028;
-          transform: translateY(-6px) scale(1.1);
-          box-shadow: 0 10px 24px rgba(45, 94, 59, 0.35);
+
+      .mobile-fixed-contact-btn i {
+          font-size: 1.2rem;
       }
-      @media (max-width: 1024px) {
-          .back-to-top {
-              bottom: 20px;
-              right: 12px;
-              width: 44px;
-              height: 44px;
-              font-size: 1.2rem;
-          }
-      }
+
       @media (max-width: 768px) {
-          .back-to-top {
-              bottom: 18px;
-              right: 10px;
-              width: 42px;
-              height: 42px;
-              font-size: 1.1rem;
-          }
-      }
-      @media (max-width: 640px) {
-          .page-header h1 { font-size: 1.6rem; }
-          .page-header p { font-size: 0.95rem; }
-          .back-to-top {
-              bottom: 16px;
-              right: 10px;
-              width: 40px;
-              height: 40px;
-              font-size: 1rem;
-          }
-      }
-      @media (max-width: 480px) {
-          .page-header h1 { font-size: 1.4rem; }
-          .page-header p { font-size: 0.9rem; }
-          .top-bar {
-              font-size: 0.78rem;
-              padding: 4px 0;
-          }
-          .back-to-top {
-              bottom: 14px;
-              right: 8px;
-              width: 36px;
-              height: 36px;
-              font-size: 0.95rem;
-          }
-      }
-      @media (max-width: 380px) {
-          .page-header h1 { font-size: 1.3rem; }
-          .back-to-top {
-              bottom: 12px;
-              right: 8px;
-              width: 36px;
-              height: 36px;
-              font-size: 0.9rem;
+          .mobile-fixed-contact-btn {
+              display: flex;
           }
       }
 
@@ -1136,7 +1128,7 @@
     /* Shared small-screen footer layout */
     @media (max-width: 768px) {
         footer {
-            padding: 32px 0 32px !important;
+            padding: 32px 0 80px !important;
         }
         .footer-inner {
             display: grid;
@@ -1199,6 +1191,15 @@
         <button type="button" data-lang="ru" role="option"><img src="https://flagcdn.com/w20/ru.png" alt=""> Русский</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="announcement-bar" aria-label="公告">
+  <div class="announcement-track">
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
   </div>
 </div>
 
@@ -1353,14 +1354,13 @@
   </div>
 </footer>
 
-<a href="#" id="backToTop" class="back-to-top" role="button" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
-
 <script>
   const translations = {
     zh: {
       nav_home: "關於我們", nav_products: "產品介紹", nav_research: "研究報告", nav_testing: "成份檢測",
       nav_cases: "典型病例", nav_brochure: "小册子", nav_articles: "文章", nav_faq: "常見問題", nav_contact: "聯絡我們",
       header_contact_btn: "諮詢專員 <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> 立即諮詢",
       page_title: "聯絡我們", page_subtitle: "康草堂 Wonder Herb 亞洲總部及全球分銷據點，歡迎諮詢",
       asia_title: "亞洲總部", asia_company: "康草堂有限公司",
       asia_address: "香港九龍彌敦道301-309号 嘉賓商業大厦8樓803室<br>(佐敦地鐵A出口)",
@@ -1381,6 +1381,7 @@
       nav_home: "About Us", nav_products: "Products", nav_research: "Research", nav_testing: "Testing",
       nav_cases: "Case", nav_brochure: "Brochure", nav_articles: "Articles", nav_faq: "FAQ", nav_contact: "Contact",
       header_contact_btn: "Consult <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> Consult Advisor",
       page_title: "Contact Us", page_subtitle: "Wonder Herb Asia Headquarters & Global Distributors – Welcome to Inquire",
       asia_title: "Asia Headquarters", asia_company: "Wonder Herb Health Products Ltd",
       asia_address: "Rm 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong<br>(Jordan MTR Exit A)",
@@ -1408,6 +1409,7 @@
       nav_faq: "FAQ",
       nav_contact: "Kontakt",
       header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> Beratung anfragen",
       page_title: "Kontakt",
       page_subtitle: "Wonder Herb Asien-Hauptquartier & globale Vertriebspartner – Wir freuen uns auf Ihre Anfrage",
       asia_title: "Asien-Hauptquartier",
@@ -1449,6 +1451,7 @@
       nav_faq: "Preguntas",
       nav_contact: "Contacto",
       header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> Consultar asesor",
       page_title: "Contacto",
       page_subtitle: "Wonder Herb Sede de Asia y socios de distribución globales – Estamos encantados de recibir su consulta",
       asia_title: "Sede de Asia",
@@ -1490,6 +1493,7 @@
       nav_faq: "FAQ",
       nav_contact: "Contact",
       header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> Consulter un conseiller",
       page_title: "Contact",
       page_subtitle: "Wonder Herb Siège Asie et partenaires de distribution mondiaux – Nous sommes heureux de recevoir votre demande",
       asia_title: "Siège Asie",
@@ -1531,6 +1535,7 @@
       nav_faq: "よくある質問",
       nav_contact: "お問い合わせ",
       header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> 专员に相談",
       page_title: "お問い合わせ",
       page_subtitle: "Wonder Herb アジア本部とグローバル配售パートナー — お問い合わせを楽しみにしております",
       asia_title: "アジア本部",
@@ -1572,6 +1577,7 @@
       nav_faq: "Вопросы",
       nav_contact: "Контакт",
       header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> Консультация",
       page_title: "Контакт",
       page_subtitle: "Wonder Herb Штаб-квартира в Азии и глобальные партнеры по распространению – Мы рады вашему запросу",
       asia_title: "Штаб-квартира в Азии",
@@ -1647,10 +1653,6 @@
     if (mobileBadge) mobileBadge.innerText = total;
   }
 
-  const backBtn = document.getElementById('backToTop');
-  window.addEventListener('scroll', () => backBtn.classList.toggle('show', window.scrollY > 300));
-  backBtn.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-
   window.addEventListener('storage', e => { if (e.key === 'wonderHerbCart') updateCartCountBadge(); });
   function bindMobileMenu() {
     const toggle = document.getElementById('menuToggle');
@@ -1676,5 +1678,6 @@
   window.addEventListener('pageshow', updateCartCountBadge);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) updateCartCountBadge(); });
 </script>
+<a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> 立即諮詢</a>
 </body>
 </html>

@@ -21,7 +21,7 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <!-- Font Awesome 6 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-GTO+3uJZ3+M3zG1sMMGWGL/UJ6e+EFGC8pHO7dS3RY03TnH+AjbNLB/C6h3m1m/C/n2dwL5j5S5j5V6k5P5L5W5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">  
   
   <!-- JSON-LD 结构化数据 (Organization, Breadcrumb, Product + Review, FAQ) -->
   <script type="application/ld+json">
@@ -157,6 +157,45 @@
           max-width: 1280px;
           margin: 0 auto;
           padding: 0 24px;
+      }
+
+      /* Announcement Bar */
+      .announcement-bar {
+        background: linear-gradient(90deg, #1f2c1c 0%, #2d5e3b 50%, #1f2c1c 100%);
+        color: #fff;
+        padding: 0;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+      .announcement-track {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        animation: scroll-announcement 20s linear infinite;
+      }
+      .announcement-track span {
+        display: inline-block;
+        padding: 8px 48px;
+        font-size: 0.88rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        color: #f5e6c8;
+      }
+      .announcement-track span::before {
+        content: '✦';
+        margin-right: 12px;
+        color: #ffd966;
+        font-size: 0.75rem;
+      }
+      .announcement-track span::after {
+        content: '✦';
+        margin-left: 12px;
+        color: #ffd966;
+        font-size: 0.75rem;
+      }
+      @keyframes scroll-announcement {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
       }
 
       /* Top Bar 保持不变 */
@@ -729,52 +768,6 @@
           letter-spacing: 0.3px;
       }
 
-    /* Back to Top */
-    .back-to-top {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: #2d5e3b;
-        color: white;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        font-size: 1.5rem;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.45s var(--jelly-spring-gentle);
-        z-index: 99;
-        box-shadow: 0 4px 16px rgba(45, 94, 59, 0.3);
-    }
-    .back-to-top.show {
-        opacity: 1;
-        visibility: visible;
-    }
-    .back-to-top:hover {
-        background-color: #1e4028;
-        transform: translateY(-6px) scale(1.1);
-        box-shadow: 0 10px 24px rgba(45, 94, 59, 0.35);
-    }
-    @media (max-width: 1024px) {
-        .back-to-top { bottom: 20px; right: 12px; width: 44px; height: 44px; font-size: 1.2rem; }
-    }
-    @media (max-width: 768px) {
-        .back-to-top { bottom: 18px; right: 10px; width: 42px; height: 42px; font-size: 1.1rem; }
-    }
-    @media (max-width: 640px) {
-        .back-to-top { bottom: 16px; right: 10px; width: 40px; height: 40px; font-size: 1rem; }
-    }
-    @media (max-width: 480px) {
-        .back-to-top { bottom: 14px; right: 8px; width: 36px; height: 36px; font-size: 0.95rem; }
-    }
-    @media (max-width: 380px) {
-        .back-to-top { bottom: 12px; right: 8px; width: 36px; height: 36px; font-size: 0.9rem; }
-    }
-
     /* ===== Product Detail Page Mobile Responsive ===== */
     @media (max-width: 768px) {
         .product-grid {
@@ -1282,6 +1275,42 @@
             gap: 16px;
         }
     }
+
+    /* Mobile Fixed Contact Button */
+    .mobile-fixed-contact-btn {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #157538;
+        color: white;
+        text-align: center;
+        padding: 14px 20px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1rem;
+        z-index: 9999;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-fixed-contact-btn:hover {
+        background-color: #0b4320;
+        color: white;
+    }
+
+    .mobile-fixed-contact-btn i {
+        font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-fixed-contact-btn {
+            display: flex;
+        }
+    }
 </style>
 </head>
 <body>
@@ -1314,7 +1343,16 @@
   </div>
 </div>
 
-<header class="main-header" role="banner">
+<div class="announcement-bar" aria-label="公告">
+  <div class="announcement-track">
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+  </div>
+</div>
+
+    <header class="main-header" role="banner">
   <div class="container header-inner">
     <div class="logo">
       <a href="index.html"><img src="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png" alt="康草堂 Wonder Herb 官方標誌"></a>
@@ -1467,8 +1505,6 @@
     <p class="last-update">📅 最後更新：<time datetime="2026-06-08">2026年6月8日</time></p>
   </div>
 </footer>
-
-<a href="#" id="backToTop" class="back-to-top" role="button" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
 
 <script>
   const translations = {
@@ -1893,7 +1929,6 @@
 
   document.querySelectorAll('.thumbnail').forEach(t => t.addEventListener('click', () => { const src = t.getAttribute('data-img'); if (src) document.getElementById('mainProductImage').src = src; document.querySelectorAll('.thumbnail').forEach(x => x.classList.remove('active')); t.classList.add('active'); }));
   document.getElementById('addToCartBtn')?.addEventListener('click', () => { let q = parseInt(document.getElementById('quantity').value); if (isNaN(q) || q < 1) q = 1; addToCart(currentProduct.id, q, currentProduct); });
-  const backBtn = document.getElementById('backToTop'); window.addEventListener('scroll', () => { backBtn.classList.toggle('show', window.scrollY > 300); }); backBtn.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
   function bindMobileMenu() {
     const toggle = document.getElementById('menuToggle');
@@ -1917,6 +1952,9 @@
 
   window.addEventListener('load', () => { bindMobileMenu(); loadCart(); initLanguage(); document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); }); document.getElementById('langEsBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('es'); }); document.getElementById('langFrBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('fr'); }); document.getElementById('langJaBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ja'); }); document.getElementById('langRuBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ru'); }); const langCurrentBtn = document.getElementById('langCurrentBtn'); const langDropdown = document.getElementById('langDropdown'); if (langCurrentBtn && langDropdown) { langCurrentBtn.addEventListener('click', (e) => { e.stopPropagation(); const isOpen = langDropdown.classList.toggle('show'); langCurrentBtn.setAttribute('aria-expanded', isOpen); }); langCurrentBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const isOpen = langDropdown.classList.toggle('show'); langCurrentBtn.setAttribute('aria-expanded', isOpen); } }); langDropdown.querySelectorAll('button').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const newLang = btn.getAttribute('data-lang'); if (newLang) { setLanguage(newLang); langDropdown.classList.remove('show'); langCurrentBtn.setAttribute('aria-expanded', 'false'); } }); }); document.addEventListener('click', (e) => { if (!langCurrentBtn.contains(e.target) && !langDropdown.contains(e.target)) { langDropdown.classList.remove('show'); langCurrentBtn.setAttribute('aria-expanded', 'false'); } }); } });
   window.addEventListener('storage', e => { if (e.key === 'wonderHerbCart') loadCart(); });
+  window.addEventListener('pageshow', () => loadCart());
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) loadCart(); });
 </script>
+<a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> 立即諮詢</a>
 </body>
 </html>

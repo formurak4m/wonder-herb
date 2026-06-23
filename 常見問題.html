@@ -192,7 +192,46 @@
       padding: 0 24px;
     }
 
-    /* Top Bar 保持完全一致 */
+    /* Announcement Bar */
+    .announcement-bar {
+      background: linear-gradient(90deg, #1f2c1c 0%, #2d5e3b 50%, #1f2c1c 100%);
+      color: #fff;
+      padding: 0;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .announcement-track {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      animation: scroll-announcement 20s linear infinite;
+    }
+    .announcement-track span {
+      display: inline-block;
+      padding: 8px 48px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: #f5e6c8;
+    }
+    .announcement-track span::before {
+      content: '✦';
+      margin-right: 12px;
+      color: #ffd966;
+      font-size: 0.75rem;
+    }
+    .announcement-track span::after {
+      content: '✦';
+      margin-left: 12px;
+      color: #ffd966;
+      font-size: 0.75rem;
+    }
+    @keyframes scroll-announcement {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Top Bar */
     .top-bar {
       background-color: #2d5e3b;
       color: #fff;
@@ -434,7 +473,7 @@
     .btn-primary {
       background-color: #2d5e3b;
       color: white;
-      padding: 12px 32px;
+      padding: 12px 30px;
       border-radius: 40px;
       text-decoration: none;
       font-weight: 700;
@@ -442,6 +481,7 @@
       align-items: center;
       gap: 8px;
       transition: all 0.3s;
+      margin-bottom: 40px;
     }
     .btn-primary:hover {
       background-color: #1e4028;
@@ -500,82 +540,6 @@
       font-size: 0.7rem;
       color: #a8b7a4;
       letter-spacing: 0.3px;
-    }
-
-    /* Back to Top Button */
-    .back-to-top {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: #2d5e3b;
-        color: white;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        font-size: 1.5rem;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.45s var(--jelly-spring-gentle);
-        z-index: 99;
-        box-shadow: 0 4px 16px rgba(45, 94, 59, 0.3);
-    }
-    .back-to-top.show {
-        opacity: 1;
-        visibility: visible;
-    }
-    .back-to-top:hover {
-        background-color: #1e4028;
-        transform: translateY(-6px) scale(1.1);
-        box-shadow: 0 10px 24px rgba(45, 94, 59, 0.35);
-    }
-    @media (max-width: 1024px) {
-        .back-to-top {
-            bottom: 20px;
-            right: 12px;
-            width: 44px;
-            height: 44px;
-            font-size: 1.2rem;
-        }
-    }
-    @media (max-width: 768px) {
-        .back-to-top {
-            bottom: 18px;
-            right: 10px;
-            width: 42px;
-            height: 42px;
-            font-size: 1.1rem;
-        }
-    }
-    @media (max-width: 640px) {
-        .back-to-top {
-            bottom: 16px;
-            right: 10px;
-            width: 40px;
-            height: 40px;
-            font-size: 1rem;
-        }
-    }
-    @media (max-width: 480px) {
-        .back-to-top {
-            bottom: 14px;
-            right: 8px;
-            width: 36px;
-            height: 36px;
-            font-size: 0.95rem;
-        }
-    }
-    @media (max-width: 380px) {
-        .back-to-top {
-            bottom: 12px;
-            right: 8px;
-            width: 36px;
-            height: 36px;
-            font-size: 0.9rem;
-        }
     }
 
     /* 屏幕阅读器专用文字 */
@@ -1185,6 +1149,42 @@
             gap: 16px;
         }
     }
+
+    /* Mobile Fixed Contact Button */
+    .mobile-fixed-contact-btn {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #157538;
+        color: white;
+        text-align: center;
+        padding: 14px 20px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1rem;
+        z-index: 9999;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-fixed-contact-btn:hover {
+        background-color: #0b4320;
+        color: white;
+    }
+
+    .mobile-fixed-contact-btn i {
+        font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-fixed-contact-btn {
+            display: flex;
+        }
+    }
 </style>
 </head>
 <body>
@@ -1214,6 +1214,15 @@
         <button type="button" data-lang="ru" role="option"><img src="https://flagcdn.com/w20/ru.png" alt=""> Русский</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="announcement-bar" aria-label="公告">
+  <div class="announcement-track">
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
   </div>
 </div>
 
@@ -1354,7 +1363,7 @@
 
       <div class="cta-button">
         <a href="產品介紹.html" class="btn-primary" data-i18n="cta_explore_products">
-          <i class="fas fa-prescription-bottle"></i> 探索產品系列
+          探索產品系列
         </a>
       </div>
     </div>
@@ -1399,8 +1408,6 @@
   </div>
 </footer>
 
-<a href="#" id="backToTop" class="back-to-top" role="button" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
-
 <script>
   // 多语言翻译映射表 (繁体中文 / English) - 常见问题页面
   const translations = {
@@ -1433,7 +1440,7 @@
       research_title: "大學研究實證",
       research_desc: "經大學研究證實，「康草堂雲芝糖肽精華 PSP + T3」的獨特配方，比單一服用雲芝糖肽精華PSP功效倍增。多項國際期刊論文支持雲芝糖肽在免疫調節、抗腫瘤及輔助治療方面的顯著功效。詳情請參考<a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">研究報告頁面</a>。",
       research_link: "研究報告頁面",
-      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> 探索產品系列",
+      cta_explore_products: "探索產品系列",
       footer_col1_title: "康草堂 Wonder Herb",
       footer_col1_text1: "以人為本，天然高效。",
       footer_col1_text2: "加拿大GMP藥廠生產",
@@ -1476,7 +1483,7 @@
       research_title: "University Research Evidence",
       research_desc: "University studies confirm that the 'Wonder Herb Yunzhi PSP + T3' unique formula doubles efficacy compared to PSP alone. Multiple international journal articles support the significant immunomodulatory, anti-tumor, and adjuvant benefits of Yunzhi PSP. For details, please visit the <a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">Research Reports page</a>.",
       research_link: "Research Reports page",
-      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> Explore Products",
+      cta_explore_products: "Explore Products",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "Patient-first, natural & effective.",
       footer_col1_text2: "GMP-certified in Canada",
@@ -1519,7 +1526,7 @@
       research_title: "Universitätsforschung",
       research_desc: "Universitätsstudien bestätigen, dass die einzigartige Formel „Wonder Herb Yunzhi PSP + T3“ die Wirksamkeit im Vergleich zu reinem PSP verdoppelt. Zahlreiche internationale Fachartikel unterstützen die signifikanten immunmodulierenden, anti-tumorösen und adjuvanten Vorteile von Yunzhi PSP. Details finden Sie auf der <a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">Forschungsberichte-Seite</a>.",
       research_link: "Forschungsberichte-Seite",
-      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> Produkte entdecken",
+      cta_explore_products: "Produkte entdecken",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
       footer_col1_text2: "GMP-zertifiziert in Kanada",
@@ -1562,7 +1569,7 @@
       research_title: "Investigación universitaria",
       research_desc: "Los estudios universitarios confirman que la fórmula única 'Wonder Herb Yunzhi PSP + T3' duplica la eficacia en comparación con el PSP puro. Numerosos artículos internacionales respaldan los significativos beneficios inmunomoduladores, antitumorales y adyuvantes del Yunzhi PSP. Los detalles se encuentran en la <a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">página de informes de investigación</a>.",
       research_link: "Página de informes de investigación",
-      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> Descubrir productos",
+      cta_explore_products: "Descubrir productos",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
       footer_col1_text2: "GMP certificado en Canadá",
@@ -1605,7 +1612,7 @@
       research_title: "Recherche universitaire",
       research_desc: "Les études universitaires confirment que la formule unique 'Wonder Herb Yunzhi PSP + T3' double l'efficacité par rapport au PSP pur. De nombreux articles internationaux soutiennent les avantages significatifs immunomodulateurs, antitumoraux et adjuvants du Yunzhi PSP. Les détails se trouvent sur la <a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">page des rapports de recherche</a>.",
       research_link: "Page des rapports de recherche",
-      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> Découvrir les produits",
+      cta_explore_products: "Découvrir les produits",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "Priorité au patient, naturel et efficace.",
       footer_col1_text2: "GMP certifié au Canada",
@@ -1648,7 +1655,7 @@
       research_title: "大学研究",
       research_desc: "大学研究により、独自処方の'Wonder Herb 雲芝PSP + T3'が純粋なPSPと比較して効果が2倍になることが確認されています。雲芝PSPの有意な免疫調節、抗腫瘍、輔助療法のベネフィットを裏付ける多くの国際論文があります。詳しい内容は<a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">研究レポートページ</a>をご覧ください。",
       research_link: "研究レポートページ",
-      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> 製品を探す",
+      cta_explore_products: "製品を探す",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "患者第一、天然で効果的。",
       footer_col1_text2: "カナダGMP認証工場",
@@ -1691,7 +1698,7 @@
       research_title: "Университетские исследования",
       research_desc: "Университетские исследования подтверждают, что уникальная формула 'Wonder Herb Yunzhi PSP + T3' удваивает эффективность по сравнению с чистым PSP. Многочисленные международные статьи подтверждают значительные иммуномодулирующие, противоопухолевые и адъювантные преимущества Yunzhi PSP. Подробности см. на <a href=\"研究報告.html\" style=\"color:#2d5e3b; font-weight:500;\">странице исследовательских отчетов</a>.",
       research_link: "Страница исследовательских отчетов",
-      cta_explore_products: "<i class='fas fa-prescription-bottle'></i> Открыть продукты",
+      cta_explore_products: "Открыть продукты",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
       footer_col1_text2: "GMP сертифицировано в Канаде",
@@ -1847,21 +1854,8 @@
     });
   }
 
-  function bindBackToTop() {
-    const backBtn = document.getElementById('backToTop');
-    if (!backBtn) return;
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) backBtn.classList.add('show');
-      else backBtn.classList.remove('show');
-    });
-    backBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
-
   function bindSmoothAnchors() {
-    document.querySelectorAll('a[href^="#"]:not(#backToTop)').forEach(anchor => {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         const targetId = this.getAttribute('href');
         if (targetId && targetId !== '#') {
@@ -1881,7 +1875,6 @@
   window.addEventListener('load', () => {
     bindMobileMenu();
     updateCartCountBadge();
-    bindBackToTop();
     bindSmoothAnchors();
     initLanguage();
     bindLanguageSwitcher();
@@ -1924,5 +1917,6 @@
     if (!document.hidden) updateCartCountBadge();
   });
 </script>
+<a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> 立即諮詢</a>
 </body>
 </html>

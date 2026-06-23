@@ -994,82 +994,6 @@
           margin-top: 8px;
       }
 
-      /* Back to Top */
-      .back-to-top {
-          position: fixed;
-          bottom: 30px;
-          right: 30px;
-          background: #2d5e3b;
-          color: white;
-          width: 50px;
-          height: 50px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-decoration: none;
-          font-size: 1.5rem;
-          opacity: 0;
-          visibility: hidden;
-          transition: all 0.45s var(--jelly-spring-gentle);
-          z-index: 99;
-          box-shadow: 0 4px 16px rgba(45, 94, 59, 0.3);
-      }
-      .back-to-top.show {
-          opacity: 1;
-          visibility: visible;
-      }
-      .back-to-top:hover {
-          background-color: #1e4028;
-          transform: translateY(-6px) scale(1.1);
-          box-shadow: 0 10px 24px rgba(45, 94, 59, 0.35);
-      }
-      @media (max-width: 1024px) {
-          .back-to-top {
-              bottom: 20px;
-              right: 12px;
-              width: 44px;
-              height: 44px;
-              font-size: 1.2rem;
-          }
-      }
-      @media (max-width: 768px) {
-          .back-to-top {
-              bottom: 18px;
-              right: 10px;
-              width: 42px;
-              height: 42px;
-              font-size: 1.1rem;
-          }
-      }
-      @media (max-width: 640px) {
-          .back-to-top {
-              bottom: 16px;
-              right: 10px;
-              width: 40px;
-              height: 40px;
-              font-size: 1rem;
-          }
-      }
-      @media (max-width: 480px) {
-          .back-to-top {
-              bottom: 14px;
-              right: 8px;
-              width: 36px;
-              height: 36px;
-              font-size: 0.95rem;
-          }
-      }
-      @media (max-width: 380px) {
-          .back-to-top {
-              bottom: 12px;
-              right: 8px;
-              width: 36px;
-              height: 36px;
-              font-size: 0.9rem;
-          }
-      }
-
       @media (max-width: 768px) {
           .top-bar {
               font-size: 0.78rem;
@@ -1859,6 +1783,42 @@
             gap: 16px;
         }
     }
+
+    /* Mobile Fixed Contact Button */
+    .mobile-fixed-contact-btn {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #157538;
+        color: white;
+        text-align: center;
+        padding: 14px 20px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1rem;
+        z-index: 9999;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-fixed-contact-btn:hover {
+        background-color: #0b4320;
+        color: white;
+    }
+
+    .mobile-fixed-contact-btn i {
+        font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-fixed-contact-btn {
+            display: flex;
+        }
+    }
 </style>
 </head>
 <body>
@@ -1888,6 +1848,15 @@
         <button type="button" data-lang="ru" role="option"><img src="https://flagcdn.com/w20/ru.png" alt=""> Русский</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="announcement-bar" aria-label="公告">
+  <div class="announcement-track">
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
   </div>
 </div>
 
@@ -1971,8 +1940,6 @@
     <p class="last-update">📅 最後更新：<time datetime="2026-06-08">2026年6月8日</time></p>
   </div>
 </footer>
-
-<a href="#" id="backToTop" class="back-to-top" role="button" aria-label="回到頁面頂部"><i class="fas fa-chevron-up"></i></a>
 <div id="checkoutModal" class="modal-overlay" aria-hidden="true"><div class="checkout-modal" id="modalContent" role="dialog" aria-modal="true" aria-label="結帳對話框"></div></div>
 
 <script>
@@ -2767,9 +2734,6 @@
   }
 
   window.addEventListener('storage',(e)=>{ if(e.key==='wonderHerbCart') loadCart(); });
-  const backBtn=document.getElementById('backToTop');
-  window.addEventListener('scroll',()=> backBtn.classList.toggle('show', window.scrollY > 300));
-  backBtn.addEventListener('click',(e)=>{ e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'}); });
   function bindMobileMenu() {
     const toggle = document.getElementById('menuToggle');
     const panel = document.getElementById('headerNavPanel');
@@ -2794,5 +2758,6 @@
   window.addEventListener('pageshow',()=>loadCart());
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden) loadCart(); });
 </script>
+<a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> 立即諮詢</a>
 </body>
 </html>
