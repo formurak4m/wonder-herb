@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
@@ -290,7 +290,7 @@
     /* Page Header */
     .page-header {
       background: linear-gradient(135deg, #fff8f0 0%, #f2ede4 100%);
-      padding: 55px 0 40px;
+      padding: 55px 0 55px;
       text-align: center;
       border-radius: 0;
       margin-bottom: 40px;
@@ -310,7 +310,7 @@
 
     /* Articles Grid */
     .articles-section {
-      padding: 0 0 70px;
+      padding: 0 0 20px;
     }
     .articles-grid {
       display: grid;
@@ -320,7 +320,7 @@
     .article-card {
       background: white;
       border-radius: 24px;
-      padding: 24px;
+      padding: 32px;
       box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
       transition: all 0.3s;
       border: 1px solid #f0e4d6;
@@ -590,7 +590,7 @@
             }
       .page-header h1 { font-size: 1.4rem; }
       .page-header p { font-size: 0.9rem; }
-      .article-card { padding: 18px; }
+      .article-card { padding: 24px; }
       .article-title { font-size: 1rem; }
       .article-excerpt { font-size: 0.88rem; }
       .article-link { font-size: 0.85rem; }
@@ -650,9 +650,12 @@
         vertical-align: middle;
     }
 
-    .lang-selector .flag-img {
+    
+      
+      .lang-selector .flag-img {
+        width: 20px;
         height: 14px;
-        width: auto;
+        object-fit: cover;
         vertical-align: middle;
         margin-right: 2px;
         border-radius: 2px;
@@ -677,16 +680,18 @@
 
     .lang-selector-mobile .lang-current {
         display: flex;
+        justify-content: center;
         align-items: center;
         gap: 6px;
         background: rgba(255, 255, 255, 0.15);
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 20px;
-        padding: 6px 32px 6px 10px;
+        padding: 6px 10px;
         cursor: pointer;
         color: #fff;
         font-size: 0.8rem;
         white-space: nowrap;
+        min-width: 80px;
     }
 
     .lang-selector-mobile .lang-current::after {
@@ -695,12 +700,15 @@
         margin-left: 4px;
     }
 
-    .lang-selector-mobile .lang-current img {
-        height: 14px;
-        width: auto;
-        vertical-align: middle;
-        border-radius: 2px;
-    }
+    
+      
+      .lang-selector-mobile .lang-current img {
+          width: 20px;
+          height: 14px;
+          object-fit: cover;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
 
     .lang-selector-mobile .lang-dropdown {
         display: none;
@@ -739,12 +747,15 @@
         background: rgba(255, 255, 255, 0.15);
     }
 
-    .lang-selector-mobile .lang-dropdown button img {
-        height: 14px;
-        width: auto;
-        vertical-align: middle;
-        border-radius: 2px;
-    }
+    
+      
+      .lang-selector-mobile .lang-dropdown button img {
+          width: 20px;
+          height: 14px;
+          object-fit: cover;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
 
     @media (max-width: 768px) {
         .lang-selector {

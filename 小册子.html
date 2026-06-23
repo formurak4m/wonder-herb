@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
@@ -234,16 +234,18 @@
 
     .lang-selector-mobile .lang-current {
         display: flex;
+        justify-content: center;
         align-items: center;
         gap: 6px;
         background: rgba(255, 255, 255, 0.15);
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 20px;
-        padding: 6px 32px 6px 10px;
+        padding: 6px 10px;
         cursor: pointer;
         color: #fff;
         font-size: 0.8rem;
         white-space: nowrap;
+        min-width: 80px;
     }
 
     .lang-selector-mobile .lang-current::after {
@@ -252,12 +254,15 @@
         margin-left: 4px;
     }
 
-    .lang-selector-mobile .lang-current img {
-        height: 14px;
-        width: auto;
-        vertical-align: middle;
-        border-radius: 2px;
-    }
+    
+      
+      .lang-selector-mobile .lang-current img {
+          width: 20px;
+          height: 14px;
+          object-fit: cover;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
 
     .lang-selector-mobile .lang-dropdown {
         display: none;
@@ -296,12 +301,15 @@
         background: rgba(255, 255, 255, 0.15);
     }
 
-    .lang-selector-mobile .lang-dropdown button img {
-        height: 14px;
-        width: auto;
-        vertical-align: middle;
-        border-radius: 2px;
-    }
+    
+      
+      .lang-selector-mobile .lang-dropdown button img {
+          width: 20px;
+          height: 14px;
+          object-fit: cover;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
 
     @media (max-width: 768px) {
         .lang-selector {
@@ -393,7 +401,7 @@
     /* Page Header */
     .page-header {
       background: linear-gradient(135deg, #fff8f0 0%, #f2ede4 100%);
-      padding: 55px 0 40px;
+      padding: 55px 0 55px;
       text-align: center;
       border-radius: 0;
       margin-bottom: 40px;
@@ -683,9 +691,12 @@
         vertical-align: middle;
     }
 
-    .lang-selector .flag-img {
+    
+      
+      .lang-selector .flag-img {
+        width: 20px;
         height: 14px;
-        width: auto;
+        object-fit: cover;
         vertical-align: middle;
         margin-right: 2px;
         border-radius: 2px;
@@ -1096,22 +1107,22 @@
       <h2 class="sr-only" data-i18n="brochure_gallery_title">小册子页面展示</h2>
       <div class="brochure-grid">
         <!-- 第一頁：點擊直接開啟原始圖片 -->
-        <a href="https://static.wixstatic.com/media/b3683f_b8275f690b4e42c797853a481b0296f7~mv2.jpg/v1/fill/w_800,h_620,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Wonder%20herb%20leaflet%20%20(%20new%20update)-1.jpg" 
+        <a href="file/Wonder herb leaflet 1.jpg" 
            target="_blank" 
            class="brochure-card" 
            aria-label="打开小册子第1页大图：封面及产品介绍">
-          <img class="brochure-image" src="https://static.wixstatic.com/media/b3683f_b8275f690b4e42c797853a481b0296f7~mv2.jpg/v1/fill/w_800,h_620,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Wonder%20herb%20leaflet%20%20(%20new%20update)-1.jpg" alt="Wonder Herb 小冊子第1頁，封面及產品介紹" loading="lazy">
+          <img class="brochure-image" src="file/Wonder herb leaflet 1.jpg" alt="Wonder Herb 小冊子第1頁，封面及產品介紹" loading="lazy">
           <div class="brochure-info">
             <h3 data-i18n="brochure_card1_title">小冊子 · 封面及產品介紹</h3>
             <div class="zoom-hint" data-i18n="brochure_zoom_hint"><i class="fas fa-search-plus"></i> 點擊圖片放大</div>
           </div>
         </a>
         <!-- 第二頁：點擊直接開啟原始圖片 -->
-        <a href="https://static.wixstatic.com/media/b3683f_05c2d6fb98a24b698b45dfb17cbea94b~mv2.jpg/v1/fill/w_800,h_620,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Wonder%20herb%20leaflet%20%20(%20new%20update)-2.jpg" 
+        <a href="file/Wonder herb leaflet 2.jpg" 
            target="_blank" 
            class="brochure-card" 
            aria-label="打开小册子第2页大图：科研及成份说明">
-          <img class="brochure-image" src="https://static.wixstatic.com/media/b3683f_05c2d6fb98a24b698b45dfb17cbea94b~mv2.jpg/v1/fill/w_800,h_620,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Wonder%20herb%20leaflet%20%20(%20new%20update)-2.jpg" alt="Wonder Herb 小冊子第2頁，科研及成份說明" loading="lazy">
+          <img class="brochure-image" src="file/Wonder herb leaflet 2.jpg" alt="Wonder Herb 小冊子第2頁，科研及成份說明" loading="lazy">
           <div class="brochure-info">
             <h3 data-i18n="brochure_card2_title">小冊子 · 科研及成份說明</h3>
             <div class="zoom-hint" data-i18n="brochure_zoom_hint"><i class="fas fa-search-plus"></i> 點擊圖片放大</div>
@@ -1241,12 +1252,12 @@
       nav_faq: "FAQ",
       nav_contact: "Kontakt",
       header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
-      brochure_title: "Product Brochure",
-      brochure_subtitle: "Detailed Product Information · Professional Guide to Yunzhi PSP",
-      brochure_gallery_title: "Brochure Gallery",
-      brochure_card1_title: "Brochure · Cover & Product Introduction",
-      brochure_card2_title: "Brochure · Forschung & Ingredients",
-      brochure_zoom_hint: "<i class='fas fa-search-plus'></i> Click to enlarge",
+      brochure_title: "Produktbroschüre",
+      brochure_subtitle: "Detaillierte Produktinformationen · Professioneller Leitfaden zu Yunzhi PSP",
+      brochure_gallery_title: "Broschüren-Galerie",
+      brochure_card1_title: "Broschüre · Deckblatt & Produkteinführung",
+      brochure_card2_title: "Broschüre · Forschung & Inhaltsstoffe",
+      brochure_zoom_hint: "<i class='fas fa-search-plus'></i> Klicken zum Vergrößern",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
       footer_col1_text2: "GMP-zertifiziert in Kanada",
@@ -1408,7 +1419,7 @@
       }
     });
     // 更新页面标题
-    document.title = ({ zh: '小册子 | 康草堂 Wonder Herb - 雲芝糖肽精華產品指南', en: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide', de: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide', es: 'Folleto | Wonder Herb - Yunzhi PSP Essence Product Guide', fr: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide', ja: 'パンフレット | Wonder Herb - 雲芝糖肽精華製品ガイド', ru: 'Брошюра | Wonder Herb - Yunzhi PSP Essence Product Guide' })[lang] || 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide'; document.documentElement.lang = lang;
+    document.title = ({ zh: '小册子 | 康草堂 Wonder Herb - 雲芝糖肽精華產品指南', en: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide', de: 'Broschüre | Wonder Herb - Yunzhi PSP Essence Produktleitfaden', es: 'Folleto | Wonder Herb - Yunzhi PSP Essence Product Guide', fr: 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide', ja: 'パンフレット | Wonder Herb - 雲芝糖肽精華製品ガイド', ru: 'Брошюра | Wonder Herb - Yunzhi PSP Essence Product Guide' })[lang] || 'Brochure | Wonder Herb - Yunzhi PSP Essence Product Guide'; document.documentElement.lang = lang;
     // 更新语言切换按钮高亮样式及ARIA状态
     const zhSpan = document.getElementById('langZhBtn');
     const enSpan = document.getElementById('langEnBtn');

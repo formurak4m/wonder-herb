@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
@@ -164,9 +164,12 @@
         vertical-align: middle;
     }
 
+      
+      
       .lang-selector .flag-img {
+        width: 20px;
         height: 14px;
-        width: auto;
+        object-fit: cover;
         vertical-align: middle;
         margin-right: 2px;
         border-radius: 2px;
@@ -191,16 +194,18 @@
 
       .lang-selector-mobile .lang-current {
           display: flex;
+          justify-content: center;
           align-items: center;
           gap: 6px;
           background: rgba(255, 255, 255, 0.15);
           border: 1px solid rgba(255, 255, 255, 0.3);
           border-radius: 20px;
-          padding: 6px 32px 6px 10px;
+          padding: 6px 10px;
           cursor: pointer;
           color: #fff;
           font-size: 0.8rem;
           white-space: nowrap;
+          min-width: 80px;
       }
 
       .lang-selector-mobile .lang-current::after {
@@ -209,9 +214,12 @@
           margin-left: 4px;
       }
 
+      
+      
       .lang-selector-mobile .lang-current img {
+          width: 20px;
           height: 14px;
-          width: auto;
+          object-fit: cover;
           vertical-align: middle;
           border-radius: 2px;
       }
@@ -253,9 +261,12 @@
           background: rgba(255, 255, 255, 0.15);
       }
 
+      
+      
       .lang-selector-mobile .lang-dropdown button img {
+          width: 20px;
           height: 14px;
-          width: auto;
+          object-fit: cover;
           vertical-align: middle;
           border-radius: 2px;
       }
@@ -362,9 +373,10 @@
       /* Page Header */
       .page-header {
           background: linear-gradient(135deg, #fff8f0 0%, #f2ede4 100%);
-          padding: 55px 0 40px;
+          padding: 55px 0 55px;
           text-align: center;
           border-radius: 0;
+          margin-bottom: 40px;
       }
 
       .page-header h1 {
@@ -388,6 +400,8 @@
       }
 
       @media (max-width: 768px) {
+          .page-header h1 { font-size: 2rem; }
+          .page-header p { font-size: 0.95rem; }
           .contact-section {
               padding: 40px 0;
           }
@@ -431,10 +445,13 @@
           margin-bottom: 16px;
       }
 
+      
+      
       .contact-icon img {
-          width: 64px;
-          height: auto;
-          border-radius: 12px;
+          width: 80px;
+          height: 48px;
+          object-fit: cover;
+          border-radius: 10px;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
           background-color: #faf7f2;
           border: 1px solid #e9ddcf;
@@ -681,6 +698,8 @@
           }
       }
       @media (max-width: 640px) {
+          .page-header h1 { font-size: 1.6rem; }
+          .page-header p { font-size: 0.95rem; }
           .back-to-top {
               bottom: 16px;
               right: 10px;
@@ -690,6 +709,8 @@
           }
       }
       @media (max-width: 480px) {
+          .page-header h1 { font-size: 1.4rem; }
+          .page-header p { font-size: 0.9rem; }
           .top-bar {
               font-size: 0.78rem;
               padding: 4px 0;
@@ -703,6 +724,7 @@
           }
       }
       @media (max-width: 380px) {
+          .page-header h1 { font-size: 1.3rem; }
           .back-to-top {
               bottom: 12px;
               right: 8px;
@@ -755,9 +777,12 @@
         vertical-align: middle;
     }
 
+      
+      
       .lang-selector .flag-img {
+        width: 20px;
         height: 14px;
-        width: auto;
+        object-fit: cover;
         vertical-align: middle;
         margin-right: 2px;
         border-radius: 2px;

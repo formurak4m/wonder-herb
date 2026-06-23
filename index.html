@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
@@ -996,7 +996,7 @@
                 flex: 1 1 auto;
                 min-width: 0;
                 width: 100%;
-                max-width: calc(100% - 100px);
+                max-width: calc(100% - 132px);
                 margin: 0 auto;
                 padding: 24px 24px;
                 border-radius: 24px;
@@ -1018,14 +1018,6 @@
             }
             .side-card {
                 display: none !important;
-            }
-            .product-nav-btn {
-                width: 44px;
-            }
-            .control-btn {
-                width: 44px;
-                height: 44px;
-                font-size: 1.1rem;
             }
             /* Make case grid show two columns on small screens */
             .featured-cases-grid {
@@ -1192,14 +1184,6 @@
                 margin-bottom: 12px;
                 border-radius: 14px;
             }
-            .product-nav-btn {
-                width: 40px;
-            }
-            .control-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
             .case-studies {
                 padding: 24px;
             }
@@ -1308,14 +1292,6 @@
                 height: 110px;
                 margin-bottom: 12px;
                 border-radius: 12px;
-            }
-            .product-nav-btn {
-                width: 38px;
-            }
-            .control-btn {
-                width: 38px;
-                height: 38px;
-                font-size: 0.95rem;
             }
             .mini-case-card {
                 padding: 24px;
@@ -1520,7 +1496,7 @@
             height: 48px;
             border: none;
             outline: none;
-            border-radius: 60px;
+            border-radius: 50%;
             font-size: 1.4rem;
             cursor: pointer;
             transition: all 0.35s var(--jelly-spring-gentle);
@@ -1592,7 +1568,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 24px;
+            overflow: hidden;
+            margin: 10px 16px 0 16px;
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
         .featured-card .product-img img {
@@ -1608,7 +1585,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 12px;
+            overflow: hidden;
+            margin: 10px 16px 0 16px;
             border: 1px solid rgba(255, 255, 255, 0.35);
         }
         .side-card .product-img img {
@@ -1777,10 +1755,14 @@
             color: #c0392b;
             font-weight: 800;
             background: rgba(192, 57, 43, 0.08);
-            padding: 4px 12px;
+            padding: 20px 20px;
             border-radius: 40px;
             display: inline-block;
             margin: 5px 0;
+        }
+        .quality-highlight .quality-prefix-line {
+            margin-bottom: 24px;
+            display: block;
         }
         .trust-badges {
             display: flex;
@@ -1809,7 +1791,7 @@
         .case-studies-section {
             position: relative;
             overflow: hidden;
-            padding: 50px 0 100px;
+            padding: 100px 0 100px;
         }
         .case-studies-section-video {
             position: absolute;
@@ -2182,7 +2164,7 @@
             backdrop-filter: blur(6px);
             border: 2px solid #2d5e3b;
             color: #2d5e3b;
-            padding: 12px 65px;
+            padding: 12px 64px;
             border-radius: 40px;
             font-weight: 600;
             text-decoration: none;
@@ -2244,16 +2226,18 @@
 
         .lang-selector-mobile .lang-current {
             display: flex;
+            justify-content: center;
             align-items: center;
             gap: 6px;
             background: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 20px;
-            padding: 6px 32px 6px 10px;
+            padding: 6px 10px;
             cursor: pointer;
             color: #fff;
             font-size: 0.8rem;
             white-space: nowrap;
+            min-width: 80px;
         }
 
         .lang-selector-mobile .lang-current::after {
@@ -2262,12 +2246,15 @@
             margin-left: 4px;
         }
 
-        .lang-selector-mobile .lang-current img {
-            height: 14px;
-            width: auto;
-            vertical-align: middle;
-            border-radius: 2px;
-        }
+
+      
+      .lang-selector-mobile .lang-current img {
+          width: 20px;
+          height: 14px;
+          object-fit: cover;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
 
         .lang-selector-mobile .lang-dropdown {
             display: none;
@@ -2305,12 +2292,15 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        .lang-selector-mobile .lang-dropdown button img {
-            height: 14px;
-            width: auto;
-            vertical-align: middle;
-            border-radius: 2px;
-        }
+        
+      
+      .lang-selector-mobile .lang-dropdown button img {
+          width: 20px;
+          height: 14px;
+          object-fit: cover;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
 
         @media (max-width: 768px) {
             .lang-selector {
@@ -2454,9 +2444,12 @@
         vertical-align: middle;
     }
 
-    .lang-selector .flag-img {
+    
+      
+      .lang-selector .flag-img {
+        width: 20px;
         height: 14px;
-        width: auto;
+        object-fit: cover;
         vertical-align: middle;
         margin-right: 2px;
         border-radius: 2px;
@@ -2871,7 +2864,7 @@
 
         <section id="products" class="product-carousel-section" aria-labelledby="products-heading"><div class="container"><h2 id="products-heading" class="section-title reveal-on-scroll" data-i18n="products_section_title">✨ 皇牌產品系列</h2><div class="triple-product-layout reveal-on-scroll reveal-delay-1" id="tripleProductLayout" role="group" aria-label="產品輪播展示"><div class="product-nav-btn"><button class="control-btn prev" id="productPrevManual" aria-label="上一個產品"><i class="fas fa-chevron-left"></i></button></div><div class="side-card" id="leftSideCard"></div><div class="featured-card shimmer-overlay" id="featuredCard"></div><div class="side-card" id="rightSideCard"></div><div class="product-nav-btn"><button class="control-btn next" id="productNextManual" aria-label="下一個產品"><i class="fas fa-chevron-right"></i></button></div></div></div></section>
 
-        <div class="container"><div class="quality-highlight reveal-on-scroll"><p><span data-i18n="quality_prefix"></span><br><span data-i18n="quality_highlight_span"></span></p></div></div>
+        <div class="container"><div class="quality-highlight reveal-on-scroll"><p><span class="quality-prefix-line" data-i18n="quality_prefix"></span><span data-i18n="quality_highlight_span"></span></p></div></div>
 
         <section aria-labelledby="trust-heading"><div class="container"><h2 id="trust-heading" class="sr-only" data-i18n="trust_heading_sr">品質信任標章</h2><div class="trust-badges"><div class="badge-item reveal-on-scroll reveal-delay-1"><i class="fas fa-university" aria-hidden="true"></i><h3 data-i18n="trust1_title"></h3><p data-i18n="trust1_desc"></p></div><div class="badge-item reveal-on-scroll reveal-delay-2"><i class="fas fa-file-alt" aria-hidden="true"></i><h3 data-i18n="trust2_title"></h3><p data-i18n="trust2_desc"></p></div><div class="badge-item reveal-on-scroll reveal-delay-3"><i class="fas fa-certificate" aria-hidden="true"></i><h3 data-i18n="trust3_title"></h3><p data-i18n="trust3_desc"></p></div><div class="badge-item reveal-on-scroll reveal-delay-4"><i class="fas fa-chart-line" aria-hidden="true"></i><h3 data-i18n="trust4_title"></h3><p data-i18n="trust4_desc"></p></div></div></div></section>
 

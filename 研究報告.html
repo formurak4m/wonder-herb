@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
@@ -188,9 +188,12 @@
         vertical-align: middle;
     }
 
+      
+      
       .lang-selector .flag-img {
+        width: 20px;
         height: 14px;
-        width: auto;
+        object-fit: cover;
         vertical-align: middle;
         margin-right: 2px;
         border-radius: 2px;
@@ -215,16 +218,18 @@
 
       .lang-selector-mobile .lang-current {
           display: flex;
+          justify-content: center;
           align-items: center;
           gap: 6px;
           background: rgba(255, 255, 255, 0.15);
           border: 1px solid rgba(255, 255, 255, 0.3);
           border-radius: 20px;
-          padding: 6px 32px 6px 10px;
+          padding: 6px 10px;
           cursor: pointer;
           color: #fff;
           font-size: 0.8rem;
           white-space: nowrap;
+          min-width: 80px;
       }
 
       .lang-selector-mobile .lang-current::after {
@@ -233,9 +238,12 @@
           margin-left: 4px;
       }
 
+      
+      
       .lang-selector-mobile .lang-current img {
+          width: 20px;
           height: 14px;
-          width: auto;
+          object-fit: cover;
           vertical-align: middle;
           border-radius: 2px;
       }
@@ -277,9 +285,12 @@
           background: rgba(255, 255, 255, 0.15);
       }
 
+      
+      
       .lang-selector-mobile .lang-dropdown button img {
+          width: 20px;
           height: 14px;
-          width: auto;
+          object-fit: cover;
           vertical-align: middle;
           border-radius: 2px;
       }
@@ -381,7 +392,7 @@
       /* Page Header with Video Background */
       .page-header {
           position: relative;
-          padding: 55px 0 40px;
+          padding: 55px 0 55px;
           text-align: center;
           border-radius: 0;
           overflow: hidden;
@@ -435,6 +446,8 @@
       }
 
       @media (max-width: 768px) {
+          .page-header h1 { font-size: 2rem; }
+          .page-header p { font-size: 0.95rem; }
           .research-section {
               padding: 40px 0;
           }
@@ -686,6 +699,8 @@
           }
       }
       @media (max-width: 640px) {
+          .page-header h1 { font-size: 1.6rem; }
+          .page-header p { font-size: 0.95rem; }
           .back-to-top {
               bottom: 16px;
               right: 10px;
@@ -695,6 +710,8 @@
           }
       }
       @media (max-width: 480px) {
+          .page-header h1 { font-size: 1.4rem; }
+          .page-header p { font-size: 0.9rem; }
           .top-bar {
               font-size: 0.78rem;
               padding: 4px 0;
@@ -708,6 +725,7 @@
           }
       }
       @media (max-width: 380px) {
+          .page-header h1 { font-size: 1.3rem; }
           .back-to-top {
               bottom: 12px;
               right: 8px;
@@ -760,9 +778,12 @@
         vertical-align: middle;
     }
 
+      
+      
       .lang-selector .flag-img {
+        width: 20px;
         height: 14px;
-        width: auto;
+        object-fit: cover;
         vertical-align: middle;
         margin-right: 2px;
         border-radius: 2px;
@@ -1315,26 +1336,26 @@
       nav_faq: "FAQ",
       nav_contact: "Kontakt",
       header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
-      page_title: "Kontakt",
-      page_subtitle: "Wonder Herb Asien-Hauptquartier & globale Vertriebspartner – Wir freuen uns auf Ihre Anfrage",
-      research_intro: "Wonder Herb collaborates with multiple universities. The following studies used 'Wonder Herb Yunzhi PSP' or the proprietary compound formula for clinical validation, demonstrating significant efficacy in immune modulation, anti-tumor activity, and adjuvant therapy.",
-      research_card1_title: "Renowned Hong Kong University Study",
-      research_card1_desc: "Forschung using 'Wonder Herb Yunzhi PSP' proves effective inhibition of tumor growth and immune system regulation.",
-      research_card2_title: "Renowned Australian University Study",
-      research_card2_desc: "Independently validates the anti-tumor activity of Wonder Herb Yunzhi PSP, providing a solid scientific basis for natural adjuvant therapy.",
-      research_card3_title: "Gastric Cancer Clinical Study",
-      research_card3_desc: "Study confirms Yunzhi PSP provides adjuvant therapeutic benefits for gastric cancer patients, improving quality of life.",
-      research_card4_title: "Postoperative Survival in Colon Cancer",
-      research_card4_desc: "Yunzhi PSP prolongs postoperative survival in colon cancer patients and reduces recurrence risk.",
-      research_card5_title: "Induction of Colorectal Cancer Cell Apoptosis",
-      research_card5_desc: "Yunzhi PSP induces apoptosis in colorectal cancer cells by modulating EGFR and PD-L1 expression.",
-      research_card6_title: "Immunomodulatory & Anti-Tumor Functions",
-      research_card6_desc: "Yunzhi PSP (PSP) exhibits significant immunomodulatory and anti-tumor functions, suitable as an adjuvant therapy.",
-      read_more: "Read More →",
-      pdf_title: "📄 Herunterladen Detailed Forschung Reports",
-      pdf_item1: "Study confirms synergistic efficacy of 'Wonder Herb Yunzhi PSP + T3' formula (PDF)",
-      pdf_item2: "Shenyang Medical University Forschung on 'Hep BQ capsules' (PDF)",
-      pdf_item3: "Yunzhi PSP enhances chemotherapy efficacy and restores cyclophosphamide-induced immunosuppression",
+      page_title: "Forschungsberichte",
+      page_subtitle: "Internationale Fachzeitschriften & Universitätsstudien · Wissenschaftliche Belege für Wonder Herb Yunzhi PSP",
+      research_intro: "Wonder Herb arbeitet mit mehreren Universitäten zusammen. Die folgenden Studien verwendeten 'Wonder Herb Yunzhi PSP' oder die firmeneigene Compound-Formel für die klinische Validierung und zeigten signifikante Wirksamkeit bei Immunmodulation, Antitumor-Aktivität und adjuvant Therapie.",
+      research_card1_title: "Studie der renommierten Universität Hongkong",
+      research_card1_desc: "Forschung mit 'Wonder Herb Yunzhi PSP' beweist effektive Hemmung des Tumorwachstums und Regulation des Immunsystems.",
+      research_card2_title: "Studie der renommierten australischen Universität",
+      research_card2_desc: "Validiert unabhängig die Antitumor-Aktivität von Wonder Herb Yunzhi PSP und bietet eine solide wissenschaftliche Grundlage für natürliche Adjuvans-Therapie.",
+      research_card3_title: "Klinische Studie zu Magenkrebs",
+      research_card3_desc: "Studie bestätigt, dass Yunzhi PSP adjuvant therapeutische Vorteile für Magenkrebs-Patienten bietet und die Lebensqualität verbessert.",
+      research_card4_title: "Postoperative Überlebenszeit bei Dickdarmkrebs",
+      research_card4_desc: "Yunzhi PSP verlängert das postoperative Überleben bei Dickdarmkrebs-Patienten und reduziert das Rückfallrisiko.",
+      research_card5_title: "Induktion von Apoptose bei Dickdarmkrebszellen",
+      research_card5_desc: "Yunzhi PSP induziert Apoptose in Dickdarmkrebszellen durch Modulation der EGFR- und PD-L1-Expression.",
+      research_card6_title: "Immunmodulatorische & Antitumor-Funktionen",
+      research_card6_desc: "Yunzhi PSP (PSP) zeigt signifikante immunmodulatorische und antitumorale Funktionen, geeignet als Adjuvans-Therapie.",
+      read_more: "Weiterlesen →",
+      pdf_title: "📄 Detaillierte Forschungsberichte herunterladen",
+      pdf_item1: "Studie bestätigt synergistische Wirksamkeit der Formel 'Wonder Herb Yunzhi PSP + T3' (PDF)",
+      pdf_item2: "Forschung der Shenyang Medical University zu 'Hep BQ Kapseln' (PDF)",
+      pdf_item3: "Yunzhi PSP verstärkt Chemotherapie-Wirksamkeit und stellt durch Cyclophosphamid induzierte Immunsuppression wieder her",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
       footer_col1_text2: "GMP-zertifiziert in Kanada",
@@ -1347,7 +1368,7 @@
       footer_link_faq: "FAQ",
       footer_link_cases: "Fallstudien",
       copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
-      last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
+      last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Diese Forschungsseite wird gemäß der neuesten wissenschaftlichen Literatur aktualisiert."
     },
     es: {
       nav_home: "Sobre nosotros",

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
@@ -274,16 +274,18 @@
 
     .lang-selector-mobile .lang-current {
         display: flex;
+        justify-content: center;
         align-items: center;
         gap: 6px;
         background: rgba(255, 255, 255, 0.15);
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 20px;
-        padding: 6px 32px 6px 10px;
+        padding: 6px 10px;
         cursor: pointer;
         color: #fff;
         font-size: 0.8rem;
         white-space: nowrap;
+        min-width: 80px;
     }
 
     .lang-selector-mobile .lang-current::after {
@@ -292,12 +294,15 @@
         margin-left: 4px;
     }
 
-    .lang-selector-mobile .lang-current img {
-        height: 14px;
-        width: auto;
-        vertical-align: middle;
-        border-radius: 2px;
-    }
+    
+      
+      .lang-selector-mobile .lang-current img {
+          width: 20px;
+          height: 14px;
+          object-fit: cover;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
 
     .lang-selector-mobile .lang-dropdown {
         display: none;
@@ -336,12 +341,15 @@
         background: rgba(255, 255, 255, 0.15);
     }
 
-    .lang-selector-mobile .lang-dropdown button img {
-        height: 14px;
-        width: auto;
-        vertical-align: middle;
-        border-radius: 2px;
-    }
+    
+      
+      .lang-selector-mobile .lang-dropdown button img {
+          width: 20px;
+          height: 14px;
+          object-fit: cover;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
 
     @media (max-width: 768px) {
         .lang-selector {
@@ -433,7 +441,7 @@
     /* Page Header */
     .page-header {
       background: linear-gradient(135deg, #fff8f0 0%, #f2ede4 100%);
-      padding: 55px 0 40px;
+      padding: 55px 0 55px;
       text-align: center;
       border-radius: 0;
       margin-bottom: 32px;
@@ -542,6 +550,10 @@
       flex: 110px;
       text-align: center;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
     }
     .filter-chip:hover {
       background: #e6dfd7;
@@ -595,6 +607,23 @@
       font-weight: 600;
       margin-bottom: 16px;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .disease-icon {
+      color: #9b2e2e;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .filter-chip-icon {
+      font-size: 0.75rem;
     }
     .case-content {
       color: #4a4a48;
@@ -893,9 +922,12 @@
         vertical-align: middle;
     }
 
-    .lang-selector .flag-img {
+    
+      
+      .lang-selector .flag-img {
+        width: 20px;
         height: 14px;
-        width: auto;
+        object-fit: cover;
         vertical-align: middle;
         margin-right: 2px;
         border-radius: 2px;
@@ -2245,6 +2277,42 @@
     });
   }
 
+  function getDiseaseIcon(disease, lang) {
+    const iconMap = {
+      'zh': {
+        '肛門惡性腫瘤': 'fa-solid fa-circle-dot',
+        '腹膜惡性腫瘤': 'fa-solid fa-bacteria',
+        '前列腺惡性腫瘤': 'fa-solid fa-mars',
+        '肺惡性腫瘤': 'fa-solid fa-lungs',
+        '咽喉惡性腫瘤': 'fa-solid fa-teeth',
+        '大腸惡性腫瘤': 'fa-solid fa-bacterium',
+        '胰臟惡性腫瘤': 'fa-solid fa-syringe',
+        '淋巴惡性腫瘤': 'fa-solid fa-virus',
+        '腎惡性腫瘤': 'fa-solid fa-pills',
+        '睪丸惡性腫瘤': 'fa-solid fa-dna',
+        '口水腺惡性腫瘤': 'fa-solid fa-tint',
+        '結腸惡性腫瘤': 'fa-solid fa-prescription-bottle',
+      },
+      'en': {
+        'Anal Malignant Tumor': 'fa-solid fa-circle-dot',
+        'Peritoneal Malignancy': 'fa-solid fa-bacteria',
+        'Prostate Cancer': 'fa-solid fa-mars',
+        'Lung Malignancy': 'fa-solid fa-lungs',
+        'Throat Cancer': 'fa-solid fa-teeth',
+        'Colorectal Cancer': 'fa-solid fa-bacterium',
+        'Pancreatic Cancer': 'fa-solid fa-syringe',
+        'Lymphoma': 'fa-solid fa-virus',
+        'Renal Malignancy': 'fa-solid fa-pills',
+        'Testicular Cancer': 'fa-solid fa-dna',
+        'Salivary Gland Cancer': 'fa-solid fa-tint',
+        'Colon Cancer': 'fa-solid fa-prescription-bottle',
+      },
+      'default': 'fa-solid fa-virus'
+    };
+    const map = iconMap[lang] || iconMap.zh;
+    return map[disease] || iconMap.default;
+  }
+
   function renderCaseList(casesArray, lang) {
     const container = document.getElementById('casesGrid');
     if (!container) return;
@@ -2258,10 +2326,14 @@
     const html = casesArray.map((c, idx) => {
       const data = c[lang];
       if (!data) return '';
+      const diseaseIcon = getDiseaseIcon(data.subtitle, lang);
       return `
         <article class="case-card" aria-labelledby="case-title-${idx}" role="listitem">
           <h2 class="case-title" id="case-title-${idx}">${escapeHtml(data.title)}</h2>
-          <p class="case-subtitle">${escapeHtml(data.subtitle)}</p>
+          <p class="case-subtitle">
+            <i class="disease-icon ${diseaseIcon}" aria-hidden="true"></i>
+            ${escapeHtml(data.subtitle)}
+          </p>
           <div class="case-content">
             <div class="case-summary" data-idx="${idx}">${escapeHtml(data.summary)}</div>
             <div class="case-full" id="case-full-${idx}" data-idx="${idx}">${data.content}</div>
@@ -2333,10 +2405,11 @@
     </div>
     <div class="disease-filters">
       <span class="filter-label"><i class="fas fa-tags" aria-hidden="true"></i> ${t.filter_by_disease}</span>
-      <button data-disease="" class="filter-chip ${activeDisease === '' ? 'active' : ''}" aria-pressed="${activeDisease === '' ? 'true' : 'false'}">${t.filter_all}</button>`;
+      <button data-disease="" class="filter-chip ${activeDisease === '' ? 'active' : ''}" aria-pressed="${activeDisease === '' ? 'true' : 'false'}"><i class="fas fa-list-ul filter-chip-icon" aria-hidden="true"></i> ${t.filter_all}</button>`;
     diseases.forEach(disease => {
       const isActive = (activeDisease === disease);
-      chipsHtml += `<button data-disease="${escapeAttr(disease)}" class="filter-chip ${isActive ? 'active' : ''}" aria-pressed="${isActive ? 'true' : 'false'}">${escapeHtml(disease)}</button>`;
+      const diseaseIcon = getDiseaseIcon(disease, lang);
+      chipsHtml += `<button data-disease="${escapeAttr(disease)}" class="filter-chip ${isActive ? 'active' : ''}" aria-pressed="${isActive ? 'true' : 'false'}"><i class="filter-chip-icon ${diseaseIcon}" aria-hidden="true"></i> ${escapeHtml(disease)}</button>`;
     });
     chipsHtml += `</div>`;
     panelDiv.innerHTML = chipsHtml;
