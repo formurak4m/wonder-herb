@@ -357,11 +357,23 @@
           }
       }
 
+      /* Fixed Nav Wrapper - keeps top-bar, announcement-bar and main-header always visible at the top */
+      .fixed-nav-wrapper {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          z-index: 1000;
+          background: #E9DDCF;
+          will-change: transform;
+      }
+
       /* Main Header 保持不变 */
       .main-header {
           background: #E9DDCF;
-          position: sticky;
-          top: 0;
+          position: relative;
+          top: auto;
           z-index: 100;
           border-bottom: 1px solid #eee6dc;
       }
@@ -833,8 +845,8 @@
 
     .main-header {
         background: #E9DDCF;
-        position: sticky;
-        top: 0;
+        position: relative;
+        top: auto;
         z-index: 100;
         border-bottom: 1px solid #eee6dc;
     }
@@ -1273,43 +1285,67 @@
 
     /* Mobile Fixed Contact Button */
     .mobile-fixed-contact-btn {
-        display: none;
+        display: flex;
         position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        bottom: 48px;
+        right: 32px;
+        left: auto;
         background-color: #157538;
         color: white;
         text-align: center;
-        padding: 14px 20px;
+        padding: 0;
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
         text-decoration: none;
         font-weight: 700;
         font-size: 1rem;
         z-index: 9999;
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-        gap: 8px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+        gap: 0;
         align-items: center;
         justify-content: center;
+    }
+
+    .mobile-fixed-contact-btn span.btn-text {
+        display: none;
     }
 
     .mobile-fixed-contact-btn:hover {
         background-color: #0b4320;
         color: white;
+        transform: scale(1.05);
     }
 
     .mobile-fixed-contact-btn i {
-        font-size: 1.2rem;
+        font-size: 2rem;
     }
 
     @media (max-width: 768px) {
         .mobile-fixed-contact-btn {
             display: flex;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            border-radius: 0;
+            padding: 14px 20px;
+            gap: 8px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        }
+        .mobile-fixed-contact-btn span.btn-text {
+            display: inline;
+        }
+        .mobile-fixed-contact-btn i {
+            font-size: 1.2rem;
         }
     }
 </style>
 </head>
 <body>
 
+<div class="fixed-nav-wrapper">
 <div class="top-bar">
   <div class="container">
     <div class="lang-selector" aria-label="語言切換器" role="group">
@@ -1385,6 +1421,7 @@
     </div>
   </div>
 </header>
+</div><!-- /.fixed-nav-wrapper -->
 
 <main class="container">
   <div class="product-grid">
@@ -1392,7 +1429,6 @@
       <div class="main-image"><img id="mainProductImage" src="https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg" alt="雲芝糖肽精華 PSP 標準裝 500粒正面圖"></div>
       <div class="thumbnail-list" role="list" aria-label="产品缩略图">
         <div class="thumbnail active" data-img="https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg" role="listitem"><img src="https://static.wixstatic.com/media/b3683f_c3bb4c9fc99b4ec4a09dde462984477b~mv2.jpg" alt="PSP 標準裝正面"></div>
-        <div class="thumbnail" data-img="https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg" role="listitem"><img src="https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg" alt="PSP 產品實拍"></div>
       </div>
     </div>
     <div class="product-info">
@@ -1949,7 +1985,26 @@
   window.addEventListener('storage', e => { if (e.key === 'wonderHerbCart') loadCart(); });
   window.addEventListener('pageshow', () => loadCart());
   document.addEventListener('visibilitychange', () => { if (!document.hidden) loadCart(); });
+
+  /* Reserve space below the fixed nav so the page seamlessly meets it (no blank gap). */
+  function syncFixedNavOffset() {
+    const nav = document.querySelector('.fixed-nav-wrapper');
+    if (!nav) return;
+    const h = nav.getBoundingClientRect().height;
+    document.body.style.paddingTop = h + 'px';
+  }
+  window.addEventListener('load', syncFixedNavOffset);
+  window.addEventListener('resize', syncFixedNavOffset);
+  if (document.readyState !== 'loading') syncFixedNavOffset();
+  else document.addEventListener('DOMContentLoaded', syncFixedNavOffset);
+  /* Re-sync after mobile menu opens/closes and after fonts settle. */
+  const _navPanel = document.getElementById('headerNavPanel');
+  if (_navPanel && window.MutationObserver) {
+    new MutationObserver(() => requestAnimationFrame(syncFixedNavOffset)).observe(_navPanel, { attributes: true, attributeFilter: ['class'] });
+  }
+  window.addEventListener('load', () => setTimeout(syncFixedNavOffset, 50));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFixedNavOffset);
 </script>
-<a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> 立即諮詢</a>
+<a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> <span class="btn-text">立即諮詢</span></a>
 </body>
 </html>
