@@ -609,6 +609,18 @@
         .carousel-container:hover .carousel-slide.active img {
             filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.26)) brightness(1.08) contrast(1.06);
         }
+        .carousel-3d-container {
+            width: 100%;
+            height: 100%;
+            min-height: 280px;
+            position: relative;
+            z-index: 3;
+        }
+        .carousel-3d-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+        }
         .carousel-btn {
             position: absolute;
             top: 50%;
@@ -2943,6 +2955,9 @@
         }
     }
 </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 </head>
 <body>
     <svg class="svg-filters" aria-hidden="true"><defs><filter id="glass-distortion"><feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="5" /><feDisplacementMap in="SourceGraphic" in2="noise" scale="5" /></filter></defs></svg>
@@ -3553,10 +3568,11 @@
 
         const heroImages = [
             { src: "https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png", alt_zh: "康草堂 Wonder Herb 品牌形象", alt_en: "Wonder Herb Brand Image", alt_de: "Wonder Herb Brand Image", alt_es: "Wonder Herb Marca Imagen", alt_fr: "Wonder Herb Image de marque", alt_ja: "Wonder Herb ブランドイメージ", alt_ru: "Wonder Herb Бренд Изображение" },
-            { src: "https://lh3.googleusercontent.com/d/1j4nnDKPYyQ7naWRboMd3fPS8pvrlEtDq", alt_zh: "雲芝糖肽精華 PSP 標準裝", alt_en: "Yunzhi PSP Essence Standard Pack", alt_de: "Yunzhi PSP Essence Standard Pack", alt_es: "Yunzhi PSP Paquete Estándar", alt_fr: "Yunzhi PSP Paquet Standard", alt_ja: "霊芝PSP 通常パック", alt_ru: "Юньчжи PSP Стандартный Набор" },
-            { src: "https://lh3.googleusercontent.com/d/1NNv7Wxa-i8YbBEgfV7qVz5AgKpsog8Kb", alt_zh: "T3 三烯生育醇配方", alt_en: "T3 Tocotrienols Formula", alt_de: "T3 Tocotrienols Formula", alt_es: "T3 Fórmula Tocotrienoles", alt_fr: "T3 Formule Tocotriénols", alt_ja: "T3 トコトリエノール処方", alt_ru: "T3 Формула Токотриенолов" },
             { src: "https://lh3.googleusercontent.com/d/1JshjDnhbCCCsQNUZOD3XnPz6Haw9Q_eE", alt_zh: "乙肝清 草本護肝", alt_en: "Hep BQ capsules Herbal Liver Support", alt_de: "Hep BQ capsules Herbal Liver Support", alt_es: "Cápsulas Hep BQ Apoyo Hepático", alt_fr: "Gélules Hep BQ Soutien Hépatique", alt_ja: "Hep BQカプセル 肝サポート", alt_ru: "Капсулы Hep BQ Поддержка Печени" },
-            { src: "https://lh3.googleusercontent.com/d/1DqnWVDZa45TvoRKRguh-IT4i_sfYbQhn", alt_zh: "憶活素 MemoProve 腦部保健", alt_en: "MemoProve Brain Health", alt_de: "MemoProve Brain Health", alt_es: "MemoProve Salud Cerebral", alt_fr: "MemoProve Santé Cérébrale", alt_ja: "MemoProve 脳の健康", alt_ru: "MemoProve Здоровье Мозга" }
+            { src: "https://lh3.googleusercontent.com/d/1DqnWVDZa45TvoRKRguh-IT4i_sfYbQhn", alt_zh: "憶活素 MemoProve 腦部保健", alt_en: "MemoProve Brain Health", alt_de: "MemoProve Brain Health", alt_es: "MemoProve Salud Cerebral", alt_fr: "MemoProve Santé Cérébrale", alt_ja: "MemoProve 脳の健康", alt_ru: "MemoProve Здоровье Мозга" },
+            { type: "3d", src: "雲芝糖肽精華 (PSP).glb", alt_zh: "雲芝糖肽精華 PSP 3D 模型", alt_en: "Yunzhi PSP Essence 3D Model", alt_de: "Yunzhi PSP Essence 3D Modell", alt_es: "Yunzhi PSP Esencia Modelo 3D", alt_fr: "Yunzhi PSP Essence Modèle 3D", alt_ja: "霊芝PSP エッセンス 3Dモデル", alt_ru: "Юньчжи PSP Эссенция 3D Модель" },
+            { type: "3d", src: "PT3.glb", alt_zh: "PT3 3D 模型", alt_en: "PT3 3D Model", alt_de: "PT3 3D Modell", alt_es: "PT3 Modelo 3D", alt_fr: "PT3 Modèle 3D", alt_ja: "PT3 3Dモデル", alt_ru: "PT3 3D Модель" },
+            { type: "3d", src: "T3 配方.glb", alt_zh: "T3 配方 3D 模型", alt_en: "T3 Formula 3D Model", alt_de: "T3 Formel 3D Modell", alt_es: "T3 Fórmula Modelo 3D", alt_fr: "T3 Formule Modèle 3D", alt_ja: "T3 処方 3Dモデル", alt_ru: "T3 Формула 3D Модель" }
         ];
         let heroCurrent = 0,
             heroInterval;
@@ -3761,6 +3777,163 @@
 
         function updateHeroCarouselAlt() { document.querySelectorAll('#heroSlides .carousel-slide img').forEach((img, idx) => { if (heroImages[idx]) img.alt = currentLang === 'zh' ? heroImages[idx].alt_zh : heroImages[idx]['alt_' + currentLang] || heroImages[idx].alt_en; }); }
 
+        const carousel3DInstances = {};
+        
+        function init3DCarouselModels() {
+            if (typeof THREE === 'undefined') {
+                console.error('Three.js not loaded!');
+                return;
+            }
+            if (typeof THREE.GLTFLoader === 'undefined') {
+                console.error('GLTFLoader not loaded!');
+                return;
+            }
+            
+            document.querySelectorAll('.carousel-3d-container').forEach(container => {
+                const modelSrc = container.getAttribute('data-model');
+                if (!modelSrc) return;
+                const modelSrcNoCache = modelSrc + '?v=' + Date.now();
+                
+                console.log('Initializing 3D model:', modelSrc);
+                
+                // Show loading state
+                container.innerHTML = '<div style="color:white;display:flex;align-items:center;justify-content:center;height:100%;font-size:14px;">載入 3D 模型中...</div>';
+                
+                const containerRect = container.getBoundingClientRect();
+                const width = containerRect.width || 400;
+                const height = containerRect.height || 300;
+                
+                const scene = new THREE.Scene();
+
+                const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+                camera.position.set(0, 0, 3);
+                
+                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setSize(width, height);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                container.innerHTML = '';
+                container.appendChild(renderer.domElement);
+                
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+                scene.add(ambientLight);
+                
+                const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+                keyLight.position.set(5, 5, 5);
+                scene.add(keyLight);
+                
+                const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+                fillLight.position.set(-5, 0, 5);
+                scene.add(fillLight);
+                
+                const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+                backLight.position.set(0, -5, -5);
+                scene.add(backLight);
+                
+                // Add soft point light for better texture visibility
+                const pointLight = new THREE.PointLight(0xffffff, 0.4, 10);
+                pointLight.position.set(0, 2, 3);
+                scene.add(pointLight);
+                
+                // Add OrbitControls for mouse interaction
+                const controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                controls.enableZoom = true;
+                controls.enablePan = false;
+                controls.autoRotate = true;
+                controls.autoRotateSpeed = 1.5;
+                
+                const inst = { scene, camera, renderer, controls, model: null };
+                carousel3DInstances[modelSrc] = inst;
+                
+                const loader = new THREE.GLTFLoader();
+                loader.load(
+                    modelSrcNoCache,
+                    function(gltf) {
+                        console.log('3D model loaded successfully!');
+                        const model = gltf.scene;
+                        
+                        // Apply UV transforms to fix texture orientation
+                        model.traverse(function(child) {
+                            if (child.isMesh && child.material) {
+                                const materials = Array.isArray(child.material) ? child.material : [child.material];
+                                materials.forEach(mat => {
+                                    // Fix upside down: rotate 180° and move down
+                                    if (mat.map) {
+                                        mat.map.matrixAutoUpdate = true;
+                                        mat.map.center.set(0.5, 0.5);
+                                        mat.map.rotation = Math.PI; 
+                                        mat.map.offset.set(0.05, 0.3); 
+                                    }
+                                    mat.side = THREE.DoubleSide;
+                                    mat.needsUpdate = true;
+                                });
+                            }
+                        });
+                        
+                        const box = new THREE.Box3().setFromObject(model);
+                        const center = box.getCenter(new THREE.Vector3());
+                        const size = box.getSize(new THREE.Vector3());
+                        const maxDim = Math.max(size.x, size.y, size.z);
+                        const scale = 1.8 / maxDim;
+                        model.scale.setScalar(scale);
+                        model.position.sub(center.multiplyScalar(scale));
+                        scene.add(model);
+                        inst.model = model;
+                    },
+                    function(progress) {
+                        console.log('Loading progress:', (progress.loaded / progress.total * 100).toFixed(1) + '%');
+                    },
+                    function(error) { 
+                        console.error('Error loading 3D model:', error); 
+                        container.innerHTML = '<div style="color:white;display:flex;align-items:center;justify-content:center;height:100%;font-size:14px;">無法載入 3D 模型</div>';
+                    }
+                );
+                
+                let isAnimating = false;
+                function animate3D() {
+                    const parentSlide = container.closest('.carousel-slide');
+                    if (parentSlide && parentSlide.classList.contains('active')) {
+                        if (!isAnimating) {
+                            isAnimating = true;
+                            (function animLoop() {
+                                if (!carousel3DInstances[modelSrc]) return;
+                                const currentInst = carousel3DInstances[modelSrc];
+                                if (currentInst.controls) {
+                                    currentInst.controls.update();
+                                }
+                                currentInst.renderer.render(currentInst.scene, currentInst.camera);
+                                const stillActive = container.closest('.carousel-slide');
+                                if (stillActive && stillActive.classList.contains('active')) {
+                                    requestAnimationFrame(animLoop);
+                                } else {
+                                    isAnimating = false;
+                                }
+                            })();
+                        }
+                    }
+                }
+                
+                const observer = new MutationObserver(() => {
+                    animate3D();
+                });
+                observer.observe(container, { childList: true });
+                animate3D();
+                
+                // Also try when slide becomes active
+                const slideObserver = new MutationObserver(() => {
+                    const parentSlide = container.closest('.carousel-slide');
+                    if (parentSlide && parentSlide.classList.contains('active')) {
+                        animate3D();
+                    }
+                });
+                const carouselSlides = document.getElementById('heroSlides');
+                if (carouselSlides) {
+                    slideObserver.observe(carouselSlides, { attributes: true, attributeFilter: ['class'], subtree: true });
+                }
+            });
+        }
+
         function buildHeroCarousel() {
             const s = document.getElementById('heroSlides'),
                 d = document.getElementById('heroDots');
@@ -3771,7 +3944,13 @@
                 slide.className = 'carousel-slide' + (i === heroCurrent ? ' active' : '');
                 slide.setAttribute('role', 'tabpanel');
                 slide.setAttribute('aria-label', `圖片 ${i+1}/${heroImages.length}`);
-                slide.innerHTML = `<img src="${img.src}" alt="${currentLang==='zh'?img.alt_zh:img.alt_en}" loading="${i===0?'eager':'lazy'}">`;
+                
+                if (img.type === '3d') {
+                    slide.innerHTML = `<div class="carousel-3d-container" data-model="${img.src}"></div>`;
+                } else {
+                    slide.innerHTML = `<img src="${img.src}" alt="${currentLang==='zh'?img.alt_zh:img.alt_en}" loading="${i===0?'eager':'lazy'}">`;
+                }
+                
                 s.appendChild(slide);
                 const dot = document.createElement('div');
                 dot.className = 'dot' + (i === heroCurrent ? ' active' : '');
@@ -3783,6 +3962,7 @@
             });
             resetAllSlidesTransform();
             applyJellyTransform();
+            init3DCarouselModels();
         }
 
         function bindMobileMenu() {
