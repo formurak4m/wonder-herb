@@ -1474,12 +1474,7 @@
     <p><span style="background-color:#9b2e2e; color:white; padding:2px 12px; border-radius:20px;" data-i18n="note_badge">注意</span> <span data-i18n="note_text">孕婦、哺乳期婦女及服用抗凝血藥物者，請先諮詢醫生。</span></p><br>
     <h2 class="section-title" data-i18n="research_title">📚 科研實證</h2>
     <p data-i18n="research_text">奧地利 EVER PHARMA 與多家歐洲研究機構合作，通過雙盲、安慰劑對照臨床試驗證實：連續服用憶活素 12 週後，受試者的記憶力評分提升 35%，專注力測試成績提高 42%，且無任何不良反應。</p>
-    <div style="margin-top: 20px; padding: 16px; background-color: #f8f5f0; border-radius: 12px; border-left: 4px solid #2EADA5;">
-      <h4 style="color: #2c3e2b; margin-bottom: 12px;"><i class="fas fa-book-medical" style="color: #2EADA5; margin-right: 8px;"></i>📖 醫學文獻參考</h4>
-      <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
-        <li><i class="fas fa-external-link-alt" style="color: #2EADA5; margin-right: 8px;"></i>美國國家醫學圖書館 PubMed：<a href="https://pubmed.ncbi.nlm.nih.gov/16258593/" target="_blank" rel="noopener" style="color: #9b2e2e; text-decoration: none; word-break: break-all;">https://pubmed.ncbi.nlm.nih.gov/16258593/</a></li>
-        <li><i class="fas fa-external-link-alt" style="color: #2EADA5; margin-right: 8px;"></i>瑞士 MDPI 多學科數位出版機構：<a href="https://www.mdpi.com/2076-3425/14/10/986" target="_blank" rel="noopener" style="color: #9b2e2e; text-decoration: none; word-break: break-all;">https://www.mdpi.com/2076-3425/14/10/986</a></li>
-      </ul>
+    <div style="margin-top: 20px; padding: 16px; background-color: #f8f5f0; border-radius: 12px; border-left: 4px solid #2EADA5;" id="researchReferencesBox">
     </div><br>
     <h2 class="section-title" data-i18n="spec_title">📦 包裝規格</h2>
     <p data-i18n="spec_text">✔ 每瓶 30 粒膠囊 (標準裝，約 1 個月用量)<br>✔ 植物性膠囊，素食者適用</p><br>
@@ -1561,6 +1556,7 @@
       suitable_title: "👤 適合服用的對象", suitable_list: "<li>記憶力減退、經常健忘的人士</li><li>需要高度專注的學生、專業人士</li><li>中老年人群，希望維持腦部年輕狀態</li><li>工作壓力大、腦疲勞者</li><li>保健養生、提升認知功能人士</li>",
       note_badge: "注意", note_text: "孕婦、哺乳期婦女及服用抗凝血藥物者，請先諮詢醫生。",
       research_title: "📚 科研實證", research_text: "奧地利 EVER PHARMA 與多家歐洲研究機構合作，通過雙盲、安慰劑對照臨床試驗證實：連續服用憶活素 12 週後，受試者的記憶力評分提升 35%，專注力測試成績提高 42%，且無任何不良反應。蛋白腖 Peptone 的獨特作用機制已被國際期刊《Nutritional Neuroscience》認可。",
+      research_references: "</i>📖 醫學文獻參考</h4><ul style='list-style: none; padding-left: 0; line-height: 1.8;'><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>美國國家醫學圖書館 PubMed：<a href='https://pubmed.ncbi.nlm.nih.gov/16258593/' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://pubmed.ncbi.nlm.nih.gov/16258593/</a></li><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>澳洲著名大學研究：<a href='https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing</a></li></ul>",
       spec_title: "📦 包裝規格", spec_text: "✔ 每瓶 30 粒膠囊 (標準裝，約 1 個月用量)<br>✔ 植物性膠囊，素食者適用",
       dosage_title: "💊 建議用量", dosage_list: "<li><strong>一般保健：</strong> 每日 1 粒，餐後服用</li>",
       dosage_note: "<em>※ 詳情請咨詢醫生或專業醫護人員。可與康草堂其他產品（如雲芝糖肽）同時使用，無不良交互作用。</em>",
@@ -1581,11 +1577,13 @@
       product_short_desc: "<i class='fas fa-brain' style='color:#2EADA5;'></i> Brain Cell Repair · Memory & Focus Enhancement",
       quantity_label: "Quantity:", add_to_cart_btn: "<i class='fas fa-cart-plus'></i> Add to Cart", detail_btn: "More Details <i class='fas fa-chevron-down'></i>",
       badge_gmp: "GMP Certified", badge_clinical: "Clinical Support", badge_natural: "Natural",
-      intro_title: "📖 Product Introduction", intro_p1: "<strong>MemoProve</strong> is a patented formula (Peptone) developed by EVER PHARMA Austria. It helps repair and restore brain cells, significantly enhancing cognitive performance, memory, and concentration.", intro_p2: "Many brain supplements lack clinical data. Wonder Herb's MemoProve uses high-quality ingredients, rigorously tested in Europe for safety and efficacy.",
+      intro_title: "📖 Product Introduction", intro_p1: "<strong>MemoProve</strong> is a patented formula (Peptone) developed by EVER PHARMA Austria. It helps repair and restore brain cells, significantly enhancing cognitive performance, memory, and concentration.",
+      intro_p2: "Many brain supplements lack clinical data. MemoProve uses high-quality ingredients, rigorously tested in Europe for safety and efficacy.",
       benefits_title: "✨ Key Benefits & Features", benefits_list: "<li><strong>Repairs brain cells:</strong> Helps restore damaged neurons, slows brain aging</li><li><strong>Enhances memory:</strong> Improves short-term and long-term memory</li><li><strong>Increases focus:</strong> Boosts concentration and reduces distraction</li><li><strong>Natural compound:</strong> Derived from natural Peptone, safe and non-habit forming</li><li><strong>Science-backed:</strong> Proven by clinical studies</li>",
       suitable_title: "👤 Who Should Use", suitable_list: "<li>Individuals with memory decline or forgetfulness</li><li>Students and professionals needing high concentration</li><li>Seniors wanting to maintain brain health</li><li>Those under high work pressure</li><li>Wellness and cognitive enhancement seekers</li>",
       note_badge: "Note", note_text: "Pregnant or nursing women, and those taking anticoagulant medication, please consult your doctor first.",
-      research_title: "📚 Scientific Evidence", research_text: "EVER PHARMA Austria conducted double-blind, placebo-controlled trials showing 35% memory improvement and 42% focus improvement after 12 weeks, with no adverse effects.", research_references: "<div style='margin-top: 20px; padding: 16px; background-color: #f8f5f0; border-radius: 12px; border-left: 4px solid #2EADA5;'><h4 style='color: #2c3e2b; margin-bottom: 12px;'><i class='fas fa-book-medical' style='color: #2EADA5; margin-right: 8px;'></i>📖 Medical Literature References</h4><ul style='list-style: none; padding-left: 0; line-height: 1.8;'><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>US National Library of Medicine PubMed: <a href='https://pubmed.ncbi.nlm.nih.gov/16258593/' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://pubmed.ncbi.nlm.nih.gov/16258593/</a></li><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>Swiss MDPI Multidisciplinary Digital Publishing: <a href='https://www.mdpi.com/2076-3425/14/10/986' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://www.mdpi.com/2076-3425/14/10/986</a></li></ul></div>",
+      research_title: "📚 Scientific Evidence", research_text: "EVER PHARMA Austria conducted double-blind, placebo-controlled trials showing 35% memory improvement and 42% focus improvement after 12 weeks, with no adverse effects.",
+      research_references: "</i>📖 Medical Literature References</h4><ul style='list-style: none; padding-left: 0; line-height: 1.8;'><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>US National Library of Medicine PubMed: <a href='https://pubmed.ncbi.nlm.nih.gov/16258593/' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://pubmed.ncbi.nlm.nih.gov/16258593/</a></li><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>Australian University Research: <a href='https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing</a></li></ul>",
       spec_title: "📦 Specifications", spec_text: "✔ 30 capsules per bottle (approx. 1 month supply)<br>✔ Vegetable capsules, suitable for vegetarians",
       dosage_title: "💊 Recommended Dosage", dosage_list: "<li><strong>General wellness:</strong> 1 capsule daily after meal</li>",
       dosage_note: "<em>※ Please consult your doctor. Can be taken with other Wonder Herb products with no known interactions.</em>",
@@ -1610,46 +1608,46 @@
       nav_contact: "Kontakt",
       header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
       product_title_main: "MemoProve",
-      product_title_badge: " | EVER PHARMA Formula",
-      product_price: "HK$520.00 <span style='font-size:1rem; font-weight:normal;'>/ 30 capsules</span>",
-      product_short_desc: "<i class='fas fa-brain' style='color:#2EADA5;'></i> Brain Cell Repair · Memory & Focus Enhancement",
-      quantity_label: "Quantity:",
-      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> Add to Cart",
-      detail_btn: "More Details <i class='fas fa-chevron-down'></i>",
-      badge_gmp: "GMP Certified",
-      badge_clinical: "Clinical Support",
-      badge_natural: "Natural",
-      intro_title: "📖 Product Introduction",
-      intro_p1: "<strong>MemoProve</strong> is a patented formula (Peptone) developed by EVER PHARMA Austria. It helps repair and restore brain cells, significantly enhancing cognitive performance, memory, and concentration.",
-      intro_p2: "Many brain supplements lack clinical data. Wonder Herb's MemoProve uses high-quality ingredients, rigorously tested in Europe for safety and efficacy.",
-      benefits_title: "✨ Key Benefits & Features",
-      benefits_list: "<li><strong>Repairs brain cells:</strong> Helps restore damaged neurons, slows brain aging</li><li><strong>Enhances memory:</strong> Improves short-term and long-term memory</li><li><strong>Increases focus:</strong> Boosts concentration and reduces distraction</li><li><strong>Natural compound:</strong> Derived from natural Peptone, safe and non-habit forming</li><li><strong>Science-backed:</strong> Proven by clinical studies</li>",
-      suitable_title: "👤 Who Should Use",
-      suitable_list: "<li>Individuals with memory decline or forgetfulness</li><li>Students and professionals needing high concentration</li><li>Seniors wanting to maintain brain health</li><li>Those under high work pressure</li><li>Wellness and cognitive enhancement seekers</li>",
-      note_badge: "Note",
-      note_text: "Pregnant or nursing women, and those taking anticoagulant medication, please consult your doctor first.",
-      research_title: "📚 Scientific Evidence",
-      research_text: "EVER PHARMA Austria conducted double-blind, placebo-controlled trials showing 35% memory improvement and 42% focus improvement after 12 weeks, with no adverse effects.", research_references: "<div style='margin-top: 20px; padding: 16px; background-color: #f8f5f0; border-radius: 12px; border-left: 4px solid #2EADA5;'><h4 style='color: #2c3e2b; margin-bottom: 12px;'><i class='fas fa-book-medical' style='color: #2EADA5; margin-right: 8px;'></i>📖 Medizinische Literaturverweise</h4><ul style='list-style: none; padding-left: 0; line-height: 1.8;'><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>US National Library of Medicine PubMed: <a href='https://pubmed.ncbi.nlm.nih.gov/16258593/' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://pubmed.ncbi.nlm.nih.gov/16258593/</a></li><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>Swiss MDPI Multidisciplinary Digital Publishing: <a href='https://www.mdpi.com/2076-3425/14/10/986' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://www.mdpi.com/2076-3425/14/10/986</a></li></ul></div>",
-      spec_title: "📦 Specifications",
-      spec_text: "✔ 30 capsules per bottle (approx. 1 month supply)<br>✔ Vegetable capsules, suitable for vegetarians",
-      dosage_title: "💊 Recommended Dosage",
-      dosage_list: "<li><strong>General wellness:</strong> 1 capsule daily after meal</li>",
-      dosage_note: "<em>※ Please consult your doctor. Can be taken with other Wonder Herb products with no known interactions.</em>",
-      trust1_title: "Universitätsforschung",
-      trust1_desc: "Validiert in HK/Kanada",
-      trust2_title: "Doppelte Labortests",
-      trust2_desc: "Kanada + Hongkong",
-      trust3_title: "GMP-zertifiziert",
-      trust3_desc: "Health Canada reguliert",
-      trust4_title: "20.000+ Patienten",
-      trust4_desc: "Echte Genesungsgeschichten",
-      related_title: "🌟 You May Also Like",
+      product_title_badge: " | EVER PHARMA Formel",
+      product_price: "HK$520,00 <span style='font-size:1rem; font-weight:normal;'>/ 30 Kapseln</span>",
+      product_short_desc: "<i class='fas fa-brain' style='color:#2EADA5;'></i> Gehirnzellenreparatur · Gedächtnis- & Konzentrationsverbesserung",
+      quantity_label: "Menge:",
+      add_to_cart_btn: "<i class='fas fa-cart-plus'></i> In den Warenkorb",
+      detail_btn: "Mehr Details <i class='fas fa-chevron-down'></i>",
+      badge_gmp: "GMP Zertifiziert",
+      badge_clinical: "Klinische Unterstützung",
+      badge_natural: "Natürlich",
+      intro_title: "📖 Produkteinführung",
+      intro_p1: "<strong>MemoProve</strong> ist eine patentierte Formel (Pepton), entwickelt von EVER PHARMA Österreich. Es hilft, Gehirnzellen zu reparieren und wiederherzustellen, verbessert signifikant kognitive Leistung, Gedächtnis und Konzentration.",
+      intro_p2: "Viele Gehirnnahrungsergänzungen mangelt es an klinischen Daten. MemoProve verwendet hochwertige Inhaltsstoffe, streng in Europa auf Sicherheit und Wirksamkeit getestet.",
+      benefits_title: "✨ Wichtigste Vorteile & Merkmale",
+      benefits_list: "<li><strong>Repariert Gehirnzellen:</strong> Hilft, beschädigte Neuronen wiederherzustellen, verlangsamt Gehirnalterung</li><li><strong>Verbessert Gedächtnis:</strong> Verbessert Kurzzeit- und Langzeitgedächtnis</li><li><strong>Erhöht Fokus:</strong> Steigert Konzentration und reduziert Ablenkung</li><li><strong>Natürliche Verbindung:</strong> Abgeleitet aus natürlichem Pepton, sicher und nicht suchterzeugend</li><li><strong>Wissenschaftlich belegt:</strong> Durch klinische Studien bewiesen</li>",
+      suitable_title: "👤 Für wen geeignet",
+      suitable_list: "<li>Personen mit Gedächtnisrückgang oder Vergesslichkeit</li><li>Studenten und Fachleute, die hohe Konzentration benötigen</li><li>Senioren, die ihre Gehirngesundheit erhalten möchten</li><li>Personen unter hohem Arbeitsdruck</li><li>Wellness- und kognitive Verbesserungssuchende</li>",
+      note_badge: "Hinweis",
+      note_text: "Schwangere oder stillende Frauen und Personen, die gerinnungshemmende Medikamente einnehmen, sollten zuerst ihren Arzt konsultieren.",
+      research_title: "📚 Wissenschaftliche Beweise",
+      research_text: "EVER PHARMA Österreich führte Doppelblindstudien durch, die eine Verbesserung des Gedächtnisses um 35% und der Konzentration um 42% nach 12 Wochen zeigten, ohne Nebenwirkungen.", research_references: "</i>📖 Medizinische Literaturverweise</h4><ul style='list-style: none; padding-left: 0; line-height: 1.8;'><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>US National Library of Medicine PubMed: <a href='https://pubmed.ncbi.nlm.nih.gov/16258593/' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://pubmed.ncbi.nlm.nih.gov/16258593/</a></li><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>Australische Universitätsforschung: <a href='https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing</a></li></ul>",
+      spec_title: "📦 Spezifikationen",
+      spec_text: "✔ 30 Kapseln pro Flasche (ca. 1 Monat Versorgung)<br>✔ Pflanzliche Kapseln, für Vegetarier geeignet",
+      dosage_title: "💊 Empfohlene Dosierung",
+      dosage_list: "<li><strong>Allgemeine Wellness:</strong> 1 Kapsel täglich nach dem Essen</li>",
+      dosage_note: "<em>※ Bitte konsultieren Sie Ihren Arzt. Kann mit anderen Wonder Herb Produkten ohne bekannte Wechselwirkungen kombiniert werden.</em>",
+      trust1_title: "Europäische Präzision",
+      trust1_desc: "Hergestellt in Österreich",
+      trust2_title: "GMP Zertifiziert",
+      trust2_desc: "EU-Standards",
+      trust3_title: "Klinisch bewiesen",
+      trust3_desc: "Doppelblindstudie belegt",
+      trust4_title: "Keine Drogen",
+      trust4_desc: "100% natürliche Gehirnnahrung",
+      related_title: "🌟 Das könnte Ihnen auch gefallen",
       related_psp_name: "Yunzhi PSP Essence",
-      related_psp_desc: "Boosts immunity · Reduces chemo side effects",
-      related_t3_name: "T3 Tocotrienols",
-      related_t3_desc: "60x antioxidant · Cancer support",
-      related_hepa_name: "Hep BQ capsules",
-      related_hepa_desc: "Herbal liver support formula",
+      related_psp_desc: "Stärkt Immunität · Reduziert Chemo-Nebenwirkungen",
+      related_t3_name: "T3 Tocotrienole",
+      related_t3_desc: "60x Antioxidans · Krebsunterstützung",
+      related_hepa_name: "Hep BQ Kapseln",
+      related_hepa_desc: "Natürliche Leberunterstützungsformel",
       footer_col1_title: "Wonder Herb",
       footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
       footer_col1_text2: "GMP-zertifiziert in Kanada",
@@ -1661,8 +1659,8 @@
       footer_link_testing: "Prüfberichte",
       footer_link_faq: "FAQ",
       footer_link_cases: "Fallstudien",
-      copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
-      last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Natürlicher Yunzhi-PSP-Experte",
+      last_update_text: "📅 Zuletzt aktualisiert: 2. Juni 2026 | Produktinformationen werden regelmäßig aktualisiert"
     },
     es: {
       nav_home: "Sobre nosotros",
@@ -1687,7 +1685,7 @@
       badge_natural: "Natural",
       intro_title: "📖 Introducción del Producto",
       intro_p1: "<strong>MemoProve</strong> es una fórmula patentada desarrollada por EVER PHARMA Austria. Ayuda a reparar y restaurar las células cerebrales, mejorando significativamente el rendimiento cognitivo, la memoria y la concentración.",
-      intro_p2: "Wonder Herb's MemoProve utiliza ingredientes de alta calidad, rigurosamente probados en Europa.",
+      intro_p2: "MemoProve utiliza ingredientes de alta calidad, rigurosamente probados en Europa.",
       benefits_title: "✨ Beneficios y Características Clave",
       benefits_list: "<li><strong>Repara células cerebrales:</strong> Ayuda a restaurar neuronas dañadas</li><li><strong>Mejora la memoria:</strong> Mejora la memoria a corto y largo plazo</li><li><strong> Aumenta el enfoque:</strong> Mejora la concentración</li><li><strong>Compuesto natural:</strong> Derivado de Peptona natural</li>",
       suitable_title: "👤 Quién Debe Usar",
@@ -1696,6 +1694,7 @@
       note_text: "Mujeres embarazadas o lactantes consulten a su médico.",
       research_title: "📚 Evidencia Científica",
       research_text: "EVER PHARMA Austria realizó ensayos doble ciego.",
+      research_references: "</i>📖 Referencias de Literatura Médica</h4><ul style='list-style: none; padding-left: 0; line-height: 1.8;'><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>Biblioteca Nacional de Medicina de EE.UU. PubMed: <a href='https://pubmed.ncbi.nlm.nih.gov/16258593/' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://pubmed.ncbi.nlm.nih.gov/16258593/</a></li><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>Investigación de Universidad Australiana: <a href='https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing</a></li></ul>",
       spec_title: "📦 Especificaciones",
       spec_text: "✔ 30 cápsulas por frasco",
       dosage_title: "💊 Dosificación Recomendada",
@@ -1753,7 +1752,7 @@
       badge_natural: "Naturel",
       intro_title: "📖 Introduction du Produit",
       intro_p1: "<strong>MemoProve</strong> est une formule brevetée développée par EVER PHARMA Autriche. Aide à réparer et restaurer les cellules cérébrales.",
-      intro_p2: "Wonder Herb's MemoProve utilise des ingrédients de haute qualité.",
+      intro_p2: "MemoProve utilise des ingrédients de haute qualité.",
       benefits_title: "✨ Avantages et Caractéristiques Clés",
       benefits_list: "<li><strong>Répare les cellules cérébrales:</strong> Aide à restaurer les neurones</li><li><strong>Améliore la mémoire:</strong> Améliore la mémoire à court et long terme</li><li><strong>Augmente la concentration:</strong> Améliore la concentration</li>",
       suitable_title: "👤 Qui Doit Utiliser",
@@ -1762,6 +1761,7 @@
       note_text: "Femmes enceintes ou allaitantes consultez votre médecin.",
       research_title: "📚 Preuves Scientifiques",
       research_text: "EVER PHARMA Autriche a réalisé des essais en double aveugle.",
+      research_references: "</i>📖 Références de Littérature Médicale</h4><ul style='list-style: none; padding-left: 0; line-height: 1.8;'><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>Bibliothèque Nationale de Médecine des États-Unis PubMed: <a href='https://pubmed.ncbi.nlm.nih.gov/16258593/' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://pubmed.ncbi.nlm.nih.gov/16258593/</a></li><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>Recherche Universitaire Australienne: <a href='https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing</a></li></ul>",
       spec_title: "📦 Spécifications",
       spec_text: "✔ 30 gélules par flacon",
       dosage_title: "💊 Dosage Recommandé",
@@ -1828,6 +1828,7 @@
       note_text: "妊娠中・授乳中の方は医師にご相談ください。",
       research_title: "📚 科学的な証拠",
       research_text: "EVER PHARMA Austriaが二重盲検試験を実施。",
+      research_references: "</i>📖 医学文献参照</h4><ul style='list-style: none; padding-left: 0; line-height: 1.8;'><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>米国国立医学図書館 PubMed: <a href='https://pubmed.ncbi.nlm.nih.gov/16258593/' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://pubmed.ncbi.nlm.nih.gov/16258593/</a></li><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>オーストラリア大学研究: <a href='https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing</a></li></ul>",
       spec_title: "📦 仕様",
       spec_text: "✔ 1ボトル30カプセル",
       dosage_title: "💊 推奨用量",
@@ -1894,6 +1895,7 @@
       note_text: "Беременным или кормящим женщинам следует проконсультироваться с врачом.",
       research_title: "📚 Научные Доказательства",
       research_text: "EVER PHARMA Austria провела двойные слепые испытания.",
+      research_references: "</i>📖 Ссылки на Медицинскую Литературу</h4><ul style='list-style: none; padding-left: 0; line-height: 1.8;'><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>Национальная медицинская библиотека США PubMed: <a href='https://pubmed.ncbi.nlm.nih.gov/16258593/' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://pubmed.ncbi.nlm.nih.gov/16258593/</a></li><li><i class='fas fa-external-link-alt' style='color: #2EADA5; margin-right: 8px;'></i>Исследование Австралийского Университета: <a href='https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing' target='_blank' rel='noopener' style='color: #9b2e2e; text-decoration: none; word-break: break-all;'>https://drive.google.com/file/d/1OfZrwQKcKlgMGXCGd8f68oFrbIX9xcqG/view?usp=sharing</a></li></ul>",
       spec_title: "📦 Характеристики",
       spec_text: "✔ 30 капсул во флаконе",
       dosage_title: "💊 Рекомендуемая Дозировка",
@@ -1946,6 +1948,13 @@
       });
     }
     document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][key] !== undefined) el.innerHTML = translations[lang][key]; });
+    // Render research references dynamically
+    const refBox = document.getElementById('researchReferencesBox');
+    if (refBox && translations[lang] && translations[lang].research_references) {
+      refBox.innerHTML = translations[lang].research_references;
+    } else if (refBox && translations['zh'] && translations['zh'].research_references) {
+      refBox.innerHTML = translations['zh'].research_references;
+    }
     document.title = ({ zh: '憶活素 MemoProve | Wonder Herb – 天然腦部保健・提升記憶力與專注力', en: 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer', de: 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer', es: 'MemoProve | Wonder Herb – Salud Cerebral Natural y Mejora de Memoria', fr: 'MemoProve | Wonder Herb – Santé Cérébrale Naturelle et Amélioration de la Mémoire', ja: 'MemoProve | Wonder Herb – 自然な脳の健康と記憶力向上', ru: 'MemoProve | Wonder Herb – Естественное Здоровье Мозга и Улучшение Памяти' })[lang] || 'MemoProve | Wonder Herb – Natural Brain Health & Memory Enhancer';
     document.documentElement.lang = lang;
     const zhSpan = document.getElementById('langZhBtn'), enSpan = document.getElementById('langEnBtn');
