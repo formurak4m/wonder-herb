@@ -1898,6 +1898,22 @@
             font-size: 1.2rem;
         }
     }
+
+    /* Special Q styling for Hep BQ */
+    .special-q {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.05em;
+        height: 1.05em;
+        border-radius: 50%;
+        color: #000000;
+        font-weight: 700;
+        font-size: 0.7em;
+        margin-left: -0.15em;
+        margin-top: 0.3em;
+        vertical-align: middle;
+    }
 </style>
 </head>
 <body>
@@ -2586,7 +2602,7 @@
           <div class="order-preview-card">
             <div class="preview-header"><span><i class="fas fa-box"></i> ${t.order_summary_label}</span><span>${cartItems.reduce((s,i)=>s+i.quantity,0)} ${({ zh: '件', en: 'items', de: 'Artikel' })[currentLang] || 'items'}</span></div>
             <div class="preview-items">
-              ${cartItems.map(i=>`<div class="preview-item-row"><span>${escapeHtml(getLocalizedProductName(i.product))} ×${i.quantity}</span><span>HK$${(i.product.price*i.quantity).toFixed(2)}</span></div>`).join('')}
+              ${cartItems.map(i=>`<div class="preview-item-row"><span>${formatProductName(getLocalizedProductName(i.product))} ×${i.quantity}</span><span>HK$${(i.product.price*i.quantity).toFixed(2)}</span></div>`).join('')}
             </div>
             <div class="preview-total-bar"><span>${t.total_due}</span><span class="total-amount" id="dynamicTotalDisplay">HK$${grandTotal.toFixed(2)}</span></div>
           </div>
@@ -2776,7 +2792,7 @@
     }
     updateCartBadge();
   }
-  function setLanguage(lang){ if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return; currentLang=lang; localStorage.setItem('wonderherb_lang',lang); applyStaticTranslation(currentLang); renderCart(); }
+  function setLanguage(lang){ if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return; currentLang=lang; localStorage.setItem('wonderherb_lang',lang); applyStaticTranslation(currentLang); renderCart(); applySpecialQToCart(); }
   function initLanguage(){ const saved=localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru'?saved:'zh'); }
   function bindLanguageSwitcher(){ document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); }); document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); }); document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); }); document.getElementById('langEsBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('es'); }); document.getElementById('langFrBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('fr'); }); document.getElementById('langJaBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ja'); }); document.getElementById('langRuBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ru'); }); }
 
@@ -2857,6 +2873,58 @@
   }
   window.addEventListener('load', () => setTimeout(syncFixedNavOffset, 50));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFixedNavOffset);
+
+  /* Special Q styling for Hep BQ */
+  function formatProductName(name) {
+    if (!name) return name;
+    return name.replace(/Hep BQ/gi, 'Hep B<span class="special-q">Q</span>');
+  }
+
+  /* Apply special Q styling to product names in cart */
+  function applySpecialQToCart() {
+    document.querySelectorAll('.cart-item-name, .preview-item-row span:first-child, .product-name, [data-product-name]').forEach(function(el) {
+      if (el.innerHTML && !el.innerHTML.includes('special-q')) {
+        el.innerHTML = formatProductName(el.innerHTML);
+      }
+    });
+    // Apply to modal-body content
+    document.querySelectorAll('.modal-body p, .modal-body li, .modal-body span, .modal-body h2, .modal-body h3').forEach(function(el) {
+      if (el.innerHTML && !el.innerHTML.includes('special-q') && /Hep BQ/gi.test(el.innerHTML)) {
+        el.innerHTML = formatProductName(el.innerHTML);
+      }
+    });
+    // Apply to cart-grid content
+    document.querySelectorAll('.cart-grid p, .cart-grid li, .cart-grid span, .cart-grid h2, .cart-grid h3').forEach(function(el) {
+      if (el.innerHTML && !el.innerHTML.includes('special-q') && /Hep BQ/gi.test(el.innerHTML)) {
+        el.innerHTML = formatProductName(el.innerHTML);
+      }
+    });
+    // Apply to order-preview-card content
+    document.querySelectorAll('.order-preview-card p, .order-preview-card li, .order-preview-card span, .order-preview-card h2, .order-preview-card h3, .preview-items').forEach(function(el) {
+      if (el.innerHTML && !el.innerHTML.includes('special-q') && /Hep BQ/gi.test(el.innerHTML)) {
+        el.innerHTML = formatProductName(el.innerHTML);
+      }
+    });
+  }
+
+  // Apply on load and when cart updates
+  window.addEventListener('load', function() {
+    setTimeout(applySpecialQToCart, 100);
+  });
+
+  // Observe cart item changes
+  if (typeof MutationObserver !== 'undefined') {
+    const cartObserver = new MutationObserver(function() {
+      setTimeout(applySpecialQToCart, 50);
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+      const cartContainer = document.querySelector('.cart-items-container, .cart-list, #cartItems');
+      if (cartContainer) {
+        cartObserver.observe(cartContainer, { childList: true, subtree: true });
+      }
+      setTimeout(applySpecialQToCart, 200);
+    });
+  }
 </script>
 <a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> <span class="btn-text">立即諮詢</span></a>
 </body>

@@ -1514,6 +1514,22 @@
         font-size: 2rem;
     }
 
+    /* Special Q styling for Hep BQ */
+    .special-q {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.05em;
+        height: 1.05em;
+        border-radius: 50%;
+        color: #000000;
+        font-weight: 700;
+        font-size: 0.7em;
+        margin-left: -0.15em;
+        margin-top: 0.3em;
+        vertical-align: middle;
+    }
+
     @media (max-width: 768px) {
         .mobile-fixed-contact-btn {
             display: flex;
@@ -1774,7 +1790,7 @@
       nav_home: "關於我們", nav_products: "產品介紹", nav_research: "研究報告", nav_testing: "成份檢測",
       nav_cases: "典型病例", nav_brochure: "小册子", nav_articles: "文章", nav_faq: "常見問題", nav_contact: "聯絡我們",
       header_contact_btn: "諮詢專員 <i class='fas fa-arrow-right'></i>",
-      product_title_main: "Hep BQ capsules",
+      product_title_main: "乙肝清",
       product_title_badge: " 全草本配方·抑制HBV病毒",
       product_price: "HK$1,880.00 <span style='font-size:1rem; font-weight:normal;'>/ 300粒膠囊 (約1-2個月療程)</span>",
       product_short_desc: "<i class='fas fa-leaf' style='color:#2EADA5;'></i> 無西藥副作用 · 減輕肝纖維化 · 減低肝硬化風險",
@@ -2220,6 +2236,8 @@
     currentLang = lang;
     localStorage.setItem('wonderherb_lang', lang);
     applyStaticTranslation(currentLang);
+    // Apply special Q styling after translation
+    setTimeout(applySpecialQStyling, 10);
   }
 
   function initLanguage() {
@@ -2227,6 +2245,8 @@
     if (saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru') currentLang = saved;
     else currentLang = 'zh';
     applyStaticTranslation(currentLang);
+    // Apply special Q styling after translation
+    setTimeout(applySpecialQStyling, 10);
   }
 
   function bindLanguageSwitcher() {
@@ -2397,6 +2417,69 @@
   }
   window.addEventListener('load', () => setTimeout(syncFixedNavOffset, 50));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFixedNavOffset);
+
+  /* Apply special Q styling for Hep BQ product name */
+  function formatProductName(name) {
+    if (!name) return name;
+    return name.replace(/Hep BQ/gi, 'Hep B<span class="special-q">Q</span>');
+  }
+
+  // Use MutationObserver to watch for title element changes and apply formatting
+  function applySpecialQStyling() {
+    // Apply to main product title
+    const titleEl = document.querySelector('.product-title span[data-i18n="product_title_main"]');
+    if (titleEl && titleEl.innerHTML) {
+      const currentHTML = titleEl.innerHTML;
+      if (!currentHTML.includes('special-q')) {
+        titleEl.innerHTML = formatProductName(currentHTML);
+      }
+    }
+
+    // Apply to related card titles (h3 elements)
+    document.querySelectorAll('.related-card h3[data-i18n]').forEach(function(el) {
+      if (el.innerHTML && !el.innerHTML.includes('special-q')) {
+        el.innerHTML = formatProductName(el.innerHTML);
+      }
+    });
+
+    // Apply to detailedInfo section content
+    const detailedInfo = document.getElementById('detailedInfo');
+    if (detailedInfo) {
+      detailedInfo.querySelectorAll('p, li, span, h2, h3, h4').forEach(function(el) {
+        if (el.innerHTML && !el.innerHTML.includes('special-q') && /Hep BQ/gi.test(el.innerHTML)) {
+          el.innerHTML = formatProductName(el.innerHTML);
+        }
+      });
+    }
+  }
+
+  // Initial application after page load
+  window.addEventListener('load', function() {
+    setTimeout(applySpecialQStyling, 100);
+  });
+
+  // Also handle when language changes using MutationObserver
+  const titleObserver = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.type === 'childList' || mutation.type === 'characterData') {
+        setTimeout(applySpecialQStyling, 10);
+      }
+    });
+  });
+
+  // Start observing when DOM is ready
+  document.addEventListener('DOMContentLoaded', function() {
+    const titleEl = document.querySelector('.product-title span[data-i18n="product_title_main"]');
+    if (titleEl) {
+      titleObserver.observe(titleEl, {
+        childList: true,
+        characterData: true,
+        subtree: true
+      });
+      // Apply formatting initially
+      setTimeout(applySpecialQStyling, 50);
+    }
+  });
 </script>
 <a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> <span class="btn-text">立即諮詢</span></a>
 </body>

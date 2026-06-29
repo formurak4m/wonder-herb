@@ -1348,6 +1348,22 @@
             font-size: 1.2rem;
         }
     }
+
+    /* Special Q styling for Hep BQ */
+    .special-q {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.05em;
+        height: 1.05em;
+        border-radius: 50%;
+        color: #000000;
+        font-weight: 700;
+        font-size: 0.7em;
+        margin-left: -0.15em;
+        margin-top: 0.3em;
+        vertical-align: middle;
+    }
 </style>
 </head>
 <body>
@@ -1955,8 +1971,6 @@
     const zhSpan = document.getElementById('langZhBtn'), enSpan = document.getElementById('langEnBtn');
     if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); } const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); } const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); } const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
   }
-  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); }
-  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru' ? saved : 'zh'); }
 
   const currentProduct = { id: 1, name: "雲芝糖肽精華 (PSP) – 試用裝 (60粒)", price: 680, image: "https://static.wixstatic.com/media/b3683f_33a97500a0794f629de24db948fa66d7~mv2.jpg" };
   let cartItems = [];
@@ -2011,6 +2025,40 @@
   }
   window.addEventListener('load', () => setTimeout(syncFixedNavOffset, 50));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFixedNavOffset);
+
+  /* Apply special Q styling for Hep BQ product name */
+  function formatProductName(name) {
+    if (!name) return name;
+    return name.replace(/Hep BQ/gi, 'Hep B<span class="special-q">Q</span>');
+  }
+
+  function applySpecialQStyling() {
+    document.querySelectorAll('.related-card h3[data-i18n]').forEach(function(el) {
+      if (el.innerHTML && !el.innerHTML.includes('special-q')) {
+        el.innerHTML = formatProductName(el.innerHTML);
+      }
+    });
+  }
+
+  function initLanguage() {
+    const saved = localStorage.getItem('wonderherb_lang');
+    if (saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru') currentLang = saved;
+    else currentLang = 'zh';
+    applyStaticTranslation(currentLang);
+    setTimeout(applySpecialQStyling, 10);
+  }
+
+  function setLanguage(lang) {
+    if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return;
+    currentLang = lang;
+    localStorage.setItem('wonderherb_lang', lang);
+    applyStaticTranslation(currentLang);
+    setTimeout(applySpecialQStyling, 10);
+  }
+
+  window.addEventListener('load', function() {
+    setTimeout(applySpecialQStyling, 100);
+  });
 </script>
 <a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> <span class="btn-text">立即諮詢</span></a>
 </body>

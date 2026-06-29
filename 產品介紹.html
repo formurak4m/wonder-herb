@@ -563,6 +563,20 @@
       margin-bottom: 8px;
     }
 
+    .special-q {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.05em;
+      height: 1.05em;
+      border-radius: 50%;
+      color: #000000;
+      font-weight: 700;
+      font-size: 0.7em;
+      margin-left: -0.15em;
+      margin-top: 0.3em;
+      vertical-align: middle;
+    }
     .product-price {
       font-size: 1.25rem;
       font-weight: 700;
@@ -1793,6 +1807,10 @@
       return true;
     }
 
+    function formatProductName(name) {
+      return name.replace(/Hep BQ/gi, 'Hep B<span class="special-q">Q</span>');
+    }
+
     function renderProducts() {
       const products = productData[currentLang];
       const grid = document.getElementById('productGrid');
@@ -1803,7 +1821,7 @@
             <img src="${p.image}" alt="${escapeHtml(p.name)}" loading="lazy">
           </div>
           <div class="product-info">
-            <h2 class="product-title" id="product-title-${p.id}">${escapeHtml(p.name)}</h2>
+            <h2 class="product-title" id="product-title-${p.id}">${formatProductName(escapeHtml(p.name))}</h2>
             <div class="product-price">${p.priceText}</div>
             <p class="product-desc">${escapeHtml(p.desc)}</p>
             <div class="card-buttons">
@@ -1828,7 +1846,7 @@
     function openQuickView(product) { currentProduct = product;
       modalImg.src = product.image;
       modalImg.alt = product.name;
-      modalTitle.innerText = product.name;
+      modalTitle.innerHTML = formatProductName(escapeHtml(product.name));
       modalPrice.innerText = product.priceText;
       modalDesc.innerText = product.desc;
       modalQty.value = 1;
