@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+Disallow: /購物車.html
+Disallow: /%E8%B3%BC%E7%89%A9%E8%BB%8A.html
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://www.wonder-herb.com/sitemap.xml
