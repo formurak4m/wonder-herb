@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>康草堂 Wonder Herb · 網站管理 Admin (示範 Demo)</title>
+<style>
+  :root{
+    --accent:#9b2e2e; --accent-dark:#7d2424; --accent-soft:#f6ebeb;
+    --bg:#f4f5f7; --panel:#ffffff; --ink:#1f2430; --muted:#6b7280;
+    --line:#e5e7eb; --ok:#127a4b; --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",-apple-system,"PingFang HK","Microsoft JhengHei",system-ui,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  button{font:inherit;cursor:pointer;border:none;background:none}
+  input,textarea{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--line);
+       border-radius:8px;background:#fff;color:var(--ink)}
+  input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:8px;font-weight:600;font-size:.92rem;transition:.15s}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-dark)}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .btn-ghost:hover{background:#f9fafb}
+  .btn-danger{color:#b42318;background:#fff;border:1px solid #f3c9c4}
+  .btn-danger:hover{background:#fef3f2}
+
+  /* ---------- Login ---------- */
+  #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#faf7f4,#eef0f3);z-index:50;padding:20px}
+  .login-card{background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.12);
+    padding:40px 34px;max-width:380px;width:100%;text-align:center}
+  .login-logo{width:56px;height:56px;border-radius:14px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;margin:0 auto 18px}
+  .login-card h1{font-size:1.25rem;margin-bottom:4px}
+  .login-card p{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+  .gh-btn{width:100%;justify-content:center;background:#1f2328;color:#fff;padding:12px}
+  .gh-btn:hover{background:#000}
+  .login-note{margin-top:16px;font-size:.78rem;color:var(--muted)}
+
+  /* ---------- Shell ---------- */
+  #app{display:none;min-height:100vh;grid-template-columns:236px 1fr;grid-template-rows:auto 1fr}
+  .topbar{grid-column:1/3;display:flex;align-items:center;justify-content:space-between;
+    background:#fff;border-bottom:1px solid var(--line);padding:0 20px;height:58px;position:sticky;top:0;z-index:20}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+  .brand .mark{width:32px;height:32px;border-radius:8px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700}
+  .demo-badge{background:#fff4e5;color:#b25e00;border:1px solid #ffd8a8;font-size:.72rem;
+    font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.02em}
+  .topbar-right{display:flex;align-items:center;gap:14px;font-size:.88rem;color:var(--muted)}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;font-weight:700}
+
+  .sidebar{background:#fff;border-right:1px solid var(--line);padding:16px 12px}
+  .side-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+    padding:8px 12px 6px}
+  .nav-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;
+    border-radius:9px;color:var(--ink);font-size:.92rem;font-weight:500;margin-bottom:2px}
+  .nav-item:hover{background:#f6f7f9}
+  .nav-item.active{background:var(--accent-soft);color:var(--accent);font-weight:700}
+  .nav-item .ic{width:18px;text-align:center}
+  .nav-item.soon{color:#aab1bd;cursor:not-allowed}
+  .nav-item.soon:hover{background:transparent}
+  .soon-tag{margin-left:auto;font-size:.64rem;background:#eef0f3;color:#8a94a3;padding:2px 6px;border-radius:6px;font-weight:700}
+
+  .main{padding:26px 30px;overflow:auto}
+  .demo-banner{background:var(--accent-soft);border:1px solid #e8cfcf;color:#7d2424;
+    padding:11px 15px;border-radius:10px;font-size:.85rem;margin-bottom:22px;display:flex;gap:9px;align-items:flex-start}
+  .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+  .page-head h2{font-size:1.4rem}
+  .page-head .sub{color:var(--muted);font-size:.88rem;margin-top:2px}
+  .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+  .search{max-width:280px;position:relative}
+
+  /* ---------- Case list ---------- */
+  .case-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+    box-shadow:var(--shadow);margin-bottom:12px;display:flex;gap:16px;align-items:flex-start}
+  .case-card .body{flex:1;min-width:0}
+  .case-card h3{font-size:1.02rem;margin-bottom:3px}
+  .case-card .cond{display:inline-block;background:var(--accent-soft);color:var(--accent);
+    font-size:.74rem;font-weight:700;padding:2px 9px;border-radius:999px;margin-bottom:7px}
+  .case-card .summary{color:var(--muted);font-size:.86rem;display:-webkit-box;-webkit-line-clamp:2;
+    -webkit-box-orient:vertical;overflow:hidden}
+  .case-card .actions{display:flex;gap:8px;flex-shrink:0}
+  .idx{width:26px;height:26px;border-radius:7px;background:#f1f3f5;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+
+  /* ---------- Editor ---------- */
+  .editor{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+    max-width:720px;overflow:hidden}
+  .editor-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .editor-head h3{font-size:1.1rem}
+  .lang-tabs{display:flex;gap:4px;padding:12px 20px 0;flex-wrap:wrap}
+  .lang-tab{padding:7px 13px;border-radius:8px 8px 0 0;font-size:.82rem;font-weight:600;color:var(--muted);border:1px solid transparent;border-bottom:none}
+  .lang-tab.active{background:#fff;color:var(--accent);border-color:var(--line)}
+  .lang-tab.primary::after{content:"主要";font-size:.62rem;background:var(--accent);color:#fff;padding:1px 5px;border-radius:5px;margin-left:6px;vertical-align:middle}
+  .form{padding:20px}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px}
+  .field .hint{font-size:.74rem;color:var(--muted);font-weight:400;margin-left:6px}
+  .editor-foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;background:#fafbfc}
+  .preview{margin-top:8px;padding:12px 14px;background:#faf9f8;border:1px dashed var(--line);border-radius:8px;font-size:.86rem;color:#444;max-height:180px;overflow:auto}
+  .preview p{margin-bottom:8px}
+  .preview:empty{display:none}
+
+  /* ---------- Toast ---------- */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:.9rem;
+    opacity:0;pointer-events:none;transition:.25s;z-index:60;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  #toast.ok{background:var(--ok)}
+  .hidden{display:none!important}
+  @media(max-width:760px){
+    #app{grid-template-columns:1fr}
+    .sidebar{display:none}
+    .main{padding:18px 16px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-logo">康</div>
+    <h1>康草堂 網站管理</h1>
+    <p>Wonder Herb · Content Admin</p>
+    <button class="btn gh-btn" onclick="enterDemo()">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="#fff"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      使用 GitHub 登入
+    </button>
+    <div class="login-note">🔒 示範版：點擊即可進入預覽，無需真實登入。<br>正式版會透過 GitHub 安全登入。</div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <div class="topbar">
+    <div class="brand"><span class="mark">康</span> 康草堂 網站管理 <span class="demo-badge">示範 DEMO</span></div>
+    <div class="topbar-right">
+      <span id="whoami">管理員</span>
+      <div class="avatar">管</div>
+      <button class="btn btn-ghost" style="padding:6px 12px" onclick="logout()">登出</button>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="side-label">內容 Content</div>
+    <button class="nav-item active"><span class="ic">📋</span> 病例 Cases <span class="soon-tag" style="background:var(--accent-soft);color:var(--accent)">15</span></button>
+    <button class="nav-item soon"><span class="ic">🛍️</span> 產品 Products <span class="soon-tag">即將</span></button>
+    <button class="nav-item soon"><span class="ic">❓</span> 常見問題 FAQ <span class="soon-tag">即將</span></button>
+    <button class="nav-item soon"><span class="ic">📝</span> 首頁文字 Text <span class="soon-tag">即將</span></button>
+    <div class="side-label" style="margin-top:14px">網站 Site</div>
+    <button class="nav-item soon"><span class="ic">🌐</span> 檢視網站 <span class="soon-tag">即將</span></button>
+  </aside>
+
+  <main class="main">
+    <div class="demo-banner">
+      <span>ℹ️</span>
+      <span><b>這是示範版。</b>你可以自由試用：新增、編輯、刪除病例。所有修改只會顯示在這個畫面上，<b>不會</b>寫入正式網站 —— 正式版按「儲存」後，網站會在約 1 分鐘內自動更新。</span>
+    </div>
+
+    <!-- LIST VIEW -->
+    <section id="listView">
+      <div class="page-head">
+        <div>
+          <h2>病例 Cases</h2>
+          <div class="sub">管理真實康復見證 · 共 <span id="caseCount">0</span> 則</div>
+        </div>
+        <button class="btn btn-primary" onclick="openEditor(null)">＋ 新增病例</button>
+      </div>
+      <div class="toolbar">
+        <div class="search"><input id="searchBox" placeholder="🔍 搜尋病例（標題、病症…）" oninput="renderList()"></div>
+      </div>
+      <div id="caseList"></div>
+    </section>
+
+    <!-- EDIT VIEW -->
+    <section id="editView" class="hidden">
+      <div class="page-head">
+        <div><h2 id="editTitle">編輯病例</h2><div class="sub">填寫「中文（主要）」即可；其他語言可留空。</div></div>
+        <button class="btn btn-ghost" onclick="closeEditor()">← 返回列表</button>
+      </div>
+      <div class="editor">
+        <div class="editor-head"><h3 id="editorHeading">病例內容</h3></div>
+        <div class="lang-tabs" id="langTabs"></div>
+        <div class="form">
+          <div class="field">
+            <label>標題 <span class="hint">例：麥女士（77歲）</span></label>
+            <input id="f_title">
+          </div>
+          <div class="field">
+            <label>副標題／病症 <span class="hint">例：肛門惡性腫瘤</span></label>
+            <input id="f_subtitle">
+          </div>
+          <div class="field">
+            <label>摘要 <span class="hint">卡片上顯示的短文</span></label>
+            <textarea id="f_summary" rows="3"></textarea>
+          </div>
+          <div class="field">
+            <label>內容 <span class="hint">完整故事（支援 HTML，例如 &lt;p&gt;…&lt;/p&gt;）</span></label>
+            <textarea id="f_content" rows="6" oninput="updatePreview()"></textarea>
+            <div class="preview" id="contentPreview"></div>
+          </div>
+        </div>
+        <div class="editor-foot">
+          <button class="btn btn-ghost" onclick="closeEditor()">取消</button>
+          <button class="btn btn-primary" onclick="saveCase()">💾 儲存</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const LANGS = [
+  {code:'zh', label:'中文', primary:true},
+  {code:'en', label:'English'},
+  {code:'de', label:'Deutsch'},
+  {code:'es', label:'Español'},
+  {code:'fr', label:'Français'},
+  {code:'ja', label:'日本語'},
+  {code:'ru', label:'Русский'},
+];
+let cases = [];
+let editingIndex = null;   // null = new
+let activeLang = 'zh';
+
+// Fallback data so the demo still shows something if cases.json can't be fetched (e.g. opened via file://)
+const FALLBACK = [
+  {zh:{title:"麥女士（77歲）",subtitle:"肛門惡性腫瘤",summary:"化療首日起每日服用雲芝+T3，第22天僅輕微不適，醫生驚嘆其耐受度勝過40歲病人。",content:"<p>2025年體檢發現肛門惡性腫瘤並擴散至淋巴，接受30次根治性電療化療。</p><p>由化療首日開始每日服用3次雲芝+T3。</p>"}},
+  {zh:{title:"陳小姐（55歲）",subtitle:"腹膜惡性腫瘤",summary:"手術切除後服用雲芝+T3，CT追蹤一切正常，現維持鞏固劑量。",content:"<p>2023年確診腹膜惡性腫瘤，手術切除後開始服用雲芝+T3。</p>"}},
+  {zh:{title:"Peter Hall（74歲）",subtitle:"前列腺惡性腫瘤",summary:"服用PSP後PSA指數下降，活檢正常。",content:"<p>服用雲芝糖肽PSP後，PSA指數持續下降，其後活檢結果正常。</p>"}},
+];
+
+function enterDemo(){
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='grid';
+  loadCases();
+}
+function logout(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('login').style.display='flex';
+}
+
+async function loadCases(){
+  try{
+    const res = await fetch('../data/cases.json',{cache:'no-store'});
+    if(!res.ok) throw new Error('http '+res.status);
+    cases = await res.json();
+    toast('已載入 '+cases.length+' 則病例', true);
+  }catch(e){
+    cases = JSON.parse(JSON.stringify(FALLBACK));
+    toast('示範資料（未連接檔案）', false);
+  }
+  renderList();
+}
+
+function g(item, lang, field){ return (item[lang] && item[lang][field]) || ''; }
+
+function renderList(){
+  const q = (document.getElementById('searchBox').value||'').trim().toLowerCase();
+  const list = document.getElementById('caseList');
+  document.getElementById('caseCount').textContent = cases.length;
+  const rows = cases.map((c,i)=>({c,i})).filter(({c})=>{
+    if(!q) return true;
+    const hay = (g(c,'zh','title')+' '+g(c,'zh','subtitle')+' '+g(c,'zh','summary')).toLowerCase();
+    return hay.includes(q);
+  });
+  if(rows.length===0){ list.innerHTML = '<p style="color:var(--muted);padding:20px 4px">沒有符合的病例。</p>'; return; }
+  list.innerHTML = rows.map(({c,i})=>`
+    <div class="case-card">
+      <div class="idx">${i+1}</div>
+      <div class="body">
+        <div class="cond">${esc(g(c,'zh','subtitle'))||'—'}</div>
+        <h3>${esc(g(c,'zh','title'))||'（未命名）'}</h3>
+        <div class="summary">${esc(g(c,'zh','summary'))}</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="openEditor(${i})">✏️ 編輯</button>
+        <button class="btn btn-danger" onclick="delCase(${i})">刪除</button>
+      </div>
+    </div>`).join('');
+}
+
+function openEditor(index){
+  editingIndex = index;
+  activeLang = 'zh';
+  document.getElementById('listView').classList.add('hidden');
+  document.getElementById('editView').classList.remove('hidden');
+  document.getElementById('editTitle').textContent = index===null ? '新增病例' : '編輯病例';
+  renderLangTabs();
+  loadFields();
+}
+function closeEditor(){
+  document.getElementById('editView').classList.add('hidden');
+  document.getElementById('listView').classList.remove('hidden');
+}
+
+function renderLangTabs(){
+  document.getElementById('langTabs').innerHTML = LANGS.map(l=>
+    `<button class="lang-tab ${l.primary?'primary':''} ${l.code===activeLang?'active':''}" onclick="switchLang('${l.code}')">${l.label}</button>`
+  ).join('');
+}
+function switchLang(code){ stashFields(); activeLang=code; renderLangTabs(); loadFields(); }
+
+function currentDraft(){
+  if(editingIndex===null){ return (window.__draft = window.__draft || {}); }
+  return cases[editingIndex];
+}
+function loadFields(){
+  const item = currentDraft();
+  const d = item[activeLang] || {};
+  document.getElementById('f_title').value = d.title||'';
+  document.getElementById('f_subtitle').value = d.subtitle||'';
+  document.getElementById('f_summary').value = d.summary||'';
+  document.getElementById('f_content').value = d.content||'';
+  updatePreview();
+}
+function stashFields(){
+  const item = currentDraft();
+  item[activeLang] = {
+    title: document.getElementById('f_title').value,
+    subtitle: document.getElementById('f_subtitle').value,
+    summary: document.getElementById('f_summary').value,
+    content: document.getElementById('f_content').value,
+  };
+}
+function updatePreview(){
+  document.getElementById('contentPreview').innerHTML = document.getElementById('f_content').value;
+}
+
+function saveCase(){
+  stashFields();
+  const draft = currentDraft();
+  if(editingIndex===null){
+    if(!(draft.zh && draft.zh.title)){ toast('請至少填寫中文標題', false); return; }
+    cases.unshift(draft); window.__draft = null;
+  }
+  closeEditor();
+  renderList();
+  toast('已儲存（示範）✓ 正式版會自動更新網站', true);
+}
+function delCase(i){
+  if(!confirm('確定刪除「'+(g(cases[i],'zh','title')||'此病例')+'」？（示範，不影響正式網站）')) return;
+  cases.splice(i,1); renderList(); toast('已刪除（示範）', false);
+}
+
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+let toastTimer;
+function toast(msg, ok){
+  const t=document.getElementById('toast'); t.textContent=msg;
+  t.className = 'show'+(ok?' ok':''); clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.className='',2600);
+}
+</script>
+</body>
+</html>
