@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>康草堂 Wonder Herb · 網站管理 Admin (示範 Demo)</title>
+<title>Wonder Herb · Content Admin (Demo)</title>
 <style>
   :root{
     --accent:#9b2e2e; --accent-dark:#7d2424; --accent-soft:#f6ebeb;
@@ -12,7 +12,7 @@
     --line:#e5e7eb; --ok:#127a4b; --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:"Segoe UI",-apple-system,"PingFang HK","Microsoft JhengHei",system-ui,sans-serif;
+  body{font-family:"Segoe UI",-apple-system,system-ui,"PingFang HK","Microsoft JhengHei",sans-serif;
        background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
   button{font:inherit;cursor:pointer;border:none;background:none}
   input,textarea{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--line);
@@ -32,7 +32,7 @@
   .login-card{background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.12);
     padding:40px 34px;max-width:380px;width:100%;text-align:center}
   .login-logo{width:56px;height:56px;border-radius:14px;background:var(--accent);color:#fff;
-    display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;margin:0 auto 18px}
+    display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:700;margin:0 auto 18px;letter-spacing:.02em}
   .login-card h1{font-size:1.25rem;margin-bottom:4px}
   .login-card p{color:var(--muted);font-size:.9rem;margin-bottom:24px}
   .gh-btn{width:100%;justify-content:center;background:#1f2328;color:#fff;padding:12px}
@@ -45,9 +45,9 @@
     background:#fff;border-bottom:1px solid var(--line);padding:0 20px;height:58px;position:sticky;top:0;z-index:20}
   .brand{display:flex;align-items:center;gap:10px;font-weight:700}
   .brand .mark{width:32px;height:32px;border-radius:8px;background:var(--accent);color:#fff;
-    display:flex;align-items:center;justify-content:center;font-weight:700}
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem}
   .demo-badge{background:#fff4e5;color:#b25e00;border:1px solid #ffd8a8;font-size:.72rem;
-    font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.02em}
+    font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.03em}
   .topbar-right{display:flex;align-items:center;gap:14px;font-size:.88rem;color:var(--muted)}
   .avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
     display:flex;align-items:center;justify-content:center;font-weight:700}
@@ -94,7 +94,7 @@
   .lang-tabs{display:flex;gap:4px;padding:12px 20px 0;flex-wrap:wrap}
   .lang-tab{padding:7px 13px;border-radius:8px 8px 0 0;font-size:.82rem;font-weight:600;color:var(--muted);border:1px solid transparent;border-bottom:none}
   .lang-tab.active{background:#fff;color:var(--accent);border-color:var(--line)}
-  .lang-tab.primary::after{content:"主要";font-size:.62rem;background:var(--accent);color:#fff;padding:1px 5px;border-radius:5px;margin-left:6px;vertical-align:middle}
+  .lang-tab.primary::after{content:"Primary";font-size:.62rem;background:var(--accent);color:#fff;padding:1px 5px;border-radius:5px;margin-left:6px;vertical-align:middle}
   .form{padding:20px}
   .field{margin-bottom:16px}
   .field label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px}
@@ -123,55 +123,55 @@
 <!-- ============ LOGIN ============ -->
 <div id="login">
   <div class="login-card">
-    <div class="login-logo">康</div>
-    <h1>康草堂 網站管理</h1>
-    <p>Wonder Herb · Content Admin</p>
+    <div class="login-logo">WH</div>
+    <h1>Wonder Herb Admin</h1>
+    <p>Website Content Manager</p>
     <button class="btn gh-btn" onclick="enterDemo()">
       <svg width="18" height="18" viewBox="0 0 16 16" fill="#fff"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-      使用 GitHub 登入
+      Sign in with GitHub
     </button>
-    <div class="login-note">🔒 示範版：點擊即可進入預覽，無需真實登入。<br>正式版會透過 GitHub 安全登入。</div>
+    <div class="login-note">🔒 Demo: click to enter the preview — no real login needed.<br>The live version signs in securely through GitHub.</div>
   </div>
 </div>
 
 <!-- ============ APP ============ -->
 <div id="app">
   <div class="topbar">
-    <div class="brand"><span class="mark">康</span> 康草堂 網站管理 <span class="demo-badge">示範 DEMO</span></div>
+    <div class="brand"><span class="mark">WH</span> Wonder Herb Admin <span class="demo-badge">DEMO</span></div>
     <div class="topbar-right">
-      <span id="whoami">管理員</span>
-      <div class="avatar">管</div>
-      <button class="btn btn-ghost" style="padding:6px 12px" onclick="logout()">登出</button>
+      <span id="whoami">Admin</span>
+      <div class="avatar">A</div>
+      <button class="btn btn-ghost" style="padding:6px 12px" onclick="logout()">Log out</button>
     </div>
   </div>
 
   <aside class="sidebar">
-    <div class="side-label">內容 Content</div>
-    <button class="nav-item active"><span class="ic">📋</span> 病例 Cases <span class="soon-tag" style="background:var(--accent-soft);color:var(--accent)">15</span></button>
-    <button class="nav-item soon"><span class="ic">🛍️</span> 產品 Products <span class="soon-tag">即將</span></button>
-    <button class="nav-item soon"><span class="ic">❓</span> 常見問題 FAQ <span class="soon-tag">即將</span></button>
-    <button class="nav-item soon"><span class="ic">📝</span> 首頁文字 Text <span class="soon-tag">即將</span></button>
-    <div class="side-label" style="margin-top:14px">網站 Site</div>
-    <button class="nav-item soon"><span class="ic">🌐</span> 檢視網站 <span class="soon-tag">即將</span></button>
+    <div class="side-label">Content</div>
+    <button class="nav-item active"><span class="ic">📋</span> Cases <span class="soon-tag" style="background:var(--accent-soft);color:var(--accent)">15</span></button>
+    <button class="nav-item soon"><span class="ic">🛍️</span> Products <span class="soon-tag">Soon</span></button>
+    <button class="nav-item soon"><span class="ic">❓</span> FAQ <span class="soon-tag">Soon</span></button>
+    <button class="nav-item soon"><span class="ic">📝</span> Homepage Text <span class="soon-tag">Soon</span></button>
+    <div class="side-label" style="margin-top:14px">Site</div>
+    <button class="nav-item soon"><span class="ic">🌐</span> View Site <span class="soon-tag">Soon</span></button>
   </aside>
 
   <main class="main">
     <div class="demo-banner">
       <span>ℹ️</span>
-      <span><b>這是示範版。</b>你可以自由試用：新增、編輯、刪除病例。所有修改只會顯示在這個畫面上，<b>不會</b>寫入正式網站 —— 正式版按「儲存」後，網站會在約 1 分鐘內自動更新。</span>
+      <span><b>This is a demo.</b> Feel free to try it: add, edit, or delete cases. All changes stay on this screen only and are <b>not</b> written to the live website — in the live version, clicking "Save" updates the site automatically within about 1 minute.</span>
     </div>
 
     <!-- LIST VIEW -->
     <section id="listView">
       <div class="page-head">
         <div>
-          <h2>病例 Cases</h2>
-          <div class="sub">管理真實康復見證 · 共 <span id="caseCount">0</span> 則</div>
+          <h2>Cases</h2>
+          <div class="sub">Manage patient recovery stories · <span id="caseCount">0</span> total</div>
         </div>
-        <button class="btn btn-primary" onclick="openEditor(null)">＋ 新增病例</button>
+        <button class="btn btn-primary" onclick="openEditor(null)">＋ Add case</button>
       </div>
       <div class="toolbar">
-        <div class="search"><input id="searchBox" placeholder="🔍 搜尋病例（標題、病症…）" oninput="renderList()"></div>
+        <div class="search"><input id="searchBox" placeholder="🔍 Search cases (title, condition…)" oninput="renderList()"></div>
       </div>
       <div id="caseList"></div>
     </section>
@@ -179,34 +179,34 @@
     <!-- EDIT VIEW -->
     <section id="editView" class="hidden">
       <div class="page-head">
-        <div><h2 id="editTitle">編輯病例</h2><div class="sub">填寫「中文（主要）」即可；其他語言可留空。</div></div>
-        <button class="btn btn-ghost" onclick="closeEditor()">← 返回列表</button>
+        <div><h2 id="editTitle">Edit case</h2><div class="sub">Fill in the "Chinese (primary)" tab; other languages are optional.</div></div>
+        <button class="btn btn-ghost" onclick="closeEditor()">← Back to list</button>
       </div>
       <div class="editor">
-        <div class="editor-head"><h3 id="editorHeading">病例內容</h3></div>
+        <div class="editor-head"><h3 id="editorHeading">Case content</h3></div>
         <div class="lang-tabs" id="langTabs"></div>
         <div class="form">
           <div class="field">
-            <label>標題 <span class="hint">例：麥女士（77歲）</span></label>
+            <label>Title <span class="hint">e.g. Ms. Mak (77)</span></label>
             <input id="f_title">
           </div>
           <div class="field">
-            <label>副標題／病症 <span class="hint">例：肛門惡性腫瘤</span></label>
+            <label>Subtitle / condition <span class="hint">e.g. Anal malignant tumor</span></label>
             <input id="f_subtitle">
           </div>
           <div class="field">
-            <label>摘要 <span class="hint">卡片上顯示的短文</span></label>
+            <label>Summary <span class="hint">short text shown on the card</span></label>
             <textarea id="f_summary" rows="3"></textarea>
           </div>
           <div class="field">
-            <label>內容 <span class="hint">完整故事（支援 HTML，例如 &lt;p&gt;…&lt;/p&gt;）</span></label>
+            <label>Content <span class="hint">full story (supports HTML, e.g. &lt;p&gt;…&lt;/p&gt;)</span></label>
             <textarea id="f_content" rows="6" oninput="updatePreview()"></textarea>
             <div class="preview" id="contentPreview"></div>
           </div>
         </div>
         <div class="editor-foot">
-          <button class="btn btn-ghost" onclick="closeEditor()">取消</button>
-          <button class="btn btn-primary" onclick="saveCase()">💾 儲存</button>
+          <button class="btn btn-ghost" onclick="closeEditor()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveCase()">💾 Save</button>
         </div>
       </div>
     </section>
@@ -217,13 +217,13 @@
 
 <script>
 const LANGS = [
-  {code:'zh', label:'中文', primary:true},
+  {code:'zh', label:'Chinese', primary:true},
   {code:'en', label:'English'},
-  {code:'de', label:'Deutsch'},
-  {code:'es', label:'Español'},
-  {code:'fr', label:'Français'},
-  {code:'ja', label:'日本語'},
-  {code:'ru', label:'Русский'},
+  {code:'de', label:'German'},
+  {code:'es', label:'Spanish'},
+  {code:'fr', label:'French'},
+  {code:'ja', label:'Japanese'},
+  {code:'ru', label:'Russian'},
 ];
 let cases = [];
 let editingIndex = null;   // null = new
@@ -251,10 +251,10 @@ async function loadCases(){
     const res = await fetch('../data/cases.json',{cache:'no-store'});
     if(!res.ok) throw new Error('http '+res.status);
     cases = await res.json();
-    toast('已載入 '+cases.length+' 則病例', true);
+    toast('Loaded '+cases.length+' cases', true);
   }catch(e){
     cases = JSON.parse(JSON.stringify(FALLBACK));
-    toast('示範資料（未連接檔案）', false);
+    toast('Demo data (file not connected)', false);
   }
   renderList();
 }
@@ -270,18 +270,18 @@ function renderList(){
     const hay = (g(c,'zh','title')+' '+g(c,'zh','subtitle')+' '+g(c,'zh','summary')).toLowerCase();
     return hay.includes(q);
   });
-  if(rows.length===0){ list.innerHTML = '<p style="color:var(--muted);padding:20px 4px">沒有符合的病例。</p>'; return; }
+  if(rows.length===0){ list.innerHTML = '<p style="color:var(--muted);padding:20px 4px">No matching cases.</p>'; return; }
   list.innerHTML = rows.map(({c,i})=>`
     <div class="case-card">
       <div class="idx">${i+1}</div>
       <div class="body">
         <div class="cond">${esc(g(c,'zh','subtitle'))||'—'}</div>
-        <h3>${esc(g(c,'zh','title'))||'（未命名）'}</h3>
+        <h3>${esc(g(c,'zh','title'))||'(untitled)'}</h3>
         <div class="summary">${esc(g(c,'zh','summary'))}</div>
       </div>
       <div class="actions">
-        <button class="btn btn-ghost" onclick="openEditor(${i})">✏️ 編輯</button>
-        <button class="btn btn-danger" onclick="delCase(${i})">刪除</button>
+        <button class="btn btn-ghost" onclick="openEditor(${i})">✏️ Edit</button>
+        <button class="btn btn-danger" onclick="delCase(${i})">Delete</button>
       </div>
     </div>`).join('');
 }
@@ -291,7 +291,7 @@ function openEditor(index){
   activeLang = 'zh';
   document.getElementById('listView').classList.add('hidden');
   document.getElementById('editView').classList.remove('hidden');
-  document.getElementById('editTitle').textContent = index===null ? '新增病例' : '編輯病例';
+  document.getElementById('editTitle').textContent = index===null ? 'Add case' : 'Edit case';
   renderLangTabs();
   loadFields();
 }
@@ -337,16 +337,16 @@ function saveCase(){
   stashFields();
   const draft = currentDraft();
   if(editingIndex===null){
-    if(!(draft.zh && draft.zh.title)){ toast('請至少填寫中文標題', false); return; }
+    if(!(draft.zh && draft.zh.title)){ toast('Please enter at least a Chinese title', false); return; }
     cases.unshift(draft); window.__draft = null;
   }
   closeEditor();
   renderList();
-  toast('已儲存（示範）✓ 正式版會自動更新網站', true);
+  toast('Saved (demo) ✓ The live version updates the site automatically', true);
 }
 function delCase(i){
-  if(!confirm('確定刪除「'+(g(cases[i],'zh','title')||'此病例')+'」？（示範，不影響正式網站）')) return;
-  cases.splice(i,1); renderList(); toast('已刪除（示範）', false);
+  if(!confirm('Delete "'+(g(cases[i],'zh','title')||'this case')+'"?  (Demo — does not affect the live site)')) return;
+  cases.splice(i,1); renderList(); toast('Deleted (demo)', false);
 }
 
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
