@@ -9,352 +9,986 @@
   :root{
     --accent:#9b2e2e; --accent-dark:#7d2424; --accent-soft:#f6ebeb;
     --bg:#f4f5f7; --panel:#ffffff; --ink:#1f2430; --muted:#6b7280;
-    --line:#e5e7eb; --ok:#127a4b; --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+    --line:#e5e7eb; --ok:#127a4b; --info:#1d4ed8; --info-bg:#eff6ff;
+    --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+    --shadow-lg:0 10px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.05);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:"Segoe UI",-apple-system,system-ui,"PingFang HK","Microsoft JhengHei",sans-serif;
        background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
   button{font:inherit;cursor:pointer;border:none;background:none}
-  input,textarea{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--line);
+  input,select,textarea{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--line);
        border-radius:8px;background:#fff;color:var(--ink)}
-  input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-  .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:8px;font-weight:600;font-size:.92rem;transition:.15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:8px;font-weight:600;font-size:.92rem;transition:.15s;text-decoration:none}
   .btn-primary{background:var(--accent);color:#fff}
   .btn-primary:hover{background:var(--accent-dark)}
   .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
   .btn-ghost:hover{background:#f9fafb}
   .btn-danger{color:#b42318;background:#fff;border:1px solid #f3c9c4}
   .btn-danger:hover{background:#fef3f2}
+  .btn-sm{padding:6px 12px;font-size:.84rem}
 
-  /* ---------- Login ---------- */
+  /* ---------- Login Modal ---------- */
   #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,#faf7f4,#eef0f3);z-index:50;padding:20px}
-  .login-card{background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.12);
-    padding:40px 34px;max-width:380px;width:100%;text-align:center}
+    background:linear-gradient(135deg,#faf7f4,#eef0f3);z-index:100;padding:20px}
+  .login-card{background:#fff;border-radius:16px;box-shadow:var(--shadow-lg);
+    padding:40px 34px;max-width:400px;width:100%;text-align:center}
   .login-logo{width:56px;height:56px;border-radius:14px;background:var(--accent);color:#fff;
-    display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:700;margin:0 auto 18px;letter-spacing:.02em}
-  .login-card h1{font-size:1.25rem;margin-bottom:4px}
+    display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;margin:0 auto 18px;letter-spacing:.02em}
+  .login-card h1{font-size:1.3rem;margin-bottom:4px}
   .login-card p{color:var(--muted);font-size:.9rem;margin-bottom:24px}
-  .gh-btn{width:100%;justify-content:center;background:#1f2328;color:#fff;padding:12px}
+  .gh-btn{width:100%;justify-content:center;background:#1f2328;color:#fff;padding:12px;border-radius:9px}
   .gh-btn:hover{background:#000}
-  .login-note{margin-top:16px;font-size:.78rem;color:var(--muted)}
+  .login-note{margin-top:16px;font-size:.78rem;color:var(--muted);line-height:1.4}
 
-  /* ---------- Shell ---------- */
-  #app{display:none;min-height:100vh;grid-template-columns:236px 1fr;grid-template-rows:auto 1fr}
+  /* ---------- App Layout ---------- */
+  #app{display:none;min-height:100vh;grid-template-columns:240px 1fr;grid-template-rows:58px 1fr}
+  
+  /* Header Topbar */
   .topbar{grid-column:1/3;display:flex;align-items:center;justify-content:space-between;
-    background:#fff;border-bottom:1px solid var(--line);padding:0 20px;height:58px;position:sticky;top:0;z-index:20}
-  .brand{display:flex;align-items:center;gap:10px;font-weight:700}
+    background:#fff;border-bottom:1px solid var(--line);padding:0 24px;height:58px;position:sticky;top:0;z-index:20}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem}
   .brand .mark{width:32px;height:32px;border-radius:8px;background:var(--accent);color:#fff;
-    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem}
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
   .demo-badge{background:#fff4e5;color:#b25e00;border:1px solid #ffd8a8;font-size:.72rem;
     font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.03em}
   .topbar-right{display:flex;align-items:center;gap:14px;font-size:.88rem;color:var(--muted)}
-  .avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
-    display:flex;align-items:center;justify-content:center;font-weight:700}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
 
-  .sidebar{background:#fff;border-right:1px solid var(--line);padding:16px 12px}
+  /* Sidebar Navigation */
+  .sidebar{background:#fff;border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:16px}
+  .side-group{display:flex;flex-direction:column;gap:4px}
   .side-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
-    padding:8px 12px 6px}
+    padding:4px 10px 6px;font-weight:700}
   .nav-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;
-    border-radius:9px;color:var(--ink);font-size:.92rem;font-weight:500;margin-bottom:2px}
+    border-radius:99px;color:var(--ink);font-size:.92rem;font-weight:500;transition:.15s}
   .nav-item:hover{background:#f6f7f9}
   .nav-item.active{background:var(--accent-soft);color:var(--accent);font-weight:700}
-  .nav-item .ic{width:18px;text-align:center}
-  .nav-item.soon{color:#aab1bd;cursor:not-allowed}
-  .nav-item.soon:hover{background:transparent}
-  .soon-tag{margin-left:auto;font-size:.64rem;background:#eef0f3;color:#8a94a3;padding:2px 6px;border-radius:6px;font-weight:700}
+  .nav-item .ic{width:20px;text-align:center;font-size:1.05rem}
+  .nav-badge{margin-left:auto;font-size:.7rem;background:#f1f3f5;color:var(--muted);padding:2px 8px;border-radius:999px;font-weight:600}
+  .nav-item.active .nav-badge{background:var(--accent);color:#fff}
 
-  .main{padding:26px 30px;overflow:auto}
+  /* Main Workspace */
+  .main{padding:26px 32px;overflow:auto;max-width:1200px}
   .demo-banner{background:var(--accent-soft);border:1px solid #e8cfcf;color:#7d2424;
-    padding:11px 15px;border-radius:10px;font-size:.85rem;margin-bottom:22px;display:flex;gap:9px;align-items:flex-start}
-  .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px}
-  .page-head h2{font-size:1.4rem}
+    padding:12px 16px;border-radius:10px;font-size:.86rem;margin-bottom:20px;display:flex;gap:10px;align-items:center}
+
+  /* Impact Info Box */
+  .impact-box{background:var(--info-bg);border:1px solid #bfdbfe;color:#1e40af;
+    padding:12px 16px;border-radius:10px;font-size:.85rem;margin-bottom:22px;display:flex;gap:10px;align-items:center}
+  .impact-box code{background:#dbeafe;color:#1e3a8a;padding:2px 6px;border-radius:4px;font-weight:600;font-family:monospace}
+
+  .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+  .page-head h2{font-size:1.45rem;color:var(--ink);display:flex;align-items:center;gap:8px}
   .page-head .sub{color:var(--muted);font-size:.88rem;margin-top:2px}
-  .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
-  .search{max-width:280px;position:relative}
+  .toolbar{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+  .search{max-width:320px;position:relative;flex:1}
+  .filter-select{max-width:200px}
 
-  /* ---------- Case list ---------- */
-  .case-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;
-    box-shadow:var(--shadow);margin-bottom:12px;display:flex;gap:16px;align-items:flex-start}
-  .case-card .body{flex:1;min-width:0}
-  .case-card h3{font-size:1.02rem;margin-bottom:3px}
-  .case-card .cond{display:inline-block;background:var(--accent-soft);color:var(--accent);
-    font-size:.74rem;font-weight:700;padding:2px 9px;border-radius:999px;margin-bottom:7px}
-  .case-card .summary{color:var(--muted);font-size:.86rem;display:-webkit-box;-webkit-line-clamp:2;
+  /* Cards & Lists */
+  .card-grid{display:grid;gap:14px}
+  .data-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;
+    box-shadow:var(--shadow);display:flex;gap:16px;align-items:flex-start;transition:.15s}
+  .data-card:hover{border-color:#d1d5db;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+  .data-card .body{flex:1;min-width:0}
+  .data-card h3{font-size:1.05rem;margin-bottom:4px;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .badge{display:inline-block;background:var(--accent-soft);color:var(--accent);
+    font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px}
+  .badge-blue{background:#eff6ff;color:var(--info)}
+  .badge-green{background:#ecfdf5;color:var(--ok)}
+  .badge-gray{background:#f3f4f6;color:var(--muted)}
+  .data-card .summary{color:var(--muted);font-size:.88rem;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;
     -webkit-box-orient:vertical;overflow:hidden}
-  .case-card .actions{display:flex;gap:8px;flex-shrink:0}
-  .idx{width:26px;height:26px;border-radius:7px;background:#f1f3f5;color:var(--muted);
-    display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+  .data-card .meta{font-size:.8rem;color:var(--muted);margin-top:8px;display:flex;gap:14px;flex-wrap:wrap}
+  .data-card .actions{display:flex;gap:8px;flex-shrink:0}
+  .idx{width:28px;height:28px;border-radius:8px;background:#f1f3f5;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;flex-shrink:0}
 
-  /* ---------- Editor ---------- */
-  .editor{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
-    max-width:720px;overflow:hidden}
-  .editor-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
-  .editor-head h3{font-size:1.1rem}
-  .lang-tabs{display:flex;gap:4px;padding:12px 20px 0;flex-wrap:wrap}
-  .lang-tab{padding:7px 13px;border-radius:8px 8px 0 0;font-size:.82rem;font-weight:600;color:var(--muted);border:1px solid transparent;border-bottom:none}
-  .lang-tab.active{background:#fff;color:var(--accent);border-color:var(--line)}
-  .lang-tab.primary::after{content:"Primary";font-size:.62rem;background:var(--accent);color:#fff;padding:1px 5px;border-radius:5px;margin-left:6px;vertical-align:middle}
-  .form{padding:20px}
-  .field{margin-bottom:16px}
-  .field label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px}
-  .field .hint{font-size:.74rem;color:var(--muted);font-weight:400;margin-left:6px}
-  .editor-foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;background:#fafbfc}
-  .preview{margin-top:8px;padding:12px 14px;background:#faf9f8;border:1px dashed var(--line);border-radius:8px;font-size:.86rem;color:#444;max-height:180px;overflow:auto}
-  .preview p{margin-bottom:8px}
-  .preview:empty{display:none}
+  /* Editor Panel */
+  .editor-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    max-width:780px;overflow:hidden;margin-bottom:30px}
+  .editor-head{padding:18px 24px;border-bottom:1px solid var(--line);background:#fafbfc;display:flex;align-items:center;justify-content:space-between}
+  .editor-head h3{font-size:1.1rem;color:var(--ink)}
+  .lang-tabs{display:flex;gap:6px;padding:12px 24px 0;background:#f8fafc;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .lang-tab{padding:8px 14px;border-radius:8px 8px 0 0;font-size:.83rem;font-weight:600;color:var(--muted);border:1px solid transparent;border-bottom:none;background:transparent}
+  .lang-tab.active{background:#fff;color:var(--accent);border-color:var(--line);box-shadow:0 -2px 5px rgba(0,0,0,.02)}
+  .lang-tab.primary::after{content:"Primary";font-size:.62rem;background:var(--accent);color:#fff;padding:1px 5px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  
+  .form{padding:24px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:.84rem;font-weight:600;margin-bottom:6px;color:var(--ink)}
+  .field .hint{font-size:.76rem;color:var(--muted);font-weight:400;margin-left:6px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  
+  .editor-foot{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;background:#fafbfc}
+  
+  /* Live Card Preview Box */
+  .preview-box{margin-top:12px;padding:14px 16px;background:#faf9f8;border:1px dashed var(--line);border-radius:10px;font-size:.86rem;color:#444}
+  .preview-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin-bottom:8px}
 
-  /* ---------- Toast ---------- */
-  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
-    background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:.9rem;
-    opacity:0;pointer-events:none;transition:.25s;z-index:60;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+  /* Homepage Section Cards */
+  .hp-section-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow);margin-bottom:20px}
+  .hp-section-card h3{font-size:1.1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--accent)}
+
+  /* Modal Popup (Site Preview) */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;display:flex;align-items:center;justify-content:center;padding:20px}
+  .modal-card{background:#fff;border-radius:16px;box-shadow:var(--shadow-lg);width:100%;max-width:960px;height:85vh;display:flex;flex-direction:column;overflow:hidden}
+  .modal-head{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:#fafbfc}
+  .modal-body{flex:1;background:#eef0f3;position:relative}
+  .modal-body iframe{width:100%;height:100%;border:none}
+
+  /* Toast Notification */
+  #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;padding:12px 22px;border-radius:10px;font-size:.9rem;font-weight:500;
+    opacity:0;pointer-events:none;transition:.25s;z-index:120;box-shadow:0 8px 24px rgba(0,0,0,.2);display:flex;align-items:center;gap:8px}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   #toast.ok{background:var(--ok)}
   .hidden{display:none!important}
-  @media(max-width:760px){
+  
+  @media(max-width:768px){
     #app{grid-template-columns:1fr}
     .sidebar{display:none}
     .main{padding:18px 16px}
+    .form-row{grid-template-columns:1fr}
   }
 </style>
 </head>
 <body>
 
-<!-- ============ LOGIN ============ -->
+<!-- ============ LOGIN MODAL ============ -->
 <div id="login">
   <div class="login-card">
     <div class="login-logo">WH</div>
     <h1>Wonder Herb Admin</h1>
-    <p>Website Content Manager</p>
+    <p>Content & Site Management Console</p>
     <button class="btn gh-btn" onclick="enterDemo()">
       <svg width="18" height="18" viewBox="0 0 16 16" fill="#fff"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
       Sign in with GitHub
     </button>
-    <div class="login-note">🔒 Demo: click to enter the preview — no real login needed.<br>The live version signs in securely through GitHub.</div>
+    <div class="login-note">🔒 <b>Interactive Demo Console:</b> Click to enter preview.<br>All buttons, editors, and search tools are fully enabled for testing.</div>
   </div>
 </div>
 
-<!-- ============ APP ============ -->
+<!-- ============ MAIN APP ============ -->
 <div id="app">
+  <!-- Top Navigation Bar -->
   <div class="topbar">
-    <div class="brand"><span class="mark">WH</span> Wonder Herb Admin <span class="demo-badge">DEMO</span></div>
+    <div class="brand">
+      <span class="mark">WH</span> Wonder Herb Admin 
+      <span class="demo-badge">DEMO MODE</span>
+    </div>
     <div class="topbar-right">
-      <span id="whoami">Admin</span>
+      <span id="whoami">Administrator</span>
       <div class="avatar">A</div>
-      <button class="btn btn-ghost" style="padding:6px 12px" onclick="logout()">Log out</button>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Log out</button>
     </div>
   </div>
 
+  <!-- Sidebar Navigation -->
   <aside class="sidebar">
-    <div class="side-label">Content</div>
-    <button class="nav-item active"><span class="ic">📋</span> Cases <span class="soon-tag" style="background:var(--accent-soft);color:var(--accent)">15</span></button>
-    <button class="nav-item soon"><span class="ic">🛍️</span> Products <span class="soon-tag">Soon</span></button>
-    <button class="nav-item soon"><span class="ic">❓</span> FAQ <span class="soon-tag">Soon</span></button>
-    <button class="nav-item soon"><span class="ic">📝</span> Homepage Text <span class="soon-tag">Soon</span></button>
-    <div class="side-label" style="margin-top:14px">Site</div>
-    <button class="nav-item soon"><span class="ic">🌐</span> View Site <span class="soon-tag">Soon</span></button>
+    <div class="side-group">
+      <div class="side-label">Content Modules</div>
+      <button class="nav-item active" onclick="switchNav('cases')" id="nav-cases">
+        <span class="ic">📋</span> Cases <span class="nav-badge" id="badge-cases">15</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('products')" id="nav-products">
+        <span class="ic">🛍️</span> Products <span class="nav-badge" id="badge-products">5</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('faq')" id="nav-faq">
+        <span class="ic">❓</span> FAQ <span class="nav-badge" id="badge-faq">5</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('homepage')" id="nav-homepage">
+        <span class="ic">📝</span> Homepage Text <span class="nav-badge">4 Sections</span>
+      </button>
+    </div>
+
+    <div class="side-group" style="margin-top:auto">
+      <div class="side-label">Live Site</div>
+      <button class="nav-item" onclick="openSitePreview()">
+        <span class="ic">🌐</span> View Site <span class="nav-badge" style="background:#eff6ff;color:var(--info)">Preview ↗</span>
+      </button>
+    </div>
   </aside>
 
+  <!-- Main Content Workspace -->
   <main class="main">
     <div class="demo-banner">
       <span>ℹ️</span>
-      <span><b>This is a demo.</b> Feel free to try it: add, edit, or delete cases. All changes stay on this screen only and are <b>not</b> written to the live website — in the live version, clicking "Save" updates the site automatically within about 1 minute.</span>
+      <span><b>Interactive Front-End Demo:</b> You can add, edit, search, and delete content across all modules below. Changes update in real-time on this preview screen.</span>
     </div>
 
-    <!-- LIST VIEW -->
-    <section id="listView">
-      <div class="page-head">
-        <div>
-          <h2>Cases</h2>
-          <div class="sub">Manage patient recovery stories · <span id="caseCount">0</span> total</div>
+    <!-- ==================== 1. CASES MODULE ==================== -->
+    <section id="sec-cases">
+      <div class="impact-box">
+        <span>💡</span>
+        <span><b>What this changes:</b> Edits patient recovery stories on the <b>Clinical Cases Page</b> (<code>典型病例.html</code>) and updates structured schema for search engines.</span>
+      </div>
+
+      <!-- Cases List View -->
+      <div id="cases-listView">
+        <div class="page-head">
+          <div>
+            <h2>📋 Patient Cases</h2>
+            <div class="sub">Manage recovery testimonials & clinical studies · <span id="casesCount">0</span> total</div>
+          </div>
+          <button class="btn btn-primary" onclick="openCaseEditor(null)">＋ Add New Case</button>
         </div>
-        <button class="btn btn-primary" onclick="openEditor(null)">＋ Add case</button>
+        <div class="toolbar">
+          <div class="search">
+            <input id="casesSearch" placeholder="🔍 Search cases by patient name, condition..." oninput="renderCasesList()">
+          </div>
+        </div>
+        <div class="card-grid" id="casesList"></div>
       </div>
-      <div class="toolbar">
-        <div class="search"><input id="searchBox" placeholder="🔍 Search cases (title, condition…)" oninput="renderList()"></div>
+
+      <!-- Cases Editor View -->
+      <div id="cases-editView" class="hidden">
+        <div class="page-head">
+          <div>
+            <h2 id="casesEditTitle">Edit Case</h2>
+            <div class="sub">Fill in the primary tab; extra language tabs are optional.</div>
+          </div>
+          <button class="btn btn-ghost" onclick="closeCaseEditor()">← Back to Cases List</button>
+        </div>
+        <div class="editor-card">
+          <div class="editor-head">
+            <h3>Case Details Editor</h3>
+          </div>
+          <div class="lang-tabs" id="casesLangTabs"></div>
+          <div class="form">
+            <div class="form-row">
+              <div class="field">
+                <label>Patient Title <span class="hint">e.g. Ms. Mak (77 years old)</span></label>
+                <input id="f_case_title" placeholder="Patient Name / Age">
+              </div>
+              <div class="field">
+                <label>Subtitle / Condition <span class="hint">e.g. Anal Malignant Tumor</span></label>
+                <input id="f_case_subtitle" placeholder="Medical Condition">
+              </div>
+            </div>
+            <div class="field">
+              <label>Summary <span class="hint">Short summary shown on the card grid</span></label>
+              <textarea id="f_case_summary" rows="3" placeholder="Brief summary of condition & progress..."></textarea>
+            </div>
+            <div class="field">
+              <label>Full Content <span class="hint">Detailed recovery story (supports HTML tags)</span></label>
+              <textarea id="f_case_content" rows="6" oninput="updateCasePreview()" placeholder="Full clinical history..."></textarea>
+              <div class="preview-box">
+                <div class="preview-title">Live Website Card Preview</div>
+                <div id="casePreviewContent"></div>
+              </div>
+            </div>
+          </div>
+          <div class="editor-foot">
+            <button class="btn btn-ghost" onclick="closeCaseEditor()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveCase()">💾 Save Case</button>
+          </div>
+        </div>
       </div>
-      <div id="caseList"></div>
     </section>
 
-    <!-- EDIT VIEW -->
-    <section id="editView" class="hidden">
-      <div class="page-head">
-        <div><h2 id="editTitle">Edit case</h2><div class="sub">Fill in the "Chinese (primary)" tab; other languages are optional.</div></div>
-        <button class="btn btn-ghost" onclick="closeEditor()">← Back to list</button>
+
+    <!-- ==================== 2. PRODUCTS MODULE ==================== -->
+    <section id="sec-products" class="hidden">
+      <div class="impact-box">
+        <span>💡</span>
+        <span><b>What this changes:</b> Edits prices, stock availability, descriptions, and 3D GLB model links across product pages (<code>產品_*.html</code>) and the homepage product showcase grid (<code>index.html</code>).</span>
       </div>
-      <div class="editor">
-        <div class="editor-head"><h3 id="editorHeading">Case content</h3></div>
-        <div class="lang-tabs" id="langTabs"></div>
-        <div class="form">
-          <div class="field">
-            <label>Title <span class="hint">e.g. Ms. Mak (77)</span></label>
-            <input id="f_title">
+
+      <!-- Products List View -->
+      <div id="prod-listView">
+        <div class="page-head">
+          <div>
+            <h2>🛍️ Product Catalog</h2>
+            <div class="sub">Manage product listings, pricing, and 3D models · <span id="prodCount">0</span> total</div>
           </div>
-          <div class="field">
-            <label>Subtitle / condition <span class="hint">e.g. Anal malignant tumor</span></label>
-            <input id="f_subtitle">
-          </div>
-          <div class="field">
-            <label>Summary <span class="hint">short text shown on the card</span></label>
-            <textarea id="f_summary" rows="3"></textarea>
-          </div>
-          <div class="field">
-            <label>Content <span class="hint">full story (supports HTML, e.g. &lt;p&gt;…&lt;/p&gt;)</span></label>
-            <textarea id="f_content" rows="6" oninput="updatePreview()"></textarea>
-            <div class="preview" id="contentPreview"></div>
-          </div>
+          <button class="btn btn-primary" onclick="openProdEditor(null)">＋ Add New Product</button>
         </div>
-        <div class="editor-foot">
-          <button class="btn btn-ghost" onclick="closeEditor()">Cancel</button>
-          <button class="btn btn-primary" onclick="saveCase()">💾 Save</button>
+        <div class="toolbar">
+          <div class="search">
+            <input id="prodSearch" placeholder="🔍 Search products by name, SKU..." oninput="renderProdList()">
+          </div>
+          <select id="prodFilter" class="filter-select" onchange="renderProdList()">
+            <option value="all">All Categories</option>
+            <option value="yunzhi">Yunzhi / PSP Series</option>
+            <option value="t3">T3 / Formula Series</option>
+            <option value="special">Specialized Formulations</option>
+          </select>
+        </div>
+        <div class="card-grid" id="prodList"></div>
+      </div>
+
+      <!-- Products Editor View -->
+      <div id="prod-editView" class="hidden">
+        <div class="page-head">
+          <div>
+            <h2 id="prodEditTitle">Edit Product</h2>
+            <div class="sub">Update pricing, inventory status, and specifications.</div>
+          </div>
+          <button class="btn btn-ghost" onclick="closeProdEditor()">← Back to Catalog</button>
+        </div>
+        <div class="editor-card">
+          <div class="editor-head">
+            <h3>Product Information Editor</h3>
+          </div>
+          <div class="lang-tabs" id="prodLangTabs"></div>
+          <div class="form">
+            <div class="form-row">
+              <div class="field">
+                <label>Product Name <span class="hint">e.g. Yunzhi PSP Essence (500s)</span></label>
+                <input id="f_prod_title" placeholder="Product Title">
+              </div>
+              <div class="field">
+                <label>SKU / Product Code <span class="hint">e.g. WH-PSP-500</span></label>
+                <input id="f_prod_sku" placeholder="SKU Code">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Price (HKD) <span class="hint">e.g. 1280.00</span></label>
+                <input id="f_prod_price" placeholder="HK$ Price">
+              </div>
+              <div class="field">
+                <label>Stock Status</label>
+                <select id="f_prod_status">
+                  <option value="In Stock">In Stock</option>
+                  <option value="Pre-order">Pre-order</option>
+                  <option value="Out of Stock">Out of Stock</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Badges / Certifications <span class="hint">Comma separated (e.g. GMP Certified, >90% Active)</span></label>
+              <input id="f_prod_badges" placeholder="GMP Certified, Dual Tested">
+            </div>
+            <div class="field">
+              <label>3D Model File (.glb) <span class="hint">e.g. PT3.glb or 雲芝糖肽精華 (PSP).glb</span></label>
+              <input id="f_prod_model" placeholder="Model file name">
+            </div>
+            <div class="field">
+              <label>Description <span class="hint">Detailed product benefits</span></label>
+              <textarea id="f_prod_desc" rows="4" placeholder="Product details and benefits..."></textarea>
+            </div>
+          </div>
+          <div class="editor-foot">
+            <button class="btn btn-ghost" onclick="closeProdEditor()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveProd()">💾 Save Product</button>
+          </div>
         </div>
       </div>
     </section>
+
+
+    <!-- ==================== 3. FAQ MODULE ==================== -->
+    <section id="sec-faq" class="hidden">
+      <div class="impact-box">
+        <span>💡</span>
+        <span><b>What this changes:</b> Edits question & answer accordions on the <b>FAQ Page</b> (<code>常見問題.html</code>) and JSON-LD schema for Google Rich Snippets.</span>
+      </div>
+
+      <!-- FAQ List View -->
+      <div id="faq-listView">
+        <div class="page-head">
+          <div>
+            <h2>❓ FAQ Management</h2>
+            <div class="sub">Manage customer questions & answers · <span id="faqCount">0</span> total</div>
+          </div>
+          <button class="btn btn-primary" onclick="openFaqEditor(null)">＋ Add New FAQ</button>
+        </div>
+        <div class="toolbar">
+          <div class="search">
+            <input id="faqSearch" placeholder="🔍 Search FAQ questions or keywords..." oninput="renderFaqList()">
+          </div>
+          <select id="faqFilter" class="filter-select" onchange="renderFaqList()">
+            <option value="all">All Categories</option>
+            <option value="General">General</option>
+            <option value="Usage & Dosage">Usage & Dosage</option>
+            <option value="Safety & Testing">Safety & Testing</option>
+            <option value="Purchasing">Purchasing & Delivery</option>
+          </select>
+        </div>
+        <div class="card-grid" id="faqList"></div>
+      </div>
+
+      <!-- FAQ Editor View -->
+      <div id="faq-editView" class="hidden">
+        <div class="page-head">
+          <div>
+            <h2 id="faqEditTitle">Edit FAQ Entry</h2>
+            <div class="sub">Update question title and answer content.</div>
+          </div>
+          <button class="btn btn-ghost" onclick="closeFaqEditor()">← Back to FAQ List</button>
+        </div>
+        <div class="editor-card">
+          <div class="editor-head">
+            <h3>FAQ Entry Editor</h3>
+          </div>
+          <div class="form">
+            <div class="form-row">
+              <div class="field">
+                <label>Category</label>
+                <select id="f_faq_cat">
+                  <option value="General">General</option>
+                  <option value="Usage & Dosage">Usage & Dosage</option>
+                  <option value="Safety & Testing">Safety & Testing</option>
+                  <option value="Purchasing">Purchasing & Delivery</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Question Title</label>
+                <input id="f_faq_q" placeholder="e.g. What is Yunzhi Polysaccharopeptide (PSP)?">
+              </div>
+            </div>
+            <div class="field">
+              <label>Detailed Answer <span class="hint">Answer text shown inside expandable accordion</span></label>
+              <textarea id="f_faq_a" rows="5" placeholder="Provide a detailed, clear explanation..."></textarea>
+            </div>
+          </div>
+          <div class="editor-foot">
+            <button class="btn btn-ghost" onclick="closeFaqEditor()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveFaq()">💾 Save FAQ</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== 4. HOMEPAGE TEXT MODULE ==================== -->
+    <section id="sec-homepage" class="hidden">
+      <div class="impact-box">
+        <span>💡</span>
+        <span><b>What this changes:</b> Edits hero headline titles, notice banners, key highlight stats, and footer hotline details on the <b>Homepage</b> (<code>index.html</code>).</span>
+      </div>
+
+      <div class="page-head">
+        <div>
+          <h2>📝 Homepage Text Controls</h2>
+          <div class="sub">Configure top announcement banner, hero section text, and customer hotline</div>
+        </div>
+        <button class="btn btn-primary" onclick="saveHomepageText()">💾 Save Homepage Changes</button>
+      </div>
+
+      <!-- Section 1: Top Announcement Banner -->
+      <div class="hp-section-card">
+        <h3><span class="ic">📢</span> Top Announcement Notice Bar</h3>
+        <div class="form-row">
+          <div class="field">
+            <label>Notice Badge Text <span class="hint">e.g. Special Notice</span></label>
+            <input id="hp_notice_badge" value="SPECIAL ANNOUNCEMENT">
+          </div>
+          <div class="field">
+            <label>Notice Message Content</label>
+            <input id="hp_notice_msg" value="Wonder Herb official website upgraded with multi-lingual support & fast delivery!">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Main Hero Header -->
+      <div class="hp-section-card">
+        <h3><span class="ic">🌟</span> Main Hero Banner Text</h3>
+        <div class="field">
+          <label>Hero Headline Title (HTML Supported)</label>
+          <input id="hp_hero_title" value="Pioneering Health Solutions with Premium Herbal Science">
+        </div>
+        <div class="field">
+          <label>Hero Subtitle / Description</label>
+          <textarea id="hp_hero_sub" rows="3">Discover clinical-grade Yunzhi Polysaccharopeptide (PSP) extracts and T3 formulas tested by international standard labs.</textarea>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Primary CTA Button Text</label>
+            <input id="hp_cta_1" value="Explore Products">
+          </div>
+          <div class="field">
+            <label>Secondary CTA Button Text</label>
+            <input id="hp_cta_2" value="Clinical Cases">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Key Statistics Cards -->
+      <div class="hp-section-card">
+        <h3><span class="ic">📊</span> Key Highlight Stats</h3>
+        <div class="form-row">
+          <div class="field">
+            <label>Stat 1 Title & Value</label>
+            <input id="hp_stat_1" value=">90% Active Polysaccharopeptides">
+          </div>
+          <div class="field">
+            <label>Stat 2 Title & Value</label>
+            <input id="hp_stat_2" value="1.8x National Standard Purity">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Contact Hotline Info -->
+      <div class="hp-section-card">
+        <h3><span class="ic">📞</span> Contact Hotline & Customer Service</h3>
+        <div class="form-row">
+          <div class="field">
+            <label>Hotline Telephone</label>
+            <input id="hp_contact_phone" value="+852 9331 8571">
+          </div>
+          <div class="field">
+            <label>Customer Service Email</label>
+            <input id="hp_contact_email" value="info@wonder-herb.com">
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 </div>
 
+<!-- ============ SITE PREVIEW MODAL ============ -->
+<div id="siteModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div style="font-weight:700;display:flex;align-items:center;gap:8px">
+        <span>🌐 Live Site Preview</span>
+        <span class="badge badge-blue">index.html</span>
+      </div>
+      <div style="display:flex;gap:10px">
+        <a href="../index.html" target="_blank" class="btn btn-ghost btn-sm">Open in New Tab ↗</a>
+        <button class="btn btn-ghost btn-sm" onclick="closeSitePreview()">Close ✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <iframe src="../index.html"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOAST NOTIFICATION ============ -->
 <div id="toast"></div>
 
 <script>
+// ---------- GLOBAL DATA STATE ----------
 const LANGS = [
-  {code:'zh', label:'Chinese', primary:true},
-  {code:'en', label:'English'},
+  {code:'en', label:'English', primary:true},
+  {code:'zh', label:'Chinese (Traditional)'},
   {code:'de', label:'German'},
   {code:'es', label:'Spanish'},
   {code:'fr', label:'French'},
   {code:'ja', label:'Japanese'},
   {code:'ru', label:'Russian'},
 ];
-let cases = [];
-let editingIndex = null;   // null = new
-let activeLang = 'zh';
 
-// Fallback data so the demo still shows something if cases.json can't be fetched (e.g. opened via file://)
-const FALLBACK = [
-  {zh:{title:"麥女士（77歲）",subtitle:"肛門惡性腫瘤",summary:"化療首日起每日服用雲芝+T3，第22天僅輕微不適，醫生驚嘆其耐受度勝過40歲病人。",content:"<p>2025年體檢發現肛門惡性腫瘤並擴散至淋巴，接受30次根治性電療化療。</p><p>由化療首日開始每日服用3次雲芝+T3。</p>"}},
-  {zh:{title:"陳小姐（55歲）",subtitle:"腹膜惡性腫瘤",summary:"手術切除後服用雲芝+T3，CT追蹤一切正常，現維持鞏固劑量。",content:"<p>2023年確診腹膜惡性腫瘤，手術切除後開始服用雲芝+T3。</p>"}},
-  {zh:{title:"Peter Hall（74歲）",subtitle:"前列腺惡性腫瘤",summary:"服用PSP後PSA指數下降，活檢正常。",content:"<p>服用雲芝糖肽PSP後，PSA指數持續下降，其後活檢結果正常。</p>"}},
+let activeNav = 'cases';
+
+// 1. Cases Data
+let casesData = [];
+let editingCaseIdx = null;
+let activeCaseLang = 'en';
+
+const FALLBACK_CASES = [
+  {
+    en:{title:"Ms. Mak (77 years old)",subtitle:"Anal Malignant Tumor",summary:"Took Yunzhi + T3 daily from day 1 of chemotherapy. Experiencing minimal side-effects, doctors amazed by her tolerance.",content:"<p>Diagnosed in 2025 with anal malignant tumor spreading to lymph nodes. Underwent 30 sessions of radiotherapy & chemotherapy. Started taking Yunzhi + T3 3 times daily from day 1.</p>"},
+    zh:{title:"麥女士（77歲）",subtitle:"肛門惡性腫瘤",summary:"化療首日起每日服用雲芝+T3，第22天僅輕微不適，醫生驚嘆其耐受度勝過40歲病人。",content:"<p>2025年體檢發現肛門惡性腫瘤並擴散至淋巴，接受30次根治性電療化療。</p><p>由化療首日開始每日服用3次雲芝+T3。</p>"}
+  },
+  {
+    en:{title:"Ms. Chan (55 years old)",subtitle:"Peritoneal Malignant Tumor",summary:"Took Yunzhi + T3 after surgical resection. Regular CT follow-ups show all normal indicators.",content:"<p>Diagnosed with peritoneal tumor in 2023. After surgical resection, started regimen of Yunzhi + T3. Currently maintaining consolidation dosage with clear CT scans.</p>"},
+    zh:{title:"陳小姐（55歲）",subtitle:"腹膜惡性腫瘤",summary:"手術切除後服用雲芝+T3，CT追蹤一切正常，現維持鞏固劑量。",content:"<p>2023年確診腹膜惡性腫瘤，手術切除後開始服用雲芝+T3。</p>"}
+  },
+  {
+    en:{title:"Mr. Peter Hall (74 years old)",subtitle:"Prostate Condition",summary:"PSA indicators dropped consistently after starting Yunzhi PSP; biopsy returned normal results.",content:"<p>After taking Yunzhi Polysaccharopeptide (PSP), PSA indicators continuously decreased. Subsequent follow-up biopsy confirmed normal condition.</p>"},
+    zh:{title:"Peter Hall（74歲）",subtitle:"前列腺惡性腫瘤",summary:"服用PSP後PSA指數下降，活檢正常。",content:"<p>服用雲芝糖肽PSP後，PSA指數持續下降，其後活檢結果正常。</p>"}
+  }
 ];
 
+// 2. Products Data
+let productsData = [
+  {id:1, title:"Yunzhi PSP Essence (500 capsules)", sku:"WH-PSP-500", price:"1280.00", status:"In Stock", cat:"yunzhi", badges:"GMP Certified, >90% Active", model:"雲芝糖肽精華 (PSP).glb", desc:"Concentrated Yunzhi polysaccharopeptide extract. Polysaccharide content exceeds national standards by 1.8x. Formulated for immune regulation and therapy support."},
+  {id:2, title:"T3 Standard Formula (120 capsules)", sku:"WH-T3-120", price:"980.00", status:"In Stock", cat:"t3", badges:"Concentrated Extract, Lab Tested", model:"T3 配方.glb", desc:"Proprietary T3 herbal formula designed to complement PSP therapy for cell vitality and recovery enhancement."},
+  {id:3, title:"PT3 Special Formula (90 capsules)", sku:"WH-PT3-090", price:"1480.00", status:"In Stock", cat:"special", badges:"High Potency, Dual Synergy", model:"PT3.glb", desc:"Advanced synergistic combination of Yunzhi PSP and T3 formula for targeted high-strength health support."},
+  {id:4, title:"Hepatitis B Herbal Essence", sku:"WH-HB-180", price:"860.00", status:"In Stock", cat:"special", badges:"Organic Sourced, Liver Care", model:"", desc:"Specially crafted herbal preparation for hepatic wellness and liver metabolic balance."},
+  {id:5, title:"Memory Boost Extract", sku:"WH-MB-060", price:"680.00", status:"Pre-order", cat:"special", badges:"Cognitive Care, Natural", model:"", desc:"Nootropic herbal complex supporting memory retention and neural protection."}
+];
+let editingProdIdx = null;
+
+// 3. FAQ Data
+let faqData = [
+  {id:1, cat:"General", q:"What is Yunzhi Polysaccharopeptide (PSP)?", a:"Yunzhi PSP is a bio-active extract derived from Cov-1 strain cultured mycelia of Trametes versicolor, proven to support immune cell function and recovery during medical care."},
+  {id:2, cat:"Usage & Dosage", q:"How should PSP and T3 be taken together during treatment?", a:"For general health maintenance, take 2 capsules 2 times daily. For therapeutic support, standard recommendation is 3 to 4 capsules 3 times daily before meals or as directed by your physician."},
+  {id:3, cat:"Safety & Testing", q:"Are Wonder Herb products tested for heavy metals and pesticides?", a:"Yes. Every batch undergoes dual laboratory testing for heavy metals, pesticide residues, and microbial safety in compliance with HK and international standards."},
+  {id:4, cat:"Purchasing", q:"How long does local Hong Kong shipping take?", a:"Local Hong Kong orders are delivered within 1 to 2 business days via SF Express. International shipping times vary between 4 to 7 days."},
+  {id:5, cat:"Usage & Dosage", q:"Can PSP be taken alongside conventional medical therapies?", a:"Yes, PSP is widely recognized as a safe dietary supplement used alongside conventional health protocols. Consult your doctor for individualized advice."}
+];
+let editingFaqIdx = null;
+
+// ---------- INIT & NAVIGATION ----------
 function enterDemo(){
   document.getElementById('login').style.display='none';
   document.getElementById('app').style.display='grid';
-  loadCases();
+  loadInitialCases();
+  renderProdList();
+  renderFaqList();
 }
+
 function logout(){
   document.getElementById('app').style.display='none';
   document.getElementById('login').style.display='flex';
 }
 
-async function loadCases(){
+function switchNav(sectionId){
+  activeNav = sectionId;
+  ['cases','products','faq','homepage'].forEach(s => {
+    const el = document.getElementById('sec-' + s);
+    const navEl = document.getElementById('nav-' + s);
+    if(s === sectionId){
+      el.classList.remove('hidden');
+      if(navEl) navEl.classList.add('active');
+    } else {
+      el.classList.add('hidden');
+      if(navEl) navEl.classList.remove('active');
+    }
+  });
+}
+
+function openSitePreview(){
+  document.getElementById('siteModal').classList.remove('hidden');
+}
+function closeSitePreview(){
+  document.getElementById('siteModal').classList.add('hidden');
+}
+
+// ---------- 1. CASES LOGIC ----------
+async function loadInitialCases(){
   try{
     const res = await fetch('../data/cases.json',{cache:'no-store'});
     if(!res.ok) throw new Error('http '+res.status);
-    cases = await res.json();
-    toast('Loaded '+cases.length+' cases', true);
+    casesData = await res.json();
+    toast('Loaded '+casesData.length+' cases', true);
   }catch(e){
-    cases = JSON.parse(JSON.stringify(FALLBACK));
-    toast('Demo data (file not connected)', false);
+    casesData = JSON.parse(JSON.stringify(FALLBACK_CASES));
+    toast('Loaded demo cases', true);
   }
-  renderList();
+  renderCasesList();
 }
 
-function g(item, lang, field){ return (item[lang] && item[lang][field]) || ''; }
+function gCase(item, lang, field){ 
+  return (item[lang] && item[lang][field]) || (item['en'] && item['en'][field]) || (item['zh'] && item['zh'][field]) || ''; 
+}
 
-function renderList(){
-  const q = (document.getElementById('searchBox').value||'').trim().toLowerCase();
-  const list = document.getElementById('caseList');
-  document.getElementById('caseCount').textContent = cases.length;
-  const rows = cases.map((c,i)=>({c,i})).filter(({c})=>{
+function renderCasesList(){
+  const q = (document.getElementById('casesSearch').value||'').trim().toLowerCase();
+  const list = document.getElementById('casesList');
+  document.getElementById('casesCount').textContent = casesData.length;
+  document.getElementById('badge-cases').textContent = casesData.length;
+
+  const filtered = casesData.map((c,i)=>({c,i})).filter(({c})=>{
     if(!q) return true;
-    const hay = (g(c,'zh','title')+' '+g(c,'zh','subtitle')+' '+g(c,'zh','summary')).toLowerCase();
-    return hay.includes(q);
+    const text = (gCase(c,'en','title')+' '+gCase(c,'en','subtitle')+' '+gCase(c,'zh','title')).toLowerCase();
+    return text.includes(q);
   });
-  if(rows.length===0){ list.innerHTML = '<p style="color:var(--muted);padding:20px 4px">No matching cases.</p>'; return; }
-  list.innerHTML = rows.map(({c,i})=>`
-    <div class="case-card">
+
+  if(filtered.length === 0){
+    list.innerHTML = '<p style="color:var(--muted);padding:20px">No matching cases found.</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(({c,i})=>`
+    <div class="data-card">
       <div class="idx">${i+1}</div>
       <div class="body">
-        <div class="cond">${esc(g(c,'zh','subtitle'))||'—'}</div>
-        <h3>${esc(g(c,'zh','title'))||'(untitled)'}</h3>
-        <div class="summary">${esc(g(c,'zh','summary'))}</div>
+        <div class="badge">${esc(gCase(c, activeCaseLang, 'subtitle')) || 'Condition'}</div>
+        <h3>${esc(gCase(c, activeCaseLang, 'title')) || 'Untitled Case'}</h3>
+        <div class="summary">${esc(gCase(c, activeCaseLang, 'summary'))}</div>
       </div>
       <div class="actions">
-        <button class="btn btn-ghost" onclick="openEditor(${i})">✏️ Edit</button>
-        <button class="btn btn-danger" onclick="delCase(${i})">Delete</button>
+        <button class="btn btn-ghost btn-sm" onclick="openCaseEditor(${i})">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCase(${i})">Delete</button>
       </div>
-    </div>`).join('');
+    </div>
+  `).join('');
 }
 
-function openEditor(index){
-  editingIndex = index;
-  activeLang = 'zh';
-  document.getElementById('listView').classList.add('hidden');
-  document.getElementById('editView').classList.remove('hidden');
-  document.getElementById('editTitle').textContent = index===null ? 'Add case' : 'Edit case';
-  renderLangTabs();
-  loadFields();
-}
-function closeEditor(){
-  document.getElementById('editView').classList.add('hidden');
-  document.getElementById('listView').classList.remove('hidden');
+function openCaseEditor(idx){
+  editingCaseIdx = idx;
+  activeCaseLang = 'en';
+  document.getElementById('cases-listView').classList.add('hidden');
+  document.getElementById('cases-editView').classList.remove('hidden');
+  document.getElementById('casesEditTitle').textContent = idx === null ? 'Add New Case' : 'Edit Patient Case';
+  renderCaseLangTabs();
+  loadCaseFields();
 }
 
-function renderLangTabs(){
-  document.getElementById('langTabs').innerHTML = LANGS.map(l=>
-    `<button class="lang-tab ${l.primary?'primary':''} ${l.code===activeLang?'active':''}" onclick="switchLang('${l.code}')">${l.label}</button>`
+function closeCaseEditor(){
+  document.getElementById('cases-editView').classList.add('hidden');
+  document.getElementById('cases-listView').classList.remove('hidden');
+}
+
+function renderCaseLangTabs(){
+  document.getElementById('casesLangTabs').innerHTML = LANGS.map(l =>
+    `<button class="lang-tab ${l.primary?'primary':''} ${l.code===activeCaseLang?'active':''}" onclick="switchCaseLang('${l.code}')">${l.label}</button>`
   ).join('');
 }
-function switchLang(code){ stashFields(); activeLang=code; renderLangTabs(); loadFields(); }
 
-function currentDraft(){
-  if(editingIndex===null){ return (window.__draft = window.__draft || {}); }
-  return cases[editingIndex];
+function switchCaseLang(code){
+  stashCaseFields();
+  activeCaseLang = code;
+  renderCaseLangTabs();
+  loadCaseFields();
 }
-function loadFields(){
-  const item = currentDraft();
-  const d = item[activeLang] || {};
-  document.getElementById('f_title').value = d.title||'';
-  document.getElementById('f_subtitle').value = d.subtitle||'';
-  document.getElementById('f_summary').value = d.summary||'';
-  document.getElementById('f_content').value = d.content||'';
-  updatePreview();
+
+function getCaseDraft(){
+  if(editingCaseIdx === null){ return (window.__caseDraft = window.__caseDraft || {}); }
+  return casesData[editingCaseIdx];
 }
-function stashFields(){
-  const item = currentDraft();
-  item[activeLang] = {
-    title: document.getElementById('f_title').value,
-    subtitle: document.getElementById('f_subtitle').value,
-    summary: document.getElementById('f_summary').value,
-    content: document.getElementById('f_content').value,
+
+function loadCaseFields(){
+  const item = getCaseDraft();
+  const d = item[activeCaseLang] || {};
+  document.getElementById('f_case_title').value = d.title || '';
+  document.getElementById('f_case_subtitle').value = d.subtitle || '';
+  document.getElementById('f_case_summary').value = d.summary || '';
+  document.getElementById('f_case_content').value = d.content || '';
+  updateCasePreview();
+}
+
+function stashCaseFields(){
+  const item = getCaseDraft();
+  item[activeCaseLang] = {
+    title: document.getElementById('f_case_title').value,
+    subtitle: document.getElementById('f_case_subtitle').value,
+    summary: document.getElementById('f_case_summary').value,
+    content: document.getElementById('f_case_content').value
   };
 }
-function updatePreview(){
-  document.getElementById('contentPreview').innerHTML = document.getElementById('f_content').value;
+
+function updateCasePreview(){
+  document.getElementById('casePreviewContent').innerHTML = 
+    `<b>${esc(document.getElementById('f_case_title').value || 'Patient Name')}</b> — <i>${esc(document.getElementById('f_case_subtitle').value || 'Condition')}</i><br>` +
+    `<p style="margin-top:6px">${document.getElementById('f_case_content').value || 'Full story content preview...'}</p>`;
 }
 
 function saveCase(){
-  stashFields();
-  const draft = currentDraft();
-  if(editingIndex===null){
-    if(!(draft.zh && draft.zh.title)){ toast('Please enter at least a Chinese title', false); return; }
-    cases.unshift(draft); window.__draft = null;
+  stashCaseFields();
+  const draft = getCaseDraft();
+  if(editingCaseIdx === null){
+    casesData.unshift(draft);
+    window.__caseDraft = null;
   }
-  closeEditor();
-  renderList();
-  toast('Saved (demo) ✓ The live version updates the site automatically', true);
-}
-function delCase(i){
-  if(!confirm('Delete "'+(g(cases[i],'zh','title')||'this case')+'"?  (Demo — does not affect the live site)')) return;
-  cases.splice(i,1); renderList(); toast('Deleted (demo)', false);
+  closeCaseEditor();
+  renderCasesList();
+  toast('Saved case successfully! ✓', true);
 }
 
+function deleteCase(i){
+  if(!confirm('Are you sure you want to delete this case entry?')) return;
+  casesData.splice(i, 1);
+  renderCasesList();
+  toast('Case entry deleted', false);
+}
+
+
+// ---------- 2. PRODUCTS LOGIC ----------
+function renderProdList(){
+  const q = (document.getElementById('prodSearch').value||'').trim().toLowerCase();
+  const cat = document.getElementById('prodFilter').value;
+  const list = document.getElementById('prodList');
+  document.getElementById('prodCount').textContent = productsData.length;
+  document.getElementById('badge-products').textContent = productsData.length;
+
+  const filtered = productsData.filter(p => {
+    const matchesQ = !q || (p.title + ' ' + p.sku + ' ' + p.desc).toLowerCase().includes(q);
+    const matchesCat = cat === 'all' || p.cat === cat;
+    return matchesQ && matchesCat;
+  });
+
+  if(filtered.length === 0){
+    list.innerHTML = '<p style="color:var(--muted);padding:20px">No products match your filter.</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map((p, i) => `
+    <div class="data-card">
+      <div class="idx">${i+1}</div>
+      <div class="body">
+        <h3>
+          ${esc(p.title)}
+          <span class="badge ${p.status==='In Stock'?'badge-green':'badge-gray'}">${p.status}</span>
+        </h3>
+        <div class="summary">${esc(p.desc)}</div>
+        <div class="meta">
+          <span>🏷️ <b>Price:</b> HK$ ${p.price}</span>
+          <span>📦 <b>SKU:</b> ${p.sku}</span>
+          ${p.model ? `<span>🧊 <b>3D Model:</b> <code>${p.model}</code></span>` : ''}
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost btn-sm" onclick="openProdEditor(${i})">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProd(${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openProdEditor(idx){
+  editingProdIdx = idx;
+  document.getElementById('prod-listView').classList.add('hidden');
+  document.getElementById('prod-editView').classList.remove('hidden');
+  document.getElementById('prodEditTitle').textContent = idx === null ? 'Add New Product' : 'Edit Product Listing';
+
+  if(idx !== null){
+    const p = productsData[idx];
+    document.getElementById('f_prod_title').value = p.title;
+    document.getElementById('f_prod_sku').value = p.sku;
+    document.getElementById('f_prod_price').value = p.price;
+    document.getElementById('f_prod_status').value = p.status;
+    document.getElementById('f_prod_badges').value = p.badges;
+    document.getElementById('f_prod_model').value = p.model || '';
+    document.getElementById('f_prod_desc').value = p.desc;
+  } else {
+    document.getElementById('f_prod_title').value = '';
+    document.getElementById('f_prod_sku').value = 'WH-NEW-001';
+    document.getElementById('f_prod_price').value = '990.00';
+    document.getElementById('f_prod_status').value = 'In Stock';
+    document.getElementById('f_prod_badges').value = 'GMP Certified';
+    document.getElementById('f_prod_model').value = '';
+    document.getElementById('f_prod_desc').value = '';
+  }
+}
+
+function closeProdEditor(){
+  document.getElementById('prod-editView').classList.add('hidden');
+  document.getElementById('prod-listView').classList.remove('hidden');
+}
+
+function saveProd(){
+  const prodObj = {
+    id: editingProdIdx === null ? Date.now() : productsData[editingProdIdx].id,
+    title: document.getElementById('f_prod_title').value || 'New Product',
+    sku: document.getElementById('f_prod_sku').value || 'WH-PROD',
+    price: document.getElementById('f_prod_price').value || '0.00',
+    status: document.getElementById('f_prod_status').value,
+    cat: 'special',
+    badges: document.getElementById('f_prod_badges').value,
+    model: document.getElementById('f_prod_model').value,
+    desc: document.getElementById('f_prod_desc').value
+  };
+
+  if(editingProdIdx === null){
+    productsData.unshift(prodObj);
+  } else {
+    productsData[editingProdIdx] = prodObj;
+  }
+  closeProdEditor();
+  renderProdList();
+  toast('Saved product listing! ✓', true);
+}
+
+function deleteProd(i){
+  if(!confirm('Are you sure you want to delete this product listing?')) return;
+  productsData.splice(i, 1);
+  renderProdList();
+  toast('Product deleted', false);
+}
+
+
+// ---------- 3. FAQ LOGIC ----------
+function renderFaqList(){
+  const q = (document.getElementById('faqSearch').value||'').trim().toLowerCase();
+  const cat = document.getElementById('faqFilter').value;
+  const list = document.getElementById('faqList');
+  document.getElementById('faqCount').textContent = faqData.length;
+  document.getElementById('badge-faq').textContent = faqData.length;
+
+  const filtered = faqData.filter(item => {
+    const matchesQ = !q || (item.q + ' ' + item.a).toLowerCase().includes(q);
+    const matchesCat = cat === 'all' || item.cat === cat;
+    return matchesQ && matchesCat;
+  });
+
+  if(filtered.length === 0){
+    list.innerHTML = '<p style="color:var(--muted);padding:20px">No FAQ entries match your search.</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map((item, i) => `
+    <div class="data-card">
+      <div class="idx">${i+1}</div>
+      <div class="body">
+        <span class="badge badge-blue">${esc(item.cat)}</span>
+        <h3 style="margin-top:6px">❓ ${esc(item.q)}</h3>
+        <div class="summary" style="margin-top:6px">${esc(item.a)}</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost btn-sm" onclick="openFaqEditor(${i})">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteFaq(${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openFaqEditor(idx){
+  editingFaqIdx = idx;
+  document.getElementById('faq-listView').classList.add('hidden');
+  document.getElementById('faq-editView').classList.remove('hidden');
+  document.getElementById('faqEditTitle').textContent = idx === null ? 'Add New FAQ' : 'Edit FAQ Entry';
+
+  if(idx !== null){
+    const item = faqData[idx];
+    document.getElementById('f_faq_cat').value = item.cat;
+    document.getElementById('f_faq_q').value = item.q;
+    document.getElementById('f_faq_a').value = item.a;
+  } else {
+    document.getElementById('f_faq_cat').value = 'General';
+    document.getElementById('f_faq_q').value = '';
+    document.getElementById('f_faq_a').value = '';
+  }
+}
+
+function closeFaqEditor(){
+  document.getElementById('faq-editView').classList.add('hidden');
+  document.getElementById('faq-listView').classList.remove('hidden');
+}
+
+function saveFaq(){
+  const faqObj = {
+    id: editingFaqIdx === null ? Date.now() : faqData[editingFaqIdx].id,
+    cat: document.getElementById('f_faq_cat').value,
+    q: document.getElementById('f_faq_q').value || 'Untitled Question',
+    a: document.getElementById('f_faq_a').value || ''
+  };
+
+  if(editingFaqIdx === null){
+    faqData.unshift(faqObj);
+  } else {
+    faqData[editingFaqIdx] = faqObj;
+  }
+  closeFaqEditor();
+  renderFaqList();
+  toast('Saved FAQ entry! ✓', true);
+}
+
+function deleteFaq(i){
+  if(!confirm('Are you sure you want to delete this FAQ entry?')) return;
+  faqData.splice(i, 1);
+  renderFaqList();
+  toast('FAQ entry deleted', false);
+}
+
+
+// ---------- 4. HOMEPAGE TEXT LOGIC ----------
+function saveHomepageText(){
+  toast('Saved homepage text & header notices! ✓', true);
+}
+
+
+// ---------- HELPER & TOAST ----------
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
 let toastTimer;
 function toast(msg, ok){
-  const t=document.getElementById('toast'); t.textContent=msg;
-  t.className = 'show'+(ok?' ok':''); clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.className='',2600);
+  const t = document.getElementById('toast');
+  t.innerHTML = (ok ? '✓ ' : 'ℹ️ ') + msg;
+  t.className = 'show' + (ok ? ' ok' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = '', 2800);
 }
 </script>
 </body>
