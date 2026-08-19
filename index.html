@@ -3634,11 +3634,11 @@
 
         const heroImages = [
             { src: "https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png", alt_zh: "康草堂 Wonder Herb 品牌形象", alt_en: "Wonder Herb Brand Image", alt_de: "Wonder Herb Brand Image", alt_es: "Wonder Herb Marca Imagen", alt_fr: "Wonder Herb Image de marque", alt_ja: "Wonder Herb ブランドイメージ", alt_ru: "Wonder Herb Бренд Изображение" },
-            { src: "https://lh3.googleusercontent.com/d/1JshjDnhbCCCsQNUZOD3XnPz6Haw9Q_eE", alt_zh: "乙肝清 草本護肝", alt_en: "Hep BQ capsules Herbal Liver Support", alt_de: "Hep BQ capsules Herbal Liver Support", alt_es: "Cápsulas Hep BQ Apoyo Hepático", alt_fr: "Gélules Hep BQ Soutien Hépatique", alt_ja: "Hep BQカプセル 肝サポート", alt_ru: "Капсулы Hep BQ Поддержка Печени" },
+            { type: "3d", src: "bottle_HEP.glb", alt_zh: "乙肝清 草本護肝", alt_en: "Hep BQ capsules Herbal Liver Support", alt_de: "Hep BQ capsules Herbal Liver Support", alt_es: "Cápsulas Hep BQ Apoyo Hepático", alt_fr: "Gélules Hep BQ Soutien Hépatique", alt_ja: "Hep BQカプセル 肝サポート", alt_ru: "Капсулы Hep BQ Поддержка Печени" },
             { src: "https://lh3.googleusercontent.com/d/1DqnWVDZa45TvoRKRguh-IT4i_sfYbQhn", alt_zh: "憶活素 MemoProve 腦部保健", alt_en: "MemoProve Brain Health", alt_de: "MemoProve Brain Health", alt_es: "MemoProve Salud Cerebral", alt_fr: "MemoProve Santé Cérébrale", alt_ja: "MemoProve 脳の健康", alt_ru: "MemoProve Здоровье Мозга" },
-            { type: "3d", src: "雲芝糖肽精華 (PSP).glb", alt_zh: "雲芝糖肽精華 PSP 3D 模型", alt_en: "Yunzhi PSP Essence 3D Model", alt_de: "Yunzhi PSP Essence 3D Modell", alt_es: "Yunzhi PSP Esencia Modelo 3D", alt_fr: "Yunzhi PSP Essence Modèle 3D", alt_ja: "霊芝PSP エッセンス 3Dモデル", alt_ru: "Юньчжи PSP Эссенция 3D Модель" },
-            { type: "3d", src: "PT3.glb", alt_zh: "PT3 3D 模型", alt_en: "PT3 3D Model", alt_de: "PT3 3D Modell", alt_es: "PT3 Modelo 3D", alt_fr: "PT3 Modèle 3D", alt_ja: "PT3 3Dモデル", alt_ru: "PT3 3D Модель" },
-            { type: "3d", src: "T3 配方.glb", alt_zh: "T3 配方 3D 模型", alt_en: "T3 Formula 3D Model", alt_de: "T3 Formel 3D Modell", alt_es: "T3 Fórmula Modelo 3D", alt_fr: "T3 Formule Modèle 3D", alt_ja: "T3 処方 3Dモデル", alt_ru: "T3 Формула 3D Модель" }
+            { type: "3d", src: "bottle_PEPTIDES.glb", alt_zh: "雲芝糖肽精華 PSP 3D 模型", alt_en: "Yunzhi PSP Essence 3D Model", alt_de: "Yunzhi PSP Essence 3D Modell", alt_es: "Yunzhi PSP Esencia Modelo 3D", alt_fr: "Yunzhi PSP Essence Modèle 3D", alt_ja: "霊芝PSP エッセンス 3Dモデル", alt_ru: "Юньчжи PSP Эссенция 3D Модель" },
+            { type: "3d", src: "bottle_PT3.glb", alt_zh: "PT3 3D 模型", alt_en: "PT3 3D Model", alt_de: "PT3 3D Modell", alt_es: "PT3 Modelo 3D", alt_fr: "PT3 Modèle 3D", alt_ja: "PT3 3Dモデル", alt_ru: "PT3 3D Модель" },
+            { type: "3d", src: "bottle_YUNZHI.glb", alt_zh: "雲芝精華 3D 模型", alt_en: "Yunzhi Essence 3D Model", alt_de: "Yunzhi Essenz 3D Modell", alt_es: "Yunzhi Esencia Modelo 3D", alt_fr: "Yunzhi Essence Modèle 3D", alt_ja: "雲芝エッセンス 3Dモデル", alt_ru: "Юньчжи Эссенция 3D Модель" }
         ];
         let heroCurrent = 0,
             heroInterval;
@@ -3841,10 +3841,87 @@
         function resetHeroTimer() { clearInterval(heroInterval);
             heroInterval = setInterval(nextHero, 5000); }
 
-        function updateHeroCarouselAlt() { document.querySelectorAll('#heroSlides .carousel-slide img').forEach((img, idx) => { if (heroImages[idx]) img.alt = currentLang === 'zh' ? heroImages[idx].alt_zh : heroImages[idx]['alt_' + currentLang] || heroImages[idx].alt_en; }); }
+        function updateHeroCarouselAlt() { document.querySelectorAll('#heroSlides .carousel-slide').forEach((slide, idx) => { const img = slide.querySelector('img'); if (img && heroImages[idx]) img.alt = currentLang === 'zh' ? heroImages[idx].alt_zh : heroImages[idx]['alt_' + currentLang] || heroImages[idx].alt_en; }); }
 
         const carousel3DInstances = {};
-        
+
+        // three@0.128.0's GLTFLoader only imports TEXCOORD_0/TEXCOORD_1 (as "uv"/"uv2") and ignores any
+        // non-zero texCoord index on baseColorTexture other than that. These helpers read the GLB container
+        // ourselves so we can pull whichever TEXCOORD_n set a model's material actually points to, even if
+        // the loader never surfaced it as a geometry attribute.
+        function parseGlbContainer(buffer) {
+            const dv = new DataView(buffer);
+            if (dv.getUint32(0, true) !== 0x46546c67) throw new Error('Not a GLB file');
+            const totalLength = dv.getUint32(8, true);
+            let offset = 12, json = null, binaryChunk = null;
+            while (offset < totalLength) {
+                const chunkLength = dv.getUint32(offset, true);
+                const chunkType = dv.getUint32(offset + 4, true);
+                const chunkData = buffer.slice(offset + 8, offset + 8 + chunkLength);
+                if (chunkType === 0x4e4f534a) json = JSON.parse(new TextDecoder('utf-8').decode(chunkData));
+                else if (chunkType === 0x004e4942) binaryChunk = chunkData;
+                offset += 8 + chunkLength;
+            }
+            return { json, binaryChunk };
+        }
+
+        function readGlbAccessorVec2(json, binaryChunk, accessorIndex) {
+            const accessor = json.accessors[accessorIndex];
+            const bufferView = json.bufferViews[accessor.bufferView];
+            const componentByteSizes = { 5120: 1, 5121: 1, 5122: 2, 5123: 2, 5125: 4, 5126: 4 };
+            const componentSize = componentByteSizes[accessor.componentType];
+            const stride = bufferView.byteStride || componentSize * 2;
+            const baseOffset = (bufferView.byteOffset || 0) + (accessor.byteOffset || 0);
+            const dv = new DataView(binaryChunk);
+            const out = new Float32Array(accessor.count * 2);
+            for (let i = 0; i < accessor.count; i++) {
+                const off = baseOffset + i * stride;
+                let x, y;
+                switch (accessor.componentType) {
+                    case 5126: x = dv.getFloat32(off, true); y = dv.getFloat32(off + 4, true); break;
+                    case 5121: x = dv.getUint8(off) / 255; y = dv.getUint8(off + 1) / 255; break;
+                    case 5123: x = dv.getUint16(off, true) / 65535; y = dv.getUint16(off + 2, true) / 65535; break;
+                    default: throw new Error('Unsupported TEXCOORD component type: ' + accessor.componentType);
+                }
+                out[i * 2] = x;
+                out[i * 2 + 1] = y;
+            }
+            return out;
+        }
+
+        // Applies the correct UV set to every mesh in the model, based on what its own material actually
+        // requests (baseColorTexture.texCoord), instead of a hardcoded per-file guess.
+        function fixModelUVs(model, glbJson, binaryChunk) {
+            if (!glbJson) return;
+            let meshCursor = 0;
+            model.traverse(function(child) {
+                if (!child.isMesh || !child.geometry) return;
+                const meshDef = glbJson && glbJson.meshes && glbJson.meshes[meshCursor];
+                meshCursor++;
+                if (!meshDef) return;
+                const primDef = meshDef.primitives && meshDef.primitives[0];
+                const matIndex = primDef ? primDef.material : undefined;
+                const matDef = matIndex !== undefined ? glbJson.materials[matIndex] : (glbJson.materials && glbJson.materials[0]);
+                const bct = matDef && matDef.pbrMetallicRoughness && matDef.pbrMetallicRoughness.baseColorTexture;
+                const texCoord = bct && bct.texCoord !== undefined ? bct.texCoord : 0;
+                if (texCoord === 0) return;
+                if (texCoord === 1 && child.geometry.attributes.uv2) {
+                    child.geometry.setAttribute('uv', child.geometry.attributes.uv2);
+                    return;
+                }
+                if (texCoord >= 2 && primDef) {
+                    const accessorIdx = primDef.attributes['TEXCOORD_' + texCoord];
+                    if (accessorIdx === undefined) return;
+                    try {
+                        const uvArray = readGlbAccessorVec2(glbJson, binaryChunk, accessorIdx);
+                        child.geometry.setAttribute('uv', new THREE.BufferAttribute(uvArray, 2));
+                    } catch (e) {
+                        console.warn('Failed to apply TEXCOORD_' + texCoord + ' fix:', e);
+                    }
+                }
+            });
+        }
+
         function init3DCarouselModels() {
             if (typeof THREE === 'undefined') {
                 console.error('Three.js not loaded!');
@@ -3879,26 +3956,44 @@
                 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
                 container.innerHTML = '';
                 container.appendChild(renderer.domElement);
-                
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+
+                // Keep the render resolution/aspect in sync with the container's actual box, which changes
+                // across responsive breakpoints (see .carousel-slides padding-bottom). Without this, the
+                // canvas gets stretched by its CSS width/height:100% while the WebGL content stays rendered
+                // at the stale aspect ratio from init time.
+                if (typeof ResizeObserver !== 'undefined') {
+                    const resizeObserver = new ResizeObserver(entries => {
+                        for (const entry of entries) {
+                            const w = entry.contentRect.width;
+                            const h = entry.contentRect.height;
+                            if (w <= 0 || h <= 0) continue;
+                            camera.aspect = w / h;
+                            camera.updateProjectionMatrix();
+                            renderer.setSize(w, h);
+                        }
+                    });
+                    resizeObserver.observe(container);
+                }
+
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
                 scene.add(ambientLight);
-                
-                const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+
+                const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
                 keyLight.position.set(5, 5, 5);
                 scene.add(keyLight);
-                
-                const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
-                fillLight.position.set(-5, 0, 5);
-                scene.add(fillLight);
-                
-                const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
-                backLight.position.set(0, -5, -5);
-                scene.add(backLight);
-                
+
+                // const fillLight = new THREE.DirectionalLight(0xffffff, 0.5);
+                // fillLight.position.set(-5, 0, 5);
+                // scene.add(fillLight);
+
+                // const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+                // backLight.position.set(0, -5, -5);
+                // scene.add(backLight);
+
                 // Add soft point light for better texture visibility
-                const pointLight = new THREE.PointLight(0xffffff, 0.4, 10);
-                pointLight.position.set(0, 2, 3);
-                scene.add(pointLight);
+                // const pointLight = new THREE.PointLight(0xffffff, 0.4, 10);
+                // pointLight.position.set(0, 2, 3);
+                // scene.add(pointLight);
                 
                 // Add OrbitControls for mouse interaction
                 const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -3913,48 +4008,55 @@
                 carousel3DInstances[modelSrc] = inst;
                 
                 const loader = new THREE.GLTFLoader();
-                loader.load(
-                    modelSrcNoCache,
-                    function(gltf) {
-                        console.log('3D model loaded successfully!');
-                        const model = gltf.scene;
-                        
-                        // Apply UV transforms to fix texture orientation
-                        model.traverse(function(child) {
-                            if (child.isMesh && child.material) {
-                                const materials = Array.isArray(child.material) ? child.material : [child.material];
-                                materials.forEach(mat => {
-                                    // Fix upside down: rotate 180° and move down
-                                    if (mat.map) {
-                                        mat.map.matrixAutoUpdate = true;
-                                        mat.map.center.set(0.5, 0.5);
-                                        mat.map.rotation = Math.PI; 
-                                        mat.map.offset.set(0.05, 0.3); 
+                fetch(modelSrcNoCache)
+                    .then(function(res) { return res.arrayBuffer(); })
+                    .then(function(buffer) {
+                        let glbJson = null, binaryChunk = null;
+                        try {
+                            const parsed = parseGlbContainer(buffer);
+                            glbJson = parsed.json;
+                            binaryChunk = parsed.binaryChunk;
+                        } catch (e) {
+                            console.warn('Could not parse GLB container for UV inspection:', e);
+                        }
+                        loader.parse(
+                            buffer,
+                            '',
+                            function(gltf) {
+                                console.log('3D model loaded successfully!');
+                                const model = gltf.scene;
+
+                                fixModelUVs(model, glbJson, binaryChunk);
+                                model.traverse(function(child) {
+                                    if (child.isMesh && child.material) {
+                                        const materials = Array.isArray(child.material) ? child.material : [child.material];
+                                        materials.forEach(mat => {
+                                            mat.side = THREE.DoubleSide;
+                                            mat.needsUpdate = true;
+                                        });
                                     }
-                                    mat.side = THREE.DoubleSide;
-                                    mat.needsUpdate = true;
                                 });
+
+                                const box = new THREE.Box3().setFromObject(model);
+                                const center = box.getCenter(new THREE.Vector3());
+                                const size = box.getSize(new THREE.Vector3());
+                                const maxDim = Math.max(size.x, size.y, size.z);
+                                const scale = 1.8 / maxDim;
+                                model.scale.setScalar(scale);
+                                model.position.sub(center.multiplyScalar(scale));
+                                scene.add(model);
+                                inst.model = model;
+                            },
+                            function(error) {
+                                console.error('Error loading 3D model:', error);
+                                container.innerHTML = '<div style="color:white;display:flex;align-items:center;justify-content:center;height:100%;font-size:14px;">無法載入 3D 模型</div>';
                             }
-                        });
-                        
-                        const box = new THREE.Box3().setFromObject(model);
-                        const center = box.getCenter(new THREE.Vector3());
-                        const size = box.getSize(new THREE.Vector3());
-                        const maxDim = Math.max(size.x, size.y, size.z);
-                        const scale = 1.8 / maxDim;
-                        model.scale.setScalar(scale);
-                        model.position.sub(center.multiplyScalar(scale));
-                        scene.add(model);
-                        inst.model = model;
-                    },
-                    function(progress) {
-                        console.log('Loading progress:', (progress.loaded / progress.total * 100).toFixed(1) + '%');
-                    },
-                    function(error) { 
-                        console.error('Error loading 3D model:', error); 
+                        );
+                    })
+                    .catch(function(error) {
+                        console.error('Error fetching 3D model:', error);
                         container.innerHTML = '<div style="color:white;display:flex;align-items:center;justify-content:center;height:100%;font-size:14px;">無法載入 3D 模型</div>';
-                    }
-                );
+                    });
                 
                 let isAnimating = false;
                 function animate3D() {
