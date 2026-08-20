@@ -1756,5 +1756,144 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFixedNavOffset);
 </script>
 <a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> <span class="btn-text">立即諮詢</span></a>
+
+<!-- ============ WONDER HERB CMS REAL-TIME SYNC CLIENT ============ -->
+<script>
+(function(){
+  function formatMoney(val) {
+    const num = parseFloat(val) || 0;
+    return 'HK$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function syncCMSData() {
+    const currentLang = window.currentLang || 'zh';
+
+    // 1. Top Announcement Bar Sync
+    try {
+      const storedHp = localStorage.getItem('wh_homepage_text');
+      if (storedHp) {
+        const hp = JSON.parse(storedHp);
+        const noticeEl = document.querySelector('.announcement-track span');
+        if (noticeEl && hp.notice_msg) {
+          noticeEl.textContent = (hp.notice_badge ? hp.notice_badge + ': ' : '') + hp.notice_msg;
+        }
+        const heroTitleEl = document.querySelector('.hero-title, #company-heading');
+        if (heroTitleEl && hp.hero_title) heroTitleEl.innerHTML = hp.hero_title;
+        const heroSubEl = document.querySelector('.hero-subtitle');
+        if (heroSubEl && hp.hero_sub) heroSubEl.textContent = hp.hero_sub;
+      }
+    } catch(e){}
+
+    // 2. Products Catalog Sync — FULL REPLACEMENT approach
+    try {
+      const storedProds = localStorage.getItem('wh_products_data');
+      if (storedProds) {
+        const prods = JSON.parse(storedProds);
+        if (Array.isArray(prods)) {
+          // A. Sync 產品介紹.html (productData object) — replaces ALL languages
+          if (typeof productData !== 'undefined') {
+            const allLangs = Object.keys(productData);
+            const adminProducts = prods.map(p => ({
+              id: p.id || Date.now(),
+              name: p.title || 'New Product',
+              price: parseFloat(p.price) || 0,
+              priceText: formatMoney(p.price),
+              desc: p.desc || '',
+              image: p.image || 'https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png',
+              badge: p.badges || null,
+              link: p.link || '#',
+              sku: p.sku || null
+            }));
+            allLangs.forEach(lang => {
+              const origArr = productData[lang];
+              if (!Array.isArray(origArr)) return;
+              const merged = adminProducts.map(ap => {
+                const existing = origArr.find(x => x.id === ap.id || (ap.sku && x.sku === ap.sku));
+                if (existing) {
+                  return {
+                    ...existing,
+                    price: ap.price,
+                    priceText: ap.priceText,
+                    badge: ap.badge,
+                    image: ap.image || existing.image,
+                    link: existing.link || ap.link
+                  };
+                }
+                return { ...ap };
+              });
+              productData[lang] = merged;
+            });
+            if (typeof renderProducts === 'function') renderProducts();
+          }
+
+          // B. Sync index.html (window.productsData)
+          if (typeof window.productsData !== 'undefined') {
+            prods.forEach(p => {
+              const existing = window.productsData.find(item => item.sku === p.sku || item.id === p.id);
+              if (existing) {
+                if (p.price) existing.price = p.price;
+                if (p.status) existing.status = p.status;
+                if (p.title) existing.titleKey = p.title;
+                if (p.desc) existing.descKey = p.desc;
+              }
+            });
+            if (typeof renderProductTriple === 'function') renderProductTriple();
+          }
+
+          // C. Sync Product Detail Pages (產品_*.html)
+          prods.forEach(p => {
+            if (p.sku && location.pathname.includes(p.sku)) {
+              const priceEl = document.querySelector('.product-price, .price, .detail-price');
+              if (priceEl && p.price) priceEl.textContent = formatMoney(p.price);
+            }
+          });
+        }
+      }
+    } catch(e){}
+
+    // 3. FAQ Sync
+    try {
+      const storedFaq = localStorage.getItem('wh_faq_data');
+      if (storedFaq && typeof faqData !== 'undefined') {
+        const faqs = JSON.parse(storedFaq);
+        if (Array.isArray(faqs)) {
+          faqData = faqs;
+          if (typeof renderFaqList === 'function') renderFaqList();
+        }
+      }
+    } catch(e){}
+
+    // 4. Cases Sync
+    try {
+      const storedCases = localStorage.getItem('wh_cases_data');
+      if (storedCases && typeof caseDataList !== 'undefined') {
+        const cases = JSON.parse(storedCases);
+        if (Array.isArray(cases) && cases.length > 0) {
+          caseDataList = cases;
+          if (typeof renderCasesList === 'function') renderCasesList();
+          if (typeof renderFeaturedCases === 'function') renderFeaturedCases(currentLang);
+        }
+      }
+    } catch(e){}
+  }
+
+  // Execute sync on load & DOMContentLoaded
+  if (document.readyState !== 'loading') syncCMSData();
+  else document.addEventListener('DOMContentLoaded', syncCMSData);
+  window.addEventListener('load', syncCMSData);
+
+  // BroadcastChannel & Storage Event Listeners for real-time multi-tab sync
+  if (typeof BroadcastChannel !== 'undefined') {
+    const channel = new BroadcastChannel('wh_cms_sync');
+    channel.onmessage = function() { syncCMSData(); };
+  }
+  window.addEventListener('storage', function(e) {
+    if (e.key && e.key.startsWith('wh_')) syncCMSData();
+  });
+})();
+</script>
+
+
+
 </body>
 </html>

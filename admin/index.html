@@ -181,6 +181,7 @@
       <span class="demo-badge">DEMO MODE</span>
     </div>
     <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="exportAllDataPackage()" title="Download JSON files to save into data/ folder">📥 Export JSON Data</button>
       <span id="whoami">Administrator</span>
       <div class="avatar">A</div>
       <button class="btn btn-ghost btn-sm" onclick="logout()">Log out</button>
@@ -619,13 +620,126 @@ let faqData = [
 ];
 let editingFaqIdx = null;
 
+
+// ---------- CMS SYNC & PERSISTENCE ENGINE ----------
+const cmsChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('wh_cms_sync') : null;
+
+function notifyCMSSync(moduleName, data) {
+  if (cmsChannel) {
+    try { cmsChannel.postMessage({ module: moduleName, timestamp: Date.now() }); } catch(e){}
+  }
+  // Optional Vercel API Sync
+  fetch('/api/cms?type=' + moduleName, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(() => {});
+}
+
+async function loadAllCMSData() {
+  // 1. Cases
+  const storedCases = localStorage.getItem('wh_cases_data');
+  if (storedCases) {
+    try { casesData = JSON.parse(storedCases); } catch(e){}
+  } else {
+    try {
+      const res = await fetch('../data/cases.json', { cache: 'no-store' });
+      if (res.ok) { casesData = await res.json(); localStorage.setItem('wh_cases_data', JSON.stringify(casesData)); }
+    } catch(e) { casesData = JSON.parse(JSON.stringify(FALLBACK_CASES)); }
+  }
+  renderCasesList();
+
+  // 2. Products
+  const storedProds = localStorage.getItem('wh_products_data');
+  if (storedProds) {
+    try { productsData = JSON.parse(storedProds); } catch(e){}
+  } else {
+    try {
+      const res = await fetch('../data/products.json', { cache: 'no-store' });
+      if (res.ok) { productsData = await res.json(); localStorage.setItem('wh_products_data', JSON.stringify(productsData)); }
+    } catch(e){}
+  }
+  renderProdList();
+
+  // 3. FAQ
+  const storedFaq = localStorage.getItem('wh_faq_data');
+  if (storedFaq) {
+    try { faqData = JSON.parse(storedFaq); } catch(e){}
+  } else {
+    try {
+      const res = await fetch('../data/faq.json', { cache: 'no-store' });
+      if (res.ok) { faqData = await res.json(); localStorage.setItem('wh_faq_data', JSON.stringify(faqData)); }
+    } catch(e){}
+  }
+  renderFaqList();
+
+  // 4. Homepage
+  const storedHp = localStorage.getItem('wh_homepage_text');
+  if (storedHp) {
+    try {
+      const hp = JSON.parse(storedHp);
+      if(hp.notice_badge) document.getElementById('hp_notice_badge').value = hp.notice_badge;
+      if(hp.notice_msg) document.getElementById('hp_notice_msg').value = hp.notice_msg;
+      if(hp.hero_title) document.getElementById('hp_hero_title').value = hp.hero_title;
+      if(hp.hero_sub) document.getElementById('hp_hero_sub').value = hp.hero_sub;
+      if(hp.cta_1) document.getElementById('hp_cta_1').value = hp.cta_1;
+      if(hp.cta_2) document.getElementById('hp_cta_2').value = hp.cta_2;
+      if(hp.stat_1) document.getElementById('hp_stat_1').value = hp.stat_1;
+      if(hp.stat_2) document.getElementById('hp_stat_2').value = hp.stat_2;
+      if(hp.contact_phone) document.getElementById('hp_contact_phone').value = hp.contact_phone;
+      if(hp.contact_email) document.getElementById('hp_contact_email').value = hp.contact_email;
+    } catch(e){}
+  } else {
+    fetch('../data/homepage.json', { cache: 'no-store' }).then(r => r.json()).then(hp => {
+      if(hp.notice_badge) document.getElementById('hp_notice_badge').value = hp.notice_badge;
+      if(hp.notice_msg) document.getElementById('hp_notice_msg').value = hp.notice_msg;
+      if(hp.hero_title) document.getElementById('hp_hero_title').value = hp.hero_title;
+      if(hp.hero_sub) document.getElementById('hp_hero_sub').value = hp.hero_sub;
+      if(hp.cta_1) document.getElementById('hp_cta_1').value = hp.cta_1;
+      if(hp.cta_2) document.getElementById('hp_cta_2').value = hp.cta_2;
+      if(hp.stat_1) document.getElementById('hp_stat_1').value = hp.stat_1;
+      if(hp.stat_2) document.getElementById('hp_stat_2').value = hp.stat_2;
+      if(hp.contact_phone) document.getElementById('hp_contact_phone').value = hp.contact_phone;
+      if(hp.contact_email) document.getElementById('hp_contact_email').value = hp.contact_email;
+      localStorage.setItem('wh_homepage_text', JSON.stringify(hp));
+    }).catch(()=>{});
+  }
+}
+
+function exportDownloadFile(filename, content) {
+  const blob = new Blob([content], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+function exportAllDataPackage() {
+  exportDownloadFile('cases.json', JSON.stringify(casesData, null, 2));
+  setTimeout(() => exportDownloadFile('products.json', JSON.stringify(productsData, null, 2)), 300);
+  setTimeout(() => exportDownloadFile('faq.json', JSON.stringify(faqData, null, 2)), 600);
+  const hpData = {
+    notice_badge: document.getElementById('hp_notice_badge').value,
+    notice_msg: document.getElementById('hp_notice_msg').value,
+    hero_title: document.getElementById('hp_hero_title').value,
+    hero_sub: document.getElementById('hp_hero_sub').value,
+    cta_1: document.getElementById('hp_cta_1').value,
+    cta_2: document.getElementById('hp_cta_2').value,
+    stat_1: document.getElementById('hp_stat_1').value,
+    stat_2: document.getElementById('hp_stat_2').value,
+    contact_phone: document.getElementById('hp_contact_phone').value,
+    contact_email: document.getElementById('hp_contact_email').value
+  };
+  setTimeout(() => exportDownloadFile('homepage.json', JSON.stringify(hpData, null, 2)), 900);
+  toast('Downloaded 4 JSON data files for repo backup! 📥', true);
+}
+
+
 // ---------- INIT & NAVIGATION ----------
 function enterDemo(){
   document.getElementById('login').style.display='none';
   document.getElementById('app').style.display='grid';
-  loadInitialCases();
-  renderProdList();
-  renderFaqList();
+  loadAllCMSData();
 }
 
 function logout(){
@@ -774,6 +888,8 @@ function saveCase(){
   }
   closeCaseEditor();
   renderCasesList();
+  localStorage.setItem('wh_cases_data', JSON.stringify(casesData));
+  notifyCMSSync('cases', casesData);
   toast('Saved case successfully! ✓', true);
 }
 
@@ -878,6 +994,8 @@ function saveProd(){
   }
   closeProdEditor();
   renderProdList();
+  localStorage.setItem('wh_products_data', JSON.stringify(productsData));
+  notifyCMSSync('products', productsData);
   toast('Saved product listing! ✓', true);
 }
 
@@ -885,6 +1003,8 @@ function deleteProd(i){
   if(!confirm('Are you sure you want to delete this product listing?')) return;
   productsData.splice(i, 1);
   renderProdList();
+  localStorage.setItem('wh_products_data', JSON.stringify(productsData));
+  notifyCMSSync('products', productsData);
   toast('Product deleted', false);
 }
 
@@ -962,6 +1082,8 @@ function saveFaq(){
   }
   closeFaqEditor();
   renderFaqList();
+  localStorage.setItem('wh_faq_data', JSON.stringify(faqData));
+  notifyCMSSync('faq', faqData);
   toast('Saved FAQ entry! ✓', true);
 }
 
@@ -975,6 +1097,20 @@ function deleteFaq(i){
 
 // ---------- 4. HOMEPAGE TEXT LOGIC ----------
 function saveHomepageText(){
+  const hpData = {
+    notice_badge: document.getElementById('hp_notice_badge').value,
+    notice_msg: document.getElementById('hp_notice_msg').value,
+    hero_title: document.getElementById('hp_hero_title').value,
+    hero_sub: document.getElementById('hp_hero_sub').value,
+    cta_1: document.getElementById('hp_cta_1').value,
+    cta_2: document.getElementById('hp_cta_2').value,
+    stat_1: document.getElementById('hp_stat_1').value,
+    stat_2: document.getElementById('hp_stat_2').value,
+    contact_phone: document.getElementById('hp_contact_phone').value,
+    contact_email: document.getElementById('hp_contact_email').value
+  };
+  localStorage.setItem('wh_homepage_text', JSON.stringify(hpData));
+  notifyCMSSync('homepage', hpData);
   toast('Saved homepage text & header notices! ✓', true);
 }
 
