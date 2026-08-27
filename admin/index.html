@@ -122,6 +122,18 @@
   .field label{display:block;font-size:.84rem;font-weight:600;margin-bottom:6px;color:var(--ink)}
   .field .hint{font-size:.76rem;color:var(--muted);font-weight:400;margin-left:6px}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .form-section{margin:28px 0 16px;padding-top:18px;border-top:1px solid var(--line)}
+  .form-section h4{font-size:.95rem;color:var(--ink)}
+  .form-section p{font-size:.78rem;color:var(--muted);margin-top:3px;line-height:1.5}
+  .repeater{display:flex;flex-direction:column;gap:12px;margin-bottom:10px}
+  .rep-row{border:1px solid var(--line);border-radius:10px;padding:14px 12px 12px;background:#fafbfc;
+    display:grid;gap:8px;position:relative}
+  .rep-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .rep-num{position:absolute;top:-9px;left:12px;background:var(--accent);color:#fff;
+    font-size:.68rem;font-weight:700;padding:1px 8px;border-radius:999px}
+  .rep-del{justify-self:end}
+  .rep-empty{font-size:.82rem;color:var(--muted);padding:10px 12px;border:1px dashed var(--line);
+    border-radius:10px;background:#fafbfc}
   
   .editor-foot{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;background:#fafbfc}
   
@@ -130,6 +142,89 @@
   .preview-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin-bottom:8px}
 
   /* Homepage Section Cards */
+  /* ---------------- inventory ---------------- */
+  .inv-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+  .inv-kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+  .inv-kpi .n{font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1.2}
+  .inv-kpi .lbl{font-size:.75rem;color:var(--muted);margin-top:3px;font-weight:600}
+  .inv-kpi.alert .n{color:#c2410c}
+  .inv-kpi.danger .n{color:#b42318}
+  .inv-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .inv-toolbar input{flex:1 1 240px}
+  .inv-toolbar select{flex:0 0 190px}
+  .inv-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;
+    box-shadow:var(--shadow);overflow-x:auto;margin-bottom:20px}
+  table.inv{width:100%;border-collapse:collapse;min-width:860px}
+  table.inv th{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+    text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);background:#fafbfc;white-space:nowrap}
+  table.inv td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:.87rem;vertical-align:middle}
+  table.inv tr:last-child td{border-bottom:none}
+  table.inv tbody tr:hover{background:#fafbfc}
+  table.inv .name{font-weight:600;color:var(--ink)}
+  table.inv .sku{font-size:.75rem;color:var(--muted);margin-top:2px}
+  table.inv .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  table.inv .qty{font-weight:800;font-size:1rem}
+  table.inv .qty.low{color:#c2410c}
+  table.inv .qty.out{color:#b42318}
+  table.inv input.reorder{width:74px;padding:5px 8px;text-align:right}
+  table.inv .acts{display:flex;gap:6px;justify-content:flex-end;white-space:nowrap}
+  .inv-empty{padding:34px 18px;text-align:center;color:var(--muted);font-size:.88rem}
+  .modal-card.sm{max-width:460px;height:auto}
+  .modal-card.sm .modal-body{background:#fff;padding:20px}
+  .mv-list{list-style:none}
+  .mv-list li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;
+    border-bottom:1px dashed var(--line);font-size:.85rem}
+  .mv-list li:last-child{border-bottom:none}
+  .mv-delta{flex:0 0 62px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+  .mv-delta.up{color:var(--ok)}
+  .mv-delta.down{color:#b42318}
+  .mv-body{flex:1 1 auto;min-width:0}
+  .mv-when{font-size:.74rem;color:var(--muted);margin-top:2px}
+  @media(max-width:1100px){.inv-kpis{grid-template-columns:repeat(2,1fr)}}
+
+  /* ---------------- dashboard ---------------- */
+  .dash-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:18px}
+  .stat-tile{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+    box-shadow:var(--shadow);text-align:left;width:100%;transition:border-color .15s,transform .15s}
+  .stat-tile:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .stat-tile .top{display:flex;align-items:center;justify-content:flex-end}
+  .stat-tile .n{font-size:1.9rem;font-weight:800;color:var(--ink);line-height:1.15;margin-top:8px}
+  .stat-tile .lbl{font-size:.83rem;font-weight:700;color:var(--ink);margin-top:1px}
+  .stat-tile .sub{font-size:.74rem;color:var(--muted);margin-top:7px;line-height:1.55}
+  .dash-cols{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:start}
+  .dash-card{background:#fff;border:1px solid var(--line);border-radius:12px;
+    box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
+  .dash-card h3{font-size:.92rem;padding:13px 18px;border-bottom:1px solid var(--line);
+    background:#fafbfc;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .dash-card .body{padding:14px 18px}
+  .dash-list{list-style:none}
+  .dash-list li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;
+    border-bottom:1px dashed var(--line);font-size:.85rem;line-height:1.55}
+  .dash-list li:last-child{border-bottom:none}
+  .dash-list .ic{flex:0 0 auto;width:18px;text-align:center}
+  .dash-list .dot{flex:0 0 auto;width:8px;height:8px;border-radius:50%;margin-top:7px;background:var(--muted)}
+  .dash-list .dot.ok{background:var(--ok)}
+  .dash-list .dot.warn{background:#c2410c}
+  .dash-list .dot.idle{background:#cbd0d6}
+  .dash-list .tag{flex:0 0 auto;font-size:.63rem;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);background:#f1f3f5;border-radius:4px;
+    padding:2px 6px;margin-top:2px;min-width:62px;text-align:center}
+  .dash-list .txt{flex:1 1 auto;min-width:0}
+  .dash-list .when{color:var(--muted);font-size:.74rem;margin-top:2px}
+  .dash-list .go{flex:0 0 auto;font-size:.74rem;font-weight:700;color:var(--accent);
+    background:none;border:none;padding:2px 4px}
+  .dash-list .go:hover{text-decoration:underline}
+  .pill{font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+  .pill-ok{background:#ecfdf5;color:var(--ok);border:1px solid #a7f3d0}
+  .pill-warn{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
+  .pill-info{background:var(--info-bg);color:var(--info);border:1px solid #bfdbfe}
+  .dash-empty{color:var(--muted);font-size:.85rem;padding:4px 0}
+  .dash-actions{display:flex;flex-wrap:wrap;gap:8px}
+  .bar{height:6px;border-radius:999px;background:#eef0f3;overflow:hidden;margin-top:5px}
+  .bar span{display:block;height:100%;background:var(--accent);border-radius:999px}
+  @media(max-width:1100px){.dash-grid{grid-template-columns:repeat(2,1fr)}.dash-cols{grid-template-columns:1fr}}
+  @media(max-width:640px){.dash-grid{grid-template-columns:1fr}}
+
   .hp-section-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow);margin-bottom:20px}
   .hp-section-card h3{font-size:1.1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--accent)}
 
@@ -153,6 +248,7 @@
     .sidebar{display:none}
     .main{padding:18px 16px}
     .form-row{grid-template-columns:1fr}
+    .rep-grid{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -168,7 +264,7 @@
       <svg width="18" height="18" viewBox="0 0 16 16" fill="#fff"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
       Sign in with GitHub
     </button>
-    <div class="login-note">🔒 <b>Interactive Demo Console:</b> Click to enter preview.<br>All buttons, editors, and search tools are fully enabled for testing.</div>
+    <div class="login-note"><b>Interactive Demo Console:</b> Click to enter preview.<br>All buttons, editors, and search tools are fully enabled for testing.</div>
   </div>
 </div>
 
@@ -181,7 +277,7 @@
       <span class="demo-badge">DEMO MODE</span>
     </div>
     <div class="topbar-right">
-      <button class="btn btn-ghost btn-sm" onclick="exportAllDataPackage()" title="Download JSON files to save into data/ folder">📥 Export JSON Data</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportAllDataPackage()" title="Download JSON files to save into data/ folder">Export JSON Data</button>
       <span id="whoami">Administrator</span>
       <div class="avatar">A</div>
       <button class="btn btn-ghost btn-sm" onclick="logout()">Log out</button>
@@ -192,24 +288,30 @@
   <aside class="sidebar">
     <div class="side-group">
       <div class="side-label">Content Modules</div>
-      <button class="nav-item active" onclick="switchNav('cases')" id="nav-cases">
-        <span class="ic">📋</span> Cases <span class="nav-badge" id="badge-cases">15</span>
+      <button class="nav-item active" onclick="switchNav('dashboard')" id="nav-dashboard">
+        Dashboard
+      </button>
+      <button class="nav-item" onclick="switchNav('cases')" id="nav-cases">
+        Cases <span class="nav-badge" id="badge-cases">15</span>
       </button>
       <button class="nav-item" onclick="switchNav('products')" id="nav-products">
-        <span class="ic">🛍️</span> Products <span class="nav-badge" id="badge-products">5</span>
+        Products <span class="nav-badge" id="badge-products">5</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('inventory')" id="nav-inventory">
+        Inventory <span class="nav-badge" id="badge-inventory">0</span>
       </button>
       <button class="nav-item" onclick="switchNav('faq')" id="nav-faq">
-        <span class="ic">❓</span> FAQ <span class="nav-badge" id="badge-faq">5</span>
+        FAQ <span class="nav-badge" id="badge-faq">5</span>
       </button>
       <button class="nav-item" onclick="switchNav('homepage')" id="nav-homepage">
-        <span class="ic">📝</span> Homepage Text <span class="nav-badge">4 Sections</span>
+        Homepage Text <span class="nav-badge">4 Sections</span>
       </button>
     </div>
 
     <div class="side-group" style="margin-top:auto">
       <div class="side-label">Live Site</div>
       <button class="nav-item" onclick="openSitePreview()">
-        <span class="ic">🌐</span> View Site <span class="nav-badge" style="background:#eff6ff;color:var(--info)">Preview ↗</span>
+        View Site <span class="nav-badge" style="background:#eff6ff;color:var(--info)">Preview ↗</span>
       </button>
     </div>
   </aside>
@@ -217,14 +319,64 @@
   <!-- Main Content Workspace -->
   <main class="main">
     <div class="demo-banner">
-      <span>ℹ️</span>
       <span><b>Interactive Front-End Demo:</b> You can add, edit, search, and delete content across all modules below. Changes update in real-time on this preview screen.</span>
     </div>
 
+    <!-- ==================== 0. DASHBOARD ==================== -->
+    <section id="sec-dashboard">
+      <div class="page-head">
+        <div>
+          <h2>Dashboard</h2>
+          <div class="sub" id="dashSub">Everything on the site at a glance.</div>
+        </div>
+        <button class="btn btn-ghost" onclick="renderDashboard()">↻ Refresh</button>
+      </div>
+
+      <div class="dash-grid" id="dashTiles"></div>
+
+      <div class="dash-cols">
+        <div>
+          <div class="dash-card">
+            <h3>Needs attention <span class="pill pill-ok" id="attnPill">All clear</span></h3>
+            <div class="body"><ul class="dash-list" id="dashAttention"></ul></div>
+          </div>
+          <div class="dash-card">
+            <h3>Recent changes <span class="pill pill-info" id="actPill">0</span></h3>
+            <div class="body"><ul class="dash-list" id="dashActivity"></ul></div>
+          </div>
+        </div>
+        <div>
+          <div class="dash-card">
+            <h3>Publish status <span class="pill pill-info" id="pubPill">checking…</span></h3>
+            <div class="body">
+              <ul class="dash-list" id="dashPublish"></ul>
+              <p class="dash-empty" style="margin-top:10px">Edits live in this browser until the JSON files
+                in the repository are updated. Use <b>Export JSON Data</b>, then commit the files.</p>
+            </div>
+          </div>
+          <div class="dash-card">
+            <h3>Quick actions</h3>
+            <div class="body">
+              <div class="dash-actions">
+                <button class="btn btn-primary btn-sm" onclick="switchNav('cases'); openCaseEditor(null)">+ New case</button>
+                <button class="btn btn-primary btn-sm" onclick="switchNav('products'); openProdEditor(null)">+ New product</button>
+                <button class="btn btn-primary btn-sm" onclick="switchNav('faq'); openFaqEditor(null)">+ New FAQ</button>
+                <button class="btn btn-ghost btn-sm" onclick="exportAllDataPackage()">Export JSON</button>
+                <button class="btn btn-ghost btn-sm" onclick="openSitePreview()">View site</button>
+              </div>
+            </div>
+          </div>
+          <div class="dash-card">
+            <h3>Case translations <span class="pill pill-info" id="langPill"></span></h3>
+            <div class="body"><ul class="dash-list" id="dashLangs"></ul></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ==================== 1. CASES MODULE ==================== -->
-    <section id="sec-cases">
+    <section id="sec-cases" class="hidden">
       <div class="impact-box">
-        <span>💡</span>
         <span><b>What this changes:</b> Edits patient recovery stories on the <b>Clinical Cases Page</b> (<code>典型病例.html</code>) and updates structured schema for search engines.</span>
       </div>
 
@@ -232,14 +384,14 @@
       <div id="cases-listView">
         <div class="page-head">
           <div>
-            <h2>📋 Patient Cases</h2>
+            <h2>Patient Cases</h2>
             <div class="sub">Manage recovery testimonials & clinical studies · <span id="casesCount">0</span> total</div>
           </div>
           <button class="btn btn-primary" onclick="openCaseEditor(null)">＋ Add New Case</button>
         </div>
         <div class="toolbar">
           <div class="search">
-            <input id="casesSearch" placeholder="🔍 Search cases by patient name, condition..." oninput="renderCasesList()">
+            <input id="casesSearch" placeholder="Search cases by patient name, condition..." oninput="renderCasesList()">
           </div>
         </div>
         <div class="card-grid" id="casesList"></div>
@@ -285,7 +437,7 @@
           </div>
           <div class="editor-foot">
             <button class="btn btn-ghost" onclick="closeCaseEditor()">Cancel</button>
-            <button class="btn btn-primary" onclick="saveCase()">💾 Save Case</button>
+            <button class="btn btn-primary" onclick="saveCase()">Save Case</button>
           </div>
         </div>
       </div>
@@ -295,7 +447,6 @@
     <!-- ==================== 2. PRODUCTS MODULE ==================== -->
     <section id="sec-products" class="hidden">
       <div class="impact-box">
-        <span>💡</span>
         <span><b>What this changes:</b> Edits prices, stock availability, descriptions, and 3D GLB model links across product pages (<code>產品_*.html</code>) and the homepage product showcase grid (<code>index.html</code>).</span>
       </div>
 
@@ -303,14 +454,14 @@
       <div id="prod-listView">
         <div class="page-head">
           <div>
-            <h2>🛍️ Product Catalog</h2>
+            <h2>Product Catalog</h2>
             <div class="sub">Manage product listings, pricing, and 3D models · <span id="prodCount">0</span> total</div>
           </div>
           <button class="btn btn-primary" onclick="openProdEditor(null)">＋ Add New Product</button>
         </div>
         <div class="toolbar">
           <div class="search">
-            <input id="prodSearch" placeholder="🔍 Search products by name, SKU..." oninput="renderProdList()">
+            <input id="prodSearch" placeholder="Search products by name, SKU..." oninput="renderProdList()">
           </div>
           <select id="prodFilter" class="filter-select" onchange="renderProdList()">
             <option value="all">All Categories</option>
@@ -370,23 +521,141 @@
               <input id="f_prod_model" placeholder="Model file name">
             </div>
             <div class="field">
-              <label>Description <span class="hint">Detailed product benefits</span></label>
+              <label>Product Description <span class="hint">Detailed product benefits</span></label>
               <textarea id="f_prod_desc" rows="4" placeholder="Product details and benefits..."></textarea>
+            </div>
+
+            <div class="form-section">
+              <h4>Product pictures</h4>
+              <p>ALT text describes the picture for screen readers and search engines. The first picture is the one shown on the catalogue and at the top of the product page.</p>
+            </div>
+            <div class="field">
+              <div class="repeater" id="rep_images"></div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addRepeaterRow('images')">+ Add picture</button>
+            </div>
+
+            <div class="form-section">
+              <h4>Background</h4>
+              <p>Appears further down the product page. Leave any box empty and that section is simply not shown.</p>
+            </div>
+            <div class="field">
+              <label>Definition / Terminology <span class="hint">Explain the terms a first-time reader will not know</span></label>
+              <textarea id="f_prod_definition" rows="3" placeholder="e.g. PSP (polysaccharide-peptide) is the active fraction extracted from..."></textarea>
+            </div>
+            <div class="field">
+              <label>Product story <span class="hint">How it came about, who makes it</span></label>
+              <textarea id="f_prod_story" rows="4" placeholder="The story behind this product..."></textarea>
+            </div>
+            <div class="field">
+              <label>Partners <span class="hint">e.g. 2 professors in HKU, Queensland</span></label>
+              <textarea id="f_prod_partners" rows="2" placeholder="Research and manufacturing partners, one per line..."></textarea>
+            </div>
+
+            <div class="form-section">
+              <h4>Testimony</h4>
+              <p>Who said it and when — both are shown with the quote.</p>
+            </div>
+            <div class="field">
+              <div class="repeater" id="rep_testimonies"></div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addRepeaterRow('testimonies')">+ Add testimony</button>
+            </div>
+
+            <div class="form-section">
+              <h4>Research &amp; articles</h4>
+              <p>Links only. Each becomes a clickable reference on the product page.</p>
+            </div>
+            <div class="field">
+              <label>Researcher paper (link) <span class="hint">e.g. a PubMed or journal URL</span></label>
+              <div class="repeater" id="rep_papers"></div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addRepeaterRow('papers')">+ Add paper</button>
+            </div>
+            <div class="field">
+              <label>Articles (link) <span class="hint">press coverage, WeChat posts, blog articles</span></label>
+              <div class="repeater" id="rep_articles"></div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addRepeaterRow('articles')">+ Add article</button>
             </div>
           </div>
           <div class="editor-foot">
             <button class="btn btn-ghost" onclick="closeProdEditor()">Cancel</button>
-            <button class="btn btn-primary" onclick="saveProd()">💾 Save Product</button>
+            <button class="btn btn-primary" onclick="saveProd()">Save Product</button>
           </div>
         </div>
       </div>
     </section>
 
 
+    <!-- ==================== 2.5 INVENTORY MODULE ==================== -->
+    <section id="sec-inventory" class="hidden">
+      <div class="impact-box">
+        <span><b>What this changes:</b> Stock levels are stored with each product, so a product
+        that reaches <b>0 on hand</b> is automatically marked <b>Out of Stock</b> everywhere on the
+        site — the catalogue, the product page and the cart.<br>
+        Stock is stored in <code>data/inventory.csv</code>, which both this screen and the
+        website read. To publish a stock count: <b>Export CSV</b>, save the file over
+        <code>data/inventory.csv</code>, and commit it.</span>
+      </div>
+
+      <div class="page-head">
+        <div>
+          <h2>Inventory</h2>
+          <div class="sub">Stock on hand, reorder levels and every stock movement</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input type="file" id="invCsvFile" accept=".csv,text/csv" class="hidden"
+                 onchange="importInventoryCsv(this)">
+          <button class="btn btn-ghost" onclick="document.getElementById('invCsvFile').click()">Import CSV</button>
+          <button class="btn btn-ghost" onclick="downloadInventoryCsv()">Export CSV</button>
+          <button class="btn btn-primary" onclick="switchNav('products')">Manage products</button>
+        </div>
+      </div>
+
+      <div class="inv-kpis" id="invKpis"></div>
+
+      <div class="inv-toolbar">
+        <input id="invSearch" placeholder="Search by product name or SKU..." oninput="renderInventory()">
+        <select id="invFilter" onchange="renderInventory()">
+          <option value="all">All products</option>
+          <option value="ok">In stock</option>
+          <option value="low">Low stock only</option>
+          <option value="out">Out of stock only</option>
+          <option value="untracked">Not tracked yet</option>
+        </select>
+        <select id="invSort" onchange="renderInventory()">
+          <option value="stock">Sort: lowest stock first</option>
+          <option value="name">Sort: product name</option>
+          <option value="value">Sort: highest stock value</option>
+        </select>
+      </div>
+
+      <div class="inv-wrap">
+        <table class="inv">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th class="num">Price</th>
+              <th class="num">On hand</th>
+              <th class="num">Reorder at</th>
+              <th>Status</th>
+              <th class="num">Stock value</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="invBody"></tbody>
+        </table>
+        <div class="inv-empty hidden" id="invEmpty">No products match this filter.</div>
+      </div>
+
+      <div class="dash-card">
+        <h3>Stock movements <span class="pill pill-info" id="mvPill">0</span></h3>
+        <div class="body">
+          <ul class="mv-list" id="invMovements"></ul>
+        </div>
+      </div>
+    </section>
+
     <!-- ==================== 3. FAQ MODULE ==================== -->
     <section id="sec-faq" class="hidden">
       <div class="impact-box">
-        <span>💡</span>
         <span><b>What this changes:</b> Edits question & answer accordions on the <b>FAQ Page</b> (<code>常見問題.html</code>) and JSON-LD schema for Google Rich Snippets.</span>
       </div>
 
@@ -394,14 +663,14 @@
       <div id="faq-listView">
         <div class="page-head">
           <div>
-            <h2>❓ FAQ Management</h2>
+            <h2>FAQ Management</h2>
             <div class="sub">Manage customer questions & answers · <span id="faqCount">0</span> total</div>
           </div>
           <button class="btn btn-primary" onclick="openFaqEditor(null)">＋ Add New FAQ</button>
         </div>
         <div class="toolbar">
           <div class="search">
-            <input id="faqSearch" placeholder="🔍 Search FAQ questions or keywords..." oninput="renderFaqList()">
+            <input id="faqSearch" placeholder="Search FAQ questions or keywords..." oninput="renderFaqList()">
           </div>
           <select id="faqFilter" class="filter-select" onchange="renderFaqList()">
             <option value="all">All Categories</option>
@@ -450,7 +719,7 @@
           </div>
           <div class="editor-foot">
             <button class="btn btn-ghost" onclick="closeFaqEditor()">Cancel</button>
-            <button class="btn btn-primary" onclick="saveFaq()">💾 Save FAQ</button>
+            <button class="btn btn-primary" onclick="saveFaq()">Save FAQ</button>
           </div>
         </div>
       </div>
@@ -460,21 +729,20 @@
     <!-- ==================== 4. HOMEPAGE TEXT MODULE ==================== -->
     <section id="sec-homepage" class="hidden">
       <div class="impact-box">
-        <span>💡</span>
         <span><b>What this changes:</b> Edits hero headline titles, notice banners, key highlight stats, and footer hotline details on the <b>Homepage</b> (<code>index.html</code>).</span>
       </div>
 
       <div class="page-head">
         <div>
-          <h2>📝 Homepage Text Controls</h2>
+          <h2>Homepage Text Controls</h2>
           <div class="sub">Configure top announcement banner, hero section text, and customer hotline</div>
         </div>
-        <button class="btn btn-primary" onclick="saveHomepageText()">💾 Save Homepage Changes</button>
+        <button class="btn btn-primary" onclick="saveHomepageText()">Save Homepage Changes</button>
       </div>
 
       <!-- Section 1: Top Announcement Banner -->
       <div class="hp-section-card">
-        <h3><span class="ic">📢</span> Top Announcement Notice Bar</h3>
+        <h3>Top Announcement Notice Bar</h3>
         <div class="form-row">
           <div class="field">
             <label>Notice Badge Text <span class="hint">e.g. Special Notice</span></label>
@@ -489,7 +757,7 @@
 
       <!-- Section 2: Main Hero Header -->
       <div class="hp-section-card">
-        <h3><span class="ic">🌟</span> Main Hero Banner Text</h3>
+        <h3>Main Hero Banner Text</h3>
         <div class="field">
           <label>Hero Headline Title (HTML Supported)</label>
           <input id="hp_hero_title" value="Pioneering Health Solutions with Premium Herbal Science">
@@ -512,7 +780,7 @@
 
       <!-- Section 3: Key Statistics Cards -->
       <div class="hp-section-card">
-        <h3><span class="ic">📊</span> Key Highlight Stats</h3>
+        <h3>Key Highlight Stats</h3>
         <div class="form-row">
           <div class="field">
             <label>Stat 1 Title & Value</label>
@@ -527,7 +795,7 @@
 
       <!-- Section 4: Contact Hotline Info -->
       <div class="hp-section-card">
-        <h3><span class="ic">📞</span> Contact Hotline & Customer Service</h3>
+        <h3>Contact Hotline & Customer Service</h3>
         <div class="form-row">
           <div class="field">
             <label>Hotline Telephone</label>
@@ -544,17 +812,51 @@
   </main>
 </div>
 
+<!-- ============ STOCK ADJUSTMENT MODAL ============ -->
+<div id="invModal" class="modal-overlay hidden">
+  <div class="modal-card sm">
+    <div class="modal-head">
+      <div style="font-weight:700" id="invModalTitle">Adjust stock</div>
+      <button class="btn btn-ghost btn-sm" onclick="closeInvAdjust()">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Movement type</label>
+        <select id="inv_type" onchange="updateInvPreview()">
+          <option value="receive">Received new stock (+)</option>
+          <option value="sale">Sold / shipped (-)</option>
+          <option value="damage">Damaged or expired (-)</option>
+          <option value="correction">Stock count correction (set exact figure)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label id="inv_qty_label">Quantity</label>
+        <input id="inv_qty" type="number" min="0" step="1" value="1" oninput="updateInvPreview()">
+      </div>
+      <div class="field">
+        <label>Note <span class="hint">optional - e.g. supplier, invoice number</span></label>
+        <input id="inv_note" placeholder="e.g. Received from Canadian GMP facility">
+      </div>
+      <div class="impact-box" id="invPreview" style="margin-bottom:0"><span></span></div>
+    </div>
+    <div class="editor-foot">
+      <button class="btn btn-ghost" onclick="closeInvAdjust()">Cancel</button>
+      <button class="btn btn-primary" onclick="applyInvAdjust()">Apply movement</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ SITE PREVIEW MODAL ============ -->
 <div id="siteModal" class="modal-overlay hidden">
   <div class="modal-card">
     <div class="modal-head">
       <div style="font-weight:700;display:flex;align-items:center;gap:8px">
-        <span>🌐 Live Site Preview</span>
+        <span>Live Site Preview</span>
         <span class="badge badge-blue">index.html</span>
       </div>
       <div style="display:flex;gap:10px">
         <a href="../index.html" target="_blank" class="btn btn-ghost btn-sm">Open in New Tab ↗</a>
-        <button class="btn btn-ghost btn-sm" onclick="closeSitePreview()">Close ✕</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeSitePreview()">Close</button>
       </div>
     </div>
     <div class="modal-body">
@@ -578,7 +880,7 @@ const LANGS = [
   {code:'ru', label:'Russian'},
 ];
 
-let activeNav = 'cases';
+let activeNav = 'dashboard';
 
 // 1. Cases Data
 let casesData = [];
@@ -660,6 +962,10 @@ async function loadAllCMSData() {
     } catch(e){}
   }
   renderProdList();
+  loadMovements();
+  await loadInventoryCsv();
+  renderInventory();
+  renderProdList();
 
   // 3. FAQ
   const storedFaq = localStorage.getItem('wh_faq_data');
@@ -689,6 +995,7 @@ async function loadAllCMSData() {
       if(hp.contact_phone) document.getElementById('hp_contact_phone').value = hp.contact_phone;
       if(hp.contact_email) document.getElementById('hp_contact_email').value = hp.contact_email;
     } catch(e){}
+    renderDashboard();
   } else {
     fetch('../data/homepage.json', { cache: 'no-store' }).then(r => r.json()).then(hp => {
       if(hp.notice_badge) document.getElementById('hp_notice_badge').value = hp.notice_badge;
@@ -702,8 +1009,9 @@ async function loadAllCMSData() {
       if(hp.contact_phone) document.getElementById('hp_contact_phone').value = hp.contact_phone;
       if(hp.contact_email) document.getElementById('hp_contact_email').value = hp.contact_email;
       localStorage.setItem('wh_homepage_text', JSON.stringify(hp));
-    }).catch(()=>{});
+    }).catch(()=>{}).finally(() => renderDashboard());
   }
+  renderDashboard();
 }
 
 function exportDownloadFile(filename, content) {
@@ -718,6 +1026,7 @@ function exportAllDataPackage() {
   exportDownloadFile('cases.json', JSON.stringify(casesData, null, 2));
   setTimeout(() => exportDownloadFile('products.json', JSON.stringify(productsData, null, 2)), 300);
   setTimeout(() => exportDownloadFile('faq.json', JSON.stringify(faqData, null, 2)), 600);
+  setTimeout(() => exportDownloadFile('inventory-log.json', JSON.stringify(movements, null, 2)), 900);
   const hpData = {
     notice_badge: document.getElementById('hp_notice_badge').value,
     notice_msg: document.getElementById('hp_notice_msg').value,
@@ -731,7 +1040,7 @@ function exportAllDataPackage() {
     contact_email: document.getElementById('hp_contact_email').value
   };
   setTimeout(() => exportDownloadFile('homepage.json', JSON.stringify(hpData, null, 2)), 900);
-  toast('Downloaded 4 JSON data files for repo backup! 📥', true);
+  toast('Downloaded 4 JSON data files for repo backup!', true);
 }
 
 
@@ -747,9 +1056,652 @@ function logout(){
   document.getElementById('login').style.display='flex';
 }
 
+/* ================= DASHBOARD =================================================
+   Read-only overview built from the same in-memory data the modules edit, so it
+   is always current — every save calls logActivity(), which re-renders it. */
+
+const ACTIVITY_KEY = 'wh_activity_log';
+
+function logActivity(module, text){
+  try {
+    const log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]');
+    log.unshift({ module: module, text: text, at: new Date().toISOString() });
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log.slice(0, 25)));
+  } catch(e){}
+  if(activeNav === 'dashboard') renderDashboard();
+}
+
+function timeAgo(iso){
+  const then = new Date(iso).getTime();
+  if(!then) return '';
+  const mins = Math.floor((Date.now() - then) / 60000);
+  if(mins < 1) return 'just now';
+  if(mins < 60) return mins + ' min ago';
+  const hrs = Math.floor(mins / 60);
+  if(hrs < 24) return hrs + (hrs === 1 ? ' hour ago' : ' hours ago');
+  const days = Math.floor(hrs / 24);
+  return days + (days === 1 ? ' day ago' : ' days ago');
+}
+
+function currentHomepageValues(){
+  const ids = ['notice_badge','notice_msg','hero_title','hero_sub','cta_1','cta_2',
+               'stat_1','stat_2','contact_phone','contact_email'];
+  const out = {};
+  ids.forEach(k => {
+    const el = document.getElementById('hp_' + k);
+    out[k] = el ? el.value.trim() : '';
+  });
+  return out;
+}
+
+/* Everything an editor would want flagged, gathered in one pass. */
+function collectAttention(){
+  const items = [];
+  const add = (text, nav) => items.push({ text: text, nav: nav });
+
+  const noPrice = productsData.filter(p => !parseFloat(p.price));
+  if(noPrice.length) add(noPrice.length + ' product(s) have no price set: ' +
+    noPrice.map(p => p.title || p.sku).join(', '), 'products');
+
+  const noPic = productsData.filter(p => !p.image && !(Array.isArray(p.images) && p.images.length));
+  if(noPic.length) add(noPic.length + ' product(s) have no picture and fall back to the default photo', 'products');
+
+  const noAlt = productsData.filter(p => Array.isArray(p.images) && p.images.some(x => x.url && !x.alt));
+  if(noAlt.length) add(noAlt.length + ' product(s) have a picture with no ALT text', 'products');
+
+  const noDesc = productsData.filter(p => !(p.desc || '').trim());
+  if(noDesc.length) add(noDesc.length + ' product(s) have no description', 'products');
+
+  const dupeSku = {};
+  productsData.forEach(p => { const k = (p.sku || '').trim(); if(k) dupeSku[k] = (dupeSku[k] || 0) + 1; });
+  const dupes = Object.keys(dupeSku).filter(k => dupeSku[k] > 1);
+  if(dupes.length) add('Duplicate SKU: ' + dupes.join(', ') + ' — each product needs its own code', 'products');
+
+  const noZh = casesData.filter(c => !c.zh || !(c.zh.title || '').trim());
+  if(noZh.length) add(noZh.length + ' case(s) have no Chinese version — the site\'s main language', 'cases');
+
+  const noSummary = casesData.filter(c => c.zh && (c.zh.title || '').trim() && !(c.zh.summary || '').trim());
+  if(noSummary.length) add(noSummary.length + ' case(s) have no summary, so their card looks empty', 'cases');
+
+  const outOfStock = productsData.filter(p => invState(p) === 'out');
+  if(outOfStock.length) add(outOfStock.length + ' product(s) are out of stock and cannot be bought: ' +
+    outOfStock.map(p => p.title || p.sku).join(', '), 'inventory');
+
+  const lowStock = productsData.filter(p => invState(p) === 'low');
+  if(lowStock.length) add(lowStock.length + ' product(s) are at or below their reorder level: ' +
+    lowStock.map(p => (p.title || p.sku) + ' (' + stockOf(p) + ' left)').join(', '), 'inventory');
+
+  const untracked = productsData.filter(p => invState(p) === 'untracked');
+  if(untracked.length) add(untracked.length + ' product(s) have no stock tracking yet', 'inventory');
+
+  const badFaq = faqData.filter(f => !(f.q || '').trim() || !(f.a || '').trim());
+  if(badFaq.length) add(badFaq.length + ' FAQ entr(y/ies) are missing a question or an answer', 'faq');
+
+  const hp = currentHomepageValues();
+  if(!hp.contact_phone || !hp.contact_email)
+    add('Homepage contact details are incomplete', 'homepage');
+
+  return items;
+}
+
+function renderTiles(){
+  const inStock = productsData.filter(p => /^in/i.test(p.status || 'In Stock')).length;
+  const preOrder = productsData.filter(p => /^pre/i.test(p.status || '')).length;
+  const outStock = productsData.filter(p => /^out/i.test(p.status || '')).length;
+  const faqCats = {};
+  faqData.forEach(f => { if(f.cat) faqCats[f.cat] = 1; });
+  const withZh = casesData.filter(c => c.zh && (c.zh.title || '').trim()).length;
+  const trackedCount = productsData.filter(isTracked).length;
+  const unitsOnHand = productsData.filter(isTracked).reduce((sum, p) => sum + stockOf(p), 0);
+  const hp = currentHomepageValues();
+  const hpFilled = Object.keys(hp).filter(k => hp[k]).length;
+
+  const tiles = [
+    { n: casesData.length, lbl: 'Patient cases',
+      sub: withZh + ' with a Chinese version', nav: 'cases' },
+    { n: productsData.length, lbl: 'Products',
+      sub: inStock + ' in stock · ' + preOrder + ' pre-order · ' + outStock + ' out of stock', nav: 'products' },
+    { n: unitsOnHand.toLocaleString('en-US'), lbl: 'Units in stock',
+      sub: trackedCount + ' of ' + productsData.length + ' products tracked', nav: 'inventory' },
+    { n: faqData.length, lbl: 'FAQ entries',
+      sub: Object.keys(faqCats).length + ' categories', nav: 'faq' },
+    { n: hpFilled + '/10', lbl: 'Homepage fields',
+      sub: 'banner, hero, stats, contact', nav: 'homepage' }
+  ];
+
+  document.getElementById('dashTiles').innerHTML = tiles.map(t => `
+    <button class="stat-tile" onclick="switchNav('${t.nav}')">
+      <div class="top"><span class="pill pill-info">open →</span></div>
+      <div class="n">${t.n}</div>
+      <div class="lbl">${esc(t.lbl)}</div>
+      <div class="sub">${esc(t.sub)}</div>
+    </button>`).join('');
+}
+
+function renderAttention(){
+  const items = collectAttention();
+  const box = document.getElementById('dashAttention');
+  const pill = document.getElementById('attnPill');
+
+  if(items.length === 0){
+    pill.className = 'pill pill-ok';
+    pill.textContent = 'All clear';
+    box.innerHTML = '<li><span class="dot ok"></span><span class="txt">Nothing to fix — every product has a price, ' +
+      'a picture and a description, and every case has its Chinese version.</span></li>';
+    return;
+  }
+  pill.className = 'pill pill-warn';
+  pill.textContent = items.length + (items.length === 1 ? ' item' : ' items');
+  box.innerHTML = items.map(it => `
+    <li><span class="dot warn"></span>
+      <span class="txt">${esc(it.text)}</span>
+      <button class="go" onclick="switchNav('${it.nav}')">Fix →</button></li>`).join('');
+}
+
+function renderActivity(){
+  let log = [];
+  try { log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); } catch(e){}
+  const box = document.getElementById('dashActivity');
+  document.getElementById('actPill').textContent = log.length;
+  if(!log.length){
+    box.innerHTML = '<li><span class="txt dash-empty">No changes yet. ' +
+      'Anything you add, edit or delete will be listed here.</span></li>';
+    return;
+  }
+  const names = { cases: 'Cases', products: 'Products', inventory: 'Inventory',
+                  faq: 'FAQ', homepage: 'Homepage' };
+  box.innerHTML = log.slice(0, 8).map(e => `
+    <li><span class="tag">${esc(names[e.module] || e.module)}</span>
+      <span class="txt">${esc(e.text)}<div class="when">${esc(timeAgo(e.at))}</div></span></li>`).join('');
+}
+
+function renderLangs(){
+  const box = document.getElementById('dashLangs');
+  const total = casesData.length;
+  document.getElementById('langPill').textContent = total + ' cases';
+  if(!total){
+    box.innerHTML = '<li><span class="txt dash-empty">No cases yet.</span></li>';
+    return;
+  }
+  box.innerHTML = LANGS.map(l => {
+    const done = casesData.filter(c => c[l.code] && (c[l.code].title || '').trim()).length;
+    const pct = Math.round(done / total * 100);
+    return `<li><span class="txt"><b>${esc(l.label)}</b> — ${done}/${total} (${pct}%)
+      <div class="bar"><span style="width:${pct}%"></span></div></span></li>`;
+  }).join('');
+}
+
+/* Compare what is in this browser against the JSON files the site actually ships. */
+async function renderPublish(){
+  const box = document.getElementById('dashPublish');
+  const pill = document.getElementById('pubPill');
+  const targets = [
+    { key: 'cases',    file: '../data/cases.json',    label: 'Cases',         local: () => casesData },
+    { key: 'products', file: '../data/products.json', label: 'Products',      local: () => productsData },
+    { key: 'faq',      file: '../data/faq.json',      label: 'FAQ',           local: () => faqData },
+    { key: 'homepage', file: '../data/homepage.json', label: 'Homepage text', local: currentHomepageValues }
+  ];
+
+  const rows = await Promise.all(targets.map(async t => {
+    try {
+      const res = await fetch(t.file, { cache: 'no-store' });
+      if(!res.ok) throw new Error('http ' + res.status);
+      const published = await res.json();
+      const same = JSON.stringify(published) === JSON.stringify(t.local());
+      return { label: t.label, state: same ? 'ok' : 'draft' };
+    } catch(e){
+      return { label: t.label, state: 'unknown' };
+    }
+  }));
+
+  rows.push({ label: 'Inventory (CSV)', state: await inventoryCsvState() });
+
+  const drafts = rows.filter(r => r.state === 'draft').length;
+  const unknown = rows.filter(r => r.state === 'unknown').length;
+  if(drafts){ pill.className = 'pill pill-warn'; pill.textContent = drafts + ' unpublished'; }
+  else if(unknown){ pill.className = 'pill pill-info'; pill.textContent = 'file check unavailable'; }
+  else { pill.className = 'pill pill-ok'; pill.textContent = 'all published'; }
+
+  const view = {
+    ok:      { dot: 'ok',   note: 'matches the published file' },
+    draft:   { dot: 'warn', note: 'changed in this browser, not yet in the repository' },
+    unknown: { dot: 'idle', note: 'published file could not be read' }
+  };
+  box.innerHTML = rows.map(r => `
+    <li><span class="dot ${view[r.state].dot}"></span>
+      <span class="txt"><b>${esc(r.label)}</b><div class="when">${esc(view[r.state].note)}</div></span></li>`).join('');
+}
+
+function renderDashboard(){
+  if(typeof casesData === 'undefined') return;
+  renderTiles();
+  renderAttention();
+  renderActivity();
+  renderLangs();
+  renderPublish();
+  const stamp = new Date().toLocaleTimeString();
+  document.getElementById('dashSub').textContent = 'Everything on the site at a glance · updated ' + stamp;
+}
+
+/* ---- data/inventory.csv : the published stock file --------------------------
+   Stock is kept in a CSV so it can be opened in Excel, edited by whoever does
+   the stock count, and committed to the repository. The site reads the same
+   file, so what is counted here is what shoppers see. Precedence is:
+   edits in this browser  >  data/inventory.csv  >  data/products.json. */
+
+const INVENTORY_CSV = '../data/inventory.csv';
+const CSV_HEAD = ['SKU', 'Product', 'Price (HKD)', 'On hand', 'Reorder at',
+                  'Status', 'Stock value (HKD)', 'Last updated'];
+
+/* A small RFC4180 reader: handles quoted fields, embedded commas and newlines. */
+function parseCsv(text){
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  text = String(text).replace(/^﻿/, '');
+  for(let i = 0; i < text.length; i++){
+    const c = text[i];
+    if(inQuotes){
+      if(c === '"'){
+        if(text[i + 1] === '"'){ field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else if(c === '"'){ inQuotes = true; }
+    else if(c === ','){ row.push(field); field = ''; }
+    else if(c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
+    else if(c !== '\r'){ field += c; }
+  }
+  if(field !== '' || row.length){ row.push(field); rows.push(row); }
+  if(!rows.length) return [];
+  const head = rows.shift().map(h => h.trim());
+  return rows.filter(r => r.some(v => String(v).trim() !== '')).map(r => {
+    const o = {};
+    head.forEach((h, i) => { o[h] = (r[i] === undefined ? '' : String(r[i]).trim()); });
+    return o;
+  });
+}
+
+function csvCell(v){
+  return '"' + String(v === undefined || v === null ? '' : v).replace(/"/g, '""') + '"';
+}
+
+function buildInventoryCsv(){
+  const lines = [CSV_HEAD.map(csvCell).join(',')];
+  productsData.forEach(p => {
+    const n = stockOf(p);
+    lines.push([
+      p.sku || '',
+      p.title || '',
+      (parseFloat(p.price) || 0).toFixed(2),
+      n === null ? '' : n,
+      isTracked(p) ? reorderOf(p) : '',
+      p.status || '',
+      n === null ? '' : (n * (parseFloat(p.price) || 0)).toFixed(2),
+      p.stockUpdated || ''
+    ].map(csvCell).join(','));
+  });
+  return '﻿' + lines.join('\r\n') + '\r\n';
+}
+
+/* Apply CSV rows onto the products, matched on SKU.
+   force=false only fills products that have no stock figure yet, so the CSV
+   seeds a fresh browser without overwriting work done here. */
+function applyInventoryRows(rows, force){
+  let applied = 0, unknown = [];
+  rows.forEach(r => {
+    const sku = (r['SKU'] || '').trim();
+    if(!sku) return;
+    const p = productsData.find(x => (x.sku || '').trim() === sku);
+    if(!p){ unknown.push(sku); return; }
+    if(!force && isTracked(p)) return;
+
+    const raw = (r['On hand'] || '').trim();
+    if(raw === ''){ if(force) { p.stock = undefined; } }
+    else { p.stock = Math.max(0, parseInt(raw, 10) || 0); }
+
+    const reorder = parseInt((r['Reorder at'] || '').trim(), 10);
+    if(!isNaN(reorder)) p.reorder = Math.max(0, reorder);
+
+    // A Pre-order product keeps that status; otherwise stock decides it.
+    const status = (r['Status'] || '').trim();
+    if(/^pre/i.test(status)) p.status = 'Pre-order';
+    if(r['Last updated']) p.stockUpdated = r['Last updated'];
+    applied++;
+  });
+  return { applied: applied, unknown: unknown };
+}
+
+async function loadInventoryCsv(){
+  try {
+    const res = await fetch(INVENTORY_CSV, { cache: 'no-store' });
+    if(!res.ok) return;
+    applyInventoryRows(parseCsv(await res.text()), false);
+    productsData.forEach(syncStatusToStock);
+  } catch(e){ /* file:// or not published yet - the admin still works */ }
+}
+
+function downloadInventoryCsv(){
+  const blob = new Blob([buildInventoryCsv()], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'inventory.csv';
+  a.click();
+  toast('inventory.csv downloaded - save it into the data/ folder and commit it', true);
+}
+
+function importInventoryCsv(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const rows = parseCsv(reader.result);
+    if(!rows.length){ toast('That file has no rows', false); input.value = ''; return; }
+    if(rows[0]['SKU'] === undefined){
+      toast('No "SKU" column found - use the exported file as your template', false);
+      input.value = '';
+      return;
+    }
+    const res = applyInventoryRows(rows, true);
+    productsData.forEach(p => {
+      if(isTracked(p)) p.stockUpdated = new Date().toISOString().slice(0, 10);
+    });
+    persistProducts();
+    logActivity('inventory', 'Imported stock for ' + res.applied + ' product(s) from CSV');
+    renderInventory();
+    renderProdList();
+    input.value = '';
+    toast('Imported ' + res.applied + ' product(s)' +
+      (res.unknown.length ? ' - unknown SKU skipped: ' + res.unknown.join(', ') : ''), true);
+  };
+  reader.readAsText(file);
+}
+
+/* Does the browser still agree with the published CSV? */
+async function inventoryCsvState(){
+  try {
+    const res = await fetch(INVENTORY_CSV, { cache: 'no-store' });
+    if(!res.ok) return 'unknown';
+    const published = parseCsv(await res.text());
+    const mine = parseCsv(buildInventoryCsv());
+    const key = r => [r['SKU'], r['On hand'], r['Reorder at'], r['Status']].join('|');
+    const a = published.map(key).sort().join('\n');
+    const b = mine.map(key).sort().join('\n');
+    return a === b ? 'ok' : 'draft';
+  } catch(e){ return 'unknown'; }
+}
+
+/* ================= INVENTORY ================================================
+   Stock lives on the product record, so it publishes through the same
+   data/products.json the storefront already reads. Hitting zero flips the
+   product to Out of Stock, which the catalogue, product page and cart honour.
+   Every change is written to a movement log for an audit trail. */
+
+const MOVEMENTS_KEY = 'wh_inventory_log';
+const DEFAULT_REORDER = 10;
+let movements = [];
+let editingInvIdx = null;
+
+const MOVE_LABEL = {
+  receive:    'Received new stock',
+  sale:       'Sold / shipped',
+  damage:     'Damaged or expired',
+  correction: 'Stock count correction',
+  initial:    'Opening stock'
+};
+
+function isTracked(p){ return p && p.stock !== undefined && p.stock !== null && p.stock !== ''; }
+function stockOf(p){ return isTracked(p) ? (parseInt(p.stock, 10) || 0) : null; }
+function reorderOf(p){
+  const v = parseInt(p && p.reorder, 10);
+  return isNaN(v) ? DEFAULT_REORDER : v;
+}
+
+/* untracked | out | low | ok */
+function invState(p){
+  if(!isTracked(p)) return 'untracked';
+  const n = stockOf(p);
+  if(n <= 0) return 'out';
+  if(n <= reorderOf(p)) return 'low';
+  return 'ok';
+}
+
+function money(v){
+  const n = parseFloat(v) || 0;
+  return 'HK$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/* Keep the storefront's status field in step with the count. A pre-order
+   product is left alone: it is meant to sell with nothing on the shelf. */
+function syncStatusToStock(p){
+  if(!isTracked(p)) return;
+  const isPreorder = /^pre/i.test(p.status || '');
+  if(isPreorder) return;
+  p.status = stockOf(p) <= 0 ? 'Out of Stock' : 'In Stock';
+}
+
+function persistProducts(){
+  productsData.forEach(syncStatusToStock);
+  localStorage.setItem('wh_products_data', JSON.stringify(productsData));
+  notifyCMSSync('products', productsData);
+}
+
+function loadMovements(){
+  try { movements = JSON.parse(localStorage.getItem(MOVEMENTS_KEY) || '[]'); }
+  catch(e){ movements = []; }
+  if(!Array.isArray(movements)) movements = [];
+}
+
+function saveMovements(){
+  localStorage.setItem(MOVEMENTS_KEY, JSON.stringify(movements.slice(0, 500)));
+}
+
+function recordMovement(p, type, delta, after, note){
+  movements.unshift({
+    at: new Date().toISOString(),
+    sku: p.sku || '',
+    title: p.title || '',
+    type: type,
+    delta: delta,
+    after: after,
+    note: (note || '').trim()
+  });
+  saveMovements();
+}
+
+/* ---------- table ---------- */
+function renderInventory(){
+  const badge = document.getElementById('badge-inventory');
+  if(badge) badge.textContent = productsData.filter(isTracked).length;
+
+  const body = document.getElementById('invBody');
+  if(!body) return;
+
+  const q = (document.getElementById('invSearch').value || '').trim().toLowerCase();
+  const filter = document.getElementById('invFilter').value;
+  const sort = document.getElementById('invSort').value;
+
+  let rows = productsData.map((p, i) => ({ p: p, i: i, state: invState(p) }));
+  rows = rows.filter(r => {
+    const matchesQ = !q || ((r.p.title || '') + ' ' + (r.p.sku || '')).toLowerCase().includes(q);
+    const matchesF = filter === 'all' || filter === r.state;
+    return matchesQ && matchesF;
+  });
+
+  const rank = { out: 0, low: 1, ok: 2, untracked: 3 };
+  if(sort === 'name') rows.sort((a, b) => (a.p.title || '').localeCompare(b.p.title || ''));
+  else if(sort === 'value') rows.sort((a, b) =>
+    (stockOf(b.p) || 0) * (parseFloat(b.p.price) || 0) - (stockOf(a.p) || 0) * (parseFloat(a.p.price) || 0));
+  else rows.sort((a, b) => (rank[a.state] - rank[b.state]) || ((stockOf(a.p) || 0) - (stockOf(b.p) || 0)));
+
+  document.getElementById('invEmpty').classList.toggle('hidden', rows.length > 0);
+
+  const badgeFor = {
+    ok:        '<span class="badge badge-green">In stock</span>',
+    low:       '<span class="badge" style="background:#fff7ed;color:#9a3412">Low stock</span>',
+    out:       '<span class="badge" style="background:#fef2f2;color:#b42318">Out of stock</span>',
+    untracked: '<span class="badge badge-gray">Not tracked</span>'
+  };
+
+  body.innerHTML = rows.map(r => {
+    const p = r.p, n = stockOf(p);
+    const value = (n || 0) * (parseFloat(p.price) || 0);
+    const qtyCell = r.state === 'untracked'
+      ? '<span style="color:var(--muted)">—</span>'
+      : '<span class="qty ' + (r.state === 'out' ? 'out' : r.state === 'low' ? 'low' : '') + '">' + n + '</span>';
+    return `
+      <tr>
+        <td><div class="name">${esc(p.title || 'Untitled')}</div>
+            <div class="sku">${esc(p.sku || 'no SKU')}</div></td>
+        <td class="num">${esc(money(p.price))}</td>
+        <td class="num">${qtyCell}</td>
+        <td class="num"><input class="reorder" type="number" min="0" step="1"
+              value="${reorderOf(p)}" onchange="setReorder(${r.i}, this.value)"></td>
+        <td>${badgeFor[r.state]}</td>
+        <td class="num">${r.state === 'untracked' ? '—' : esc(money(value))}</td>
+        <td><div class="acts">
+          ${r.state === 'untracked'
+            ? `<button class="btn btn-primary btn-sm" onclick="startTracking(${r.i})">Start tracking</button>`
+            : `<button class="btn btn-ghost btn-sm" onclick="openInvAdjust(${r.i})">Adjust</button>`}
+        </div></td>
+      </tr>`;
+  }).join('');
+
+  renderInvKpis();
+  renderInvMovements();
+}
+
+function renderInvKpis(){
+  const tracked = productsData.filter(isTracked);
+  const units = tracked.reduce((sum, p) => sum + stockOf(p), 0);
+  const value = tracked.reduce((sum, p) => sum + stockOf(p) * (parseFloat(p.price) || 0), 0);
+  const low = productsData.filter(p => invState(p) === 'low').length;
+  const out = productsData.filter(p => invState(p) === 'out').length;
+
+  const kpis = [
+    { n: tracked.length + '/' + productsData.length, lbl: 'Products tracked', cls: '' },
+    { n: units.toLocaleString('en-US'), lbl: 'Units on hand', cls: '' },
+    { n: money(value), lbl: 'Total stock value', cls: '' },
+    { n: low, lbl: 'Low stock', cls: low ? 'alert' : '' },
+    { n: out, lbl: 'Out of stock', cls: out ? 'danger' : '' }
+  ];
+  document.getElementById('invKpis').innerHTML = kpis.map(k =>
+    `<div class="inv-kpi ${k.cls}"><div class="n">${esc(String(k.n))}</div>
+     <div class="lbl">${esc(k.lbl)}</div></div>`).join('');
+}
+
+function renderInvMovements(){
+  const box = document.getElementById('invMovements');
+  if(!box) return;
+  document.getElementById('mvPill').textContent = movements.length;
+  if(!movements.length){
+    box.innerHTML = '<li><span class="mv-body dash-empty">No stock movements yet. ' +
+      'Receiving, selling or correcting stock will be listed here.</span></li>';
+    return;
+  }
+  box.innerHTML = movements.slice(0, 15).map(m => {
+    const sign = m.delta > 0 ? '+' : '';
+    return `<li>
+      <span class="mv-delta ${m.delta > 0 ? 'up' : m.delta < 0 ? 'down' : ''}">${sign}${m.delta}</span>
+      <span class="mv-body"><b>${esc(m.title || m.sku)}</b> — ${esc(MOVE_LABEL[m.type] || m.type)}
+        ${m.note ? '· ' + esc(m.note) : ''}
+        <div class="mv-when">${esc(timeAgo(m.at))} · ${m.after} on hand after</div></span></li>`;
+  }).join('');
+}
+
+/* ---------- actions ---------- */
+function setReorder(idx, value){
+  const p = productsData[idx];
+  if(!p) return;
+  p.reorder = Math.max(0, parseInt(value, 10) || 0);
+  persistProducts();
+  logActivity('inventory', 'Reorder level for ' + (p.title || p.sku) + ' set to ' + p.reorder);
+  renderInventory();
+  toast('Reorder level updated', true);
+}
+
+function startTracking(idx){
+  const p = productsData[idx];
+  if(!p) return;
+  p.stock = 0;
+  if(p.reorder === undefined) p.reorder = DEFAULT_REORDER;
+  recordMovement(p, 'initial', 0, 0, 'Started tracking stock');
+  persistProducts();
+  logActivity('inventory', 'Started tracking stock for ' + (p.title || p.sku));
+  renderInventory();
+  openInvAdjust(idx);
+}
+
+function openInvAdjust(idx){
+  editingInvIdx = idx;
+  const p = productsData[idx];
+  if(!p) return;
+  document.getElementById('invModalTitle').textContent = 'Adjust stock — ' + (p.title || p.sku);
+  document.getElementById('inv_type').value = 'receive';
+  document.getElementById('inv_qty').value = 1;
+  document.getElementById('inv_note').value = '';
+  document.getElementById('invModal').classList.remove('hidden');
+  updateInvPreview();
+}
+
+function closeInvAdjust(){
+  document.getElementById('invModal').classList.add('hidden');
+  editingInvIdx = null;
+}
+
+/* What the movement will do, spelled out before it is applied. */
+function invAdjustResult(){
+  const p = productsData[editingInvIdx];
+  if(!p) return null;
+  const type = document.getElementById('inv_type').value;
+  const qty = Math.max(0, parseInt(document.getElementById('inv_qty').value, 10) || 0);
+  const before = stockOf(p) || 0;
+  let after;
+  if(type === 'correction') after = qty;
+  else if(type === 'receive') after = before + qty;
+  else after = before - qty;
+  const clamped = Math.max(0, after);
+  return { p: p, type: type, qty: qty, before: before, after: clamped,
+           delta: clamped - before, wouldGoNegative: after < 0 };
+}
+
+function updateInvPreview(){
+  const r = invAdjustResult();
+  const box = document.getElementById('invPreview').querySelector('span');
+  const label = document.getElementById('inv_qty_label');
+  if(!r){ box.textContent = ''; return; }
+  label.textContent = r.type === 'correction' ? 'Counted quantity (exact figure on the shelf)' : 'Quantity';
+  let msg = r.before + ' on hand → <b>' + r.after + '</b> on hand';
+  if(r.wouldGoNegative) msg += ' — stock cannot go below zero, so it will be set to 0';
+  if(r.after === 0) msg += '. This product will be marked <b>Out of Stock</b> on the site';
+  else if(r.after <= reorderOf(r.p)) msg += '. That is at or below the reorder level of ' + reorderOf(r.p);
+  box.innerHTML = msg;
+}
+
+function applyInvAdjust(){
+  const r = invAdjustResult();
+  if(!r) return;
+  if(r.type !== 'correction' && r.qty === 0){
+    toast('Enter a quantity first', false);
+    return;
+  }
+  const note = document.getElementById('inv_note').value;
+  r.p.stock = r.after;
+  r.p.stockUpdated = new Date().toISOString().slice(0, 10);
+  if(r.p.reorder === undefined) r.p.reorder = DEFAULT_REORDER;
+  recordMovement(r.p, r.type, r.delta, r.after, note);
+  persistProducts();
+  logActivity('inventory', (MOVE_LABEL[r.type] || 'Stock change') + ': ' +
+    (r.p.title || r.p.sku) + ' now ' + r.after + ' on hand');
+  closeInvAdjust();
+  renderInventory();
+  renderProdList();
+  toast('Stock updated — ' + (r.p.title || r.p.sku) + ' now ' + r.after + ' on hand', true);
+}
+
+function exportInventoryCsv(){ downloadInventoryCsv(); }
+
 function switchNav(sectionId){
   activeNav = sectionId;
-  ['cases','products','faq','homepage'].forEach(s => {
+  ['dashboard','cases','products','inventory','faq','homepage'].forEach(s => {
     const el = document.getElementById('sec-' + s);
     const navEl = document.getElementById('nav-' + s);
     if(s === sectionId){
@@ -760,6 +1712,8 @@ function switchNav(sectionId){
       if(navEl) navEl.classList.remove('active');
     }
   });
+  if(sectionId === 'dashboard') renderDashboard();
+  if(sectionId === 'inventory') renderInventory();
 }
 
 function openSitePreview(){
@@ -813,7 +1767,7 @@ function renderCasesList(){
         <div class="summary">${esc(gCase(c, activeCaseLang, 'summary'))}</div>
       </div>
       <div class="actions">
-        <button class="btn btn-ghost btn-sm" onclick="openCaseEditor(${i})">✏️ Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick="openCaseEditor(${i})">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="deleteCase(${i})">Delete</button>
       </div>
     </div>
@@ -879,7 +1833,14 @@ function updateCasePreview(){
     `<p style="margin-top:6px">${document.getElementById('f_case_content').value || 'Full story content preview...'}</p>`;
 }
 
+function caseLabel(c){
+  if(!c) return 'untitled';
+  const src = c.zh || c.en || {};
+  return (src.title || '').trim() || 'untitled';
+}
+
 function saveCase(){
+  const wasNew = editingCaseIdx === null;
   stashCaseFields();
   const draft = getCaseDraft();
   if(editingCaseIdx === null){
@@ -890,13 +1851,18 @@ function saveCase(){
   renderCasesList();
   localStorage.setItem('wh_cases_data', JSON.stringify(casesData));
   notifyCMSSync('cases', casesData);
-  toast('Saved case successfully! ✓', true);
+  logActivity('cases', (wasNew ? 'Added case: ' : 'Edited case: ') + caseLabel(draft));
+  toast('Saved case successfully!', true);
 }
 
 function deleteCase(i){
   if(!confirm('Are you sure you want to delete this case entry?')) return;
+  const gone = casesData[i];
   casesData.splice(i, 1);
   renderCasesList();
+  localStorage.setItem('wh_cases_data', JSON.stringify(casesData));
+  notifyCMSSync('cases', casesData);
+  logActivity('cases', 'Deleted case: ' + caseLabel(gone));
   toast('Case entry deleted', false);
 }
 
@@ -930,17 +1896,103 @@ function renderProdList(){
         </h3>
         <div class="summary">${esc(p.desc)}</div>
         <div class="meta">
-          <span>🏷️ <b>Price:</b> HK$ ${p.price}</span>
-          <span>📦 <b>SKU:</b> ${p.sku}</span>
-          ${p.model ? `<span>🧊 <b>3D Model:</b> <code>${p.model}</code></span>` : ''}
+          <span><b>Price:</b> HK$ ${p.price}</span>
+          <span><b>SKU:</b> ${p.sku}</span>
+          <span><b>Stock:</b> ${isTracked(p) ? stockOf(p) + ' on hand' : 'not tracked'}</span>
+          ${p.model ? `<span><b>3D Model:</b> <code>${p.model}</code></span>` : ''}
         </div>
       </div>
       <div class="actions">
-        <button class="btn btn-ghost btn-sm" onclick="openProdEditor(${i})">✏️ Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick="openProdEditor(${i})">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="deleteProd(${i})">Delete</button>
       </div>
     </div>
   `).join('');
+}
+
+/* ---- repeatable sub-lists on the product editor ---------------------------
+   Pictures, testimony and reference links are lists rather than single values,
+   so each gets a small add/remove editor driven by this one spec. --------- */
+const REPEATERS = {
+  images:      { fields: [ { k: 'url',   ph: 'https://…  picture URL' },
+                           { k: 'alt',   ph: 'ALT text — describe the picture' } ] },
+  testimonies: { fields: [ { k: 'who',   ph: 'Who — e.g. Ms. Chan (64)' },
+                           { k: 'when',  ph: 'When — e.g. March 2025' },
+                           { k: 'text',  ph: 'What they said…', full: true } ] },
+  papers:      { fields: [ { k: 'title', ph: 'Paper title' },
+                           { k: 'url',   ph: 'https://pubmed.ncbi.nlm.nih.gov/…' } ] },
+  articles:    { fields: [ { k: 'title', ph: 'Article title' },
+                           { k: 'url',   ph: 'https://…' } ] }
+};
+
+let prodRepeat = { images: [], testimonies: [], papers: [], articles: [] };
+
+function escAttr(s){ return esc(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+/* Pull whatever the editor has typed back into state before we re-render. */
+function readRepeater(key){
+  const box = document.getElementById('rep_' + key);
+  if(!box) return prodRepeat[key] || [];
+  prodRepeat[key] = Array.prototype.map.call(box.querySelectorAll('.rep-row'), row => {
+    const obj = {};
+    REPEATERS[key].fields.forEach(f => {
+      const input = row.querySelector('[data-rf="' + f.k + '"]');
+      obj[f.k] = input ? input.value.trim() : '';
+    });
+    return obj;
+  });
+  return prodRepeat[key];
+}
+
+function renderRepeater(key){
+  const box = document.getElementById('rep_' + key);
+  if(!box) return;
+  const rows = prodRepeat[key] || [];
+  if(rows.length === 0){
+    box.innerHTML = '<div class="rep-empty">Nothing added yet — this section stays hidden on the website.</div>';
+    return;
+  }
+  box.innerHTML = rows.map((item, i) => {
+    const short = REPEATERS[key].fields.filter(f => !f.full)
+      .map(f => '<input data-rf="' + f.k + '" placeholder="' + escAttr(f.ph) + '" value="' + escAttr(item[f.k] || '') + '">').join('');
+    const long = REPEATERS[key].fields.filter(f => f.full)
+      .map(f => '<textarea data-rf="' + f.k + '" rows="3" placeholder="' + escAttr(f.ph) + '">' + esc(item[f.k] || '') + '</textarea>').join('');
+    return '<div class="rep-row"><span class="rep-num">' + (i + 1) + '</span>' +
+           '<div class="rep-grid">' + short + '</div>' + long +
+           '<button type="button" class="btn btn-danger btn-sm rep-del" onclick="removeRepeaterRow(\'' + key + '\', ' + i + ')">Remove</button></div>';
+  }).join('');
+}
+
+function addRepeaterRow(key){
+  readRepeater(key);
+  const blank = {};
+  REPEATERS[key].fields.forEach(f => { blank[f.k] = ''; });
+  prodRepeat[key].push(blank);
+  renderRepeater(key);
+}
+
+function removeRepeaterRow(key, i){
+  readRepeater(key);
+  prodRepeat[key].splice(i, 1);
+  renderRepeater(key);
+}
+
+/* Load a product's lists into the editor (p === null for a brand-new product).
+   Products saved before these fields existed only have a single `image`, so
+   that is lifted into the pictures list rather than dropped. */
+function setRepeaters(p){
+  const list = (arr, keys) => Array.isArray(arr)
+    ? arr.map(x => { const o = {}; keys.forEach(k => { o[k] = (x && x[k]) || ''; }); return o; })
+    : [];
+  prodRepeat = {
+    images: Array.isArray(p && p.images) && p.images.length
+      ? list(p.images, ['url', 'alt'])
+      : (p && p.image ? [{ url: p.image, alt: p.imageAlt || '' }] : []),
+    testimonies: list(p && p.testimonies, ['who', 'when', 'text']),
+    papers: list(p && p.papers, ['title', 'url']),
+    articles: list(p && p.articles, ['title', 'url'])
+  };
+  Object.keys(REPEATERS).forEach(renderRepeater);
 }
 
 function openProdEditor(idx){
@@ -958,6 +2010,10 @@ function openProdEditor(idx){
     document.getElementById('f_prod_badges').value = p.badges;
     document.getElementById('f_prod_model').value = p.model || '';
     document.getElementById('f_prod_desc').value = p.desc;
+    document.getElementById('f_prod_definition').value = p.definition || '';
+    document.getElementById('f_prod_story').value = p.story || '';
+    document.getElementById('f_prod_partners').value = p.partners || '';
+    setRepeaters(p);
   } else {
     document.getElementById('f_prod_title').value = '';
     document.getElementById('f_prod_sku').value = 'WH-NEW-001';
@@ -966,6 +2022,10 @@ function openProdEditor(idx){
     document.getElementById('f_prod_badges').value = 'GMP Certified';
     document.getElementById('f_prod_model').value = '';
     document.getElementById('f_prod_desc').value = '';
+    document.getElementById('f_prod_definition').value = '';
+    document.getElementById('f_prod_story').value = '';
+    document.getElementById('f_prod_partners').value = '';
+    setRepeaters(null);
   }
 }
 
@@ -975,6 +2035,8 @@ function closeProdEditor(){
 }
 
 function saveProd(){
+  const wasNew = editingProdIdx === null;
+  const images = readRepeater('images').filter(x => x.url);
   const prodObj = {
     id: editingProdIdx === null ? Date.now() : productsData[editingProdIdx].id,
     title: document.getElementById('f_prod_title').value || 'New Product',
@@ -983,8 +2045,21 @@ function saveProd(){
     status: document.getElementById('f_prod_status').value,
     cat: 'special',
     badges: document.getElementById('f_prod_badges').value,
+    stock: editingProdIdx === null ? undefined : productsData[editingProdIdx].stock,
+    reorder: editingProdIdx === null ? undefined : productsData[editingProdIdx].reorder,
     model: document.getElementById('f_prod_model').value,
-    desc: document.getElementById('f_prod_desc').value
+    desc: document.getElementById('f_prod_desc').value,
+    definition: document.getElementById('f_prod_definition').value.trim(),
+    story: document.getElementById('f_prod_story').value.trim(),
+    partners: document.getElementById('f_prod_partners').value.trim(),
+    images: images,
+    // Kept in step with the pictures list: the catalogue cards and the older
+    // pages still read a single `image`/`imageAlt`.
+    image: images.length ? images[0].url : '',
+    imageAlt: images.length ? images[0].alt : '',
+    testimonies: readRepeater('testimonies').filter(x => x.text || x.who),
+    papers: readRepeater('papers').filter(x => x.url || x.title),
+    articles: readRepeater('articles').filter(x => x.url || x.title)
   };
 
   if(editingProdIdx === null){
@@ -996,15 +2071,20 @@ function saveProd(){
   renderProdList();
   localStorage.setItem('wh_products_data', JSON.stringify(productsData));
   notifyCMSSync('products', productsData);
-  toast('Saved product listing! ✓', true);
+  logActivity('products', (wasNew ? 'Added product: ' : 'Edited product: ') + prodObj.title);
+  renderInventory();
+  toast('Saved product listing!', true);
 }
 
 function deleteProd(i){
   if(!confirm('Are you sure you want to delete this product listing?')) return;
+  const gone = productsData[i];
   productsData.splice(i, 1);
   renderProdList();
   localStorage.setItem('wh_products_data', JSON.stringify(productsData));
   notifyCMSSync('products', productsData);
+  logActivity('products', 'Deleted product: ' + ((gone && gone.title) || 'untitled'));
+  renderInventory();
   toast('Product deleted', false);
 }
 
@@ -1033,11 +2113,11 @@ function renderFaqList(){
       <div class="idx">${i+1}</div>
       <div class="body">
         <span class="badge badge-blue">${esc(item.cat)}</span>
-        <h3 style="margin-top:6px">❓ ${esc(item.q)}</h3>
+        <h3 style="margin-top:6px">${esc(item.q)}</h3>
         <div class="summary" style="margin-top:6px">${esc(item.a)}</div>
       </div>
       <div class="actions">
-        <button class="btn btn-ghost btn-sm" onclick="openFaqEditor(${i})">✏️ Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick="openFaqEditor(${i})">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="deleteFaq(${i})">Delete</button>
       </div>
     </div>
@@ -1068,6 +2148,7 @@ function closeFaqEditor(){
 }
 
 function saveFaq(){
+  const wasNewFaq = editingFaqIdx === null;
   const faqObj = {
     id: editingFaqIdx === null ? Date.now() : faqData[editingFaqIdx].id,
     cat: document.getElementById('f_faq_cat').value,
@@ -1084,13 +2165,18 @@ function saveFaq(){
   renderFaqList();
   localStorage.setItem('wh_faq_data', JSON.stringify(faqData));
   notifyCMSSync('faq', faqData);
-  toast('Saved FAQ entry! ✓', true);
+  logActivity('faq', (wasNewFaq ? 'Added FAQ: ' : 'Edited FAQ: ') + faqObj.q);
+  toast('Saved FAQ entry!', true);
 }
 
 function deleteFaq(i){
   if(!confirm('Are you sure you want to delete this FAQ entry?')) return;
+  const gone = faqData[i];
   faqData.splice(i, 1);
   renderFaqList();
+  localStorage.setItem('wh_faq_data', JSON.stringify(faqData));
+  notifyCMSSync('faq', faqData);
+  logActivity('faq', 'Deleted FAQ: ' + ((gone && gone.q) || 'untitled'));
   toast('FAQ entry deleted', false);
 }
 
@@ -1111,7 +2197,8 @@ function saveHomepageText(){
   };
   localStorage.setItem('wh_homepage_text', JSON.stringify(hpData));
   notifyCMSSync('homepage', hpData);
-  toast('Saved homepage text & header notices! ✓', true);
+  logActivity('homepage', 'Updated homepage text');
+  toast('Saved homepage text & header notices!', true);
 }
 
 
@@ -1121,7 +2208,7 @@ function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 let toastTimer;
 function toast(msg, ok){
   const t = document.getElementById('toast');
-  t.innerHTML = (ok ? '✓ ' : 'ℹ️ ') + msg;
+  t.innerHTML = msg;
   t.className = 'show' + (ok ? ' ok' : '');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.className = '', 2800);

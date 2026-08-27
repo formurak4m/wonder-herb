@@ -1347,7 +1347,7 @@
   </div>
   <div class="container copyright">
     <p data-i18n="copyright">© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p>
-    <p class="last-update">📅 最後更新：<time datetime="2026-06-08">2026年6月8日</time></p>
+    <p class="last-update">最後更新：<time datetime="2026-06-08">2026年6月8日</time></p>
   </div>
 </footer>
 
@@ -1816,6 +1816,123 @@
 <!-- ============ WONDER HERB CMS REAL-TIME SYNC CLIENT ============ -->
 <script>
 (function(){
+  /* The six hand-built product pages, keyed by the SKU the admin uses for them.
+     Anything not in this map is a CMS-created product with no page of its own,
+     so it is linked to the generic detail view instead. */
+  const WH_SKU_PAGES = {
+    'WH-PSP-500': '產品_雲芝糖肽精華_B.html',
+    'WH-PSP-060': '產品_雲芝糖肽精華_A.html',
+    'WH-T3-120':  '產品_T3.html',
+    'WH-PT3-090': '產品_PT3.html',
+    'WH-HB-180':  '產品_乙肝清.html',
+    'WH-MB-060':  '產品_憶活素.html'
+  };
+
+  /* ---- data/inventory.csv -------------------------------------------------
+     The published stock file. It is read on every page so a visitor who has
+     never opened /admin still sees what is actually in stock. Anything the
+     editor changed in this browser is applied afterwards and wins. */
+  var WH_INVENTORY = null;
+
+  function whParseCsv(text) {
+    var rows = [], row = [], field = '', inQuotes = false;
+    text = String(text).replace(/^﻿/, '');
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else inQuotes = false;
+        } else field += c;
+      } else if (c === '"') { inQuotes = true; }
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c !== '\r') { field += c; }
+    }
+    if (field !== '' || row.length) { row.push(field); rows.push(row); }
+    if (!rows.length) return [];
+    var head = rows.shift().map(function (h) { return h.trim(); });
+    return rows.filter(function (r) {
+      return r.some(function (v) { return String(v).trim() !== ''; });
+    }).map(function (r) {
+      var o = {};
+      head.forEach(function (h, i) { o[h] = r[i] === undefined ? '' : String(r[i]).trim(); });
+      return o;
+    });
+  }
+
+  /* Stamp stock + availability onto any array of products, matched on SKU. */
+  /* The catalogue's six built-in entries carry no SKU of their own - they are
+     identified by which product page they link to - so fall back to that. */
+  function whSkuFor(item) {
+    if (!item) return null;
+    if (item.sku) return String(item.sku).trim();
+    if (item.link) {
+      for (var sku in WH_SKU_PAGES) {
+        if (WH_SKU_PAGES[sku] === item.link) return sku;
+      }
+    }
+    return null;
+  }
+
+  function whApplyInventory(list) {
+    if (!WH_INVENTORY || !Array.isArray(list)) return;
+    list.forEach(function (item) {
+      var key = whSkuFor(item);
+      var rec = key ? WH_INVENTORY[key] : null;
+      if (!rec) return;
+      if (rec.stock !== null) {
+        item.stock = rec.stock;
+        // Pre-order sells with an empty shelf; everything else follows the count.
+        if (!/^pre/i.test(rec.status || '')) {
+          item.status = rec.stock <= 0 ? 'Out of Stock' : 'In Stock';
+        } else {
+          item.status = 'Pre-order';
+        }
+      } else if (rec.status) {
+        item.status = rec.status;
+      }
+      if (rec.reorder !== null) item.reorder = rec.reorder;
+    });
+  }
+  window.whApplyInventory = whApplyInventory;
+
+  function whApplyInventoryEverywhere() {
+    if (typeof productData !== 'undefined' && productData) {
+      Object.keys(productData).forEach(function (lang) { whApplyInventory(productData[lang]); });
+    }
+    if (typeof window.productsData !== 'undefined') whApplyInventory(window.productsData);
+  }
+
+  function whLoadInventory() {
+    return fetch('./data/inventory.csv', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : null; })
+      .then(function (text) {
+        if (!text) return;
+        WH_INVENTORY = {};
+        whParseCsv(text).forEach(function (r) {
+          var sku = (r['SKU'] || '').trim();
+          if (!sku) return;
+          var onHand = (r['On hand'] || '').trim();
+          var reorder = parseInt((r['Reorder at'] || '').trim(), 10);
+          WH_INVENTORY[sku] = {
+            stock: onHand === '' ? null : Math.max(0, parseInt(onHand, 10) || 0),
+            reorder: isNaN(reorder) ? null : reorder,
+            status: (r['Status'] || '').trim()
+          };
+        });
+        whApplyInventoryEverywhere();
+      })
+      .catch(function () { /* not published yet, or opened over file:// */ });
+  }
+
+  function whProductLink(p) {
+    if (p.link) return p.link;
+    if (p.sku && WH_SKU_PAGES[p.sku]) return WH_SKU_PAGES[p.sku];
+    const key = (p.id !== undefined && p.id !== null && p.id !== '') ? p.id : (p.sku || '');
+    return key ? 'product.html?id=' + encodeURIComponent(key) : '#';
+  }
+
   function formatMoney(val) {
     const num = parseFloat(val) || 0;
     return 'HK$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -1849,29 +1966,60 @@
           // A. Sync 產品介紹.html (productData object) — replaces ALL languages
           if (typeof productData !== 'undefined') {
             const allLangs = Object.keys(productData);
-            const adminProducts = prods.map(p => ({
-              id: p.id || Date.now(),
-              name: p.title || 'New Product',
-              price: parseFloat(p.price) || 0,
-              priceText: formatMoney(p.price),
-              desc: p.desc || '',
-              image: p.image || 'https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png',
-              badge: p.badges || null,
-              link: p.link || '#',
-              sku: p.sku || null
-            }));
+            const adminProducts = prods.map(p => {
+              const pics = Array.isArray(p.images) ? p.images.filter(x => x && x.url) : [];
+              const lead = p.image || (pics[0] && pics[0].url) || '';
+              return {
+                id: p.id || Date.now(),
+                name: p.title || 'New Product',
+                price: parseFloat(p.price) || 0,
+                priceText: formatMoney(p.price),
+                desc: p.desc || '',
+                image: lead || 'https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png',
+                imageAlt: p.imageAlt || (pics[0] && pics[0].alt) || '',
+                images: pics,
+                badge: p.badges || null,
+                status: p.status || '',
+                link: whProductLink(p),
+                sku: p.sku || null,
+                definition: p.definition || '',
+                story: p.story || '',
+                partners: p.partners || '',
+                testimonies: Array.isArray(p.testimonies) ? p.testimonies : [],
+                papers: Array.isArray(p.papers) ? p.papers : [],
+                articles: Array.isArray(p.articles) ? p.articles : []
+              };
+            });
             allLangs.forEach(lang => {
               const origArr = productData[lang];
               if (!Array.isArray(origArr)) return;
               const merged = adminProducts.map(ap => {
-                const existing = origArr.find(x => x.id === ap.id || (ap.sku && x.sku === ap.sku));
+                // Match on the known page first: the admin's ids and the translated
+                // catalogue's ids are numbered independently, so matching on id alone
+                // pairs a product with the wrong translation.
+                const knownLink = ap.sku ? WH_SKU_PAGES[ap.sku] : null;
+                const existing = knownLink
+                  ? origArr.find(x => x.link === knownLink)
+                  : origArr.find(x => (ap.sku && x.sku === ap.sku) || x.id === ap.id);
                 if (existing) {
+                  // Keep the translated name/description, take everything the
+                  // editor controls from the admin record.
                   return {
                     ...existing,
                     price: ap.price,
                     priceText: ap.priceText,
                     badge: ap.badge,
+                    status: ap.status,
                     image: ap.image || existing.image,
+                    imageAlt: ap.imageAlt || existing.imageAlt || '',
+                    images: ap.images,
+                    sku: ap.sku || existing.sku || null,
+                    definition: ap.definition,
+                    story: ap.story,
+                    partners: ap.partners,
+                    testimonies: ap.testimonies,
+                    papers: ap.papers,
+                    articles: ap.articles,
                     link: existing.link || ap.link
                   };
                 }
@@ -1934,8 +2082,19 @@
   }
 
   // Execute sync on load & DOMContentLoaded
-  if (document.readyState !== 'loading') syncCMSData();
-  else document.addEventListener('DOMContentLoaded', syncCMSData);
+  function whBoot() {
+    syncCMSData();
+    // CSV first, then syncCMSData() again so in-browser edits stay on top.
+    whLoadInventory().then(function () {
+      whApplyInventoryEverywhere();
+      syncCMSData();
+      if (typeof renderProducts === 'function') renderProducts();
+      if (typeof renderProductTriple === 'function') renderProductTriple();
+    });
+  }
+
+  if (document.readyState !== 'loading') whBoot();
+  else document.addEventListener('DOMContentLoaded', whBoot);
   window.addEventListener('load', syncCMSData);
 
   // BroadcastChannel & Storage Event Listeners for real-time multi-tab sync

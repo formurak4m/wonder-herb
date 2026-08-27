@@ -31,7 +31,7 @@ Last updated: 2026-08-13. Read this first when continuing development.
   9. `aadb924` admin demo → English UI
 - To publish: open a PR `geo → main` and merge. **See DNS caveat before merging CNAME.**
 
-## 3. What was done — GEO / SEO (done ✅)
+## 3. What was done — GEO / SEO (done)
 
 All aimed at making the site readable & citable by Google + AI engines. No visual change.
 
@@ -53,7 +53,7 @@ All aimed at making the site readable & citable by Google + AI engines. No visua
 - Titles + meta descriptions were audited — already unique per page (titles use
   `<title id="pageTitle">`).
 
-## 4. What was done — Admin / CMS pilot (demo stage ✅)
+## 4. What was done — Admin / CMS pilot (demo stage)
 
 Goal: let a non-technical editor (ex-WordPress user) manage content.
 
@@ -76,7 +76,7 @@ Goal: let a non-technical editor (ex-WordPress user) manage content.
 ### Must-do (external, not code)
 - **DNS:** point `www.wonder-herb.com` at GitHub Pages and enable the custom domain
   in repo **Settings → Pages**. robots/sitemap/llms only work once served at the root
-  domain. ⚠️ Don't merge the `CNAME` file to `main` until DNS is ready, or the live
+  domain. Don't merge the `CNAME` file to `main` until DNS is ready, or the live
   domain can break.
 - After go-live: submit `sitemap.xml` in Google Search Console + Bing Webmaster Tools.
 
