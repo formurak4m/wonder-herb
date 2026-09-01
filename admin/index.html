@@ -142,6 +142,12 @@
   .preview-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin-bottom:8px}
 
   /* Homepage Section Cards */
+  .db-chip{display:inline-flex;align-items:center;gap:7px;font-size:.75rem;font-weight:700;
+    padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted)}
+  .db-chip .led{width:8px;height:8px;border-radius:50%;background:#cbd0d6}
+  .db-chip.live{background:#ecfdf5;border-color:#a7f3d0;color:var(--ok)}
+  .db-chip.live .led{background:var(--ok)}
+
   /* ---------------- inventory ---------------- */
   .inv-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
   .inv-kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
@@ -277,7 +283,11 @@
       <span class="demo-badge">DEMO MODE</span>
     </div>
     <div class="topbar-right">
+      <span class="db-chip" id="dbChip" title="Where the admin is reading and writing data">
+        <span class="led"></span><span id="dbChipText">Checking database...</span>
+      </span>
       <button class="btn btn-ghost btn-sm" onclick="exportAllDataPackage()" title="Download JSON files to save into data/ folder">Export JSON Data</button>
+      <button class="btn btn-ghost btn-sm" onclick="exportAllCsvPackage()" title="Download every module as a CSV you can open in Excel">Export CSV Data</button>
       <span id="whoami">Administrator</span>
       <div class="avatar">A</div>
       <button class="btn btn-ghost btn-sm" onclick="logout()">Log out</button>
@@ -351,7 +361,8 @@
             <div class="body">
               <ul class="dash-list" id="dashPublish"></ul>
               <p class="dash-empty" style="margin-top:10px">Edits live in this browser until the JSON files
-                in the repository are updated. Use <b>Export JSON Data</b>, then commit the files.</p>
+                in the repository are updated. Use <b>Export JSON Data</b>, then commit the files.
+                <b>Export CSV Data</b> gives you the same content as spreadsheets.</p>
             </div>
           </div>
           <div class="dash-card">
@@ -930,15 +941,40 @@ function notifyCMSSync(moduleName, data) {
   if (cmsChannel) {
     try { cmsChannel.postMessage({ module: moduleName, timestamp: Date.now() }); } catch(e){}
   }
-  // Optional Vercel API Sync
-  fetch('/api/cms?type=' + moduleName, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  }).catch(() => {});
+  // Write through to MongoDB when the local API is running.
+  apiPut(moduleName, data);
 }
 
 async function loadAllCMSData() {
+  // MongoDB wins when it is running: it is shared, localStorage is not.
+  const live = await apiCheck();
+  if (live) {
+    const [dbCases, dbProducts, dbFaq, dbHome, dbMoves] = await Promise.all([
+      apiGet('cases'), apiGet('products'), apiGet('faq'), apiGet('homepage'), apiGet('movements')
+    ]);
+    if (Array.isArray(dbCases) && dbCases.length) { casesData = dbCases; localStorage.setItem('wh_cases_data', JSON.stringify(casesData)); }
+    if (Array.isArray(dbProducts) && dbProducts.length) { productsData = dbProducts; localStorage.setItem('wh_products_data', JSON.stringify(productsData)); }
+    if (Array.isArray(dbFaq) && dbFaq.length) { faqData = dbFaq; localStorage.setItem('wh_faq_data', JSON.stringify(faqData)); }
+    if (Array.isArray(dbMoves)) { movements = dbMoves; saveMovements(); }
+    const dbActivity = await apiGet('activity');
+    if (Array.isArray(dbActivity) && dbActivity.length) {
+      localStorage.setItem(ACTIVITY_KEY, JSON.stringify(dbActivity.slice(0, 25)));
+    }
+    if (dbHome && Object.keys(dbHome).length) {
+      localStorage.setItem('wh_homepage_text', JSON.stringify(dbHome));
+      Object.keys(dbHome).forEach(k => {
+        const el = document.getElementById('hp_' + k);
+        if (el) el.value = dbHome[k];
+      });
+    }
+    renderCasesList();
+    renderProdList();
+    renderFaqList();
+    renderInventory();
+    renderDashboard();
+    return;
+  }
+
   // 1. Cases
   const storedCases = localStorage.getItem('wh_cases_data');
   if (storedCases) {
@@ -1039,8 +1075,8 @@ function exportAllDataPackage() {
     contact_phone: document.getElementById('hp_contact_phone').value,
     contact_email: document.getElementById('hp_contact_email').value
   };
-  setTimeout(() => exportDownloadFile('homepage.json', JSON.stringify(hpData, null, 2)), 900);
-  toast('Downloaded 4 JSON data files for repo backup!', true);
+  setTimeout(() => exportDownloadFile('homepage.json', JSON.stringify(hpData, null, 2)), 1200);
+  toast('Downloaded 5 JSON data files for repo backup!', true);
 }
 
 
@@ -1063,11 +1099,21 @@ function logout(){
 const ACTIVITY_KEY = 'wh_activity_log';
 
 function logActivity(module, text){
+  const entry = { module: module, text: text, at: new Date().toISOString() };
   try {
     const log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]');
-    log.unshift({ module: module, text: text, at: new Date().toISOString() });
+    log.unshift(entry);
     localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log.slice(0, 25)));
   } catch(e){}
+  // Keep the trail in MongoDB too, so it survives clearing this browser and is
+  // visible to anyone else working on the same database.
+  if(API_BASE && dbLive){
+    fetch(API_BASE + '/api/activity', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry)
+    }).catch(() => {});
+  }
   if(activeNav === 'dashboard') renderDashboard();
 }
 
@@ -1255,6 +1301,7 @@ async function renderPublish(){
   }));
 
   rows.push({ label: 'Inventory (CSV)', state: await inventoryCsvState() });
+  rows.push({ label: 'MongoDB', state: dbLive ? 'live' : 'offline' });
 
   const drafts = rows.filter(r => r.state === 'draft').length;
   const unknown = rows.filter(r => r.state === 'unknown').length;
@@ -1265,7 +1312,9 @@ async function renderPublish(){
   const view = {
     ok:      { dot: 'ok',   note: 'matches the published file' },
     draft:   { dot: 'warn', note: 'changed in this browser, not yet in the repository' },
-    unknown: { dot: 'idle', note: 'published file could not be read' }
+    unknown: { dot: 'idle', note: 'published file could not be read' },
+    live:    { dot: 'ok',   note: 'connected — run `npm run export` to write these files' },
+    offline: { dot: 'idle', note: 'not running — start it with `npm run dev`' }
   };
   box.innerHTML = rows.map(r => `
     <li><span class="dot ${view[r.state].dot}"></span>
@@ -1281,6 +1330,185 @@ function renderDashboard(){
   renderPublish();
   const stamp = new Date().toLocaleTimeString();
   document.getElementById('dashSub').textContent = 'Everything on the site at a glance · updated ' + stamp;
+}
+
+/* ---- local MongoDB API ------------------------------------------------------
+   `npm run dev` serves the database at :4000. When it answers, it is the single
+   source of truth and every save goes straight into MongoDB, so a second tab or
+   a second machine sees the same numbers. When it does not answer, the admin
+   behaves exactly as before: localStorage first, then the committed data files.
+   Publishing is still `npm run export` + commit - the live site stays static. */
+
+const API_BASE = (function(){
+  if (window.WH_API_BASE) return window.WH_API_BASE;
+  const host = location.hostname;
+  // Only look for a local API on a local machine; never from the published site.
+  if (host === 'localhost' || host === '127.0.0.1' || host === '') return 'http://localhost:4000';
+  return null;
+})();
+
+let dbLive = false;
+
+function setDbChip(live, detail){
+  dbLive = live;
+  const chip = document.getElementById('dbChip');
+  const text = document.getElementById('dbChipText');
+  if(!chip || !text) return;
+  chip.classList.toggle('live', !!live);
+  text.textContent = live ? ('MongoDB connected' + (detail ? ' · ' + detail : ''))
+                          : 'Local files (MongoDB offline)';
+  chip.title = live
+    ? 'Saving straight into MongoDB. Run `npm run export` and commit to publish.'
+    : 'The API at ' + (API_BASE || 'localhost:4000') + ' is not answering. ' +
+      'Edits stay in this browser. Start it with `npm run dev`.';
+}
+
+async function apiGet(type){
+  if(!API_BASE) return null;
+  try {
+    const res = await fetch(API_BASE + '/api/cms?type=' + encodeURIComponent(type), { cache: 'no-store' });
+    if(!res.ok) return null;
+    return await res.json();
+  } catch(e){ return null; }
+}
+
+async function apiPut(type, data){
+  if(!API_BASE || !dbLive) return false;
+  try {
+    const res = await fetch(API_BASE + '/api/cms?type=' + encodeURIComponent(type), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    return res.ok;
+  } catch(e){ return false; }
+}
+
+async function apiCheck(){
+  if(!API_BASE){ setDbChip(false); return false; }
+  try {
+    const res = await fetch(API_BASE + '/api/health', { cache: 'no-store' });
+    if(!res.ok){ setDbChip(false); return false; }
+    const info = await res.json();
+    setDbChip(true, info.db);
+    return true;
+  } catch(e){ setDbChip(false); return false; }
+}
+
+/* One stock movement, applied by the server so concurrent edits cannot
+   overwrite each other. Returns null when the API is not available, and the
+   caller falls back to adjusting in the browser. */
+async function apiAdjustStock(sku, type, qty, note){
+  if(!API_BASE || !dbLive || !sku) return null;
+  try {
+    const res = await fetch(API_BASE + '/api/stock/' + encodeURIComponent(sku) + '/adjust', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: type, qty: qty, note: note })
+    });
+    if(!res.ok) return null;
+    return await res.json();
+  } catch(e){ return null; }
+}
+
+/* ---- CSV export of every module ---------------------------------------------
+   The JSON files are what the site loads; these CSVs are the same content in a
+   form that opens in Excel, for stock counts, proofreading and hand-off.
+   Only inventory.csv is read back in - the rest are for people, not the site. */
+
+function csvFromRows(head, rows){
+  return '﻿' + [head.map(csvCell).join(',')]
+    .concat(rows.map(r => r.map(csvCell).join(','))).join('\r\n') + '\r\n';
+}
+
+function downloadCsvFile(filename, text){
+  const blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+/* Repeating fields are flattened one item per line inside the cell, with " | "
+   between an item's parts, so nothing is lost and Excel still shows it. */
+function csvList(arr, keys){
+  if(!Array.isArray(arr) || !arr.length) return '';
+  return arr.map(item => keys.map(k => (item && item[k]) || '').join(' | ')).join('\n');
+}
+
+function buildProductsCsv(){
+  const head = ['SKU', 'Product', 'Price (HKD)', 'Status', 'Category', 'Badges', 'Description',
+                'Definition / Terminology', 'Product story', 'Partners',
+                'Pictures (url | ALT)', 'Testimony (who | when | text)',
+                'Researcher papers (title | url)', 'Articles (title | url)',
+                '3D model', 'On hand', 'Reorder at'];
+  const rows = productsData.map(p => [
+    p.sku || '', p.title || '', (parseFloat(p.price) || 0).toFixed(2), p.status || '',
+    p.cat || '', p.badges || '', p.desc || '',
+    p.definition || '', p.story || '', p.partners || '',
+    csvList(p.images, ['url', 'alt']),
+    csvList(p.testimonies, ['who', 'when', 'text']),
+    csvList(p.papers, ['title', 'url']),
+    csvList(p.articles, ['title', 'url']),
+    p.model || '',
+    isTracked(p) ? stockOf(p) : '',
+    isTracked(p) ? reorderOf(p) : ''
+  ]);
+  return csvFromRows(head, rows);
+}
+
+function buildCasesCsv(){
+  const head = ['#'];
+  LANGS.forEach(l => head.push(l.label + ' - title', l.label + ' - subtitle',
+                               l.label + ' - summary', l.label + ' - content'));
+  const rows = casesData.map((c, i) => {
+    const r = [i + 1];
+    LANGS.forEach(l => {
+      const o = c[l.code] || {};
+      r.push(o.title || '', o.subtitle || '', o.summary || '', o.content || '');
+    });
+    return r;
+  });
+  return csvFromRows(head, rows);
+}
+
+function buildFaqCsv(){
+  return csvFromRows(['#', 'Category', 'Question', 'Answer'],
+    faqData.map((f, i) => [i + 1, f.cat || '', f.q || '', f.a || '']));
+}
+
+function buildHomepageCsv(){
+  const hp = currentHomepageValues();
+  const labels = {
+    notice_badge: 'Notice badge', notice_msg: 'Notice message',
+    hero_title: 'Hero headline', hero_sub: 'Hero subtitle',
+    cta_1: 'Button 1', cta_2: 'Button 2',
+    stat_1: 'Stat 1', stat_2: 'Stat 2',
+    contact_phone: 'Contact phone', contact_email: 'Contact email'
+  };
+  return csvFromRows(['Field', 'Value'],
+    Object.keys(labels).map(k => [labels[k], hp[k] || '']));
+}
+
+function buildMovementsCsv(){
+  return csvFromRows(['When', 'SKU', 'Product', 'Movement', 'Change', 'On hand after', 'Note'],
+    movements.map(m => [m.at || '', m.sku || '', m.title || '',
+                        MOVE_LABEL[m.type] || m.type || '',
+                        (m.delta > 0 ? '+' : '') + m.delta, m.after, m.note || '']));
+}
+
+function exportAllCsvPackage(){
+  const files = [
+    ['products.csv', buildProductsCsv()],
+    ['inventory.csv', buildInventoryCsv()],
+    ['cases.csv', buildCasesCsv()],
+    ['faq.csv', buildFaqCsv()],
+    ['homepage.csv', buildHomepageCsv()],
+    ['inventory-log.csv', buildMovementsCsv()]
+  ];
+  // Browsers drop simultaneous downloads, so space them out.
+  files.forEach((f, i) => setTimeout(() => downloadCsvFile(f[0], f[1]), i * 300));
+  toast('Downloading ' + files.length + ' CSV files', true);
 }
 
 /* ---- data/inventory.csv : the published stock file --------------------------
@@ -1380,11 +1608,7 @@ async function loadInventoryCsv(){
 }
 
 function downloadInventoryCsv(){
-  const blob = new Blob([buildInventoryCsv()], { type: 'text/csv;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'inventory.csv';
-  a.click();
+  downloadCsvFile('inventory.csv', buildInventoryCsv());
   toast('inventory.csv downloaded - save it into the data/ folder and commit it', true);
 }
 
@@ -1676,7 +1900,7 @@ function updateInvPreview(){
   box.innerHTML = msg;
 }
 
-function applyInvAdjust(){
+async function applyInvAdjust(){
   const r = invAdjustResult();
   if(!r) return;
   if(r.type !== 'correction' && r.qty === 0){
@@ -1684,6 +1908,27 @@ function applyInvAdjust(){
     return;
   }
   const note = document.getElementById('inv_note').value;
+
+  // Let MongoDB do the arithmetic when it is available: one atomic update,
+  // so two people adjusting the same product cannot overwrite each other.
+  const server = await apiAdjustStock(r.p.sku, r.type, r.qty, note);
+  if(server){
+    r.p.stock = server.after;
+    r.p.status = server.status;
+    r.p.stockUpdated = new Date().toISOString().slice(0, 10);
+    if(r.p.reorder === undefined) r.p.reorder = DEFAULT_REORDER;
+    movements.unshift(server.movement);
+    saveMovements();
+    localStorage.setItem('wh_products_data', JSON.stringify(productsData));
+    logActivity('inventory', (MOVE_LABEL[r.type] || 'Stock change') + ': ' +
+      (r.p.title || r.p.sku) + ' now ' + server.after + ' on hand');
+    closeInvAdjust();
+    renderInventory();
+    renderProdList();
+    toast('Stock updated in MongoDB — ' + (r.p.title || r.p.sku) + ' now ' + server.after + ' on hand', true);
+    return;
+  }
+
   r.p.stock = r.after;
   r.p.stockUpdated = new Date().toISOString().slice(0, 10);
   if(r.p.reorder === undefined) r.p.reorder = DEFAULT_REORDER;

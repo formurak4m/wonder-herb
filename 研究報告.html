@@ -1848,9 +1848,52 @@
     if (typeof window.productsData !== 'undefined') whApplyInventory(window.productsData);
   }
 
-  function whLoadInventory() {
-    return fetch('./data/inventory.csv', { cache: 'no-store' })
+  /* On a developer machine the live MongoDB API is preferred, so stock changed
+     in /admin shows up here on refresh with no export step. The published site
+     never looks for it - it reads the committed CSV. */
+  function whApiBase() {
+    if (window.WH_API_BASE) return window.WH_API_BASE;
+    var host = location.hostname;
+    // Only a local machine looks for a local API; the published site never does.
+    if (host === 'localhost' || host === '127.0.0.1' || host === '') return 'http://localhost:4000';
+    return null;
+  }
+
+  function whInventorySources() {
+    var base = whApiBase();
+    var list = [];
+    if (base) list.push(base + '/api/inventory.csv');
+    list.push('./data/inventory.csv');
+    return list;
+  }
+
+  /* The catalogue itself, straight from MongoDB when the API is running, so a
+     product that exists only in the database still shows up here. */
+  var WH_API_PRODUCTS = null;
+
+  function whLoadApiProducts() {
+    var base = whApiBase();
+    if (!base) return Promise.resolve();
+    return fetch(base + '/api/cms?type=products', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (rows) {
+        if (Array.isArray(rows) && rows.length) WH_API_PRODUCTS = rows;
+      });
+  }
+
+  function whFetchFirst(urls) {
+    if (!urls.length) return Promise.resolve(null);
+    return fetch(urls[0], { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.text() : null; })
+      .catch(function () { return null; })
+      .then(function (text) {
+        return text !== null ? text : whFetchFirst(urls.slice(1));
+      });
+  }
+
+  function whLoadInventory() {
+    return whFetchFirst(whInventorySources())
       .then(function (text) {
         if (!text) return;
         WH_INVENTORY = {};
@@ -1903,7 +1946,9 @@
 
     // 2. Products Catalog Sync — FULL REPLACEMENT approach
     try {
-      const storedProds = localStorage.getItem('wh_products_data');
+      const storedProds = WH_API_PRODUCTS
+        ? JSON.stringify(WH_API_PRODUCTS)
+        : localStorage.getItem('wh_products_data');
       if (storedProds) {
         const prods = JSON.parse(storedProds);
         if (Array.isArray(prods)) {
@@ -2029,7 +2074,7 @@
   function whBoot() {
     syncCMSData();
     // CSV first, then syncCMSData() again so in-browser edits stay on top.
-    whLoadInventory().then(function () {
+    Promise.all([whLoadApiProducts(), whLoadInventory()]).then(function () {
       whApplyInventoryEverywhere();
       syncCMSData();
       if (typeof renderProducts === 'function') renderProducts();
