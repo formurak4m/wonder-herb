@@ -6,9 +6,13 @@
  * committing. If this server is not running, both the admin and the site
  * fall back to the committed files exactly as before.
  */
+const path = require('path');
 const express = require('express');
+const { ObjectId } = require('mongodb');
 const cors = require('cors');
-const { connect, COLLECTIONS, normalise, ensureIndexes, URL, DB_NAME } = require('./db');
+const { connect, COLLECTIONS, AUTH_COLLECTIONS, normalise, ensureIndexes,
+        ensureAuthIndexes, URL, DB_NAME } = require('./db');
+const auth = require('./auth');
 
 const PORT = process.env.PORT || 4000;
 const app = express();
@@ -113,6 +117,10 @@ app.get('/api/cms', asyncRoute(async (req, res) => {
 app.post('/api/cms', asyncRoute(async (req, res) => {
   const db = await connect();
   const type = req.query.type;
+  const module = MODULE_OF[type];
+  if (!module) return res.status(404).json({ error: 'Unknown type: ' + type });
+  const actor = await requireCan(req, res, module, 'edit');
+  if (!actor) return;
   if (type === 'homepage') {
     await writeHomepage(db, req.body);
     return res.json({ success: true, type, count: 1 });
@@ -129,11 +137,16 @@ app.post('/api/cms', asyncRoute(async (req, res) => {
    The dashboard's "Recent changes" trail. Append-only and capped, so it is a
    history rather than something the editor can silently rewrite. */
 app.post('/api/activity', asyncRoute(async (req, res) => {
+  const found = await auth.currentUser(req);
+  if (!found || !auth.hasConsoleAccess(found.user)) {
+    return res.status(403).json({ error: 'Only console users write to the activity trail' });
+  }
   const db = await connect();
   const entry = {
     at: req.body.at || new Date().toISOString(),
     module: String(req.body.module || 'other'),
     text: String(req.body.text || '').slice(0, 500),
+    by: found.user.email,
     pos: -Date.now(),
     updatedAt: new Date()
   };
@@ -153,6 +166,8 @@ app.post('/api/activity', asyncRoute(async (req, res) => {
    One atomic update per movement, so two people adjusting the same product
    at once cannot overwrite each other the way a whole-list save would. */
 app.post('/api/stock/:sku/adjust', asyncRoute(async (req, res) => {
+  const actor = await requireCan(req, res, 'inventory', 'edit');
+  if (!actor) return;
   const db = await connect();
   const sku = req.params.sku;
   const type = String(req.body.type || 'correction');
@@ -205,6 +220,7 @@ app.post('/api/stock/:sku/adjust', asyncRoute(async (req, res) => {
 
   const movement = {
     at: new Date().toISOString(),
+    by: actor.user.email,
     sku: sku,
     title: product.title || '',
     type: type,
@@ -216,6 +232,366 @@ app.post('/api/stock/:sku/adjust', asyncRoute(async (req, res) => {
     Object.assign(normalise('movements', movement), { pos: -Date.now(), updatedAt: new Date() }));
 
   res.json({ success: true, before: before, after: clamped, status: status, movement: movement });
+}));
+
+/* ---------------------------------------------------------------- accounts
+   Signup / login / logout for the storefront and the admin console. The user
+   record lives in MongoDB; what travels back to the browser is a session
+   token, never the password and never its hash. */
+
+async function adminCount(db) {
+  return db.collection(AUTH_COLLECTIONS.users).countDocuments({ role: 'admin' });
+}
+
+/* Guards. Each answers 401/403 itself and returns null, so a route can simply
+   bail out when it gets nothing back. */
+/* `code: 'no_session'` marks the one case where the browser should forget the
+   token it is holding. A 401 for a wrong password is not that case - it must
+   not sign the person out of the session they are already in. */
+const noSession = res => res.status(401).json({ error: 'Please sign in', code: 'no_session' });
+
+async function requireUser(req, res) {
+  const found = await auth.currentUser(req);
+  if (!found) { noSession(res); return null; }
+  return found;
+}
+
+async function requireAdmin(req, res) {
+  const found = await auth.currentUser(req);
+  if (!found) { noSession(res); return null; }
+  if (found.user.role !== 'admin') {
+    res.status(403).json({ error: 'Administrators only' });
+    return null;
+  }
+  return found;
+}
+
+/* Editing rights are checked here, on the server, not by hiding a button:
+   a view-only account calling the API directly is refused. */
+async function requireCan(req, res, module, level) {
+  const found = await auth.currentUser(req);
+  if (!found) { noSession(res); return null; }
+  if (!auth.can(found.user, module, level)) {
+    res.status(403).json({
+      error: level === 'edit'
+        ? 'Your account cannot change ' + module
+        : 'Your account cannot see ' + module
+    });
+    return null;
+  }
+  return found;
+}
+
+/* Which privilege a content module is governed by. Stock movements are part of
+   inventory; the activity trail is a log any console user may append to. */
+const MODULE_OF = {
+  cases: 'cases', products: 'products', faq: 'faq',
+  homepage: 'homepage', movements: 'inventory'
+};
+
+/* Enough for a login screen to know whether it should offer to create the
+   first administrator. Deliberately says nothing about who those users are. */
+app.get('/api/auth/status', asyncRoute(async (req, res) => {
+  const db = await connect();
+  res.json({
+    ok: true,
+    users: await db.collection(AUTH_COLLECTIONS.users).countDocuments(),
+    adminExists: (await adminCount(db)) > 0,
+    minPassword: auth.MIN_PASSWORD
+  });
+}));
+
+app.post('/api/auth/signup', asyncRoute(async (req, res) => {
+  const db = await connect();
+  await ensureAuthIndexes(db);
+
+  const email = auth.cleanEmail(req.body.email);
+  const name = String(req.body.name || '').trim().slice(0, 120);
+  const password = String(req.body.password || '');
+
+  const problem = auth.emailProblem(email) || auth.passwordProblem(password);
+  if (problem) return res.status(400).json({ error: problem });
+
+  /* The very first account may claim the admin role, so a fresh install has a
+     way in. After that an administrator can only be made from the command
+     line (npm run admin:create), not by anyone filling in the signup form. */
+  let role = 'customer';
+  if (req.body.asAdmin) {
+    if ((await adminCount(db)) > 0) {
+      return res.status(403).json({ error: 'An administrator already exists' });
+    }
+    role = 'admin';
+  }
+
+  const doc = {
+    name: name,
+    email: email,
+    passwordHash: auth.hashPassword(password),
+    role: role,
+    status: 'active',
+    createdAt: new Date(),
+    lastLoginAt: null
+  };
+
+  try {
+    const result = await db.collection(AUTH_COLLECTIONS.users).insertOne(doc);
+    doc._id = result.insertedId;
+  } catch (err) {
+    // the unique index is what actually prevents two accounts on one address,
+    // so a duplicate is caught here rather than in a check that could race
+    if (err && err.code === 11000) {
+      return res.status(409).json({ error: 'That email address already has an account' });
+    }
+    throw err;
+  }
+
+  const token = await auth.createSession(db, doc, req.headers['user-agent']);
+  res.status(201).json({ success: true, token: token, user: auth.publicUser(doc) });
+}));
+
+app.post('/api/auth/login', asyncRoute(async (req, res) => {
+  const db = await connect();
+  await ensureAuthIndexes(db);
+
+  const email = auth.cleanEmail(req.body.email);
+  const password = String(req.body.password || '');
+  const ip = req.ip || '';
+
+  const waitMinutes = auth.throttleCheck(email, ip);
+  if (waitMinutes) {
+    return res.status(429).json({ error: 'Too many attempts. Try again in ' + waitMinutes + ' minute(s).' });
+  }
+
+  const user = await db.collection(AUTH_COLLECTIONS.users).findOne({ email: email });
+  // one message for both halves, so this cannot be used to find out which
+  // addresses have accounts
+  const wrong = () => {
+    auth.throttleFail(email, ip);
+    res.status(401).json({ error: 'Wrong email or password' });
+  };
+  if (!user) return wrong();
+  if (!auth.verifyPassword(password, user.passwordHash)) return wrong();
+  if (user.status === 'disabled') return res.status(403).json({ error: 'This account has been disabled' });
+
+  auth.throttleClear(email, ip);
+  const now = new Date();
+  await db.collection(AUTH_COLLECTIONS.users)
+    .updateOne({ _id: user._id }, { $set: { lastLoginAt: now } });
+  user.lastLoginAt = now;
+
+  const token = await auth.createSession(db, user, req.headers['user-agent']);
+  res.json({ success: true, token: token, user: auth.publicUser(user) });
+}));
+
+/* Logging out removes the session server-side, so the token in the browser is
+   worthless even if it was copied. Always a 200: signing out twice is not an
+   error worth showing anyone. */
+app.post('/api/auth/logout', asyncRoute(async (req, res) => {
+  const db = await connect();
+  const token = auth.bearer(req);
+  if (token) {
+    await db.collection(AUTH_COLLECTIONS.sessions).deleteOne({ _id: auth.tokenHash(token) });
+  }
+  res.json({ success: true });
+}));
+
+app.get('/api/auth/me', asyncRoute(async (req, res) => {
+  const found = await requireUser(req, res);
+  if (!found) return;
+  res.json({ ok: true, user: auth.publicUser(found.user) });
+}));
+
+app.post('/api/auth/password', asyncRoute(async (req, res) => {
+  const found = await requireUser(req, res);
+  if (!found) return;
+  const db = await connect();
+
+  const current = String(req.body.currentPassword || '');
+  const next = String(req.body.newPassword || '');
+  if (!auth.verifyPassword(current, found.user.passwordHash)) {
+    return res.status(401).json({ error: 'Your current password is not right' });
+  }
+  const problem = auth.passwordProblem(next);
+  if (problem) return res.status(400).json({ error: problem });
+
+  await db.collection(AUTH_COLLECTIONS.users).updateOne(
+    { _id: found.user._id },
+    { $set: { passwordHash: auth.hashPassword(next), passwordChangedAt: new Date() } });
+
+  // every other device is signed out; this one stays signed in
+  await db.collection(AUTH_COLLECTIONS.sessions).deleteMany({
+    userId: found.user._id, _id: { $ne: found.session._id } });
+
+  res.json({ success: true });
+}));
+
+/* The account list behind the admin's Users screen. Password hashes are not
+   part of publicUser(), so they cannot leak through here. */
+app.get('/api/auth/users', asyncRoute(async (req, res) => {
+  const found = await requireAdmin(req, res);
+  if (!found) return;
+  const db = await connect();
+  const rows = await db.collection(AUTH_COLLECTIONS.users)
+    .find({}).sort({ createdAt: -1 }).limit(500).toArray();
+  res.json(rows.map(auth.publicUser));
+}));
+
+/* ---------------------------------------------------------- managing users
+   Only an administrator gets here, and the rules below exist so that no
+   sequence of clicks can leave the site with nobody able to administer it. */
+
+function userId(value) {
+  try { return new ObjectId(String(value)); } catch (e) { return null; }
+}
+
+async function activeAdmins(db, exceptId) {
+  const query = { role: 'admin', status: { $ne: 'disabled' } };
+  if (exceptId) query._id = { $ne: exceptId };
+  return db.collection(AUTH_COLLECTIONS.users).countDocuments(query);
+}
+
+/* Every session of a user whose access just changed, so a disabled account or
+   a reset password cannot keep working from a tab that is already open. */
+async function endSessionsFor(db, id) {
+  await db.collection(AUTH_COLLECTIONS.sessions).deleteMany({ userId: id });
+}
+
+app.post('/api/auth/users', asyncRoute(async (req, res) => {
+  const actor = await requireAdmin(req, res);
+  if (!actor) return;
+  const db = await connect();
+  await ensureAuthIndexes(db);
+
+  const email = auth.cleanEmail(req.body.email);
+  const password = String(req.body.password || '');
+  const problem = auth.emailProblem(email) || auth.passwordProblem(password);
+  if (problem) return res.status(400).json({ error: problem });
+
+  const role = auth.cleanRole(req.body.role);
+  const doc = {
+    name: String(req.body.name || '').trim().slice(0, 120),
+    email: email,
+    passwordHash: auth.hashPassword(password),
+    role: role,
+    permissions: role === 'staff' ? auth.cleanPermissions(req.body.permissions) : auth.emptyPermissions(),
+    status: 'active',
+    createdAt: new Date(),
+    createdBy: actor.user.email,
+    lastLoginAt: null
+  };
+
+  try {
+    const result = await db.collection(AUTH_COLLECTIONS.users).insertOne(doc);
+    doc._id = result.insertedId;
+  } catch (err) {
+    if (err && err.code === 11000) {
+      return res.status(409).json({ error: 'That email address already has an account' });
+    }
+    throw err;
+  }
+  res.status(201).json({ success: true, user: auth.publicUser(doc) });
+}));
+
+app.patch('/api/auth/users/:id', asyncRoute(async (req, res) => {
+  const actor = await requireAdmin(req, res);
+  if (!actor) return;
+  const db = await connect();
+  const id = userId(req.params.id);
+  if (!id) return res.status(404).json({ error: 'No such account' });
+
+  const users = db.collection(AUTH_COLLECTIONS.users);
+  const target = await users.findOne({ _id: id });
+  if (!target) return res.status(404).json({ error: 'No such account' });
+
+  const isSelf = String(target._id) === String(actor.user._id);
+  const update = {};
+
+  if (req.body.name !== undefined) update.name = String(req.body.name).trim().slice(0, 120);
+
+  if (req.body.role !== undefined) {
+    const role = auth.cleanRole(req.body.role);
+    if (isSelf && role !== target.role) {
+      return res.status(400).json({ error: 'You cannot change your own account type' });
+    }
+    if (target.role === 'admin' && role !== 'admin' && await activeAdmins(db, target._id) === 0) {
+      return res.status(400).json({ error: 'This is the last administrator' });
+    }
+    update.role = role;
+    // a demoted administrator keeps no leftover rights, and a promoted one
+    // needs no tick list at all
+    if (role !== 'staff') update.permissions = auth.emptyPermissions();
+  }
+
+  if (req.body.permissions !== undefined) {
+    update.permissions = auth.cleanPermissions(req.body.permissions);
+  }
+
+  if (req.body.status !== undefined) {
+    const status = String(req.body.status) === 'disabled' ? 'disabled' : 'active';
+    if (isSelf && status === 'disabled') {
+      return res.status(400).json({ error: 'You cannot disable your own account' });
+    }
+    if (status === 'disabled' && target.role === 'admin' && await activeAdmins(db, target._id) === 0) {
+      return res.status(400).json({ error: 'This is the last administrator' });
+    }
+    update.status = status;
+  }
+
+  if (!Object.keys(update).length) return res.status(400).json({ error: 'Nothing to change' });
+  update.updatedBy = actor.user.email;
+  await users.updateOne({ _id: id }, { $set: update });
+
+  // losing access should not wait for a page refresh
+  if (update.status === 'disabled') await endSessionsFor(db, id);
+
+  res.json({ success: true, user: auth.publicUser(await users.findOne({ _id: id })) });
+}));
+
+app.post('/api/auth/users/:id/password', asyncRoute(async (req, res) => {
+  const actor = await requireAdmin(req, res);
+  if (!actor) return;
+  const db = await connect();
+  const id = userId(req.params.id);
+  if (!id) return res.status(404).json({ error: 'No such account' });
+
+  const password = String(req.body.password || '');
+  const problem = auth.passwordProblem(password);
+  if (problem) return res.status(400).json({ error: problem });
+
+  const result = await db.collection(AUTH_COLLECTIONS.users).updateOne({ _id: id }, {
+    $set: {
+      passwordHash: auth.hashPassword(password),
+      passwordChangedAt: new Date(),
+      passwordSetBy: actor.user.email
+    }
+  });
+  if (!result.matchedCount) return res.status(404).json({ error: 'No such account' });
+
+  // whoever was signed in with the old password is signed out
+  await endSessionsFor(db, id);
+  res.json({ success: true });
+}));
+
+app.delete('/api/auth/users/:id', asyncRoute(async (req, res) => {
+  const actor = await requireAdmin(req, res);
+  if (!actor) return;
+  const db = await connect();
+  const id = userId(req.params.id);
+  if (!id) return res.status(404).json({ error: 'No such account' });
+
+  const users = db.collection(AUTH_COLLECTIONS.users);
+  const target = await users.findOne({ _id: id });
+  if (!target) return res.status(404).json({ error: 'No such account' });
+  if (String(target._id) === String(actor.user._id)) {
+    return res.status(400).json({ error: 'You cannot delete your own account' });
+  }
+  if (target.role === 'admin' && await activeAdmins(db, target._id) === 0) {
+    return res.status(400).json({ error: 'This is the last administrator' });
+  }
+
+  await users.deleteOne({ _id: id });
+  await endSessionsFor(db, id);
+  res.json({ success: true });
 }));
 
 /* ---------------------------------------------------------------- CSV
@@ -246,10 +622,37 @@ app.get('/api/inventory.csv', asyncRoute(async (req, res) => {
   res.type('text/csv; charset=utf-8').send('﻿' + lines.join('\r\n') + '\r\n');
 }));
 
+/* ---------------------------------------------------------------- the site
+   The same process also serves the pages, so working locally is one command
+   rather than two. This is a convenience for development only: in production
+   the files are served by GitHub Pages / Vercel and this server does not exist.
+
+   Registered last, so every /api route above still wins. */
+const SITE_ROOT = path.join(__dirname, '..');
+const PRIVATE = /^\/(server|scripts|node_modules|data\/[^\/]*\.log)(\/|$)/i;
+
+app.use((req, res, next) => {
+  // the source of the server itself is not part of the site
+  if (PRIVATE.test(decodeURIComponent(req.path))) return res.status(404).send('Not found');
+  next();
+});
+
+app.use(express.static(SITE_ROOT, {
+  dotfiles: 'ignore',
+  extensions: ['html'],
+  setHeaders(res, filePath) {
+    // editing a page and refreshing should show the edit
+    if (/\.(html|json|csv)$/i.test(filePath)) res.setHeader('Cache-Control', 'no-cache');
+  }
+}));
+
 if (require.main === module) {
   connect()
+    .then(db => ensureAuthIndexes(db))
     .then(() => app.listen(PORT, () => {
-      console.log('Wonder Herb CMS API  ->  http://localhost:' + PORT);
+      console.log('Site                 ->  http://localhost:' + PORT + '/');
+      console.log('Admin                ->  http://localhost:' + PORT + '/admin/');
+      console.log('API                  ->  http://localhost:' + PORT + '/api/health');
       console.log('MongoDB              ->  ' + URL + '/' + DB_NAME);
     }))
     .catch(err => {

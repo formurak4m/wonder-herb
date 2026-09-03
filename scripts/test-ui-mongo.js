@@ -15,7 +15,7 @@ const { JSDOM, VirtualConsole } = require(path.join(
 ));
 
 const app = require('../server/index');
-const { connect, close, COLLECTIONS } = require('../server/db');
+const { connect, close, COLLECTIONS, AUTH_COLLECTIONS } = require('../server/db');
 
 const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
 let fail = 0;
@@ -79,8 +79,19 @@ function loadPage(file, url, apiUp, apiBase) {
   await db.collection(COLLECTIONS.cases).insertOne({ pos: 0, zh: { title: '資料庫病例' }, en: { title: 'DB case' } });
   await db.collection(COLLECTIONS.faq).insertOne({ pos: 0, id: 1, cat: 'General', q: 'From Mongo?', a: 'Yes.' });
 
+  await db.collection(AUTH_COLLECTIONS.users).deleteMany({});
+  await db.collection(AUTH_COLLECTIONS.sessions).deleteMany({});
+
   const server = app.listen(PORT);
   await new Promise(r => server.once('listening', r));
+
+  /* Saving needs a signed-in account with editing rights, so the suite creates
+     an administrator and drives the console as that person. */
+  const adminToken = await fetch(API + '/api/auth/signup', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: 'UI Admin', email: 'ui-admin@example.com',
+                           password: 'ui-suite-password', asAdmin: true })
+  }).then(r => r.json()).then(d => d.token);
   let up = true;
   const apiUp = () => up;
 
@@ -88,7 +99,8 @@ function loadPage(file, url, apiUp, apiBase) {
   console.log('\n=== /admin with MongoDB running ===\n');
   const dom = await loadPage('admin/index.html', 'http://localhost:8000/admin/index.html', apiUp, API);
   const w = dom.window, d = w.document;
-  w.enterDemo();
+  w.localStorage.setItem('wh_admin_token', adminToken);
+  await w.eval('restoreSession()');
   await settle(400);
 
   check('the connection chip says MongoDB is connected',
@@ -208,6 +220,8 @@ function loadPage(file, url, apiUp, apiBase) {
   server.close();
   for (const c of Object.values(COLLECTIONS)) await db.collection(c).deleteMany({});
   await db.collection('homepage').deleteMany({});
+  await db.collection(AUTH_COLLECTIONS.users).deleteMany({});
+  await db.collection(AUTH_COLLECTIONS.sessions).deleteMany({});
   await close();
 
   console.log('');

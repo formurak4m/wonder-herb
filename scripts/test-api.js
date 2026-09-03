@@ -7,7 +7,7 @@ process.env.MONGO_DB = process.env.MONGO_DB_TEST || 'wonderherb_test';
 process.env.PORT = process.env.PORT_TEST || '4111';
 
 const app = require('../server/index');
-const { connect, close, COLLECTIONS } = require('../server/db');
+const { connect, close, COLLECTIONS, AUTH_COLLECTIONS } = require('../server/db');
 
 const BASE = 'http://localhost:' + process.env.PORT;
 let fail = 0;
@@ -16,10 +16,16 @@ const check = (label, cond, extra) => {
   if (!cond) fail++;
 };
 
+/* Writing now needs a signed-in account with the right privilege, so the suite
+   signs in as an administrator first and every write carries that token. */
+let TOKEN = null;
+const headers = () => Object.assign({ 'Content-Type': 'application/json' },
+  TOKEN ? { Authorization: 'Bearer ' + TOKEN } : {});
+
 const get = (p) => fetch(BASE + p).then(r => r.json());
 const post = (p, body) => fetch(BASE + p, {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+  headers: headers(),
   body: JSON.stringify(body)
 }).then(async r => ({ status: r.status, body: await r.json() }));
 
@@ -27,9 +33,15 @@ const post = (p, body) => fetch(BASE + p, {
   const db = await connect();
   for (const c of Object.values(COLLECTIONS)) await db.collection(c).deleteMany({});
   await db.collection('homepage').deleteMany({});
+  await db.collection(AUTH_COLLECTIONS.users).deleteMany({});
+  await db.collection(AUTH_COLLECTIONS.sessions).deleteMany({});
 
   const server = app.listen(Number(process.env.PORT));
   await new Promise(r => server.once('listening', r));
+
+  const boot = await post('/api/auth/signup',
+    { name: 'Test Admin', email: 'api-test@example.com', password: 'suite-password-1', asAdmin: true });
+  TOKEN = boot.body.token;
 
   console.log('\n=== Server + MongoDB ===\n');
   const health = await get('/api/health');
@@ -136,7 +148,7 @@ const post = (p, body) => fetch(BASE + p, {
   // Two documents sharing an _id: a duplicate-key error part-way through the
   // insert, which is exactly the case that used to leave the collection empty.
   const failed = await fetch(BASE + '/api/cms?type=products', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: headers(),
     body: JSON.stringify([{ _id: 'dup', sku: 'WH-X' }, { _id: 'dup', sku: 'WH-Y' }])
   });
   check('the failing write is reported as an error, not a success', failed.status === 500,
@@ -165,6 +177,8 @@ const post = (p, body) => fetch(BASE + p, {
   server.close();
   for (const c of Object.values(COLLECTIONS)) await db.collection(c).deleteMany({});
   await db.collection('homepage').deleteMany({});
+  await db.collection(AUTH_COLLECTIONS.users).deleteMany({});
+  await db.collection(AUTH_COLLECTIONS.sessions).deleteMany({});
   await close();
 
   console.log('');

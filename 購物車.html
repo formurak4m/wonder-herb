@@ -1967,6 +1967,7 @@
       <a href="index.html"><img src="https://lh3.googleusercontent.com/d/1mQafHatzw_gwbV_J9Y5AmwIAUS9r8SEi" alt="康草堂 Wonder Herb 官方標誌"></a>
     </div>
     <div class="header-right-icons">
+      <a href="account.html" class="mobile-cart-link wh-account-link" aria-label="Account" style="display:none"><i class="fas fa-user"></i></a>
       <a href="購物車.html" class="mobile-cart-link" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="mobileCartCountBadge" class="cart-count">0</span></a>
       <button type="button" class="menu-toggle" id="menuToggle" aria-label="開啟選單" aria-expanded="false" aria-controls="headerNavPanel">
         <i class="fas fa-bars" aria-hidden="true"></i>
@@ -1990,6 +1991,7 @@
       <a href="https://wa.me/85293318571/" target="_blank" class="social-icon" aria-label="WhatsApp" style="padding-left: 6px;"><i class="fab fa-whatsapp"></i></a>
       <a href="https://www.facebook.com/wonderherbhealth" target="_blank" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
       <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" class="social-icon" aria-label="Instagram" style="padding-right: 6px;"><i class="fab fa-instagram"></i></a>
+      <a href="account.html" class="cart-icon wh-account-link" id="whAccountLink" aria-label="Account" style="display:none"><i class="fas fa-user"></i></a>
       <a href="購物車.html" class="cart-icon" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="cartCountBadge" class="cart-count">0</span></a>
       <a href="https://wa.me/85293318571/" class="btn-contact" data-i18n="header_contact_btn">諮詢專員 <i class="fas fa-arrow-right"></i></a>
     </div>
@@ -3274,6 +3276,139 @@
 </script>
 
 
+
+<!-- ============ WONDER HERB ACCOUNTS (shared, identical on every page) ============ -->
+<script>
+(function () {
+  'use strict';
+  var TOKEN_KEY = 'wh_auth_token';
+  var USER_KEY  = 'wh_auth_user';
+
+  /* Accounts live in the local MongoDB API, exactly like stock does. The
+     published static site has no API to talk to, so it simply has no accounts
+     and the header link stays hidden - the public pages look as they always
+     have. */
+  function authBase() {
+    if (window.WH_API_BASE) return window.WH_API_BASE;
+    var host = location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1' || host === '') return 'http://localhost:4000';
+    return null;
+  }
+
+  var listeners = [];
+  function readUser() {
+    try { return JSON.parse(localStorage.getItem(USER_KEY) || 'null'); } catch (e) { return null; }
+  }
+  function store(token, user) {
+    try {
+      if (token) localStorage.setItem(TOKEN_KEY, token); else localStorage.removeItem(TOKEN_KEY);
+      if (user) localStorage.setItem(USER_KEY, JSON.stringify(user)); else localStorage.removeItem(USER_KEY);
+    } catch (e) {}
+    announce();
+  }
+  function announce() {
+    var user = readUser();
+    paintHeader(user);
+    listeners.forEach(function (fn) { try { fn(user); } catch (e) {} });
+  }
+
+  /* One place that talks to the API, so every caller gets the same treatment:
+     the token attached, the server's own message on failure, and a session
+     that the server has forgotten cleared out here too. */
+  function request(method, path, body) {
+    var base = authBase();
+    if (!base) return Promise.reject(new Error('offline'));
+    var token = localStorage.getItem(TOKEN_KEY);
+    var headers = { 'Content-Type': 'application/json' };
+    if (token) headers.Authorization = 'Bearer ' + token;
+    return fetch(base + path, {
+      method: method,
+      headers: headers,
+      body: body === undefined ? undefined : JSON.stringify(body)
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        // only a dead session clears the browser's copy; a wrong password on a
+        // form must leave the person signed in
+        if (res.status === 401 && token && data.code === 'no_session') store(null, null);
+        if (!res.ok) {
+          var err = new Error(data.error || 'Something went wrong');
+          err.status = res.status;
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
+  var whAuth = {
+    available: function () { return !!authBase(); },
+    token: function () { try { return localStorage.getItem(TOKEN_KEY); } catch (e) { return null; } },
+    user: readUser,
+    signedIn: function () { return !!readUser() && !!whAuth.token(); },
+    onChange: function (fn) { listeners.push(fn); return fn; },
+
+    signup: function (name, email, password) {
+      return request('POST', '/api/auth/signup', { name: name, email: email, password: password })
+        .then(function (d) { store(d.token, d.user); return d.user; });
+    },
+    login: function (email, password) {
+      return request('POST', '/api/auth/login', { email: email, password: password })
+        .then(function (d) { store(d.token, d.user); return d.user; });
+    },
+    /* The session is removed on the server first, so the token cannot be
+       reused; the browser copy goes either way. */
+    logout: function () {
+      return request('POST', '/api/auth/logout', {})
+        .catch(function () {})
+        .then(function () { store(null, null); });
+    },
+    changePassword: function (currentPassword, newPassword) {
+      return request('POST', '/api/auth/password',
+        { currentPassword: currentPassword, newPassword: newPassword });
+    },
+    /* Ask the server who this token belongs to. Keeps a signed-out-elsewhere
+       or expired session from looking signed in here. */
+    refresh: function () {
+      if (!whAuth.token()) { announce(); return Promise.resolve(null); }
+      return request('GET', '/api/auth/me')
+        .then(function (d) { store(whAuth.token(), d.user); return d.user; })
+        .catch(function (err) {
+          if (err && err.status === 401) store(null, null);
+          return null;
+        });
+    }
+  };
+
+  function paintHeader(user) {
+    var links = document.querySelectorAll('.wh-account-link');
+    if (!links.length) return;
+    var live = !!authBase();
+    var name = user ? String(user.name || user.email).split(' ')[0] : '';
+    for (var i = 0; i < links.length; i++) {
+      var link = links[i];
+      // no API means no accounts, and the header keeps the look it always had
+      link.style.display = live ? '' : 'none';
+      link.setAttribute('aria-label', user ? name : 'Account');
+      link.setAttribute('title', user ? user.email : 'Sign in');
+      link.classList.toggle('is-signed-in', !!user);
+    }
+  }
+
+  window.whAuth = whAuth;
+
+  function boot() {
+    paintHeader(readUser());
+    if (authBase()) whAuth.refresh();
+  }
+  if (document.readyState !== 'loading') boot();
+  else document.addEventListener('DOMContentLoaded', boot);
+
+  // signing in or out in one tab is reflected in the others
+  window.addEventListener('storage', function (e) {
+    if (e.key === TOKEN_KEY || e.key === USER_KEY) announce();
+  });
+})();
+</script>
 
 </body>
 </html>

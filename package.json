@@ -8,7 +8,11 @@
     "dev": "node server/index.js",
     "seed": "node scripts/seed.js",
     "export": "node scripts/export.js",
-    "test:api": "node scripts/test-api.js"
+    "test:api": "node scripts/test-api.js",
+    "test:auth": "node scripts/test-auth.js",
+    "test:ui": "node scripts/test-ui-mongo.js",
+    "admin:create": "node scripts/create-admin.js",
+    "test:ui:auth": "node scripts/test-ui-auth.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

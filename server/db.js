@@ -31,6 +31,14 @@ const COLLECTIONS = {
   activity: 'activity'
 };
 
+/* Accounts are deliberately NOT in COLLECTIONS: that map is what /api/cms will
+   hand to a browser and what `npm run export` writes into data/. Password
+   hashes and sessions must never travel either route. */
+const AUTH_COLLECTIONS = {
+  users: 'users',
+  sessions: 'sessions'
+};
+
 /* Numbers stored as numbers, text as text — so the database can be queried and
    sorted properly instead of holding everything as strings.
    `price` stays the "3800.00" string the site's markup already renders. */
@@ -74,4 +82,14 @@ async function ensureIndexes(db) {
   await db.collection(COLLECTIONS.activity).createIndex({ at: -1 });
 }
 
-module.exports = { connect, close, COLLECTIONS, normalise, ensureIndexes, URL, DB_NAME };
+/* One account per email address, and MongoDB itself expires stale sessions. */
+async function ensureAuthIndexes(db) {
+  await db.collection(AUTH_COLLECTIONS.users).createIndex({ email: 1 }, { unique: true });
+  await db.collection(AUTH_COLLECTIONS.users).createIndex({ role: 1 });
+  await db.collection(AUTH_COLLECTIONS.sessions).createIndex({ userId: 1 });
+  await db.collection(AUTH_COLLECTIONS.sessions)
+    .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+}
+
+module.exports = { connect, close, COLLECTIONS, AUTH_COLLECTIONS, normalise,
+                   ensureIndexes, ensureAuthIndexes, URL, DB_NAME };
