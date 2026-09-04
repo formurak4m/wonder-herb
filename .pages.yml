@@ -1,0 +1,85 @@
+# Pages CMS configuration  —  https://pagescms.org
+# This gives a simple, WordPress-style editor for site content that lives
+# in data files. Editors log in with GitHub at app.pagescms.org; saving a
+# change here commits to the repo, which auto-publishes the site.
+#
+# PILOT: only "Cases / 病例" is wired up so far. More sections (products,
+# FAQ, text) can be added the same way once this is confirmed working.
+
+content:
+  - name: cases
+    label: 病例 Cases
+    type: file
+    path: data/cases.json
+    list: true
+    # How each case is labelled in the list view:
+    view:
+      fields:
+        - zh.title
+        - zh.subtitle
+    fields:
+      # ---- 中文（主要，日常編輯用這一段）----
+      - name: zh
+        label: 中文（主要）
+        type: object
+        fields:
+          - { name: title,    label: 標題（例：麥女士（77歲））, type: string }
+          - { name: subtitle, label: 副標題／病症, type: string }
+          - { name: summary,  label: 摘要（卡片上顯示的短文）, type: text }
+          - { name: content,  label: 內容（完整故事）, type: rich-text }
+
+      # ---- 其他語言（可選填；不填會沿用中文的切換）----
+      - name: en
+        label: English (optional)
+        type: object
+        required: false
+        fields:
+          - { name: title,    label: Title,    type: string }
+          - { name: subtitle, label: Subtitle, type: string }
+          - { name: summary,  label: Summary,  type: text }
+          - { name: content,  label: Content,  type: rich-text }
+      - name: de
+        label: Deutsch (optional)
+        type: object
+        required: false
+        fields:
+          - { name: title,    label: Titel,    type: string }
+          - { name: subtitle, label: Untertitel, type: string }
+          - { name: summary,  label: Zusammenfassung, type: text }
+          - { name: content,  label: Inhalt,   type: rich-text }
+      - name: es
+        label: Español (optional)
+        type: object
+        required: false
+        fields:
+          - { name: title,    label: Título,   type: string }
+          - { name: subtitle, label: Subtítulo, type: string }
+          - { name: summary,  label: Resumen,  type: text }
+          - { name: content,  label: Contenido, type: rich-text }
+      - name: fr
+        label: Français (optional)
+        type: object
+        required: false
+        fields:
+          - { name: title,    label: Titre,    type: string }
+          - { name: subtitle, label: Sous-titre, type: string }
+          - { name: summary,  label: Résumé,   type: text }
+          - { name: content,  label: Contenu,  type: rich-text }
+      - name: ja
+        label: 日本語 (optional)
+        type: object
+        required: false
+        fields:
+          - { name: title,    label: タイトル,  type: string }
+          - { name: subtitle, label: サブタイトル, type: string }
+          - { name: summary,  label: 概要,      type: text }
+          - { name: content,  label: 内容,      type: rich-text }
+      - name: ru
+        label: Русский (optional)
+        type: object
+        required: false
+        fields:
+          - { name: title,    label: Заголовок, type: string }
+          - { name: subtitle, label: Подзаголовок, type: string }
+          - { name: summary,  label: Краткое описание, type: text }
+          - { name: content,  label: Содержание, type: rich-text }

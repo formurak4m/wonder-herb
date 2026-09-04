@@ -1,0 +1,27 @@
+{
+  "name": "wonder-herb-cms",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local MongoDB API backing the Wonder Herb admin. The public site stays static: run `npm run export` to write the database back to data/ for committing.",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env server/index.js",
+    "seed": "node --env-file-if-exists=.env scripts/seed.js",
+    "export": "node --env-file-if-exists=.env scripts/export.js",
+    "test:api": "node scripts/test-api.js",
+    "test:auth": "node scripts/test-auth.js",
+    "test:ui": "node scripts/test-ui-mongo.js",
+    "admin:create": "node --env-file-if-exists=.env scripts/create-admin.js",
+    "test:ui:auth": "node scripts/test-ui-auth.js",
+    "import:sales": "node --env-file-if-exists=.env scripts/import-sales.js",
+    "test:sales": "node scripts/test-sales.js",
+    "test:sweep": "node scripts/test-ui-sweep.js",
+    "test:all": "node scripts/test-api.js && node scripts/test-auth.js && node scripts/test-sales.js && node scripts/test-ui-mongo.js && node scripts/test-ui-auth.js && node scripts/test-ui-sweep.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "exceljs": "^4.4.0",
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0"
+  }
+}
