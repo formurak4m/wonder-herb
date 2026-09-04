@@ -23,7 +23,7 @@ const { JSDOM, VirtualConsole } = loadJsdom();
 
 const app = require('../server/index');
 const authLib = require('../server/auth');
-const { connect, close, COLLECTIONS, AUTH_COLLECTIONS } = require('../server/db');
+const { connect, close, COLLECTIONS, AUTH_COLLECTIONS, SALES_COLLECTIONS } = require('../server/db');
 
 const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
 let fail = 0;
@@ -92,6 +92,7 @@ const PASS = 'lantern-street-12';
   for (const c of Object.values(COLLECTIONS)) await db.collection(c).deleteMany({});
   await users.deleteMany({});
   await sessions.deleteMany({});
+  for (const c of Object.values(SALES_COLLECTIONS)) await db.collection(c).deleteMany({});
   authLib.throttleReset();
 
   const server = app.listen(PORT);
@@ -303,7 +304,7 @@ const PASS = 'lantern-street-12';
   aw.renderPermGrid();
   await settle(30);
   check('the tick grid lists every module',
-    ad.querySelectorAll('#userPerms .perm-row').length === 5,
+    ad.querySelectorAll('#userPerms .perm-row').length === aw.eval('PERM_MODULES').length,
     ad.querySelectorAll('#userPerms .perm-row').length + ' rows');
 
   // Pat looks after stock, may read the catalogue, and sees nothing else
@@ -423,6 +424,60 @@ const PASS = 'lantern-street-12';
     (await users.findOne({ email: 'owner@example.com' })).role === 'admin');
   aw.closeUserEditor();
 
+  console.log('\n=== /admin Sales screen ===\n');
+  // something to sell, with stock being counted
+  await fetch(API + '/api/cms?type=products', {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + aw.localStorage.getItem('wh_admin_token') },
+    body: JSON.stringify([{ id: 1, sku: 'WH-UI', title: 'UI Product', price: '900.00', status: 'In Stock', stock: 5 }])
+  });
+  await aw.loadAllCMSData();
+  await settle(400);
+  aw.switchNav('sales');
+  await settle(500);
+  check('the Sales screen opens', !ad.getElementById('sec-sales').classList.contains('hidden'));
+  check('with a month picker set to this month',
+    Number(ad.getElementById('salesMonth').value) === new Date().getMonth() + 1);
+  check('and download buttons for the month and the year',
+    ad.querySelector('#sec-sales button[onclick="downloadSalesReport(true)"]') &&
+    ad.querySelector('#sec-sales button[onclick="downloadSalesReport(false)"]'));
+
+  aw.openSaleEditor(null);
+  await settle(200);
+  check('the invoice form opens with a suggested number',
+    !ad.getElementById('saleModal').classList.contains('hidden') && ad.getElementById('sale_number').value === '1001',
+    ad.getElementById('sale_number').value);
+  check('and one product line already on it, at the list price',
+    ad.querySelectorAll('#saleLines .line').length === 1 && ad.querySelector('#saleLines .price').value === '900');
+  type(ad, 'sale_customer', 'Test Customer');
+  type(ad, 'sale_phone', '90000001');
+  ad.querySelector('#saleLines .price').value = '850';
+  ad.querySelector('#saleLines .qty').value = '2';
+  aw.recalcSale();
+  check('the total updates as you type', ad.getElementById('saleTotal').textContent === 'HK$1,700', ad.getElementById('saleTotal').textContent);
+  ad.getElementById('sale_payment').value = 'Cash';
+  await aw.saveSale();
+  await settle(700);
+  const saved = await db.collection(SALES_COLLECTIONS.invoices).findOne({ number: 1001 });
+  check('saving writes the invoice to MongoDB', !!saved && saved.customerName === 'Test Customer' && saved.total === 1700);
+  check('the sale lowered the shelf count (5 - 2)',
+    (await db.collection(COLLECTIONS.products).findOne({ sku: 'WH-UI' })).stock === 3);
+  check('a customer typed on the invoice is kept for next time',
+    !!(await db.collection(SALES_COLLECTIONS.customers).findOne({ name: 'Test Customer' })));
+  await settle(300);
+  check('the invoice appears in the table',
+    ad.getElementById('salesBody').textContent.includes('#1001') && ad.getElementById('salesBody').textContent.includes('Test Customer'));
+  check('the customer list shows their price',
+    ad.getElementById('custBody').textContent.includes('Test Customer') && ad.getElementById('custBody').textContent.includes('HK$850'));
+
+  aw.openSaleEditor(null);
+  await settle(200);
+  type(ad, 'sale_customer', 'Test Customer');
+  aw.saleCustomerPicked();
+  check('picking a known customer fills their phone and their price',
+    ad.getElementById('sale_phone').value === '90000001' && ad.querySelector('#saleLines .price').value === '850',
+    ad.querySelector('#saleLines .price').value);
+  aw.closeSaleEditor();
+
   console.log('\n=== /admin: only administrators ===\n');
   await aw.logout();
   await settle(400);
@@ -488,6 +543,7 @@ const PASS = 'lantern-street-12';
 
   server.close();
   for (const c of Object.values(COLLECTIONS)) await db.collection(c).deleteMany({});
+  for (const c of Object.values(SALES_COLLECTIONS)) await db.collection(c).deleteMany({});
   await users.deleteMany({});
   await sessions.deleteMany({});
   await close();

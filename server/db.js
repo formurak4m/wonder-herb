@@ -39,6 +39,14 @@ const AUTH_COLLECTIONS = {
   sessions: 'sessions'
 };
 
+/* Sales records: customers (with their negotiated prices) and invoices.
+   Also outside COLLECTIONS - names and phone numbers are not site content
+   and must never be exported into the public repository. */
+const SALES_COLLECTIONS = {
+  customers: 'customers',
+  invoices: 'invoices'
+};
+
 /* Numbers stored as numbers, text as text — so the database can be queried and
    sorted properly instead of holding everything as strings.
    `price` stays the "3800.00" string the site's markup already renders. */
@@ -91,5 +99,13 @@ async function ensureAuthIndexes(db) {
     .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 }
 
-module.exports = { connect, close, COLLECTIONS, AUTH_COLLECTIONS, normalise,
+async function ensureSalesIndexes(db) {
+  await db.collection(SALES_COLLECTIONS.invoices).createIndex({ number: 1 }, { unique: true });
+  await db.collection(SALES_COLLECTIONS.invoices).createIndex({ date: 1 });
+  await db.collection(SALES_COLLECTIONS.invoices).createIndex({ customerId: 1 });
+  await db.collection(SALES_COLLECTIONS.customers).createIndex({ name: 1 });
+}
+
+module.exports = { connect, close, COLLECTIONS, AUTH_COLLECTIONS, SALES_COLLECTIONS, normalise,
+                   ensureSalesIndexes,
                    ensureIndexes, ensureAuthIndexes, URL, DB_NAME };

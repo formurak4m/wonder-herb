@@ -160,6 +160,44 @@ const post = (p, body) => fetch(BASE + p, {
   check('no half-written temp collection is left behind',
     !(await db.listCollections().toArray()).map(c => c.name).some(n => /_writing$/.test(n)));
 
+  console.log('\n=== The Excel inventory report ===\n');
+  const xres = await fetch(BASE + '/api/reports/inventory.xlsx', { headers: headers() });
+  check('the report downloads', xres.status === 200, String(xres.status));
+  check('as a real .xlsx file',
+    /spreadsheetml\.sheet/.test(xres.headers.get('content-type') || ''), xres.headers.get('content-type'));
+  check('named with the date',
+    /Inventory report \d{4}-\d{2}-\d{2}\.xlsx/.test(xres.headers.get('content-disposition') || ''),
+    xres.headers.get('content-disposition'));
+  const ExcelJS = require('exceljs');
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.load(Buffer.from(await xres.arrayBuffer()));
+  const ws = wb.getWorksheet('Inventory');
+  check('it has an Inventory sheet', !!ws);
+  const headRow = ws.getRow(2).values.slice(1);
+  check('with the client\'s header row on row 2',
+    JSON.stringify(headRow) === JSON.stringify(['', 'SKU', 'Product Name', 'Retail Price (HK$)', 'Inventory (bottle)']),
+    JSON.stringify(headRow));
+  check('the header is bold on a grey fill',
+    ws.getRow(2).getCell(2).font.bold === true && ws.getRow(2).getCell(2).fill.fgColor.argb === 'FFD9D9D9');
+  const first = ws.getRow(3).values.slice(1);
+  check('rows are numbered from 1', first[0] === 1);
+  check('and carry sku, name, price and bottles',
+    first[1] === 'WH-A' && first[2] === 'Alpha, with comma' && first[3] === 100 && first[4] === 80,
+    JSON.stringify(first));
+  check('price and stock are numbers, not text',
+    typeof first[3] === 'number' && typeof first[4] === 'number');
+  check('every cell is bordered', ws.getRow(3).getCell(3).border.top.style === 'thin');
+  check('a sold-out product shows 0, not blank', ws.getRow(4).getCell(5).value === 0,
+    String(ws.getRow(4).getCell(5).value));
+  // untracked stock is a blank cell: 0 would read as sold out
+  const untracked = await require('../server/reports').inventoryWorkbook(
+    [{ sku: 'WH-U', title: 'Untracked', price: '50.00' }]);
+  const ucell = untracked.getWorksheet('Inventory').getRow(3).getCell(5).value;
+  check('a product whose stock is not tracked has an empty cell, not 0',
+    ucell === null || ucell === undefined, String(ucell));
+  const nobody = await fetch(BASE + '/api/reports/inventory.xlsx');
+  check('the report needs a sign-in', nobody.status === 401, String(nobody.status));
+
   console.log('\n=== The CSV the site reads ===\n');
   // read raw bytes: fetch().text() strips a leading BOM, so check the wire form
   const csvBytes = new Uint8Array(await fetch(BASE + '/api/inventory.csv').then(r => r.arrayBuffer()));

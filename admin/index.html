@@ -185,7 +185,12 @@
   table.inv input.reorder{width:74px;padding:5px 8px;text-align:right}
   table.inv .acts{display:flex;gap:6px;justify-content:flex-end;white-space:nowrap}
   .inv-empty{padding:34px 18px;text-align:center;color:var(--muted);font-size:.88rem}
-  .modal-card.sm{max-width:460px;height:auto}
+  /* A small modal grows with its form but never past the screen: the body
+     scrolls, the header and the buttons stay put. */
+  .modal-card.sm{max-width:460px;height:auto;max-height:calc(100vh - 40px)}
+  .modal-card.sm .modal-body{overflow-y:auto;min-height:0}
+  .modal-card.sm .editor-foot,.modal-card.sm .modal-head{flex-shrink:0}
+  .modal-card.user{max-width:560px}
   .modal-card.sm .modal-body{background:#fff;padding:20px}
   .mv-list{list-style:none}
   .mv-list li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;
@@ -270,6 +275,21 @@
   body.ro-homepage #sec-homepage .btn-primary, body.ro-homepage #sec-homepage .btn-danger,
   body.ro-inventory #sec-inventory .btn-primary, body.ro-inventory #sec-inventory .js-edit,
   body.ro-inventory #invModal .btn-primary{display:none!important}
+  body.no-sales #nav-sales{display:none!important}
+  body.ro-sales #sec-sales .btn-primary, body.ro-sales #sec-sales .btn-danger,
+  body.ro-sales #saleModal .btn-primary, body.ro-sales #custModal .btn-primary{display:none!important}
+  .sale-lines{display:grid;grid-template-columns:1fr 110px 70px 110px 34px;gap:6px;align-items:center}
+  .sale-lines .head{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+  .sale-lines input,.sale-lines select{margin:0}
+  .sale-lines .amt{text-align:right;font-variant-numeric:tabular-nums;font-size:.9rem}
+  .sale-lines .x{padding:6px 8px}
+  .sale-total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;
+    border-top:1px solid var(--line);font-weight:700}
+  .sales-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  .sales-toolbar select,.sales-toolbar input{width:auto}
+  .modal-card.wide{max-width:760px}
+  .price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 14px}
+  .price-grid label{font-size:.82rem;color:var(--muted)}
 
   .perm-row{display:grid;grid-template-columns:150px repeat(3,1fr);gap:8px;align-items:center;
     padding:9px 0;border-bottom:1px solid var(--line)}
@@ -366,6 +386,9 @@
       </button>
       <button class="nav-item" onclick="switchNav('homepage')" id="nav-homepage">
         Homepage Text <span class="nav-badge">4 Sections</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('sales')" id="nav-sales">
+        Sales <span class="nav-badge" id="badge-sales">0</span>
       </button>
       <button class="nav-item" onclick="switchNav('users')" id="nav-users">
         Users <span class="nav-badge" id="badge-users">0</span>
@@ -674,6 +697,7 @@
                  onchange="importInventoryCsv(this)">
           <button class="btn btn-ghost" onclick="document.getElementById('invCsvFile').click()">Import CSV</button>
           <button class="btn btn-ghost" onclick="downloadInventoryCsv()">Export CSV</button>
+          <button class="btn btn-ghost" onclick="downloadInventoryReport()" title="Excel report: SKU, product, retail price and bottles on hand">Download report</button>
           <button class="btn btn-primary" onclick="switchNav('products')">Manage products</button>
         </div>
       </div>
@@ -908,17 +932,131 @@
       </div>
     </section>
 
+    <!-- ==================== 6. SALES ==================== -->
+    <section id="sec-sales" class="hidden">
+      <div class="impact-box">
+        <span><b>What this is:</b> the monthly sales book. Enter each invoice here - customer, then price and quantity per product - and the yearly Excel workbook is generated from it, in the same layout as the one kept by hand. A sale lowers the shelf count of any product that Inventory is tracking. Invoices are voided, never deleted.</span>
+      </div>
+
+      <div class="page-head">
+        <div>
+          <h2>Sales</h2>
+          <div class="sub" id="salesSub">Invoices, customers and the sales workbook</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-ghost" onclick="downloadSalesReport(true)" title="This month only, one sheet">Download month</button>
+          <button class="btn btn-ghost" onclick="downloadSalesReport(false)" title="All twelve months, Stock, Monthly Report and customer prices">Download year</button>
+          <button class="btn btn-primary" onclick="openSaleEditor(null)">+ New invoice</button>
+        </div>
+      </div>
+
+      <div class="sales-toolbar">
+        <select id="salesMonth" onchange="loadSales()"></select>
+        <input id="salesYear" type="number" min="2000" max="2100" style="width:96px" onchange="loadSales()">
+        <input id="salesSearch" placeholder="Search invoice no., customer or phone..." oninput="renderSales()" style="flex:1;min-width:220px">
+        <label style="font-size:.85rem;color:var(--muted);display:flex;align-items:center;gap:6px">
+          <input type="checkbox" id="salesShowVoid" onchange="renderSales()" style="width:auto;margin:0"> show voided
+        </label>
+      </div>
+
+      <div class="inv-kpis" id="salesKpis"></div>
+
+      <div class="inv-wrap">
+        <table class="inv">
+          <thead>
+            <tr><th>Invoice</th><th>Date</th><th>Customer</th><th>Products</th><th>Payment</th>
+                <th class="num">Total</th><th>Status</th><th></th></tr>
+          </thead>
+          <tbody id="salesBody"><tr><td colspan="8" style="color:var(--muted)">Loading...</td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="dash-card" style="margin-top:22px">
+        <h3><span>Customers &amp; prices <span class="pill pill-info" id="custPill">0</span></span>
+          <button class="btn btn-primary btn-sm" onclick="openCustomerEditor(null)">+ Add customer</button></h3>
+        <div class="body" style="padding-bottom:0;color:var(--muted);font-size:.85rem">Each customer's own price per product; it pre-fills their invoices. A name typed on an invoice is added here automatically.</div>
+        <div class="inv-wrap" style="border:none;border-radius:0;box-shadow:none">
+          <table class="inv">
+            <thead><tr id="custHead"><th>Name</th><th>Phone</th><th></th></tr></thead>
+            <tbody id="custBody"><tr><td colspan="3" style="color:var(--muted)">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
   </main>
+</div>
+
+<!-- ============ INVOICE EDITOR ============ -->
+<div id="saleModal" class="modal-overlay hidden">
+  <div class="modal-card sm wide">
+    <div class="modal-head">
+      <div style="font-weight:700" id="saleModalTitle">New invoice</div>
+      <button class="btn btn-ghost btn-sm" onclick="closeSaleEditor()">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="field"><label>Invoice no.</label><input id="sale_number" type="number" min="1" step="1"></div>
+        <div class="field"><label>Date</label><input id="sale_date" type="date"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Customer <span class="hint">pick from the list or type a new name</span></label>
+          <input id="sale_customer" list="custList" autocomplete="off" oninput="saleCustomerPicked()">
+          <datalist id="custList"></datalist></div>
+        <div class="field"><label>Phone</label><input id="sale_phone"></div>
+      </div>
+      <div class="field">
+        <label>Products</label>
+        <div class="sale-lines" id="saleLines"></div>
+        <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addSaleLine()">+ Add product</button>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Payment</label>
+          <select id="sale_payment"><option value="">--</option><option>Cash</option><option>Cheque</option><option>Credit Card</option></select></div>
+        <div class="field"><label>Status</label>
+          <select id="sale_status"><option value="paid">Paid</option><option value="unpaid">Unpaid (未付)</option></select></div>
+      </div>
+      <div class="field"><label>Remarks</label><input id="sale_remarks" placeholder="e.g. 網上訂購, 順豐送貨"></div>
+      <div class="sale-total"><span>Total</span><span id="saleTotal">HK$0</span></div>
+      <div class="login-error" id="saleError"></div>
+    </div>
+    <div class="editor-foot">
+      <button class="btn btn-ghost" onclick="closeSaleEditor()">Cancel</button>
+      <button class="btn btn-primary" id="saleSaveBtn" onclick="saveSale()">Save invoice</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CUSTOMER EDITOR ============ -->
+<div id="custModal" class="modal-overlay hidden">
+  <div class="modal-card sm">
+    <div class="modal-head">
+      <div style="font-weight:700" id="custModalTitle">Add customer</div>
+      <button class="btn btn-ghost btn-sm" onclick="closeCustomerEditor()">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Name</label><input id="cust_name"></div>
+      <div class="field"><label>Phone</label><input id="cust_phone"></div>
+      <div class="field"><label>Their prices <span class="hint">leave blank to use the list price</span></label>
+        <div class="price-grid" id="custPrices"></div></div>
+      <div class="field"><label>Notes</label><input id="cust_notes"></div>
+      <div class="login-error" id="custError"></div>
+    </div>
+    <div class="editor-foot">
+      <button class="btn btn-ghost" onclick="closeCustomerEditor()">Cancel</button>
+      <button class="btn btn-primary" id="custSaveBtn" onclick="saveCustomer()">Save customer</button>
+    </div>
+  </div>
 </div>
 
 <!-- ============ USER EDITOR ============ -->
 <div id="userModal" class="modal-overlay hidden">
-  <div class="modal-card sm">
+  <div class="modal-card sm user">
     <div class="modal-head">
       <div style="font-weight:700" id="userModalTitle">Add user</div>
       <button class="btn btn-ghost btn-sm" onclick="closeUserEditor()">Close</button>
     </div>
-    <div class="modal-body" style="overflow:auto">
+    <div class="modal-body">
       <div class="field">
         <label>Name</label>
         <input id="user_name" placeholder="e.g. Wing Lau">
@@ -1429,7 +1567,8 @@ async function renderUsers(){
             '<td class="name">' + esc(u.name || '--') +
               (self ? ' <span class="perm-summary">(you)</span>' : '') + '</td>' +
             '<td>' + esc(u.email) + '</td>' +
-            '<td>' + (u.role === 'admin' ? '<span class="pill pill-info">Administrator</span>'
+            '<td>' + (u.super ? '<span class="pill pill-info" title="Named in .env; cannot be demoted, disabled, deleted or reset by anyone else">Super admin</span>'
+                    : u.role === 'admin' ? '<span class="pill pill-info">Administrator</span>'
                     : u.role === 'staff' ? '<span class="pill pill-ok">Staff</span>'
                     : '<span class="pill pill-warn">Member</span>') +
               (disabled ? ' <span class="pill">Disabled</span>' : '') + '</td>' +
@@ -1438,8 +1577,9 @@ async function renderUsers(){
             '<td>' + day(u.lastLoginAt) + '</td>' +
             '<td><div class="user-actions">' +
               '<button class="btn btn-ghost btn-sm" onclick="openUserEditor(\'' + u.id + '\')">Edit</button>' +
-              '<button class="btn btn-ghost btn-sm" onclick="resetUserPassword(\'' + u.id + '\')">Reset password</button>' +
-              (self ? '' :
+              (u.super && !self ? '' :
+                '<button class="btn btn-ghost btn-sm" onclick="resetUserPassword(\'' + u.id + '\')">Reset password</button>') +
+              (self || u.super ? '' :
                 '<button class="btn btn-ghost btn-sm" onclick="toggleUserStatus(\'' + u.id + '\')">' +
                   (disabled ? 'Enable' : 'Disable') + '</button>' +
                 '<button class="btn btn-danger btn-sm" onclick="deleteUser(\'' + u.id + '\')">Delete</button>') +
@@ -1508,6 +1648,7 @@ function openUserEditor(id){
   document.getElementById('user_role').value = user ? user.role : 'staff';
   // the email is the account's identity and the password has its own button
   document.getElementById('user_email').disabled = !!user;
+  document.getElementById('user_role').disabled = !!(user && user.super);
   document.getElementById('userPasswordField').classList.toggle('hidden', !!user);
   setPermGrid(user ? user.permissions : { cases:'edit', products:'edit', inventory:'edit', faq:'edit', homepage:'edit' });
   userError('');
@@ -1527,6 +1668,8 @@ async function saveUser(){
     role: role,
     permissions: role === 'staff' ? readPermGrid() : {}
   };
+  // a name change on the super admin must not carry a role field along
+  if(document.getElementById('user_role').disabled){ delete payload.role; delete payload.permissions; }
   btn.disabled = true;
   userError('');
   try {
@@ -1592,9 +1735,9 @@ async function deleteUser(id){
 /* The server is what actually refuses a save. These functions only keep the
    screen honest: no buttons for things this account cannot do, and no modules
    it cannot open. */
-const PERM_MODULES = ['cases', 'products', 'inventory', 'faq', 'homepage'];
+const PERM_MODULES = ['cases', 'products', 'inventory', 'faq', 'homepage', 'sales'];
 const MODULE_LABEL = { cases:'Cases', products:'Products', inventory:'Inventory',
-                       faq:'FAQ', homepage:'Homepage text' };
+                       faq:'FAQ', homepage:'Homepage text', sales:'Sales' };
 
 function permLevel(module){
   if(!currentAdmin) return 'edit';            // local-files mode: nothing to gate
@@ -1628,6 +1771,348 @@ function updateViewOnlyNote(){
   if(!note) return;
   note.classList.toggle('hidden',
     !(PERM_MODULES.indexOf(activeNav) !== -1 && permLevel(activeNav) === 'view'));
+}
+
+// ---------- SALES ---------------------------------------------------------
+/* The monthly sales book. Everything here goes through the API; the
+   spreadsheet is built by the server from what is stored. */
+const SALE_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+let salesInvoices = [];
+let salesCustomers = [];
+let salesMonthsWithData = {};
+let editingSaleId = null;
+let editingCustomerId = null;
+let saleCustomerId = null;
+const hk = n => 'HK$' + (Math.round((parseFloat(n) || 0) * 100) / 100).toLocaleString('en-HK');
+const saleProducts = () => (productsData || []).filter(p => p.sku);
+
+function initSalesControls(){
+  const m = document.getElementById('salesMonth');
+  if(m.options.length) return;
+  const now = new Date();
+  SALE_MONTHS.forEach((name, i) => {
+    const o = document.createElement('option'); o.value = i + 1; o.textContent = name; m.appendChild(o);
+  });
+  m.value = now.getMonth() + 1;
+  document.getElementById('salesYear').value = now.getFullYear();
+}
+
+async function loadSales(){
+  initSalesControls();
+  const body = document.getElementById('salesBody');
+  if(!API_BASE || !authToken()){
+    body.innerHTML = '<tr><td colspan="8" style="color:var(--muted)">Sales live in MongoDB. Start the API and sign in.</td></tr>';
+    return;
+  }
+  const year = document.getElementById('salesYear').value;
+  const month = document.getElementById('salesMonth').value;
+  try {
+    let yearInvoices;
+    [salesInvoices, salesCustomers, yearInvoices] = await Promise.all([
+      authFetch('/api/sales/invoices?year=' + year + '&month=' + month),
+      authFetch('/api/sales/customers'),
+      authFetch('/api/sales/invoices?year=' + year)
+    ]);
+    salesMonthsWithData = {};
+    yearInvoices.forEach(i => { if(i.status !== 'void'){ const m = parseInt(i.date.slice(5, 7), 10); salesMonthsWithData[m] = (salesMonthsWithData[m] || 0) + 1; } });
+    renderSales();
+    renderCustomers();
+  } catch(err){
+    body.innerHTML = '<tr><td colspan="8" style="color:var(--muted)">' + esc(err.message) + '</td></tr>';
+  }
+}
+
+function renderSales(){
+  const q = (document.getElementById('salesSearch').value || '').toLowerCase().trim();
+  const showVoid = document.getElementById('salesShowVoid').checked;
+  const rows = salesInvoices.filter(inv => (showVoid || inv.status !== 'void') &&
+    (!q || String(inv.number).includes(q) || (inv.customerName || '').toLowerCase().includes(q) ||
+      (inv.phone || '').includes(q)));
+  const live = salesInvoices.filter(i => i.status !== 'void');
+  const total = live.reduce((s, i) => s + (i.total || 0), 0);
+  const unpaid = live.filter(i => i.status === 'unpaid');
+  const bottles = live.reduce((s, i) => s + i.lines.reduce((t, l) => t + l.qty, 0), 0);
+  document.getElementById('salesKpis').innerHTML = [
+    ['<b>' + live.length + '</b>', 'Invoices'],
+    ['<b>' + hk(total) + '</b>', 'Total amount'],
+    ['<b>' + bottles + '</b>', 'Bottles sold'],
+    ['<b>' + unpaid.length + '</b>', 'Unpaid' + (unpaid.length ? ' &middot; ' + hk(unpaid.reduce((s, i) => s + i.total, 0)) : '')]
+  ].map(([v, l]) => '<div class="inv-kpi"><div class="n">' + v + '</div><div class="lbl">' + l + '</div></div>').join('');
+  document.getElementById('badge-sales').textContent = live.length;
+  document.getElementById('salesSub').textContent = SALE_MONTHS[document.getElementById('salesMonth').value - 1] +
+    ' ' + document.getElementById('salesYear').value + ' - ' + live.length + ' invoice(s), ' + hk(total);
+
+  const body = document.getElementById('salesBody');
+  body.innerHTML = rows.length ? rows.map(inv => {
+    const products = inv.lines.map(l => esc(shortTitle(l.sku, l.title)) + ' &times;' + l.qty +
+      ' <span class="perm-summary">@' + hk(l.price) + '</span>').join('<br>');
+    const status = inv.status === 'void' ? '<span class="pill">Voided</span>'
+      : inv.status === 'unpaid' ? '<span class="pill pill-warn">Unpaid</span>' : '<span class="pill pill-ok">Paid</span>';
+    return '<tr' + (inv.status === 'void' ? ' style="opacity:.5"' : '') + '>' +
+      '<td class="name">#' + inv.number + '</td>' +
+      '<td>' + esc(inv.date) + '</td>' +
+      '<td>' + esc(inv.customerName) + (inv.phone ? '<div class="sku">' + esc(inv.phone) + '</div>' : '') + '</td>' +
+      '<td>' + products + (inv.remarks ? '<div class="sku">' + esc(inv.remarks) + '</div>' : '') + '</td>' +
+      '<td>' + esc(inv.payment || '--') + '</td>' +
+      '<td class="num">' + hk(inv.total) + '</td>' +
+      '<td>' + status + '</td>' +
+      '<td><div class="user-actions">' + (inv.status === 'void' ? '' :
+        '<button class="btn btn-ghost btn-sm" onclick="openSaleEditor(\'' + inv.id + '\')">Edit</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="voidSale(\'' + inv.id + '\')">Void</button>') +
+      '</div></td></tr>';
+  }).join('') : '<tr><td colspan="8" style="color:var(--muted)">' + emptyMonthNote() + '</td></tr>';
+}
+
+/* "No invoices" alone looks like a failed import; say where they are. */
+function emptyMonthNote(){
+  const months = Object.keys(salesMonthsWithData).map(Number).sort((a, b) => a - b);
+  if(!months.length) return 'No invoices in ' + document.getElementById('salesYear').value + ' yet. Use + New invoice to enter the first one.';
+  const latest = months[months.length - 1];
+  return 'No invoices this month yet. Latest month with invoices: ' +
+    '<a href="#" onclick="jumpToSalesMonth(' + latest + ');return false">' +
+    SALE_MONTHS[latest - 1] + ' (' + salesMonthsWithData[latest] + ')</a>.';
+}
+function jumpToSalesMonth(m){
+  document.getElementById('salesMonth').value = m;
+  loadSales();
+}
+
+/* The short names the client uses in the workbook headers. */
+const SALE_SHORT = { 'WH-PSP-500':'雲芝', 'WH-PSP-060':'雲芝 (小瓶裝)', 'WH-T3-120':'T3',
+                     'WH-PT3-090':'PT3', 'WH-HB-180':'乙肝清', 'WH-MB-060':'憶活素' };
+const shortTitle = (sku, title) => SALE_SHORT[sku] || title || sku;
+
+// ---- the invoice editor
+function openSaleEditor(id){
+  if(!saleProducts().length){ toast('Add products before entering invoices', false); return; }
+  editingSaleId = id || null;
+  const inv = id ? salesInvoices.find(i => i.id === id) : null;
+  document.getElementById('saleModalTitle').textContent = inv ? 'Edit invoice #' + inv.number : 'New invoice';
+  document.getElementById('custList').innerHTML = salesCustomers.map(c =>
+    '<option value="' + escAttr(c.name) + '">' + escAttr(c.phone || '') + '</option>').join('');
+  document.getElementById('sale_number').value = inv ? inv.number : '';
+  document.getElementById('sale_date').value = inv ? inv.date : new Date().toISOString().slice(0, 10);
+  document.getElementById('sale_customer').value = inv ? inv.customerName : '';
+  document.getElementById('sale_phone').value = inv ? inv.phone : '';
+  saleCustomerId = inv ? inv.customerId : null;
+  document.getElementById('sale_payment').value = inv ? inv.payment : '';
+  document.getElementById('sale_status').value = inv ? inv.status : 'paid';
+  document.getElementById('sale_remarks').value = inv ? inv.remarks : '';
+  document.getElementById('saleLines').innerHTML = '';
+  (inv ? inv.lines : [null]).forEach(addSaleLine);
+  document.getElementById('saleError').textContent = '';
+  document.getElementById('saleModal').classList.remove('hidden');
+  if(!inv) authFetch('/api/sales/invoices/next').then(d => {
+    if(!document.getElementById('sale_number').value) document.getElementById('sale_number').value = d.number;
+  }).catch(() => {});
+}
+function closeSaleEditor(){ document.getElementById('saleModal').classList.add('hidden'); editingSaleId = null; }
+
+function saleCustomerPicked(){
+  const name = document.getElementById('sale_customer').value.trim();
+  const cu = salesCustomers.find(c => c.name === name);
+  saleCustomerId = cu ? cu.id : null;
+  if(cu){
+    if(cu.phone) document.getElementById('sale_phone').value = cu.phone;
+    // their price for anything already on the invoice
+    document.querySelectorAll('#saleLines .line').forEach(row => {
+      const sku = row.querySelector('select').value;
+      if(cu.prices[sku] !== undefined) row.querySelector('.price').value = cu.prices[sku];
+    });
+    recalcSale();
+  }
+}
+
+function priceFor(sku){
+  const cu = salesCustomers.find(c => c.id === saleCustomerId) ||
+             salesCustomers.find(c => c.name === document.getElementById('sale_customer').value.trim());
+  if(cu && cu.prices[sku] !== undefined) return cu.prices[sku];
+  const p = saleProducts().find(p => p.sku === sku);
+  return p ? parseFloat(p.price) || 0 : 0;
+}
+
+function addSaleLine(line){
+  const wrap = document.getElementById('saleLines');
+  if(!wrap.children.length){
+    wrap.innerHTML = '<div class="head">Product</div><div class="head">Unit price</div><div class="head">Qty</div><div class="head" style="text-align:right">Amount</div><div></div>';
+  }
+  const options = saleProducts().map(p =>
+    '<option value="' + escAttr(p.sku) + '"' + (line && line.sku === p.sku ? ' selected' : '') + '>' +
+    esc(shortTitle(p.sku, p.title)) + '</option>').join('');
+  const row = document.createElement('div');
+  row.className = 'line';
+  row.style.display = 'contents';
+  row.innerHTML = '<select onchange="saleLineProduct(this)">' + options + '</select>' +
+    '<input class="price" type="number" min="0" step="0.01" oninput="recalcSale()">' +
+    '<input class="qty" type="number" min="1" step="1" oninput="recalcSale()">' +
+    '<div class="amt">HK$0</div>' +
+    '<button type="button" class="btn btn-danger btn-sm x" onclick="this.parentNode.remove(); recalcSale()">&times;</button>';
+  wrap.appendChild(row);
+  const sel = row.querySelector('select');
+  row.querySelector('.price').value = line ? line.price : priceFor(sel.value);
+  row.querySelector('.qty').value = line ? line.qty : 1;
+  recalcSale();
+}
+function saleLineProduct(sel){
+  sel.parentNode.querySelector('.price').value = priceFor(sel.value);
+  recalcSale();
+}
+function readSaleLines(){
+  return Array.from(document.querySelectorAll('#saleLines .line')).map(row => ({
+    sku: row.querySelector('select').value,
+    price: parseFloat(row.querySelector('.price').value) || 0,
+    qty: parseInt(row.querySelector('.qty').value, 10) || 0
+  }));
+}
+function recalcSale(){
+  let total = 0;
+  document.querySelectorAll('#saleLines .line').forEach(row => {
+    const amt = (parseFloat(row.querySelector('.price').value) || 0) * (parseInt(row.querySelector('.qty').value, 10) || 0);
+    row.querySelector('.amt').textContent = hk(amt);
+    total += amt;
+  });
+  document.getElementById('saleTotal').textContent = hk(total);
+}
+
+async function saveSale(){
+  const btn = document.getElementById('saleSaveBtn');
+  const payload = {
+    number: document.getElementById('sale_number').value,
+    date: document.getElementById('sale_date').value,
+    customerId: saleCustomerId,
+    customerName: document.getElementById('sale_customer').value.trim(),
+    phone: document.getElementById('sale_phone').value.trim(),
+    lines: readSaleLines(),
+    payment: document.getElementById('sale_payment').value,
+    status: document.getElementById('sale_status').value,
+    remarks: document.getElementById('sale_remarks').value.trim()
+  };
+  btn.disabled = true;
+  document.getElementById('saleError').textContent = '';
+  try {
+    const r = editingSaleId
+      ? await authFetch('/api/sales/invoices/' + editingSaleId, 'PATCH', payload)
+      : await authFetch('/api/sales/invoices', 'POST', payload);
+    logActivity('sales', (editingSaleId ? 'Edited' : 'Added') + ' invoice #' + r.invoice.number + ' - ' + r.invoice.customerName);
+    toast('Invoice #' + r.invoice.number + ' saved' +
+      (r.stockApplied && r.stockApplied.length ? ' - stock updated' : ''), true);
+    closeSaleEditor();
+    // a new customer typed on the invoice is worth keeping for next time
+    if(!saleCustomerId && payload.customerName && !salesCustomers.some(c => c.name === payload.customerName)){
+      const prices = {}; payload.lines.forEach(l => { prices[l.sku] = l.price; });
+      await authFetch('/api/sales/customers', 'POST', { name: payload.customerName, phone: payload.phone, prices: prices }).catch(() => {});
+    }
+    loadSales();
+    if(typeof loadAllCMSData === 'function' && r.stockApplied && r.stockApplied.length) loadAllCMSData();
+  } catch(err){
+    document.getElementById('saleError').textContent = err.message;
+  } finally { btn.disabled = false; }
+}
+
+async function voidSale(id){
+  const inv = salesInvoices.find(i => i.id === id);
+  if(!inv) return;
+  const reason = prompt('Void invoice #' + inv.number + ' (' + inv.customerName + ')?\nIt stays in the records marked void and any stock it took is put back.\n\nReason (optional):');
+  if(reason === null) return;
+  try {
+    await authFetch('/api/sales/invoices/' + id + '/void', 'POST', { reason: reason });
+    logActivity('sales', 'Voided invoice #' + inv.number);
+    toast('Invoice #' + inv.number + ' voided', false);
+    loadSales();
+  } catch(err){ toast(esc(err.message), false); }
+}
+
+// ---- customers
+function renderCustomers(){
+  const products = saleProducts();
+  document.getElementById('custHead').innerHTML = '<th>Name</th><th>Phone</th>' +
+    products.map(p => '<th class="num">' + esc(shortTitle(p.sku, p.title)) + '</th>').join('') + '<th></th>';
+  document.getElementById('custPill').textContent = salesCustomers.length;
+  const body = document.getElementById('custBody');
+  body.innerHTML = salesCustomers.length ? salesCustomers.map(c => '<tr>' +
+    '<td class="name">' + esc(c.name) + (c.notes ? '<div class="sku">' + esc(c.notes) + '</div>' : '') + '</td>' +
+    '<td>' + esc(c.phone || '--') + '</td>' +
+    products.map(p => '<td class="num">' + (c.prices[p.sku] !== undefined ? hk(c.prices[p.sku]) : '<span class="perm-summary">--</span>') + '</td>').join('') +
+    '<td><div class="user-actions">' +
+      '<button class="btn btn-ghost btn-sm" onclick="openCustomerEditor(\'' + c.id + '\')">Edit</button>' +
+      '<button class="btn btn-danger btn-sm" onclick="deleteCustomer(\'' + c.id + '\')">Delete</button>' +
+    '</div></td></tr>').join('')
+    : '<tr><td colspan="' + (products.length + 3) + '" style="color:var(--muted)">No customers yet. They are also added automatically when typed on an invoice.</td></tr>';
+}
+
+function openCustomerEditor(id){
+  editingCustomerId = id || null;
+  const c = id ? salesCustomers.find(x => x.id === id) : null;
+  document.getElementById('custModalTitle').textContent = c ? 'Edit customer' : 'Add customer';
+  document.getElementById('cust_name').value = c ? c.name : '';
+  document.getElementById('cust_phone').value = c ? c.phone : '';
+  document.getElementById('cust_notes').value = c ? c.notes : '';
+  document.getElementById('custPrices').innerHTML = saleProducts().map(p =>
+    '<label>' + esc(shortTitle(p.sku, p.title)) + ' <span class="perm-summary">(list ' + hk(p.price) + ')</span>' +
+    '<input type="number" min="0" step="0.01" data-sku="' + escAttr(p.sku) + '" value="' +
+    (c && c.prices[p.sku] !== undefined ? c.prices[p.sku] : '') + '"></label>').join('');
+  document.getElementById('custError').textContent = '';
+  document.getElementById('custModal').classList.remove('hidden');
+}
+function closeCustomerEditor(){ document.getElementById('custModal').classList.add('hidden'); editingCustomerId = null; }
+
+async function saveCustomer(){
+  const prices = {};
+  document.querySelectorAll('#custPrices input').forEach(i => { if(i.value !== '') prices[i.dataset.sku] = parseFloat(i.value); });
+  const payload = {
+    name: document.getElementById('cust_name').value.trim(),
+    phone: document.getElementById('cust_phone').value.trim(),
+    notes: document.getElementById('cust_notes').value.trim(),
+    prices: prices
+  };
+  const btn = document.getElementById('custSaveBtn');
+  btn.disabled = true;
+  try {
+    if(editingCustomerId) await authFetch('/api/sales/customers/' + editingCustomerId, 'PATCH', payload);
+    else await authFetch('/api/sales/customers', 'POST', payload);
+    logActivity('sales', (editingCustomerId ? 'Updated' : 'Added') + ' customer: ' + payload.name);
+    toast('Customer saved', true);
+    closeCustomerEditor();
+    loadSales();
+  } catch(err){ document.getElementById('custError').textContent = err.message; }
+  finally { btn.disabled = false; }
+}
+
+async function deleteCustomer(id){
+  const c = salesCustomers.find(x => x.id === id);
+  if(!c || !confirm('Delete ' + c.name + '?')) return;
+  try {
+    await authFetch('/api/sales/customers/' + id, 'DELETE');
+    logActivity('sales', 'Deleted customer: ' + c.name);
+    toast('Customer deleted', false);
+    loadSales();
+  } catch(err){ toast(esc(err.message), false); }
+}
+
+// ---- the workbook
+async function downloadSalesReport(monthOnly){
+  if(!API_BASE || !dbLive || !authToken()){ toast('The report needs the database. Start the API and sign in.', false); return; }
+  const year = document.getElementById('salesYear').value;
+  const month = document.getElementById('salesMonth').value;
+  const url = API_BASE + '/api/reports/sales.xlsx?year=' + year + (monthOnly ? '&month=' + month : '');
+  try {
+    const res = await fetch(url, { headers: { Authorization: 'Bearer ' + authToken() } });
+    if(!res.ok){
+      const info = await res.json().catch(() => ({}));
+      toast(res.status === 404 ? 'The API is running an older version. Stop it and run <code>npm run dev</code> again.'
+                               : esc(info.error || 'Could not build the report'), false);
+      return;
+    }
+    const match = /filename="([^"]+)"/.exec(res.headers.get('Content-Disposition') || '');
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = match ? match[1] : 'Sales report.xlsx';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    logActivity('sales', 'Downloaded the ' + (monthOnly ? SALE_MONTHS[month - 1] + ' ' : '') + year + ' sales workbook');
+    toast('Sales workbook downloaded', true);
+  } catch(e){ toast('Could not reach the API', false); }
 }
 
 // ---------- INIT & NAVIGATION ----------
@@ -2167,6 +2652,39 @@ async function loadInventoryCsv(){
   } catch(e){ /* file:// or not published yet - the admin still works */ }
 }
 
+/* The Excel report is made by the server from the database, so what is
+   downloaded is what is stored - not this screen's copy. */
+async function downloadInventoryReport(){
+  if(!API_BASE || !dbLive || !authToken()){
+    toast('The report needs the database. Start the API and sign in.', false);
+    return;
+  }
+  try {
+    const res = await fetch(API_BASE + '/api/reports/inventory.xlsx', {
+      headers: { Authorization: 'Bearer ' + authToken() }
+    });
+    if(!res.ok){
+      const info = await res.json().catch(() => ({}));
+      // a 404 means the API answering is an older build without this report
+      toast(res.status === 404
+        ? 'The API is running an older version. Stop it and run <code>npm run dev</code> again.'
+        : esc(info.error || 'Could not build the report'), false);
+      return;
+    }
+    const match = /filename="([^"]+)"/.exec(res.headers.get('Content-Disposition') || '');
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = match ? match[1] : 'Inventory report.xlsx';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    logActivity('inventory', 'Downloaded the inventory report');
+    toast('Inventory report downloaded', true);
+  } catch(e){
+    toast('Could not reach the API', false);
+  }
+}
+
 function downloadInventoryCsv(){
   downloadCsvFile('inventory.csv', buildInventoryCsv());
   toast('inventory.csv downloaded - save it into the data/ folder and commit it', true);
@@ -2506,7 +3024,7 @@ function exportInventoryCsv(){ downloadInventoryCsv(); }
 
 function switchNav(sectionId){
   activeNav = sectionId;
-  ['dashboard','cases','products','inventory','faq','homepage','users'].forEach(s => {
+  ['dashboard','cases','products','inventory','faq','homepage','users','sales'].forEach(s => {
     const el = document.getElementById('sec-' + s);
     const navEl = document.getElementById('nav-' + s);
     if(s === sectionId){
@@ -2520,6 +3038,7 @@ function switchNav(sectionId){
   if(sectionId === 'dashboard') renderDashboard();
   if(sectionId === 'inventory') renderInventory();
   if(sectionId === 'users') renderUsers();
+  if(sectionId === 'sales') loadSales();
   updateViewOnlyNote();
 }
 

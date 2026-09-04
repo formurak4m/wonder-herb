@@ -86,6 +86,22 @@ ends its sessions immediately.
 disable themselves or delete themselves, and the last remaining administrator
 cannot be demoted, disabled or deleted.
 
+**The super admin.** `.env` can name one account that no other administrator
+can demote, disable, delete or reset - the way back in if every other account
+is mismanaged:
+
+```
+SUPER_ADMIN_EMAIL=you@wonder-herb.com
+SUPER_ADMIN_PASSWORD=used only to create the account if it is missing
+SUPER_ADMIN_NAME=Your Name
+```
+
+It is created when the API starts, if it does not exist. The password in
+`.env` is used *only* at that moment: change it from the console afterwards
+and the change sticks. If the account is ever tampered with in the database,
+the next start restores it to an active administrator. It shows as **Super
+admin** on the Users screen.
+
 **The first administrator.** On a fresh database the console's sign-in card
 offers to create one - the account you make there becomes the administrator.
 Afterwards nobody can grant themselves that role from a form; use:
@@ -116,6 +132,40 @@ account link stays hidden and the page says accounts are unavailable - the
 public pages look exactly as they did. The console falls back to the
 "continue without signing in" mode it had before, editing this browser's copy.
 
+## Sales
+
+The client's yearly sales workbook, as data. Staff enter each invoice on the
+console's **Sales** screen - customer, then price and quantity per product -
+and the spreadsheet is generated from what is stored.
+
+- **Customers** carry their own negotiated price per product; picking a
+  customer pre-fills their phone and prices. A name typed on an invoice is
+  kept as a customer automatically.
+- **A sale lowers stock** for any product Inventory is tracking, through the
+  same movement path as the Adjust button, with the invoice number on the
+  movement. Editing an invoice corrects the shelf; voiding puts it back.
+- **Invoices are voided, never deleted.** They are money.
+- **Download month** gives one sheet; **Download year** gives the whole
+  workbook: Dec..Jan sheets, Stock, Monthly Report and 客戶名單及價格, in the
+  client's layout, with live formulas - the file still works as a spreadsheet.
+- `customers` and `invoices` are not content: never readable through
+  `/api/cms`, never exported into `data/`. The privilege is the **Sales** tick.
+
+The client's own workbooks are **not** in this repository: they hold real
+customers, phone numbers and medical remarks, and the repository is public.
+`*.xlsx` is gitignored - keep a copy on the machine that needs it and import
+it. `customers` and `invoices` live in MongoDB and are never exported to
+`data/`, so nothing personal reaches git.
+
+**Importing the hand-kept workbook** (one-off, safe to repeat):
+
+```bash
+npm run import:sales -- "Sales report 31072026.xlsx" 2026
+```
+
+Reads the twelve month sheets and the customer list. An invoice number that
+already exists is skipped; nothing here touches stock.
+
 ## Publishing
 
 ```bash
@@ -139,6 +189,8 @@ edits leaves the working tree clean.
 | `activity` | the dashboard's "Recent changes" trail | `data/activity-log.json` |
 | `users` | accounts: name, email, role, privileges, salted password hash | nothing - never exported |
 | `sessions` | who is signed in; expired by MongoDB itself | nothing - never exported |
+| `customers` | sales customers and their prices | nothing - never exported |
+| `invoices` | the sales book, one document per invoice | nothing - never exported |
 
 Every document carries `pos` (the order the editor sees) and `updatedAt`. Both
 are stripped before the data reaches the browser. Numbers are stored as numbers;
@@ -171,6 +223,9 @@ npm run test:api        # Express + MongoDB, no stubs (throwaway db)
 npm run test:auth       # signup, login, logout, sessions, roles
 npm run test:ui         # admin + site pages against the live API
 npm run test:ui:auth    # account.html and the admin sign-in, in a real DOM
+npm run test:sales      # invoices, customers, stock link, importer, workbook
+npm run test:sweep      # clicks every button on every screen and page; fails on any JS error
+npm run test:all        # everything, in order
 ```
 
 The two UI suites need `jsdom` available to node; it is not a dependency of
@@ -180,7 +235,7 @@ Both use the database `wonderherb_test` and clean up after themselves.
 
 ## Config
 
-Copy `.env.example` to `.env` to change the connection:
+Copy `.env.example` to `.env` to change the connection or name the super admin (`npm run dev` loads it automatically):
 
 ```
 MONGO_URL=mongodb://127.0.0.1:27017

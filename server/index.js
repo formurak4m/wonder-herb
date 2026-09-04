@@ -11,8 +11,11 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 const cors = require('cors');
 const { connect, COLLECTIONS, AUTH_COLLECTIONS, normalise, ensureIndexes,
-        ensureAuthIndexes, URL, DB_NAME } = require('./db');
+        ensureAuthIndexes, ensureSalesIndexes, URL, DB_NAME } = require('./db');
 const auth = require('./auth');
+const reports = require('./reports');
+const sales = require('./sales');
+const stock = require('./stock');
 
 const PORT = process.env.PORT || 4000;
 const app = express();
@@ -174,64 +177,12 @@ app.post('/api/stock/:sku/adjust', asyncRoute(async (req, res) => {
   const qty = Math.max(0, parseInt(req.body.qty, 10) || 0);
   const note = String(req.body.note || '').trim();
 
-  const products = db.collection(COLLECTIONS.products);
-
-  /* The new stock is computed by MongoDB inside a single atomic update, not
-     read into Node and written back — otherwise two sales landing at the same
-     moment each read the same figure and one of them is lost. */
-  const current = { $ifNull: ['$stock', 0] };
-  let nextStock;
-  if (type === 'correction') nextStock = { $literal: qty };
-  else if (type === 'receive') nextStock = { $add: [current, qty] };
-  else nextStock = { $max: [0, { $subtract: [current, qty] }] };   // never negative
-
-  // A pre-order product is meant to sell with an empty shelf, so it keeps
-  // that status; anything else follows the count.
-  const wasPreorder = { $regexMatch: { input: { $ifNull: ['$status', ''] }, regex: '^pre', options: 'i' } };
-
-  const updated = await products.findOneAndUpdate(
-    { sku: sku },
-    [
-      { $set: { _wasPre: wasPreorder, stock: nextStock } },
-      { $set: {
-          status: { $cond: ['$_wasPre', 'Pre-order',
-            { $cond: [{ $lte: ['$stock', 0] }, 'Out of Stock', 'In Stock'] }] },
-          stockUpdated: new Date().toISOString().slice(0, 10)
-      } },
-      { $unset: '_wasPre' }
-    ],
-    { returnDocument: 'before' }
-  );
-
-  const product = updated && updated.value !== undefined ? updated.value : updated;
-  if (!product) return res.status(404).json({ error: 'No product with SKU ' + sku });
-
-  // `product` is the document this update was applied to, so recomputing the
-  // result from it gives exactly what was stored.
-  const before = parseInt(product.stock, 10) || 0;
-  let after;
-  if (type === 'correction') after = qty;
-  else if (type === 'receive') after = before + qty;
-  else after = Math.max(0, before - qty);
-  const clamped = after;
-  const status = /^pre/i.test(product.status || '')
-    ? 'Pre-order'
-    : (clamped <= 0 ? 'Out of Stock' : 'In Stock');
-
-  const movement = {
-    at: new Date().toISOString(),
-    by: actor.user.email,
-    sku: sku,
-    title: product.title || '',
-    type: type,
-    delta: clamped - before,
-    after: clamped,
-    note: note
-  };
-  await db.collection(COLLECTIONS.movements).insertOne(
-    Object.assign(normalise('movements', movement), { pos: -Date.now(), updatedAt: new Date() }));
-
-  res.json({ success: true, before: before, after: clamped, status: status, movement: movement });
+  const result = await stock.applyMovement(db, {
+    sku: sku, type: type, qty: qty, note: note, by: actor.user.email
+  });
+  if (!result) return res.status(404).json({ error: 'No product with SKU ' + sku });
+  res.json({ success: true, before: result.before, after: result.after,
+             status: result.status, movement: result.movement });
 }));
 
 /* ---------------------------------------------------------------- accounts
@@ -456,6 +407,46 @@ async function endSessionsFor(db, id) {
   await db.collection(AUTH_COLLECTIONS.sessions).deleteMany({ userId: id });
 }
 
+/* The super admin from .env always exists and is always an administrator.
+   An existing password is never touched here - only a missing account is
+   created - so changing it from the console sticks. */
+async function ensureSuperAdmin(db) {
+  const email = auth.SUPER_ADMIN_EMAIL;
+  if (!email) return;
+  const users = db.collection(AUTH_COLLECTIONS.users);
+  const existing = await users.findOne({ email: email });
+  if (existing) {
+    if (existing.role !== 'admin' || existing.status === 'disabled') {
+      await users.updateOne({ _id: existing._id },
+        { $set: { role: 'admin', status: 'active', permissions: auth.emptyPermissions() } });
+      console.log('Super admin ' + email + ' restored to administrator.');
+    }
+    return;
+  }
+  const password = String(process.env.SUPER_ADMIN_PASSWORD || '');
+  if (!password) {
+    console.log('SUPER_ADMIN_EMAIL is set but the account does not exist and no ' +
+      'SUPER_ADMIN_PASSWORD was given, so it was not created.');
+    return;
+  }
+  if (auth.passwordProblem(password)) {
+    console.log('Warning: the super admin password is weaker than the site allows ' +
+      'for anyone else (' + auth.passwordProblem(password) + '). Change it before going anywhere public.');
+  }
+  await users.insertOne({
+    name: String(process.env.SUPER_ADMIN_NAME || 'Super admin'),
+    email: email,
+    passwordHash: auth.hashPassword(password),
+    role: 'admin',
+    permissions: auth.emptyPermissions(),
+    status: 'active',
+    createdAt: new Date(),
+    createdBy: 'startup',
+    lastLoginAt: null
+  });
+  console.log('Super admin ' + email + ' created.');
+}
+
 app.post('/api/auth/users', asyncRoute(async (req, res) => {
   const actor = await requireAdmin(req, res);
   if (!actor) return;
@@ -504,6 +495,11 @@ app.patch('/api/auth/users/:id', asyncRoute(async (req, res) => {
   if (!target) return res.status(404).json({ error: 'No such account' });
 
   const isSelf = String(target._id) === String(actor.user._id);
+  if (auth.isSuperAdmin(target) && !isSelf) {
+    if (req.body.role !== undefined || req.body.status !== undefined) {
+      return res.status(400).json({ error: 'The super admin cannot be changed by another account' });
+    }
+  }
   const update = {};
 
   if (req.body.name !== undefined) update.name = String(req.body.name).trim().slice(0, 120);
@@ -554,6 +550,12 @@ app.post('/api/auth/users/:id/password', asyncRoute(async (req, res) => {
   const id = userId(req.params.id);
   if (!id) return res.status(404).json({ error: 'No such account' });
 
+  const target = await db.collection(AUTH_COLLECTIONS.users).findOne({ _id: id });
+  if (!target) return res.status(404).json({ error: 'No such account' });
+  if (auth.isSuperAdmin(target) && String(target._id) !== String(actor.user._id)) {
+    return res.status(400).json({ error: 'Only the super admin can change their own password' });
+  }
+
   const password = String(req.body.password || '');
   const problem = auth.passwordProblem(password);
   if (problem) return res.status(400).json({ error: problem });
@@ -585,6 +587,9 @@ app.delete('/api/auth/users/:id', asyncRoute(async (req, res) => {
   if (String(target._id) === String(actor.user._id)) {
     return res.status(400).json({ error: 'You cannot delete your own account' });
   }
+  if (auth.isSuperAdmin(target)) {
+    return res.status(400).json({ error: 'The super admin cannot be deleted' });
+  }
   if (target.role === 'admin' && await activeAdmins(db, target._id) === 0) {
     return res.status(400).json({ error: 'This is the last administrator' });
   }
@@ -592,6 +597,27 @@ app.delete('/api/auth/users/:id', asyncRoute(async (req, res) => {
   await users.deleteOne({ _id: id });
   await endSessionsFor(db, id);
   res.json({ success: true });
+}));
+
+/* ------------------------------------------------------------------ sales
+   Invoices, customers and the yearly sales workbook. */
+sales.mount(app, { connect: connect, requireCan: requireCan, asyncRoute: asyncRoute });
+
+/* ---------------------------------------------------------------- reports
+   The inventory spreadsheet, in the layout the client keeps by hand. Built
+   from the database on request; anyone who may see inventory may download. */
+app.get('/api/reports/inventory.xlsx', asyncRoute(async (req, res) => {
+  const actor = await requireCan(req, res, 'inventory', 'view');
+  if (!actor) return;
+  const db = await connect();
+  const products = await readList(db, 'products');
+  const now = new Date();
+  const wb = await reports.inventoryWorkbook(products, now);
+  res.setHeader('Content-Type',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition',
+    'attachment; filename="' + reports.inventoryFilename(now) + '"');
+  res.send(Buffer.from(await wb.xlsx.writeBuffer()));
 }));
 
 /* ---------------------------------------------------------------- CSV
@@ -648,7 +674,7 @@ app.use(express.static(SITE_ROOT, {
 
 if (require.main === module) {
   connect()
-    .then(db => ensureAuthIndexes(db))
+    .then(db => ensureAuthIndexes(db).then(() => ensureSalesIndexes(db)).then(() => ensureSuperAdmin(db)))
     .then(() => app.listen(PORT, () => {
       console.log('Site                 ->  http://localhost:' + PORT + '/');
       console.log('Admin                ->  http://localhost:' + PORT + '/admin/');
@@ -663,3 +689,4 @@ if (require.main === module) {
 }
 
 module.exports = app;
+module.exports.ensureSuperAdmin = ensureSuperAdmin;

@@ -111,6 +111,7 @@ function publicUser(user) {
     name: user.name || '',
     email: user.email,
     role: user.role || 'customer',
+    super: isSuperAdmin(user),
     status: user.status || 'active',
     permissions: permissionsOf(user),
     console: hasConsoleAccess(user),
@@ -129,7 +130,7 @@ function publicUser(user) {
    A staff member's privileges are one level per module, so "can edit stock,
    can look at products, cannot see the FAQ" is expressible. `users` is never
    one of them: managing accounts stays with administrators. */
-const MODULES = ['cases', 'products', 'inventory', 'faq', 'homepage'];
+const MODULES = ['cases', 'products', 'inventory', 'faq', 'homepage', 'sales'];
 const LEVELS = ['none', 'view', 'edit'];
 const ROLES = ['admin', 'staff', 'customer'];
 
@@ -179,6 +180,13 @@ function hasConsoleAccess(user) {
   return MODULES.some(m => perms[m] !== 'none');
 }
 
+/* ------------------------------------------------------------ super admin
+   One account, named in .env, that no other administrator can demote,
+   disable, delete or reset. It is the way back in if every other account is
+   mismanaged. Created at startup if it does not exist. */
+const SUPER_ADMIN_EMAIL = cleanEmail(process.env.SUPER_ADMIN_EMAIL || '');
+const isSuperAdmin = user => !!(user && SUPER_ADMIN_EMAIL && user.email === SUPER_ADMIN_EMAIL);
+
 /* --------------------------------------------------------- login throttle
    Wrong passwords are slowed down per email+address, so a stolen email list
    cannot be walked through a password guesser at full speed. In memory: this
@@ -213,6 +221,6 @@ module.exports = {
   createSession, currentUser, publicUser, tokenHash, bearer,
   throttleCheck, throttleFail, throttleClear, throttleReset,
   MODULES, LEVELS, ROLES, cleanPermissions, cleanRole, emptyPermissions,
-  permissionsOf, can, hasConsoleAccess,
+  permissionsOf, can, hasConsoleAccess, SUPER_ADMIN_EMAIL, isSuperAdmin,
   MIN_PASSWORD, SESSION_DAYS
 };

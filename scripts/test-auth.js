@@ -5,6 +5,8 @@
  */
 process.env.MONGO_DB = process.env.MONGO_DB_TEST || 'wonderherb_test';
 process.env.PORT = process.env.PORT_TEST || '4113';
+process.env.SUPER_ADMIN_EMAIL = 'root@example.com';
+process.env.SUPER_ADMIN_PASSWORD = 'root';   // deliberately weak: bootstrap must still work
 
 const app = require('../server/index');
 const auth = require('../server/auth');
@@ -327,6 +329,38 @@ const PASS = 'garden-gate-88';
   check('and the site still has an administrator',
     (await get('/api/auth/status')).body.adminExists === true);
   await patch('/api/auth/users/' + adminId, { role: 'admin' }, secondToken);
+
+  console.log('\n=== The super admin ===\n');
+  await app.ensureSuperAdmin(db);
+  const root = await users.findOne({ email: 'root@example.com' });
+  check('the super admin from .env is created at startup', !!root && root.role === 'admin');
+  check('its password is hashed like everyone else\'s', /^scrypt\$/.test(root.passwordHash));
+  await app.ensureSuperAdmin(db);
+  check('running startup again does not duplicate it',
+    await users.countDocuments({ email: 'root@example.com' }) === 1);
+  const rootLogin = await post('/api/auth/login', { email: 'root@example.com', password: 'root' });
+  check('it can sign in with the configured password', rootLogin.status === 200);
+  check('and is marked as the super admin', rootLogin.body.user.super === true);
+  const rootId = rootLogin.body.user.id;
+  const rootToken = rootLogin.body.token;
+
+  check('another administrator cannot demote it',
+    (await patch('/api/auth/users/' + rootId, { role: 'staff' }, adminToken)).status === 400);
+  check('nor disable it',
+    (await patch('/api/auth/users/' + rootId, { status: 'disabled' }, adminToken)).status === 400);
+  check('nor delete it', (await del('/api/auth/users/' + rootId, adminToken)).status === 400);
+  check('nor reset its password',
+    (await post('/api/auth/users/' + rootId + '/password', { password: 'hijacked-1' }, adminToken)).status === 400);
+  check('but may correct its name',
+    (await patch('/api/auth/users/' + rootId, { name: 'Root' }, adminToken)).status === 200);
+  check('the super admin can still change their own password',
+    (await post('/api/auth/password', { currentPassword: 'root', newPassword: 'root-password-2' }, rootToken)).status === 200);
+  await users.updateOne({ _id: root._id }, { $set: { role: 'staff', status: 'disabled' } });
+  await app.ensureSuperAdmin(db);
+  check('if it is ever tampered with in the database, startup restores it',
+    (await users.findOne({ _id: root._id })).role === 'admin');
+  check('and the password set at startup is left alone afterwards',
+    (await post('/api/auth/login', { email: 'root@example.com', password: 'root-password-2' })).status === 200);
 
   console.log('\n=== Deleting an account ===\n');
   const before = await users.countDocuments();
