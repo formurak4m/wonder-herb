@@ -7,3 +7,7 @@ npm-debug.log*
 # them and are imported with `npm run import:sales`.
 *.xlsx
 !data/templates/*.xlsx
+
+# Visual + SEO regression references (BUILD_TASKS P0-T2). Local only, never
+# deployed: hundreds of MB of screenshots that the renderer is compared against.
+baseline/
