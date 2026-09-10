@@ -48,7 +48,7 @@ None are fixed yet; do not fix them out of their phase.
 Change the publish step so the renderer writes content **into** the HTML instead of leaving the browser to fetch it. Same data, same `export -> commit -> deploy` pipeline. Output must include content, JSON-LD, hreflang, canonical, and meta so crawlers see the real page. Fixes gap 1 and is the most important thing in the project.
 
 ### Change 2 — A Wix-like visual editor (Puck)
-Add **Puck** (`@measured/puck`, MIT, self-hosted, React) for visual page building: click the real page, edit, add / reorder / duplicate / delete sections, publish. Puck is the first React in the project, so run it as its own editor app that talks to the existing Express API. Use Puck's permissions API to lock destructive actions.
+Add **Puck** (`@puckeditor/core`, MIT, self-hosted, React) for visual page building: click the real page, edit, add / reorder / duplicate / delete sections, publish. Puck is the first React in the project, so run it as its own editor app that talks to the existing Express API. Use Puck's permissions API to lock destructive actions.
 
 ## Non-negotiables (do not violate)
 

@@ -90,7 +90,13 @@ The one idea that makes it work: **section components are React and are used by 
 - **Files:** `package.json`, new `editor/`, new `sections/`, new `renderer/`.
 - **Steps:**
   1. Install dev deps: `npm i -D vite @vitejs/plugin-react esbuild playwright` and runtime deps `npm i react react-dom`.
-  2. Install Puck: check the current package name and version at https://puckeditor.com/docs first (it is currently published as `@measured/puck`; confirm before installing), then `npm i @measured/puck`.
+  2. Install Puck: `npm i -D @puckeditor/core`.
+     > **The package was renamed.** It used to be `@measured/puck`, which is now formally deprecated
+     > on npm ("Puck has moved. Please use @puckeditor/core instead") and stuck at 0.20.2 from
+     > September 2025. The current package is **`@puckeditor/core`** (0.23.0 as of September 2026,
+     > still MIT, repo moved to `puckeditor/puck`). React peer is `^18.0.0 || ^19.0.0`, so Puck does
+     > not dictate the React version. Confirm the current name and version before installing anyway;
+     > it has changed once already.
   3. Create three folders: `sections/` (shared React components), `editor/` (Vite React app for Puck), `renderer/` (Node script that server-renders sections to HTML).
   4. Add scripts to `package.json` (do NOT remove existing ones):
      ```json
@@ -434,7 +440,8 @@ When Phases 0-12 are done: the client can log in over the internet, edit the cor
 
 ## Phase 18 — Cutover
 - Point the domain fully at the new pre-rendered site (already GitHub Pages via CNAME; confirm DNS and that all pages/languages are live). Submit the new sitemap to Search Console. Watch analytics and crawl stats for a week. Only then cancel Wix.
-- **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed. Then, and only then, switch Wix off.
+- **Gate — the site still depends on Wix for media.** `grep -rn "wixstatic" *.html` must return **nothing** before Wix is switched off. It currently returns 45 hits across all 18 pages: the homepage background video plus the `og:image` / `twitter:image` social previews. Cancelling Wix with any of these left breaks the homepage and every link preview. Phase 10 is what clears it. See `docs/FINDINGS.md` finding 1.
+- **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed, and the `wixstatic` grep is clean. Then, and only then, switch Wix off.
 
 ---
 
