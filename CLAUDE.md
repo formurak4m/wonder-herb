@@ -16,6 +16,9 @@ while the public site stays fast static HTML on GitHub Pages.
 
 Stack: Node + Express + MongoDB. No framework, no build step, no React. Public pages are plain HTML.
 
+**Build progress: Phase 0 done** (see `BUILD_TASKS.md`). Work happens on the `rebuild/editor` branch, off `geo`.
+Hosting is deliberately deferred to Phase 11 — everything runs locally until then.
+
 Already built:
 - **Express + MongoDB API** in `server/`: auth (with a protected super-admin), products, stock, sales, invoices, reports, roles. Real test suite in `scripts/`.
 - **Hybrid publish model that works**: MongoDB is the editing surface. `npm run export` writes the DB back into `data/*.json`. Commit to `main`. GitHub Actions (`.github/workflows/static.yml`) deploys the repo to GitHub Pages. Custom domain via `CNAME`. If the API is off, admin and site fall back to the committed files.
@@ -23,6 +26,8 @@ Already built:
 - **Pages CMS pilot** (`.pages.yml`): git-based, WordPress-style form editor. Wired for Cases only so far. Uses the 7-language object model.
 - **Admin** is a single vanilla file: `admin/index.html`.
 - **7 languages**: `zh` (primary) + `en, de, es, fr, ja, ru` (optional, fall back to `zh`). Every text field is a per-language object.
+- **Visual + SEO baseline captured** (Phase 0): `node scripts/baseline.js` records all 18 pages at 1280px and 390px plus each page's rendered `<head>` into `baseline/` (gitignored, ~13 MB). Captured from a static server with the API off, so it reflects what GitHub Pages actually serves. These are the regression references the renderer must match. Re-run it if the live pages change before migration.
+- **Test suite**: `npm run test:all` = 404 checks, green. `jsdom` and `playwright` are devDependencies; nothing new ships to the public site.
 
 The two real gaps:
 1. **Content is rendered client-side.** Public pages are static shells that `fetch('./data/*.json')` and build content in the browser, so crawlers mostly see an empty shell. This undercuts the SEO/GEO work.
@@ -30,8 +35,12 @@ The two real gaps:
 
 Other issues:
 - ~72 MB of `.glb` 3D models are committed and redeploy on every push. Move to R2/CDN.
+- **Media is not only the `.glb` files.** The homepage background video is hosted on the client's Wix CDN and the product photos are hotlinked from Google Drive. Both must move to R2 in Phase 10 — the Wix video dies at cutover. See `docs/FINDINGS.md`.
 - Hosting is split: static site on GitHub Pages, admin/API config points at Vercel (`vercel.json`). API + MongoDB are not hosted for production yet (MONGO_URL is localhost).
 - Currency is HKD.
+
+Known issues found while recording the baseline are logged in `docs/FINDINGS.md` with the phase that fixes each.
+None are fixed yet; do not fix them out of their phase.
 
 ## The two changes we are adding (in order of value)
 
