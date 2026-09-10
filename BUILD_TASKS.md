@@ -125,7 +125,7 @@ The one idea that makes it work: **section components are React and are used by 
      }).catch(() => process.exit(1));
      ```
   2. Add `renderer/.build/` to `.gitignore`.
-- **Verify:** `npm run sections:build` produces `renderer/.build/sections.cjs` and `node -e "console.log(Object.keys(require('./renderer/.build/sections.cjs')))"` lists your section names.
+- **Verify:** `npm run sections:build` produces `renderer/.build/sections.cjs` and `node -e "console.log(Object.keys(require('./renderer/.build/sections.cjs').default))"` lists your section names. (Note the `.default`: the bundle's own keys are `['default','registry']`, so without it the command prints the module's exports and looks like it passed.)
 - **Gotcha:** `external: ['react','react-dom']` so the Node process uses one React instance.
 
 ---
@@ -255,7 +255,7 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
      ```js
      const React = require('react');
      const { renderToStaticMarkup } = require('react-dom/server');
-     const sections = require('./.build/sections.cjs');
+     const sections = require('./.build/sections.cjs').default;  // { type: Component }
      const { resolveField, LANGS, PRIMARY } = require('./i18n');
      const { buildHead } = require('./head');
      const { baseTemplate } = require('./template');
