@@ -8,8 +8,16 @@
  * do not, and each has a different number of detail rows. Both are handled by
  * optional fields rather than by inventing variants.
  *
- * Each detail row is { text, href } - the live markup wraps the address, the
- * WhatsApp number and the email in links, and leaves the phone as plain text.
+ * Each detail row is { icon, text, href } - the live markup wraps the address,
+ * the WhatsApp number and the email in links, and leaves the phone as plain
+ * text, and every row opens with a FontAwesome glyph:
+ *
+ *   <div class="contact-detail"><i class="fas fa-map-marker-alt"></i><span>…</span></div>
+ *
+ * The icon is markup, not decoration that can be skipped: the live grid has
+ * fifteen of them (fas fa-map-marker-alt / fa-phone-alt / fa-user, fab
+ * fa-whatsapp / fa-envelope) and the row layout is built around one. Leaving
+ * them out is what the P4-T3 fidelity check now catches.
  */
 export const config = {
   label: 'Contact cards',
@@ -21,7 +29,14 @@ export const config = {
         flagAlt: { type: 'text' },
         title: { type: 'text' },
         company: { type: 'text' },
-        details: { type: 'array', arrayFields: { text: { type: 'text' }, href: { type: 'text' } } }
+        details: {
+          type: 'array',
+          arrayFields: {
+            icon: { type: 'text' },   // e.g. "fas fa-map-marker-alt", "fab fa-whatsapp"
+            text: { type: 'text' },
+            href: { type: 'text' }
+          }
+        }
       }
     }
   },
@@ -45,6 +60,7 @@ export default function ContactCards({ cards }) {
           {c.company ? <h4>{c.company}</h4> : null}
           {(Array.isArray(c.details) ? c.details : []).map((d, j) => (
             <div className="contact-detail" key={j}>
+              {d.icon ? <i className={d.icon} aria-hidden="true"></i> : null}
               <span>{d.href ? <a href={d.href}>{d.text}</a> : d.text}</span>
             </div>
           ))}

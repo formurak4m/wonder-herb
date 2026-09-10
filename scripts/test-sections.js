@@ -5,11 +5,16 @@
  * section reaches for `window` at render time this is where it fails, not in
  * production.
  *
- * Two layers:
+ * Three layers:
  *   1. Contract checks that loop the whole registry, so every section added
  *      later is covered by them automatically.
  *   2. Per-section expectations, including the exact HTML for page-header.
+ *   3. Structural fidelity: the expected elements are read out of the live
+ *      page, not written here, so a section cannot quietly drop markup that
+ *      nobody thought to assert on. jsdom is used for that parsing only -
+ *      every render above still happens in plain Node with no DOM.
  */
+const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const React = require('react');
@@ -306,6 +311,97 @@ eq('cta-band banner: the live markup', ctaBanner,
 eq('cta-band button: the 常見問題 shape',
    render(components['cta-band'], { variant: 'button', label: '探索產品系列', href: '產品介紹.html' }),
    '<div class="cta-button"><a href="產品介紹.html" class="btn-primary">探索產品系列</a></div>');
+
+/* ------------------------------------------------- structural fidelity
+ *
+ * The blind spot this closes: `contact-cards` silently dropped all fifteen
+ * <i> icons from the live markup and passed every check above, because those
+ * checks look at the contract (does it export a config, does it render, is the
+ * output clean) and at hand-written assertions - and a hand-written assertion
+ * can only test what its author remembered to look at. The icons were missed
+ * precisely because nobody remembered them.
+ *
+ * So the expectation is not hand-written. For each section below we parse the
+ * REAL block out of the REAL page, collect every tag name and class token it
+ * contains, render the section, and require the rendered output to contain
+ * them all. The source page is the authority; the test author's memory is not.
+ *
+ * Anything deliberately not emitted goes in `allow` WITH A REASON, so a
+ * dropped element is either caught or consciously waived - never silent.
+ */
+const { JSDOM } = require('jsdom');
+
+const FIDELITY = {
+  'contact-cards': {
+    page: '聯絡我們.html',
+    selector: '.contact-grid',
+    allow: {
+      br: 'a line break inside the address string: field content, not section structure'
+    },
+    props: {
+      cards: [
+        { flag: 'https://flagcdn.com/hk.svg', flagAlt: 'Hong Kong Flag', title: '亞洲總部',
+          company: '康草堂有限公司',
+          details: [
+            { icon: 'fas fa-map-marker-alt', text: '香港九龍彌敦道301-309号', href: 'https://maps.app.goo.gl/x' },
+            { icon: 'fas fa-phone-alt', text: '+852 2757 3112' },
+            { icon: 'fab fa-whatsapp', text: '+852 9331 8571', href: 'https://wa.me/85293318571/' },
+            { icon: 'fab fa-envelope', text: 'info@wonder-herb.com', href: 'mailto:info@wonder-herb.com' },
+            { icon: 'fas fa-user', text: '聯絡: 陳小姐' }
+          ] }
+      ]
+    }
+  }
+};
+
+/* every tag name and class token inside a block, as one set */
+function fingerprint(el) {
+  const out = new Set();
+  const walk = node => {
+    out.add(node.tagName.toLowerCase());
+    node.classList.forEach(c => out.add('.' + c));
+    Array.prototype.forEach.call(node.children, walk);
+  };
+  Array.prototype.forEach.call(el.children, walk);
+  el.classList.forEach(c => out.add('.' + c));
+  out.add(el.tagName.toLowerCase());
+  return out;
+}
+
+console.log('\n=== structural fidelity against the live markup ===\n');
+
+Object.keys(FIDELITY).forEach(type => {
+  const spec = FIDELITY[type];
+  const src = new JSDOM(fs.readFileSync(path.join(ROOT, spec.page), 'utf8')).window.document;
+  const block = src.querySelector(spec.selector);
+  if (!block) {
+    check(type + ': found ' + spec.selector + ' in ' + spec.page, false, 'NOT FOUND');
+    return;
+  }
+  const want = fingerprint(block);
+  const html = render(components[type], spec.props);
+  const got = fingerprint(new JSDOM('<body>' + html + '</body>').window.document.body);
+
+  const allow = spec.allow || {};
+  const missing = Array.from(want).filter(t => !got.has(t) && !(t.replace(/^\./, '') in allow) && !(t in allow));
+
+  check(type + ': emits every tag and class the live ' + spec.selector + ' has',
+        missing.length === 0,
+        missing.length ? 'MISSING ' + missing.join(', ') : want.size + ' tokens, all present');
+  Object.keys(allow).forEach(t =>
+    console.log('         waived: ' + t + ' — ' + allow[t]));
+});
+
+/* Sections with no fidelity map are a known, visible gap - listed every run so
+   it cannot be quietly forgotten. Not a failure: adding a map means editing
+   those sections' sample props, which is its own piece of work. */
+const unmapped = Object.keys(registry).filter(t => !(t in FIDELITY));
+if (unmapped.length) {
+  console.log('\n  NOTE  ' + unmapped.length + ' section(s) have no fidelity map yet:');
+  console.log('        ' + unmapped.join(', '));
+  console.log('        They are covered by the contract checks and their own HTML assertions,');
+  console.log('        but not yet compared against their source markup. See docs/FINDINGS.md.');
+}
 
 console.log('\n' + (fail ? '=== ' + fail + ' CHECK(S) FAILED ===' : '=== ALL CHECKS PASSED ==='));
 process.exit(fail ? 1 : 0);

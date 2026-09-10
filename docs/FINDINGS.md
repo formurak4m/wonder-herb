@@ -2,7 +2,8 @@
 
 Findings 1–5 come from recording the Phase 0 baseline (`node scripts/baseline.js`); finding 6 from
 adding the Phase 1 toolchain; 7 from adding the page routes at P2-T1; 8–11 from building the
-section library at P4-T2. 8–10 September 2026.
+section library at P4-T2; 12–13 from actually looking at the rendered sections at P4-T3.
+8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
 
@@ -22,6 +23,8 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 9 | The data and the live site disagree on two product prices | **Client decision** | Raise with client |
 | 10 | `faq-accordion` is a static list, not an accordion | Client decision | Client, if ever |
 | 11 | No text+image block exists; the P4-T2 section list was wrong | Resolved | Closed at P4-T2 |
+| 12 | Pre-rendered pages publish **visually blank** without the reveal script | **High — passes green, looks broken** | Phase 5 (P5-T1 template) |
+| 13 | Only 1 of 10 sections has a structural fidelity map | Medium | Phase 9 / 13 |
 
 ---
 
@@ -345,3 +348,80 @@ six product pages, and required by the Phase 9 product-page migration. BUILD_TAS
 list has been corrected. Recorded here so the absence is not rediscovered as a gap later — if a
 text+image layout is ever wanted, it is a **new design**, to be agreed with the client, not a
 migration of something that exists.
+
+---
+
+## 12 · Pre-rendered pages publish visually blank without the reveal script
+
+**This is the dangerous class: it passes every gate green and looks broken to humans.**
+
+**What.** The live pages hide most content until JavaScript reveals it:
+
+```css
+.reveal-on-scroll { opacity: 0; transform: translateY(var(--reveal-distance)); }   /* index.html:359 */
+.reveal-on-scroll.is-visible { ... }
+```
+
+`initScrollReveal()` (`index.html:4310`) attaches an `IntersectionObserver` that adds `.is-visible`
+as each block scrolls into view. Without that script the elements are present in the DOM at
+`opacity: 0` — invisible.
+
+The section components emit `reveal-on-scroll` deliberately, to match the live markup: `hero`
+(`hero-content reveal-on-scroll reveal-left`, `hero-image reveal-on-scroll reveal-right`) and
+`text-block` (`section-title reveal-on-scroll`, `company-glass-card reveal-on-scroll reveal-delay-2`)
+do today, and more will as Phase 13 adds sections.
+
+**How it was found.** Rendering the hero to a standalone preview at P4-T3 produced a **completely
+blank teal gradient** — correct markup, correct CSS, nothing visible. Not a preview artefact: the
+same thing happens to any pre-rendered page served without the reveal script.
+
+**Why it is the dangerous kind.** Every automated gate would pass:
+- `test:sections` passes — the markup is correct.
+- `test:seo` (Phase 6) passes — `<h1>`, title, description, canonical, JSON-LD and the body text
+  are all in the HTML.
+- A crawler sees the full text, so **the SEO work is genuinely fine**.
+
+Only a human looking at the page sees that it is empty. A build can go green, ship, rank, and show
+customers a blank page. Automated checks cannot catch it because the text *is* there — it is the CSS
+plus a missing script that hides it.
+
+**Fixed in Phase 5, P5-T1 — `renderer/template.js`. Hard requirement, not a nicety.**
+`baseTemplate({ head, body, lang })` MUST include the scroll-reveal script (the `IntersectionObserver`
+that adds `.is-visible`) among its enhancement scripts. BUILD_TASKS P5-T1 step 3 already says the
+template carries "any small enhancement scripts"; this names the one that is load-bearing.
+
+Belt and braces, worth doing at the same time:
+- Ship a `<noscript>` rule that forces `.reveal-on-scroll { opacity: 1; transform: none }`, so a
+  visitor with JavaScript off sees the content rather than a blank page. The live site does not do
+  this today — pre-rendering makes it cheap and correct.
+- At Phase 9, do the visual diff against the baseline **with scripts enabled and again with them
+  disabled**. The second run is what would have caught this.
+
+---
+
+## 13 · Only one section is checked against its source markup
+
+**What.** `test:sections` gained a structural fidelity check at P4-T3: it parses the real block out
+of the real page, collects every tag name and class token, and requires the rendered section to
+contain them all — so a section cannot silently drop markup that no assertion happens to cover.
+It is currently declared for **`contact-cards` only**. The other nine print a NOTE every run:
+
+```
+NOTE  9 section(s) have no fidelity map yet:
+      page-header, hero, text-block, product-grid, product-detail, gallery,
+      related-products, cta-band, faq-accordion
+```
+
+**Why it matters.** This check exists because `contact-cards` dropped all fifteen `<i>` icons from
+the live markup and passed every other check — contract checks test the shape of a section, and
+hand-written HTML assertions only test what their author remembered. **The same fault could be
+sitting in any of the other nine and nothing would report it.** One is already suspected: `hero`'s
+CTA buttons contain `<i class="fab fa-whatsapp">` on the live page and the section does not emit it.
+
+**Where.** `scripts/test-sections.js`, the `FIDELITY` map. Adding a section means one entry: source
+page, selector, sample props, and an `allow` list for anything deliberately not emitted (with a
+reason, so a drop is waived consciously rather than silently).
+
+**Fixed in Phase 9 / 13**, as each section's page is migrated and its markup is being compared to the
+baseline anyway — that is the natural moment to write the map and act on what it flags. Doing all
+nine now would mean editing nine sections outside the task that owns them.
