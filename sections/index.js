@@ -5,16 +5,17 @@
  * "editor-only" variant of a section; if the two ever diverge, the preview
  * starts lying.
  *
- * Each section module (added in Phase 4) default-exports a React component and
- * named-exports a `config` describing its Puck fields:
+ * Each section module default-exports a React component and named-exports a
+ * `config` describing its Puck fields. Two shapes come out of this file:
  *
- *   import * as PageHeader from './PageHeader.jsx';
- *   export const registry = { 'page-header': PageHeader };
- *
- * Empty for now: Phase 1 only stands up the toolchain. Phase 4 fills this in.
+ *   registry  { type: wholeModule }   - the editor wants config AND component
+ *   default   { type: Component }     - the renderer only wants the component
  */
+import * as PageHeader from './PageHeader.jsx';
 
-export const registry = {};
+export const registry = {
+  'page-header': PageHeader
+};
 
 /* { type: Component } — the shape the renderer wants. */
 export default Object.fromEntries(
