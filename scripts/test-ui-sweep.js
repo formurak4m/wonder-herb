@@ -15,13 +15,8 @@ const API = 'http://localhost:' + PORT;
 const fs = require('fs');
 const path = require('path');
 const ROOT = path.join(__dirname, '..');
-function loadJsdom() {
-  try { return require('jsdom'); } catch (e) {}
-  return require(path.join(require('os').tmpdir(), 'claude',
-    'c--Users-DELL-G15-OneDrive-Desktop-wonderhub-wonder-herb',
-    'f8b7d956-d3e9-4d6f-b21a-60850f00a2f1', 'scratchpad', 'node_modules', 'jsdom'));
-}
-const { JSDOM, VirtualConsole } = loadJsdom();
+/* jsdom is a devDependency, so it never ships with the site. */
+const { JSDOM, VirtualConsole } = require('jsdom');
 const app = require('../server/index');
 const { connect, close, COLLECTIONS, AUTH_COLLECTIONS, SALES_COLLECTIONS } = require('../server/db');
 

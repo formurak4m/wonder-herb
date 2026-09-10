@@ -12,7 +12,12 @@ const DATA = path.join(__dirname, '..', 'data');
 
 const CSV_HEAD = ['SKU', 'Product', 'Price (HKD)', 'On hand', 'Reorder at',
                   'Status', 'Stock value (HKD)', 'Last updated'];
-const csvCell = v => '"' + String(v === undefined || v === null ? '' : v).replace(/"/g, '""') + '"';
+/* Quote only the cells that need it (RFC 4180), so a seed -> export round trip
+   reproduces the file byte for byte instead of re-quoting every cell. */
+const csvCell = v => {
+  const s = String(v === undefined || v === null ? '' : v);
+  return /["\r\n,]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+};
 
 function stripId(doc) {
   const { _id, pos, ...rest } = doc;
@@ -48,7 +53,8 @@ function buildInventoryCsv(products) {
     lines.push([
       p.sku || '', p.title || '', price.toFixed(2),
       n === null ? '' : n,
-      tracked ? (p.reorder === undefined ? 10 : p.reorder) : '',
+      // the reorder point is set per product; it does not depend on stock being tracked
+      p.reorder === undefined || p.reorder === null ? (tracked ? 10 : '') : p.reorder,
       p.status || '',
       n === null ? '' : (n * price).toFixed(2),
       p.stockUpdated || ''
