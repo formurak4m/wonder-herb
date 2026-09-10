@@ -193,30 +193,55 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 ### P4-T1 · Section component contract
 - **Goal:** a shape every section follows, usable by Puck and the renderer.
 - **Files:** `sections/<Name>.jsx`, `sections/index.js`.
+> ### Use the real class names. This is the easiest way to waste a day.
+>
+> A section must reuse the class names **already in the live stylesheet**, so the existing CSS
+> styles it with no new CSS at all. Do not invent a naming scheme, and in particular do not use
+> `wh-`prefixed names — **no such classes exist in this site**. A section built on invented
+> classes renders unstyled while passing every test, because the tests check markup, not paint.
+>
+> The method: find the block on the live page (`grep -n '<class you expect>' *.html`), copy its
+> markup, and keep the classes exactly. Take the **variants from the pages too** — the real
+> differences between pages are the variants; anything else is invention.
+>
+> Worked example, `sections/PageHeader.jsx` (built at P4-T1, use it as the reference):
+> markup taken from `產品介紹.html:1446`, which ten of the eighteen pages share. Real classes
+> `page-header` / `container` / `video-background`. Real variants `centered` (nine pages) and
+> `video` (`研究報告.html`, which has a background `<video>` in the header). `aria-labelledby`
+> is optional because `典型病例.html` omits it.
+
 - **Contract:** each file default-exports a React component and named-exports a `config`:
   ```jsx
-  // sections/PageHeader.jsx
+  // sections/PageHeader.jsx — abridged; see the file for the shipped version
   export const config = {
     label: 'Page header',
     fields: {                       // Puck field definitions
-      heading: { type: 'text' },
-      sub:     { type: 'textarea' },
-      variant: { type: 'select', options: [
-        { label: 'Centered', value: 'centered' },
-        { label: 'Left',     value: 'left' },
+      heading:   { type: 'text' },
+      sub:       { type: 'textarea' },
+      variant:   { type: 'select', options: [
+        { label: 'Centered',         value: 'centered' },
+        { label: 'Background video', value: 'video' },
       ]},
+      headingId: { type: 'text' },
     },
-    defaultProps: { heading: '', sub: '', variant: 'centered' },
+    // every field needs a default, or the editor starts with undefined props
+    defaultProps: { heading: '', sub: '', variant: 'centered', headingId: '' },
+    variants: ['centered', 'video'],
   };
-  export default function PageHeader({ heading, sub, variant = 'centered' }) {
+  export default function PageHeader({ heading, sub, variant = 'centered', headingId }) {
+    const id = headingId ? headingId : undefined;   // never render id=""
     return (
-      <header className={`wh-page-header wh-${variant}`}>
-        <h1>{heading}</h1>
-        {sub ? <p className="wh-sub">{sub}</p> : null}
-      </header>
+      <section className="page-header" aria-labelledby={id}>
+        <div className="container">
+          <h1 id={id}>{heading}</h1>
+          {sub ? <p>{sub}</p> : null}
+        </div>
+      </section>
     );
   }
   ```
+  Do not emit the live pages' `data-i18n` attributes: those exist so the browser can swap
+  languages after load, which pre-rendering replaces with plain per-language links.
   ```js
   // sections/index.js  — the single registry both sides import
   import * as PageHeader from './PageHeader.jsx';
@@ -231,8 +256,9 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
     Object.entries(registry).map(([k, m]) => [k, m.default])
   ); // { 'page-header': Component, ... } for the renderer
   ```
-- **Verify:** `npm run sections:build` succeeds and the registry lists every section.
+- **Verify:** `npm run sections:build` succeeds and the registry lists every section; `npm run test:sections` passes. That suite loops the whole registry, so a new section is checked by it the moment it is registered — contract shape, one-source-of-truth, renders on the server, and no editor-only attributes in the output. Add the exact-HTML assertions for the new section alongside.
 - **Gotcha:** components must be pure and must not use browser-only APIs at render time (no `window`, `document`) so they render on the server. Interactive bits (3D viewer, cart button) render a placeholder element that a tiny client script enhances after load.
+- **Gotcha:** React 19 writes some boolean attributes in camelCase (`autoPlay=""`, `playsInline=""`) rather than lowercasing them. HTML attribute names are case-insensitive so browsers parse them identically — assert case-insensitively rather than "fixing" it.
 
 ### P4-T2 · Build the core sections
 - **Goal:** cover the core pages (home, products, product-detail, contact).
