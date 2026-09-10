@@ -1,0 +1,3544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Wonder Herb · Content Admin (Demo)</title>
+<style>
+  :root{
+    --accent:#9b2e2e; --accent-dark:#7d2424; --accent-soft:#f6ebeb;
+    --bg:#f4f5f7; --panel:#ffffff; --ink:#1f2430; --muted:#6b7280;
+    --line:#e5e7eb; --ok:#127a4b; --info:#1d4ed8; --info-bg:#eff6ff;
+    --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+    --shadow-lg:0 10px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",-apple-system,system-ui,"PingFang HK","Microsoft JhengHei",sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  button{font:inherit;cursor:pointer;border:none;background:none}
+  input,select,textarea{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--line);
+       border-radius:8px;background:#fff;color:var(--ink)}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:8px;font-weight:600;font-size:.92rem;transition:.15s;text-decoration:none}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-dark)}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .btn-ghost:hover{background:#f9fafb}
+  .btn-danger{color:#b42318;background:#fff;border:1px solid #f3c9c4}
+  .btn-danger:hover{background:#fef3f2}
+  .btn-sm{padding:6px 12px;font-size:.84rem}
+
+  /* ---------- Login Modal ---------- */
+  #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#faf7f4,#eef0f3);z-index:100;padding:20px}
+  .login-card{background:#fff;border-radius:16px;box-shadow:var(--shadow-lg);
+    padding:40px 34px;max-width:400px;width:100%;text-align:center}
+  .login-logo{width:56px;height:56px;border-radius:14px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;margin:0 auto 18px;letter-spacing:.02em}
+  .login-card h1{font-size:1.3rem;margin-bottom:4px}
+  .login-card p{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+  .gh-btn{width:100%;justify-content:center;background:#1f2328;color:#fff;padding:12px;border-radius:9px}
+  .gh-btn:hover{background:#000}
+  .login-note{margin-top:16px;font-size:.78rem;color:var(--muted);line-height:1.4}
+  .login-field{text-align:left;margin-bottom:14px}
+  .login-field label{display:block;font-size:.8rem;font-weight:600;color:var(--ink);margin-bottom:5px}
+  .login-field input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;
+    font-size:.92rem;font-family:inherit}
+  .login-field input:focus{outline:none;border-color:var(--accent)}
+  .login-error{min-height:18px;font-size:.82rem;color:var(--accent);margin-bottom:10px}
+  .login-error.ok{color:var(--ok)}
+  .login-switch{margin-top:14px;font-size:.83rem;color:var(--accent);font-weight:600;
+    background:none;text-decoration:underline}
+  .login-switch:hover{color:var(--accent-dark)}
+
+  /* ---------- App Layout ---------- */
+  #app{display:none;min-height:100vh;grid-template-columns:240px 1fr;grid-template-rows:58px 1fr}
+  
+  /* Header Topbar */
+  .topbar{grid-column:1/3;display:flex;align-items:center;justify-content:space-between;
+    background:#fff;border-bottom:1px solid var(--line);padding:0 24px;height:58px;position:sticky;top:0;z-index:20}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem}
+  .brand .mark{width:32px;height:32px;border-radius:8px;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem}
+  .demo-badge{background:#fff4e5;color:#b25e00;border:1px solid #ffd8a8;font-size:.72rem;
+    font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.03em}
+  .topbar-right{display:flex;align-items:center;gap:14px;font-size:.88rem;color:var(--muted)}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+
+  /* Sidebar Navigation */
+  .sidebar{background:#fff;border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:16px}
+  .side-group{display:flex;flex-direction:column;gap:4px}
+  .side-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+    padding:4px 10px 6px;font-weight:700}
+  .nav-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;
+    border-radius:99px;color:var(--ink);font-size:.92rem;font-weight:500;transition:.15s}
+  .nav-item:hover{background:#f6f7f9}
+  .nav-item.active{background:var(--accent-soft);color:var(--accent);font-weight:700}
+  .nav-item .ic{width:20px;text-align:center;font-size:1.05rem}
+  .nav-badge{margin-left:auto;font-size:.7rem;background:#f1f3f5;color:var(--muted);padding:2px 8px;border-radius:999px;font-weight:600}
+  .nav-item.active .nav-badge{background:var(--accent);color:#fff}
+
+  /* Main Workspace */
+  .main{padding:26px 32px;overflow:auto;max-width:1200px}
+  .demo-banner{background:var(--accent-soft);border:1px solid #e8cfcf;color:#7d2424;
+    padding:12px 16px;border-radius:10px;font-size:.86rem;margin-bottom:20px;display:flex;gap:10px;align-items:center}
+
+  /* Impact Info Box */
+  .impact-box{background:var(--info-bg);border:1px solid #bfdbfe;color:#1e40af;
+    padding:12px 16px;border-radius:10px;font-size:.85rem;margin-bottom:22px;display:flex;gap:10px;align-items:center}
+  .impact-box code{background:#dbeafe;color:#1e3a8a;padding:2px 6px;border-radius:4px;font-weight:600;font-family:monospace}
+
+  .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+  .page-head h2{font-size:1.45rem;color:var(--ink);display:flex;align-items:center;gap:8px}
+  .page-head .sub{color:var(--muted);font-size:.88rem;margin-top:2px}
+  .toolbar{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap}
+  .search{max-width:320px;position:relative;flex:1}
+  .filter-select{max-width:200px}
+
+  /* Cards & Lists */
+  .card-grid{display:grid;gap:14px}
+  .data-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;
+    box-shadow:var(--shadow);display:flex;gap:16px;align-items:flex-start;transition:.15s}
+  .data-card:hover{border-color:#d1d5db;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+  .data-card .body{flex:1;min-width:0}
+  .data-card h3{font-size:1.05rem;margin-bottom:4px;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .badge{display:inline-block;background:var(--accent-soft);color:var(--accent);
+    font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px}
+  .badge-blue{background:#eff6ff;color:var(--info)}
+  .badge-green{background:#ecfdf5;color:var(--ok)}
+  .badge-gray{background:#f3f4f6;color:var(--muted)}
+  .data-card .summary{color:var(--muted);font-size:.88rem;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;
+    -webkit-box-orient:vertical;overflow:hidden}
+  .data-card .meta{font-size:.8rem;color:var(--muted);margin-top:8px;display:flex;gap:14px;flex-wrap:wrap}
+  .data-card .actions{display:flex;gap:8px;flex-shrink:0}
+  .idx{width:28px;height:28px;border-radius:8px;background:#f1f3f5;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;flex-shrink:0}
+
+  /* Editor Panel */
+  .editor-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    max-width:780px;overflow:hidden;margin-bottom:30px}
+  .editor-head{padding:18px 24px;border-bottom:1px solid var(--line);background:#fafbfc;display:flex;align-items:center;justify-content:space-between}
+  .editor-head h3{font-size:1.1rem;color:var(--ink)}
+  .lang-tabs{display:flex;gap:6px;padding:12px 24px 0;background:#f8fafc;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .lang-tab{padding:8px 14px;border-radius:8px 8px 0 0;font-size:.83rem;font-weight:600;color:var(--muted);border:1px solid transparent;border-bottom:none;background:transparent}
+  .lang-tab.active{background:#fff;color:var(--accent);border-color:var(--line);box-shadow:0 -2px 5px rgba(0,0,0,.02)}
+  .lang-tab.primary::after{content:"Primary";font-size:.62rem;background:var(--accent);color:#fff;padding:1px 5px;border-radius:4px;margin-left:6px;vertical-align:middle}
+  
+  .form{padding:24px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:.84rem;font-weight:600;margin-bottom:6px;color:var(--ink)}
+  .field .hint{font-size:.76rem;color:var(--muted);font-weight:400;margin-left:6px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .form-section{margin:28px 0 16px;padding-top:18px;border-top:1px solid var(--line)}
+  .form-section h4{font-size:.95rem;color:var(--ink)}
+  .form-section p{font-size:.78rem;color:var(--muted);margin-top:3px;line-height:1.5}
+  .repeater{display:flex;flex-direction:column;gap:12px;margin-bottom:10px}
+  .rep-row{border:1px solid var(--line);border-radius:10px;padding:14px 12px 12px;background:#fafbfc;
+    display:grid;gap:8px;position:relative}
+  .rep-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .rep-num{position:absolute;top:-9px;left:12px;background:var(--accent);color:#fff;
+    font-size:.68rem;font-weight:700;padding:1px 8px;border-radius:999px}
+  .rep-del{justify-self:end}
+  .rep-empty{font-size:.82rem;color:var(--muted);padding:10px 12px;border:1px dashed var(--line);
+    border-radius:10px;background:#fafbfc}
+  
+  .editor-foot{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;background:#fafbfc}
+  
+  /* Live Card Preview Box */
+  .preview-box{margin-top:12px;padding:14px 16px;background:#faf9f8;border:1px dashed var(--line);border-radius:10px;font-size:.86rem;color:#444}
+  .preview-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;margin-bottom:8px}
+
+  /* Homepage Section Cards */
+  .db-chip{display:inline-flex;align-items:center;gap:7px;font-size:.75rem;font-weight:700;
+    padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted)}
+  .db-chip .led{width:8px;height:8px;border-radius:50%;background:#cbd0d6}
+  .db-chip.live{background:#ecfdf5;border-color:#a7f3d0;color:var(--ok)}
+  .db-chip.live .led{background:var(--ok)}
+
+  /* ---------------- inventory ---------------- */
+  .inv-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+  .inv-kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+  .inv-kpi .n{font-size:1.5rem;font-weight:800;color:var(--ink);line-height:1.2}
+  .inv-kpi .lbl{font-size:.75rem;color:var(--muted);margin-top:3px;font-weight:600}
+  .inv-kpi.alert .n{color:#c2410c}
+  .inv-kpi.danger .n{color:#b42318}
+  .inv-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .inv-toolbar input{flex:1 1 240px}
+  .inv-toolbar select{flex:0 0 190px}
+  .inv-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;
+    box-shadow:var(--shadow);overflow-x:auto;margin-bottom:20px}
+  table.inv{width:100%;border-collapse:collapse;min-width:860px}
+  table.inv th{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+    text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);background:#fafbfc;white-space:nowrap}
+  table.inv td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:.87rem;vertical-align:middle}
+  table.inv tr:last-child td{border-bottom:none}
+  table.inv tbody tr:hover{background:#fafbfc}
+  table.inv .name{font-weight:600;color:var(--ink)}
+  table.inv .sku{font-size:.75rem;color:var(--muted);margin-top:2px}
+  table.inv .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  table.inv .qty{font-weight:800;font-size:1rem}
+  table.inv .qty.low{color:#c2410c}
+  table.inv .qty.out{color:#b42318}
+  table.inv input.reorder{width:74px;padding:5px 8px;text-align:right}
+  table.inv .acts{display:flex;gap:6px;justify-content:flex-end;white-space:nowrap}
+  .inv-empty{padding:34px 18px;text-align:center;color:var(--muted);font-size:.88rem}
+  /* A small modal grows with its form but never past the screen: the body
+     scrolls, the header and the buttons stay put. */
+  .modal-card.sm{max-width:460px;height:auto;max-height:calc(100vh - 40px)}
+  .modal-card.sm .modal-body{overflow-y:auto;min-height:0}
+  .modal-card.sm .editor-foot,.modal-card.sm .modal-head{flex-shrink:0}
+  .modal-card.user{max-width:560px}
+  .modal-card.sm .modal-body{background:#fff;padding:20px}
+  .mv-list{list-style:none}
+  .mv-list li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;
+    border-bottom:1px dashed var(--line);font-size:.85rem}
+  .mv-list li:last-child{border-bottom:none}
+  .mv-delta{flex:0 0 62px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+  .mv-delta.up{color:var(--ok)}
+  .mv-delta.down{color:#b42318}
+  .mv-body{flex:1 1 auto;min-width:0}
+  .mv-when{font-size:.74rem;color:var(--muted);margin-top:2px}
+  @media(max-width:1100px){.inv-kpis{grid-template-columns:repeat(2,1fr)}}
+
+  /* ---------------- dashboard ---------------- */
+  .dash-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:18px}
+  .stat-tile{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+    box-shadow:var(--shadow);text-align:left;width:100%;transition:border-color .15s,transform .15s}
+  .stat-tile:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .stat-tile .top{display:flex;align-items:center;justify-content:flex-end}
+  .stat-tile .n{font-size:1.9rem;font-weight:800;color:var(--ink);line-height:1.15;margin-top:8px}
+  .stat-tile .lbl{font-size:.83rem;font-weight:700;color:var(--ink);margin-top:1px}
+  .stat-tile .sub{font-size:.74rem;color:var(--muted);margin-top:7px;line-height:1.55}
+  .dash-cols{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:start}
+  .dash-card{background:#fff;border:1px solid var(--line);border-radius:12px;
+    box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
+  .dash-card h3{font-size:.92rem;padding:13px 18px;border-bottom:1px solid var(--line);
+    background:#fafbfc;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .dash-card .body{padding:14px 18px}
+  .dash-list{list-style:none}
+  .dash-list li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;
+    border-bottom:1px dashed var(--line);font-size:.85rem;line-height:1.55}
+  .dash-list li:last-child{border-bottom:none}
+  .dash-list .ic{flex:0 0 auto;width:18px;text-align:center}
+  .dash-list .dot{flex:0 0 auto;width:8px;height:8px;border-radius:50%;margin-top:7px;background:var(--muted)}
+  .dash-list .dot.ok{background:var(--ok)}
+  .dash-list .dot.warn{background:#c2410c}
+  .dash-list .dot.idle{background:#cbd0d6}
+  .dash-list .tag{flex:0 0 auto;font-size:.63rem;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);background:#f1f3f5;border-radius:4px;
+    padding:2px 6px;margin-top:2px;min-width:62px;text-align:center}
+  .dash-list .txt{flex:1 1 auto;min-width:0}
+  .dash-list .when{color:var(--muted);font-size:.74rem;margin-top:2px}
+  .dash-list .go{flex:0 0 auto;font-size:.74rem;font-weight:700;color:var(--accent);
+    background:none;border:none;padding:2px 4px}
+  .dash-list .go:hover{text-decoration:underline}
+  .pill{font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+  .pill-ok{background:#ecfdf5;color:var(--ok);border:1px solid #a7f3d0}
+  .pill-warn{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
+  .pill-info{background:var(--info-bg);color:var(--info);border:1px solid #bfdbfe}
+  .dash-empty{color:var(--muted);font-size:.85rem;padding:4px 0}
+  .dash-actions{display:flex;flex-wrap:wrap;gap:8px}
+  .bar{height:6px;border-radius:999px;background:#eef0f3;overflow:hidden;margin-top:5px}
+  .bar span{display:block;height:100%;background:var(--accent);border-radius:999px}
+  @media(max-width:1100px){.dash-grid{grid-template-columns:repeat(2,1fr)}.dash-cols{grid-template-columns:1fr}}
+  @media(max-width:640px){.dash-grid{grid-template-columns:1fr}}
+
+  .hp-section-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:var(--shadow);margin-bottom:20px}
+  .hp-section-card h3{font-size:1.1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--accent)}
+
+  /* Modal Popup (Site Preview) */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;display:flex;align-items:center;justify-content:center;padding:20px}
+  .modal-card{background:#fff;border-radius:16px;box-shadow:var(--shadow-lg);width:100%;max-width:960px;height:85vh;display:flex;flex-direction:column;overflow:hidden}
+  .modal-head{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:#fafbfc}
+  .modal-body{flex:1;background:#eef0f3;position:relative}
+  .modal-body iframe{width:100%;height:100%;border:none}
+
+  /* Toast Notification */
+  #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;padding:12px 22px;border-radius:10px;font-size:.9rem;font-weight:500;
+    opacity:0;pointer-events:none;transition:.25s;z-index:120;box-shadow:0 8px 24px rgba(0,0,0,.2);display:flex;align-items:center;gap:8px}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  #toast.ok{background:var(--ok)}
+  .hidden{display:none!important}
+
+  /* A module the account cannot open disappears; one it may only look at keeps
+     its screen but loses every button that would change something. */
+  body.no-cases #nav-cases, body.no-products #nav-products, body.no-inventory #nav-inventory,
+  body.no-faq #nav-faq, body.no-homepage #nav-homepage, body.no-users #nav-users,
+  body.no-export #exportBtns{display:none!important}
+  body.ro-cases #sec-cases .btn-primary, body.ro-cases #sec-cases .btn-danger,
+  body.ro-products #sec-products .btn-primary, body.ro-products #sec-products .btn-danger,
+  body.ro-faq #sec-faq .btn-primary, body.ro-faq #sec-faq .btn-danger,
+  body.ro-homepage #sec-homepage .btn-primary, body.ro-homepage #sec-homepage .btn-danger,
+  body.ro-inventory #sec-inventory .btn-primary, body.ro-inventory #sec-inventory .js-edit,
+  body.ro-inventory #invModal .btn-primary{display:none!important}
+  body.no-sales #nav-sales{display:none!important}
+  body.ro-sales #sec-sales .btn-primary, body.ro-sales #sec-sales .btn-danger,
+  body.ro-sales #saleModal .btn-primary, body.ro-sales #custModal .btn-primary{display:none!important}
+  .sale-lines{display:grid;grid-template-columns:1fr 110px 70px 110px 34px;gap:6px;align-items:center}
+  .sale-lines .head{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+  .sale-lines input,.sale-lines select{margin:0}
+  .sale-lines .amt{text-align:right;font-variant-numeric:tabular-nums;font-size:.9rem}
+  .sale-lines .x{padding:6px 8px}
+  .sale-total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;
+    border-top:1px solid var(--line);font-weight:700}
+  .sales-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+  .sales-toolbar select,.sales-toolbar input{width:auto}
+  .modal-card.wide{max-width:760px}
+  .price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 14px}
+  .price-grid label{font-size:.82rem;color:var(--muted)}
+
+  .perm-row{display:grid;grid-template-columns:150px repeat(3,1fr);gap:8px;align-items:center;
+    padding:9px 0;border-bottom:1px solid var(--line)}
+  .perm-row:last-child{border-bottom:none}
+  .perm-row .perm-name{font-weight:600;font-size:.88rem}
+  .perm-row label{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted);cursor:pointer}
+  .perm-row input{width:auto;margin:0}
+  .perm-summary{font-size:.78rem;color:var(--muted)}
+  .user-actions{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+  
+  @media(max-width:768px){
+    #app{grid-template-columns:1fr}
+    .sidebar{display:none}
+    .main{padding:18px 16px}
+    .form-row{grid-template-columns:1fr}
+    .rep-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN MODAL ============ -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-logo">WH</div>
+    <h1>Wonder Herb Admin</h1>
+    <p id="loginLead">Content &amp; Site Management Console</p>
+
+    <form id="loginForm" onsubmit="return doLogin(event)">
+      <div class="login-field hidden" id="loginNameField">
+        <label for="loginName">Your name</label>
+        <input id="loginName" type="text" autocomplete="name">
+      </div>
+      <div class="login-field">
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" type="email" autocomplete="username" placeholder="you@wonder-herb.com">
+      </div>
+      <div class="login-field">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" autocomplete="current-password">
+      </div>
+      <div class="login-error" id="loginError"></div>
+      <button class="btn btn-primary" id="loginSubmit" type="submit" style="width:100%">Sign in</button>
+    </form>
+
+    <button type="button" class="login-switch hidden" id="loginSwitch"
+            onclick="setLoginMode(!firstAdminMode)"></button>
+    <div class="login-note" id="loginNote">Checking the database...</div>
+    <button class="btn btn-ghost btn-sm hidden" id="demoBtn" style="margin-top:12px"
+            onclick="enterDemo()">Continue without signing in</button>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app">
+  <!-- Top Navigation Bar -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="mark">WH</span> Wonder Herb Admin 
+      <span class="demo-badge">DEMO MODE</span>
+    </div>
+    <div class="topbar-right">
+      <span class="db-chip" id="dbChip" title="Where the admin is reading and writing data">
+        <span class="led"></span><span id="dbChipText">Checking database...</span>
+      </span>
+      <span id="exportBtns">
+        <button class="btn btn-ghost btn-sm" onclick="exportAllDataPackage()" title="Download JSON files to save into data/ folder">Export JSON Data</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportAllCsvPackage()" title="Download every module as a CSV you can open in Excel">Export CSV Data</button>
+      </span>
+      <span id="whoami">Administrator</span>
+      <div class="avatar">A</div>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Log out</button>
+    </div>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="side-group">
+      <div class="side-label">Content Modules</div>
+      <button class="nav-item active" onclick="switchNav('dashboard')" id="nav-dashboard">
+        Dashboard
+      </button>
+      <button class="nav-item" onclick="switchNav('cases')" id="nav-cases">
+        Cases <span class="nav-badge" id="badge-cases">15</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('products')" id="nav-products">
+        Products <span class="nav-badge" id="badge-products">5</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('inventory')" id="nav-inventory">
+        Inventory <span class="nav-badge" id="badge-inventory">0</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('faq')" id="nav-faq">
+        FAQ <span class="nav-badge" id="badge-faq">5</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('homepage')" id="nav-homepage">
+        Homepage Text <span class="nav-badge">4 Sections</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('sales')" id="nav-sales">
+        Sales <span class="nav-badge" id="badge-sales">0</span>
+      </button>
+      <button class="nav-item" onclick="switchNav('users')" id="nav-users">
+        Users <span class="nav-badge" id="badge-users">0</span>
+      </button>
+    </div>
+
+    <div class="side-group" style="margin-top:auto">
+      <div class="side-label">Live Site</div>
+      <button class="nav-item" onclick="openSitePreview()">
+        View Site <span class="nav-badge" style="background:#eff6ff;color:var(--info)">Preview ↗</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Workspace -->
+  <main class="main">
+    <div class="impact-box hidden" id="viewOnlyNote" style="border-color:#fed7aa;background:#fff7ed">
+      <span><b>View only:</b> your account can read this section but not change it. Ask an administrator for editing rights.</span>
+    </div>
+
+    <div class="demo-banner">
+      <span><b>Interactive Front-End Demo:</b> You can add, edit, search, and delete content across all modules below. Changes update in real-time on this preview screen.</span>
+    </div>
+
+    <!-- ==================== 0. DASHBOARD ==================== -->
+    <section id="sec-dashboard">
+      <div class="page-head">
+        <div>
+          <h2>Dashboard</h2>
+          <div class="sub" id="dashSub">Everything on the site at a glance.</div>
+        </div>
+        <button class="btn btn-ghost" onclick="renderDashboard()">↻ Refresh</button>
+      </div>
+
+      <div class="dash-grid" id="dashTiles"></div>
+
+      <div class="dash-cols">
+        <div>
+          <div class="dash-card">
+            <h3>Needs attention <span class="pill pill-ok" id="attnPill">All clear</span></h3>
+            <div class="body"><ul class="dash-list" id="dashAttention"></ul></div>
+          </div>
+          <div class="dash-card">
+            <h3>Recent changes <span class="pill pill-info" id="actPill">0</span></h3>
+            <div class="body"><ul class="dash-list" id="dashActivity"></ul></div>
+          </div>
+        </div>
+        <div>
+          <div class="dash-card">
+            <h3>Publish status <span class="pill pill-info" id="pubPill">checking…</span></h3>
+            <div class="body">
+              <ul class="dash-list" id="dashPublish"></ul>
+              <p class="dash-empty" style="margin-top:10px">Edits live in this browser until the JSON files
+                in the repository are updated. Use <b>Export JSON Data</b>, then commit the files.
+                <b>Export CSV Data</b> gives you the same content as spreadsheets.</p>
+            </div>
+          </div>
+          <div class="dash-card">
+            <h3>Quick actions</h3>
+            <div class="body">
+              <div class="dash-actions">
+                <button class="btn btn-primary btn-sm" onclick="switchNav('cases'); openCaseEditor(null)">+ New case</button>
+                <button class="btn btn-primary btn-sm" onclick="switchNav('products'); openProdEditor(null)">+ New product</button>
+                <button class="btn btn-primary btn-sm" onclick="switchNav('faq'); openFaqEditor(null)">+ New FAQ</button>
+                <button class="btn btn-ghost btn-sm" onclick="exportAllDataPackage()">Export JSON</button>
+                <button class="btn btn-ghost btn-sm" onclick="openSitePreview()">View site</button>
+              </div>
+            </div>
+          </div>
+          <div class="dash-card">
+            <h3>Case translations <span class="pill pill-info" id="langPill"></span></h3>
+            <div class="body"><ul class="dash-list" id="dashLangs"></ul></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 1. CASES MODULE ==================== -->
+    <section id="sec-cases" class="hidden">
+      <div class="impact-box">
+        <span><b>What this changes:</b> Edits patient recovery stories on the <b>Clinical Cases Page</b> (<code>典型病例.html</code>) and updates structured schema for search engines.</span>
+      </div>
+
+      <!-- Cases List View -->
+      <div id="cases-listView">
+        <div class="page-head">
+          <div>
+            <h2>Patient Cases</h2>
+            <div class="sub">Manage recovery testimonials & clinical studies · <span id="casesCount">0</span> total</div>
+          </div>
+          <button class="btn btn-primary" onclick="openCaseEditor(null)">＋ Add New Case</button>
+        </div>
+        <div class="toolbar">
+          <div class="search">
+            <input id="casesSearch" placeholder="Search cases by patient name, condition..." oninput="renderCasesList()">
+          </div>
+        </div>
+        <div class="card-grid" id="casesList"></div>
+      </div>
+
+      <!-- Cases Editor View -->
+      <div id="cases-editView" class="hidden">
+        <div class="page-head">
+          <div>
+            <h2 id="casesEditTitle">Edit Case</h2>
+            <div class="sub">Fill in the primary tab; extra language tabs are optional.</div>
+          </div>
+          <button class="btn btn-ghost" onclick="closeCaseEditor()">← Back to Cases List</button>
+        </div>
+        <div class="editor-card">
+          <div class="editor-head">
+            <h3>Case Details Editor</h3>
+          </div>
+          <div class="lang-tabs" id="casesLangTabs"></div>
+          <div class="form">
+            <div class="form-row">
+              <div class="field">
+                <label>Patient Title <span class="hint">e.g. Ms. Mak (77 years old)</span></label>
+                <input id="f_case_title" placeholder="Patient Name / Age">
+              </div>
+              <div class="field">
+                <label>Subtitle / Condition <span class="hint">e.g. Anal Malignant Tumor</span></label>
+                <input id="f_case_subtitle" placeholder="Medical Condition">
+              </div>
+            </div>
+            <div class="field">
+              <label>Summary <span class="hint">Short summary shown on the card grid</span></label>
+              <textarea id="f_case_summary" rows="3" placeholder="Brief summary of condition & progress..."></textarea>
+            </div>
+            <div class="field">
+              <label>Full Content <span class="hint">Detailed recovery story (supports HTML tags)</span></label>
+              <textarea id="f_case_content" rows="6" oninput="updateCasePreview()" placeholder="Full clinical history..."></textarea>
+              <div class="preview-box">
+                <div class="preview-title">Live Website Card Preview</div>
+                <div id="casePreviewContent"></div>
+              </div>
+            </div>
+          </div>
+          <div class="editor-foot">
+            <button class="btn btn-ghost" onclick="closeCaseEditor()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveCase()">Save Case</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== 2. PRODUCTS MODULE ==================== -->
+    <section id="sec-products" class="hidden">
+      <div class="impact-box">
+        <span><b>What this changes:</b> Edits prices, stock availability, descriptions, and 3D GLB model links across product pages (<code>產品_*.html</code>) and the homepage product showcase grid (<code>index.html</code>).</span>
+      </div>
+
+      <!-- Products List View -->
+      <div id="prod-listView">
+        <div class="page-head">
+          <div>
+            <h2>Product Catalog</h2>
+            <div class="sub">Manage product listings, pricing, and 3D models · <span id="prodCount">0</span> total</div>
+          </div>
+          <button class="btn btn-primary" onclick="openProdEditor(null)">＋ Add New Product</button>
+        </div>
+        <div class="toolbar">
+          <div class="search">
+            <input id="prodSearch" placeholder="Search products by name, SKU..." oninput="renderProdList()">
+          </div>
+          <select id="prodFilter" class="filter-select" onchange="renderProdList()">
+            <option value="all">All Categories</option>
+            <option value="yunzhi">Yunzhi / PSP Series</option>
+            <option value="t3">T3 / Formula Series</option>
+            <option value="special">Specialized Formulations</option>
+          </select>
+        </div>
+        <div class="card-grid" id="prodList"></div>
+      </div>
+
+      <!-- Products Editor View -->
+      <div id="prod-editView" class="hidden">
+        <div class="page-head">
+          <div>
+            <h2 id="prodEditTitle">Edit Product</h2>
+            <div class="sub">Update pricing, inventory status, and specifications.</div>
+          </div>
+          <button class="btn btn-ghost" onclick="closeProdEditor()">← Back to Catalog</button>
+        </div>
+        <div class="editor-card">
+          <div class="editor-head">
+            <h3>Product Information Editor</h3>
+          </div>
+          <div class="lang-tabs" id="prodLangTabs"></div>
+          <div class="form">
+            <div class="form-row">
+              <div class="field">
+                <label>Product Name <span class="hint">e.g. Yunzhi PSP Essence (500s)</span></label>
+                <input id="f_prod_title" placeholder="Product Title">
+              </div>
+              <div class="field">
+                <label>SKU / Product Code <span class="hint">e.g. WH-PSP-500</span></label>
+                <input id="f_prod_sku" placeholder="SKU Code">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Price (HKD) <span class="hint">e.g. 1280.00</span></label>
+                <input id="f_prod_price" placeholder="HK$ Price">
+              </div>
+              <div class="field">
+                <label>Stock Status</label>
+                <select id="f_prod_status">
+                  <option value="In Stock">In Stock</option>
+                  <option value="Pre-order">Pre-order</option>
+                  <option value="Out of Stock">Out of Stock</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Badges / Certifications <span class="hint">Comma separated (e.g. GMP Certified, >90% Active)</span></label>
+              <input id="f_prod_badges" placeholder="GMP Certified, Dual Tested">
+            </div>
+            <div class="field">
+              <label>3D Model File (.glb) <span class="hint">e.g. PT3.glb or 雲芝糖肽精華 (PSP).glb</span></label>
+              <input id="f_prod_model" placeholder="Model file name">
+            </div>
+            <div class="field">
+              <label>Product Description <span class="hint">Detailed product benefits</span></label>
+              <textarea id="f_prod_desc" rows="4" placeholder="Product details and benefits..."></textarea>
+            </div>
+
+            <div class="form-section">
+              <h4>Product pictures</h4>
+              <p>ALT text describes the picture for screen readers and search engines. The first picture is the one shown on the catalogue and at the top of the product page.</p>
+            </div>
+            <div class="field">
+              <div class="repeater" id="rep_images"></div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addRepeaterRow('images')">+ Add picture</button>
+            </div>
+
+            <div class="form-section">
+              <h4>Background</h4>
+              <p>Appears further down the product page. Leave any box empty and that section is simply not shown.</p>
+            </div>
+            <div class="field">
+              <label>Definition / Terminology <span class="hint">Explain the terms a first-time reader will not know</span></label>
+              <textarea id="f_prod_definition" rows="3" placeholder="e.g. PSP (polysaccharide-peptide) is the active fraction extracted from..."></textarea>
+            </div>
+            <div class="field">
+              <label>Product story <span class="hint">How it came about, who makes it</span></label>
+              <textarea id="f_prod_story" rows="4" placeholder="The story behind this product..."></textarea>
+            </div>
+            <div class="field">
+              <label>Partners <span class="hint">e.g. 2 professors in HKU, Queensland</span></label>
+              <textarea id="f_prod_partners" rows="2" placeholder="Research and manufacturing partners, one per line..."></textarea>
+            </div>
+
+            <div class="form-section">
+              <h4>Testimony</h4>
+              <p>Who said it and when — both are shown with the quote.</p>
+            </div>
+            <div class="field">
+              <div class="repeater" id="rep_testimonies"></div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addRepeaterRow('testimonies')">+ Add testimony</button>
+            </div>
+
+            <div class="form-section">
+              <h4>Research &amp; articles</h4>
+              <p>Links only. Each becomes a clickable reference on the product page.</p>
+            </div>
+            <div class="field">
+              <label>Researcher paper (link) <span class="hint">e.g. a PubMed or journal URL</span></label>
+              <div class="repeater" id="rep_papers"></div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addRepeaterRow('papers')">+ Add paper</button>
+            </div>
+            <div class="field">
+              <label>Articles (link) <span class="hint">press coverage, WeChat posts, blog articles</span></label>
+              <div class="repeater" id="rep_articles"></div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addRepeaterRow('articles')">+ Add article</button>
+            </div>
+          </div>
+          <div class="editor-foot">
+            <button class="btn btn-ghost" onclick="closeProdEditor()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveProd()">Save Product</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== 2.5 INVENTORY MODULE ==================== -->
+    <section id="sec-inventory" class="hidden">
+      <div class="impact-box">
+        <span><b>What this changes:</b> Stock levels are stored with each product, so a product
+        that reaches <b>0 on hand</b> is automatically marked <b>Out of Stock</b> everywhere on the
+        site — the catalogue, the product page and the cart.<br>
+        Stock is stored in <code>data/inventory.csv</code>, which both this screen and the
+        website read. To publish a stock count: <b>Export CSV</b>, save the file over
+        <code>data/inventory.csv</code>, and commit it.</span>
+      </div>
+
+      <div class="page-head">
+        <div>
+          <h2>Inventory</h2>
+          <div class="sub">Stock on hand, reorder levels and every stock movement</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input type="file" id="invCsvFile" accept=".csv,text/csv" class="hidden"
+                 onchange="importInventoryCsv(this)">
+          <button class="btn btn-ghost" onclick="document.getElementById('invCsvFile').click()">Import CSV</button>
+          <button class="btn btn-ghost" onclick="downloadInventoryCsv()">Export CSV</button>
+          <button class="btn btn-ghost" onclick="downloadInventoryReport()" title="Excel report: SKU, product, retail price and bottles on hand">Download report</button>
+          <button class="btn btn-primary" onclick="switchNav('products')">Manage products</button>
+        </div>
+      </div>
+
+      <div class="inv-kpis" id="invKpis"></div>
+
+      <div class="inv-toolbar">
+        <input id="invSearch" placeholder="Search by product name or SKU..." oninput="renderInventory()">
+        <select id="invFilter" onchange="renderInventory()">
+          <option value="all">All products</option>
+          <option value="ok">In stock</option>
+          <option value="low">Low stock only</option>
+          <option value="out">Out of stock only</option>
+          <option value="untracked">Not tracked yet</option>
+        </select>
+        <select id="invSort" onchange="renderInventory()">
+          <option value="stock">Sort: lowest stock first</option>
+          <option value="name">Sort: product name</option>
+          <option value="value">Sort: highest stock value</option>
+        </select>
+      </div>
+
+      <div class="inv-wrap">
+        <table class="inv">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th class="num">Price</th>
+              <th class="num">On hand</th>
+              <th class="num">Reorder at</th>
+              <th>Status</th>
+              <th class="num">Stock value</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="invBody"></tbody>
+        </table>
+        <div class="inv-empty hidden" id="invEmpty">No products match this filter.</div>
+      </div>
+
+      <div class="dash-card">
+        <h3>Stock movements <span class="pill pill-info" id="mvPill">0</span></h3>
+        <div class="body">
+          <ul class="mv-list" id="invMovements"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. FAQ MODULE ==================== -->
+    <section id="sec-faq" class="hidden">
+      <div class="impact-box">
+        <span><b>What this changes:</b> Edits question & answer accordions on the <b>FAQ Page</b> (<code>常見問題.html</code>) and JSON-LD schema for Google Rich Snippets.</span>
+      </div>
+
+      <!-- FAQ List View -->
+      <div id="faq-listView">
+        <div class="page-head">
+          <div>
+            <h2>FAQ Management</h2>
+            <div class="sub">Manage customer questions & answers · <span id="faqCount">0</span> total</div>
+          </div>
+          <button class="btn btn-primary" onclick="openFaqEditor(null)">＋ Add New FAQ</button>
+        </div>
+        <div class="toolbar">
+          <div class="search">
+            <input id="faqSearch" placeholder="Search FAQ questions or keywords..." oninput="renderFaqList()">
+          </div>
+          <select id="faqFilter" class="filter-select" onchange="renderFaqList()">
+            <option value="all">All Categories</option>
+            <option value="General">General</option>
+            <option value="Usage & Dosage">Usage & Dosage</option>
+            <option value="Safety & Testing">Safety & Testing</option>
+            <option value="Purchasing">Purchasing & Delivery</option>
+          </select>
+        </div>
+        <div class="card-grid" id="faqList"></div>
+      </div>
+
+      <!-- FAQ Editor View -->
+      <div id="faq-editView" class="hidden">
+        <div class="page-head">
+          <div>
+            <h2 id="faqEditTitle">Edit FAQ Entry</h2>
+            <div class="sub">Update question title and answer content.</div>
+          </div>
+          <button class="btn btn-ghost" onclick="closeFaqEditor()">← Back to FAQ List</button>
+        </div>
+        <div class="editor-card">
+          <div class="editor-head">
+            <h3>FAQ Entry Editor</h3>
+          </div>
+          <div class="form">
+            <div class="form-row">
+              <div class="field">
+                <label>Category</label>
+                <select id="f_faq_cat">
+                  <option value="General">General</option>
+                  <option value="Usage & Dosage">Usage & Dosage</option>
+                  <option value="Safety & Testing">Safety & Testing</option>
+                  <option value="Purchasing">Purchasing & Delivery</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Question Title</label>
+                <input id="f_faq_q" placeholder="e.g. What is Yunzhi Polysaccharopeptide (PSP)?">
+              </div>
+            </div>
+            <div class="field">
+              <label>Detailed Answer <span class="hint">Answer text shown inside expandable accordion</span></label>
+              <textarea id="f_faq_a" rows="5" placeholder="Provide a detailed, clear explanation..."></textarea>
+            </div>
+          </div>
+          <div class="editor-foot">
+            <button class="btn btn-ghost" onclick="closeFaqEditor()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveFaq()">Save FAQ</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==================== 4. HOMEPAGE TEXT MODULE ==================== -->
+    <section id="sec-homepage" class="hidden">
+      <div class="impact-box">
+        <span><b>What this changes:</b> Edits hero headline titles, notice banners, key highlight stats, and footer hotline details on the <b>Homepage</b> (<code>index.html</code>).</span>
+      </div>
+
+      <div class="page-head">
+        <div>
+          <h2>Homepage Text Controls</h2>
+          <div class="sub">Configure top announcement banner, hero section text, and customer hotline</div>
+        </div>
+        <button class="btn btn-primary" onclick="saveHomepageText()">Save Homepage Changes</button>
+      </div>
+
+      <!-- Section 1: Top Announcement Banner -->
+      <div class="hp-section-card">
+        <h3>Top Announcement Notice Bar</h3>
+        <div class="form-row">
+          <div class="field">
+            <label>Notice Badge Text <span class="hint">e.g. Special Notice</span></label>
+            <input id="hp_notice_badge" value="SPECIAL ANNOUNCEMENT">
+          </div>
+          <div class="field">
+            <label>Notice Message Content</label>
+            <input id="hp_notice_msg" value="Wonder Herb official website upgraded with multi-lingual support & fast delivery!">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Main Hero Header -->
+      <div class="hp-section-card">
+        <h3>Main Hero Banner Text</h3>
+        <div class="field">
+          <label>Hero Headline Title (HTML Supported)</label>
+          <input id="hp_hero_title" value="Pioneering Health Solutions with Premium Herbal Science">
+        </div>
+        <div class="field">
+          <label>Hero Subtitle / Description</label>
+          <textarea id="hp_hero_sub" rows="3">Discover clinical-grade Yunzhi Polysaccharopeptide (PSP) extracts and T3 formulas tested by international standard labs.</textarea>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Primary CTA Button Text</label>
+            <input id="hp_cta_1" value="Explore Products">
+          </div>
+          <div class="field">
+            <label>Secondary CTA Button Text</label>
+            <input id="hp_cta_2" value="Clinical Cases">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Key Statistics Cards -->
+      <div class="hp-section-card">
+        <h3>Key Highlight Stats</h3>
+        <div class="form-row">
+          <div class="field">
+            <label>Stat 1 Title & Value</label>
+            <input id="hp_stat_1" value=">90% Active Polysaccharopeptides">
+          </div>
+          <div class="field">
+            <label>Stat 2 Title & Value</label>
+            <input id="hp_stat_2" value="1.8x National Standard Purity">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Contact Hotline Info -->
+      <div class="hp-section-card">
+        <h3>Contact Hotline & Customer Service</h3>
+        <div class="form-row">
+          <div class="field">
+            <label>Hotline Telephone</label>
+            <input id="hp_contact_phone" value="+852 9331 8571">
+          </div>
+          <div class="field">
+            <label>Customer Service Email</label>
+            <input id="hp_contact_email" value="info@wonder-herb.com">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 5. USERS ==================== -->
+    <section id="sec-users" class="hidden">
+      <div class="impact-box">
+        <span><b>What this shows:</b> Accounts registered on the site and in this console. Passwords are stored only as salted hashes and are never shown here or sent to the browser.</span>
+      </div>
+
+      <div class="page-head">
+        <div>
+          <h2>Users</h2>
+          <div class="sub" id="usersSub">Everyone with an account.</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" onclick="renderUsers()">Refresh</button>
+          <button class="btn btn-primary" onclick="openUserEditor(null)">+ Add user</button>
+        </div>
+      </div>
+
+      <div class="inv-wrap">
+        <table class="inv">
+          <thead>
+            <tr><th>Name</th><th>Email</th><th>Type</th><th>Can do</th><th>Registered</th>
+                <th>Last sign-in</th><th></th></tr>
+          </thead>
+          <tbody id="usersBody">
+            <tr><td colspan="7" style="color:var(--muted)">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==================== 6. SALES ==================== -->
+    <section id="sec-sales" class="hidden">
+      <div class="impact-box">
+        <span><b>What this is:</b> the monthly sales book. Enter each invoice here - customer, then price and quantity per product - and the yearly Excel workbook is generated from it, in the same layout as the one kept by hand. A sale lowers the shelf count of any product that Inventory is tracking. Invoices are voided, never deleted.</span>
+      </div>
+
+      <div class="page-head">
+        <div>
+          <h2>Sales</h2>
+          <div class="sub" id="salesSub">Invoices, customers and the sales workbook</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-ghost" onclick="downloadSalesReport(true)" title="This month only, one sheet">Download month</button>
+          <button class="btn btn-ghost" onclick="downloadSalesReport(false)" title="All twelve months, Stock, Monthly Report and customer prices">Download year</button>
+          <button class="btn btn-primary" onclick="openSaleEditor(null)">+ New invoice</button>
+        </div>
+      </div>
+
+      <div class="sales-toolbar">
+        <select id="salesMonth" onchange="loadSales()"></select>
+        <input id="salesYear" type="number" min="2000" max="2100" style="width:96px" onchange="loadSales()">
+        <input id="salesSearch" placeholder="Search invoice no., customer or phone..." oninput="renderSales()" style="flex:1;min-width:220px">
+        <label style="font-size:.85rem;color:var(--muted);display:flex;align-items:center;gap:6px">
+          <input type="checkbox" id="salesShowVoid" onchange="renderSales()" style="width:auto;margin:0"> show voided
+        </label>
+      </div>
+
+      <div class="inv-kpis" id="salesKpis"></div>
+
+      <div class="inv-wrap">
+        <table class="inv">
+          <thead>
+            <tr><th>Invoice</th><th>Date</th><th>Customer</th><th>Products</th><th>Payment</th>
+                <th class="num">Total</th><th>Status</th><th></th></tr>
+          </thead>
+          <tbody id="salesBody"><tr><td colspan="8" style="color:var(--muted)">Loading...</td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="dash-card" style="margin-top:22px">
+        <h3><span>Customers &amp; prices <span class="pill pill-info" id="custPill">0</span></span>
+          <button class="btn btn-primary btn-sm" onclick="openCustomerEditor(null)">+ Add customer</button></h3>
+        <div class="body" style="padding-bottom:0;color:var(--muted);font-size:.85rem">Each customer's own price per product; it pre-fills their invoices. A name typed on an invoice is added here automatically.</div>
+        <div class="inv-wrap" style="border:none;border-radius:0;box-shadow:none">
+          <table class="inv">
+            <thead><tr id="custHead"><th>Name</th><th>Phone</th><th></th></tr></thead>
+            <tbody id="custBody"><tr><td colspan="3" style="color:var(--muted)">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ INVOICE EDITOR ============ -->
+<div id="saleModal" class="modal-overlay hidden">
+  <div class="modal-card sm wide">
+    <div class="modal-head">
+      <div style="font-weight:700" id="saleModalTitle">New invoice</div>
+      <button class="btn btn-ghost btn-sm" onclick="closeSaleEditor()">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="field"><label>Invoice no.</label><input id="sale_number" type="number" min="1" step="1"></div>
+        <div class="field"><label>Date</label><input id="sale_date" type="date"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Customer <span class="hint">pick from the list or type a new name</span></label>
+          <input id="sale_customer" list="custList" autocomplete="off" oninput="saleCustomerPicked()">
+          <datalist id="custList"></datalist></div>
+        <div class="field"><label>Phone</label><input id="sale_phone"></div>
+      </div>
+      <div class="field">
+        <label>Products</label>
+        <div class="sale-lines" id="saleLines"></div>
+        <button type="button" class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addSaleLine()">+ Add product</button>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Payment</label>
+          <select id="sale_payment"><option value="">--</option><option>Cash</option><option>Cheque</option><option>Credit Card</option></select></div>
+        <div class="field"><label>Status</label>
+          <select id="sale_status"><option value="paid">Paid</option><option value="unpaid">Unpaid (未付)</option></select></div>
+      </div>
+      <div class="field"><label>Remarks</label><input id="sale_remarks" placeholder="e.g. 網上訂購, 順豐送貨"></div>
+      <div class="sale-total"><span>Total</span><span id="saleTotal">HK$0</span></div>
+      <div class="login-error" id="saleError"></div>
+    </div>
+    <div class="editor-foot">
+      <button class="btn btn-ghost" onclick="closeSaleEditor()">Cancel</button>
+      <button class="btn btn-primary" id="saleSaveBtn" onclick="saveSale()">Save invoice</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CUSTOMER EDITOR ============ -->
+<div id="custModal" class="modal-overlay hidden">
+  <div class="modal-card sm">
+    <div class="modal-head">
+      <div style="font-weight:700" id="custModalTitle">Add customer</div>
+      <button class="btn btn-ghost btn-sm" onclick="closeCustomerEditor()">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Name</label><input id="cust_name"></div>
+      <div class="field"><label>Phone</label><input id="cust_phone"></div>
+      <div class="field"><label>Their prices <span class="hint">leave blank to use the list price</span></label>
+        <div class="price-grid" id="custPrices"></div></div>
+      <div class="field"><label>Notes</label><input id="cust_notes"></div>
+      <div class="login-error" id="custError"></div>
+    </div>
+    <div class="editor-foot">
+      <button class="btn btn-ghost" onclick="closeCustomerEditor()">Cancel</button>
+      <button class="btn btn-primary" id="custSaveBtn" onclick="saveCustomer()">Save customer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ USER EDITOR ============ -->
+<div id="userModal" class="modal-overlay hidden">
+  <div class="modal-card sm user">
+    <div class="modal-head">
+      <div style="font-weight:700" id="userModalTitle">Add user</div>
+      <button class="btn btn-ghost btn-sm" onclick="closeUserEditor()">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Name</label>
+        <input id="user_name" placeholder="e.g. Wing Lau">
+      </div>
+      <div class="field">
+        <label>Email <span class="hint">this is what they sign in with</span></label>
+        <input id="user_email" type="email" placeholder="name@wonder-herb.com">
+      </div>
+      <div class="field" id="userPasswordField">
+        <label>Password <span class="hint">you choose it and pass it on; they can change it later</span></label>
+        <input id="user_password" type="text" autocomplete="off" placeholder="at least 8 characters">
+      </div>
+      <div class="field">
+        <label>Account type</label>
+        <select id="user_role" onchange="renderPermGrid()">
+          <option value="customer">Member - website only, no console</option>
+          <option value="staff">Staff - only what you tick below</option>
+          <option value="admin">Administrator - everything, including users</option>
+        </select>
+      </div>
+      <div class="field" id="userPermsField">
+        <label>What this person may do</label>
+        <div id="userPerms"></div>
+      </div>
+      <div class="login-error" id="userError"></div>
+    </div>
+    <div class="editor-foot">
+      <button class="btn btn-ghost" onclick="closeUserEditor()">Cancel</button>
+      <button class="btn btn-primary" id="userSaveBtn" onclick="saveUser()">Save user</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STOCK ADJUSTMENT MODAL ============ -->
+<div id="invModal" class="modal-overlay hidden">
+  <div class="modal-card sm">
+    <div class="modal-head">
+      <div style="font-weight:700" id="invModalTitle">Adjust stock</div>
+      <button class="btn btn-ghost btn-sm" onclick="closeInvAdjust()">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Movement type</label>
+        <select id="inv_type" onchange="updateInvPreview()">
+          <option value="receive">Received new stock (+)</option>
+          <option value="sale">Sold / shipped (-)</option>
+          <option value="damage">Damaged or expired (-)</option>
+          <option value="correction">Stock count correction (set exact figure)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label id="inv_qty_label">Quantity</label>
+        <input id="inv_qty" type="number" min="0" step="1" value="1" oninput="updateInvPreview()">
+      </div>
+      <div class="field">
+        <label>Note <span class="hint">optional - e.g. supplier, invoice number</span></label>
+        <input id="inv_note" placeholder="e.g. Received from Canadian GMP facility">
+      </div>
+      <div class="impact-box" id="invPreview" style="margin-bottom:0"><span></span></div>
+    </div>
+    <div class="editor-foot">
+      <button class="btn btn-ghost" onclick="closeInvAdjust()">Cancel</button>
+      <button class="btn btn-primary" onclick="applyInvAdjust()">Apply movement</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SITE PREVIEW MODAL ============ -->
+<div id="siteModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div style="font-weight:700;display:flex;align-items:center;gap:8px">
+        <span>Live Site Preview</span>
+        <span class="badge badge-blue">index.html</span>
+      </div>
+      <div style="display:flex;gap:10px">
+        <a href="../index.html" target="_blank" class="btn btn-ghost btn-sm">Open in New Tab ↗</a>
+        <button class="btn btn-ghost btn-sm" onclick="closeSitePreview()">Close</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <iframe src="../index.html"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOAST NOTIFICATION ============ -->
+<div id="toast"></div>
+
+<script>
+// ---------- GLOBAL DATA STATE ----------
+const LANGS = [
+  {code:'en', label:'English', primary:true},
+  {code:'zh', label:'Chinese (Traditional)'},
+  {code:'de', label:'German'},
+  {code:'es', label:'Spanish'},
+  {code:'fr', label:'French'},
+  {code:'ja', label:'Japanese'},
+  {code:'ru', label:'Russian'},
+];
+
+let activeNav = 'dashboard';
+
+// 1. Cases Data
+let casesData = [];
+let editingCaseIdx = null;
+let activeCaseLang = 'en';
+
+const FALLBACK_CASES = [
+  {
+    en:{title:"Ms. Mak (77 years old)",subtitle:"Anal Malignant Tumor",summary:"Took Yunzhi + T3 daily from day 1 of chemotherapy. Experiencing minimal side-effects, doctors amazed by her tolerance.",content:"<p>Diagnosed in 2025 with anal malignant tumor spreading to lymph nodes. Underwent 30 sessions of radiotherapy & chemotherapy. Started taking Yunzhi + T3 3 times daily from day 1.</p>"},
+    zh:{title:"麥女士（77歲）",subtitle:"肛門惡性腫瘤",summary:"化療首日起每日服用雲芝+T3，第22天僅輕微不適，醫生驚嘆其耐受度勝過40歲病人。",content:"<p>2025年體檢發現肛門惡性腫瘤並擴散至淋巴，接受30次根治性電療化療。</p><p>由化療首日開始每日服用3次雲芝+T3。</p>"}
+  },
+  {
+    en:{title:"Ms. Chan (55 years old)",subtitle:"Peritoneal Malignant Tumor",summary:"Took Yunzhi + T3 after surgical resection. Regular CT follow-ups show all normal indicators.",content:"<p>Diagnosed with peritoneal tumor in 2023. After surgical resection, started regimen of Yunzhi + T3. Currently maintaining consolidation dosage with clear CT scans.</p>"},
+    zh:{title:"陳小姐（55歲）",subtitle:"腹膜惡性腫瘤",summary:"手術切除後服用雲芝+T3，CT追蹤一切正常，現維持鞏固劑量。",content:"<p>2023年確診腹膜惡性腫瘤，手術切除後開始服用雲芝+T3。</p>"}
+  },
+  {
+    en:{title:"Mr. Peter Hall (74 years old)",subtitle:"Prostate Condition",summary:"PSA indicators dropped consistently after starting Yunzhi PSP; biopsy returned normal results.",content:"<p>After taking Yunzhi Polysaccharopeptide (PSP), PSA indicators continuously decreased. Subsequent follow-up biopsy confirmed normal condition.</p>"},
+    zh:{title:"Peter Hall（74歲）",subtitle:"前列腺惡性腫瘤",summary:"服用PSP後PSA指數下降，活檢正常。",content:"<p>服用雲芝糖肽PSP後，PSA指數持續下降，其後活檢結果正常。</p>"}
+  }
+];
+
+// 2. Products Data
+let productsData = [
+  {id:1, title:"Yunzhi PSP Essence (500 capsules)", sku:"WH-PSP-500", price:"1280.00", status:"In Stock", cat:"yunzhi", badges:"GMP Certified, >90% Active", model:"雲芝糖肽精華 (PSP).glb", desc:"Concentrated Yunzhi polysaccharopeptide extract. Polysaccharide content exceeds national standards by 1.8x. Formulated for immune regulation and therapy support."},
+  {id:2, title:"T3 Standard Formula (120 capsules)", sku:"WH-T3-120", price:"980.00", status:"In Stock", cat:"t3", badges:"Concentrated Extract, Lab Tested", model:"T3 配方.glb", desc:"Proprietary T3 herbal formula designed to complement PSP therapy for cell vitality and recovery enhancement."},
+  {id:3, title:"PT3 Special Formula (90 capsules)", sku:"WH-PT3-090", price:"1480.00", status:"In Stock", cat:"special", badges:"High Potency, Dual Synergy", model:"PT3.glb", desc:"Advanced synergistic combination of Yunzhi PSP and T3 formula for targeted high-strength health support."},
+  {id:4, title:"Hepatitis B Herbal Essence", sku:"WH-HB-180", price:"860.00", status:"In Stock", cat:"special", badges:"Organic Sourced, Liver Care", model:"", desc:"Specially crafted herbal preparation for hepatic wellness and liver metabolic balance."},
+  {id:5, title:"Memory Boost Extract", sku:"WH-MB-060", price:"680.00", status:"Pre-order", cat:"special", badges:"Cognitive Care, Natural", model:"", desc:"Nootropic herbal complex supporting memory retention and neural protection."}
+];
+let editingProdIdx = null;
+
+// 3. FAQ Data
+let faqData = [
+  {id:1, cat:"General", q:"What is Yunzhi Polysaccharopeptide (PSP)?", a:"Yunzhi PSP is a bio-active extract derived from Cov-1 strain cultured mycelia of Trametes versicolor, proven to support immune cell function and recovery during medical care."},
+  {id:2, cat:"Usage & Dosage", q:"How should PSP and T3 be taken together during treatment?", a:"For general health maintenance, take 2 capsules 2 times daily. For therapeutic support, standard recommendation is 3 to 4 capsules 3 times daily before meals or as directed by your physician."},
+  {id:3, cat:"Safety & Testing", q:"Are Wonder Herb products tested for heavy metals and pesticides?", a:"Yes. Every batch undergoes dual laboratory testing for heavy metals, pesticide residues, and microbial safety in compliance with HK and international standards."},
+  {id:4, cat:"Purchasing", q:"How long does local Hong Kong shipping take?", a:"Local Hong Kong orders are delivered within 1 to 2 business days via SF Express. International shipping times vary between 4 to 7 days."},
+  {id:5, cat:"Usage & Dosage", q:"Can PSP be taken alongside conventional medical therapies?", a:"Yes, PSP is widely recognized as a safe dietary supplement used alongside conventional health protocols. Consult your doctor for individualized advice."}
+];
+let editingFaqIdx = null;
+
+
+// ---------- CMS SYNC & PERSISTENCE ENGINE ----------
+const cmsChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('wh_cms_sync') : null;
+
+function notifyCMSSync(moduleName, data) {
+  if (cmsChannel) {
+    try { cmsChannel.postMessage({ module: moduleName, timestamp: Date.now() }); } catch(e){}
+  }
+  // Write through to MongoDB when the local API is running.
+  apiPut(moduleName, data);
+}
+
+async function loadAllCMSData() {
+  // MongoDB wins when it is running: it is shared, localStorage is not.
+  const live = await apiCheck();
+  if (live) {
+    const [dbCases, dbProducts, dbFaq, dbHome, dbMoves] = await Promise.all([
+      apiGet('cases'), apiGet('products'), apiGet('faq'), apiGet('homepage'), apiGet('movements')
+    ]);
+    if (Array.isArray(dbCases) && dbCases.length) { casesData = dbCases; localStorage.setItem('wh_cases_data', JSON.stringify(casesData)); }
+    if (Array.isArray(dbProducts) && dbProducts.length) { productsData = dbProducts; localStorage.setItem('wh_products_data', JSON.stringify(productsData)); }
+    if (Array.isArray(dbFaq) && dbFaq.length) { faqData = dbFaq; localStorage.setItem('wh_faq_data', JSON.stringify(faqData)); }
+    if (Array.isArray(dbMoves)) { movements = dbMoves; saveMovements(); }
+    const dbActivity = await apiGet('activity');
+    if (Array.isArray(dbActivity) && dbActivity.length) {
+      localStorage.setItem(ACTIVITY_KEY, JSON.stringify(dbActivity.slice(0, 25)));
+    }
+    if (dbHome && Object.keys(dbHome).length) {
+      localStorage.setItem('wh_homepage_text', JSON.stringify(dbHome));
+      Object.keys(dbHome).forEach(k => {
+        const el = document.getElementById('hp_' + k);
+        if (el) el.value = dbHome[k];
+      });
+    }
+    renderCasesList();
+    renderProdList();
+    renderFaqList();
+    renderInventory();
+    renderDashboard();
+    return;
+  }
+
+  // 1. Cases
+  const storedCases = localStorage.getItem('wh_cases_data');
+  if (storedCases) {
+    try { casesData = JSON.parse(storedCases); } catch(e){}
+  } else {
+    try {
+      const res = await fetch('../data/cases.json', { cache: 'no-store' });
+      if (res.ok) { casesData = await res.json(); localStorage.setItem('wh_cases_data', JSON.stringify(casesData)); }
+    } catch(e) { casesData = JSON.parse(JSON.stringify(FALLBACK_CASES)); }
+  }
+  renderCasesList();
+
+  // 2. Products
+  const storedProds = localStorage.getItem('wh_products_data');
+  if (storedProds) {
+    try { productsData = JSON.parse(storedProds); } catch(e){}
+  } else {
+    try {
+      const res = await fetch('../data/products.json', { cache: 'no-store' });
+      if (res.ok) { productsData = await res.json(); localStorage.setItem('wh_products_data', JSON.stringify(productsData)); }
+    } catch(e){}
+  }
+  renderProdList();
+  loadMovements();
+  await loadInventoryCsv();
+  renderInventory();
+  renderProdList();
+
+  // 3. FAQ
+  const storedFaq = localStorage.getItem('wh_faq_data');
+  if (storedFaq) {
+    try { faqData = JSON.parse(storedFaq); } catch(e){}
+  } else {
+    try {
+      const res = await fetch('../data/faq.json', { cache: 'no-store' });
+      if (res.ok) { faqData = await res.json(); localStorage.setItem('wh_faq_data', JSON.stringify(faqData)); }
+    } catch(e){}
+  }
+  renderFaqList();
+
+  // 4. Homepage
+  const storedHp = localStorage.getItem('wh_homepage_text');
+  if (storedHp) {
+    try {
+      const hp = JSON.parse(storedHp);
+      if(hp.notice_badge) document.getElementById('hp_notice_badge').value = hp.notice_badge;
+      if(hp.notice_msg) document.getElementById('hp_notice_msg').value = hp.notice_msg;
+      if(hp.hero_title) document.getElementById('hp_hero_title').value = hp.hero_title;
+      if(hp.hero_sub) document.getElementById('hp_hero_sub').value = hp.hero_sub;
+      if(hp.cta_1) document.getElementById('hp_cta_1').value = hp.cta_1;
+      if(hp.cta_2) document.getElementById('hp_cta_2').value = hp.cta_2;
+      if(hp.stat_1) document.getElementById('hp_stat_1').value = hp.stat_1;
+      if(hp.stat_2) document.getElementById('hp_stat_2').value = hp.stat_2;
+      if(hp.contact_phone) document.getElementById('hp_contact_phone').value = hp.contact_phone;
+      if(hp.contact_email) document.getElementById('hp_contact_email').value = hp.contact_email;
+    } catch(e){}
+    renderDashboard();
+  } else {
+    fetch('../data/homepage.json', { cache: 'no-store' }).then(r => r.json()).then(hp => {
+      if(hp.notice_badge) document.getElementById('hp_notice_badge').value = hp.notice_badge;
+      if(hp.notice_msg) document.getElementById('hp_notice_msg').value = hp.notice_msg;
+      if(hp.hero_title) document.getElementById('hp_hero_title').value = hp.hero_title;
+      if(hp.hero_sub) document.getElementById('hp_hero_sub').value = hp.hero_sub;
+      if(hp.cta_1) document.getElementById('hp_cta_1').value = hp.cta_1;
+      if(hp.cta_2) document.getElementById('hp_cta_2').value = hp.cta_2;
+      if(hp.stat_1) document.getElementById('hp_stat_1').value = hp.stat_1;
+      if(hp.stat_2) document.getElementById('hp_stat_2').value = hp.stat_2;
+      if(hp.contact_phone) document.getElementById('hp_contact_phone').value = hp.contact_phone;
+      if(hp.contact_email) document.getElementById('hp_contact_email').value = hp.contact_email;
+      localStorage.setItem('wh_homepage_text', JSON.stringify(hp));
+    }).catch(()=>{}).finally(() => renderDashboard());
+  }
+  renderDashboard();
+}
+
+function exportDownloadFile(filename, content) {
+  const blob = new Blob([content], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+function exportAllDataPackage() {
+  exportDownloadFile('cases.json', JSON.stringify(casesData, null, 2));
+  setTimeout(() => exportDownloadFile('products.json', JSON.stringify(productsData, null, 2)), 300);
+  setTimeout(() => exportDownloadFile('faq.json', JSON.stringify(faqData, null, 2)), 600);
+  setTimeout(() => exportDownloadFile('inventory-log.json', JSON.stringify(movements, null, 2)), 900);
+  const hpData = {
+    notice_badge: document.getElementById('hp_notice_badge').value,
+    notice_msg: document.getElementById('hp_notice_msg').value,
+    hero_title: document.getElementById('hp_hero_title').value,
+    hero_sub: document.getElementById('hp_hero_sub').value,
+    cta_1: document.getElementById('hp_cta_1').value,
+    cta_2: document.getElementById('hp_cta_2').value,
+    stat_1: document.getElementById('hp_stat_1').value,
+    stat_2: document.getElementById('hp_stat_2').value,
+    contact_phone: document.getElementById('hp_contact_phone').value,
+    contact_email: document.getElementById('hp_contact_email').value
+  };
+  setTimeout(() => exportDownloadFile('homepage.json', JSON.stringify(hpData, null, 2)), 1200);
+  toast('Downloaded 5 JSON data files for repo backup!', true);
+}
+
+
+// ---------- ACCOUNTS -------------------------------------------------------
+/* The console signs in against the same accounts the site uses. Only an
+   administrator gets in here; the session token is what the browser keeps, and
+   the server can end it at any time by dropping the session. */
+const AUTH_TOKEN_KEY = 'wh_admin_token';
+let currentAdmin = null;
+let adminExists = true;       // does the database already have an administrator?
+let firstAdminMode = false;   // is the card currently offering to create one?
+
+function authToken(){ try { return localStorage.getItem(AUTH_TOKEN_KEY); } catch(e){ return null; } }
+function setAuthToken(t){
+  try { if(t) localStorage.setItem(AUTH_TOKEN_KEY, t); else localStorage.removeItem(AUTH_TOKEN_KEY); } catch(e){}
+}
+
+async function authFetch(path, method, body){
+  if(!API_BASE) throw new Error('offline');
+  const token = authToken();
+  const res = await fetch(API_BASE + path, {
+    method: method || 'GET',
+    headers: Object.assign({ 'Content-Type': 'application/json' },
+      token ? { Authorization: 'Bearer ' + token } : {}),
+    body: body === undefined ? undefined : JSON.stringify(body)
+  });
+  const data = await res.json().catch(() => ({}));
+  if(!res.ok){
+    const err = new Error(data.error || 'Something went wrong');
+    err.status = res.status;
+    throw err;
+  }
+  return data;
+}
+
+function loginMessage(text, ok){
+  const box = document.getElementById('loginError');
+  box.textContent = text || '';
+  box.classList.toggle('ok', !!ok);
+}
+
+let minPasswordLength = 8;
+
+/* Two ways in from one card: sign in with an existing account, or - on a fresh
+   database only - create the administrator. Someone who already has an account
+   should never be cornered by the first-run form. */
+function setLoginMode(createAdmin){
+  firstAdminMode = !!createAdmin && !adminExists;
+  const sw = document.getElementById('loginSwitch');
+  document.getElementById('loginNameField').classList.toggle('hidden', !firstAdminMode);
+  document.getElementById('loginSubmit').textContent =
+    firstAdminMode ? 'Create administrator' : 'Sign in';
+  document.getElementById('loginPassword').setAttribute('autocomplete',
+    firstAdminMode ? 'new-password' : 'current-password');
+  document.getElementById('loginNote').innerHTML = firstAdminMode
+    ? '<b>First run:</b> no administrator exists yet. The account you create here becomes the administrator. Use at least ' + minPasswordLength + ' characters.'
+    : 'Sign in with your account. Accounts are stored in MongoDB.';
+  // nothing to switch to once an administrator exists
+  sw.classList.toggle('hidden', adminExists);
+  sw.textContent = firstAdminMode
+    ? 'Already have an account? Sign in'
+    : 'First time here? Create the administrator';
+  loginMessage('');
+}
+
+/* What the sign-in card offers depends on what the server says: a normal
+   sign-in, the very first administrator, or - with no API running - the
+   local-files mode the console has always had. */
+async function prepareLoginScreen(){
+  const note = document.getElementById('loginNote');
+  const demoBtn = document.getElementById('demoBtn');
+  const form = document.getElementById('loginForm');
+  if(!API_BASE){
+    form.classList.add('hidden');
+    demoBtn.classList.remove('hidden');
+    note.innerHTML = '<b>No local database.</b> The console can still edit this browser\'s copy of the data.';
+    return;
+  }
+  try {
+    const status = await authFetch('/api/auth/status');
+    adminExists = !!status.adminExists;
+    minPasswordLength = status.minPassword || 8;
+    form.classList.remove('hidden');
+    demoBtn.classList.add('hidden');
+    // creating the first administrator is offered only while there is none,
+    // but signing in as an existing account is always available
+    setLoginMode(!adminExists);
+  } catch(e){
+    form.classList.add('hidden');
+    demoBtn.classList.remove('hidden');
+    // a 404 means something answers on this port but has no accounts in it:
+    // an API left running from before accounts existed
+    note.innerHTML = e.status === 404
+      ? '<b>The API is running an older version</b> without accounts. Stop it and start it again with <code>npm run dev</code>.'
+      : '<b>Database offline.</b> Start it with <code>npm run dev</code>, or continue on this browser\'s copy of the data.';
+  }
+}
+
+async function doLogin(ev){
+  if(ev) ev.preventDefault();
+  const btn = document.getElementById('loginSubmit');
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const name = document.getElementById('loginName').value.trim();
+  const label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Working...';
+  loginMessage('');
+  try {
+    const data = firstAdminMode
+      ? await authFetch('/api/auth/signup', 'POST',
+          { name: name, email: email, password: password, asAdmin: true })
+      : await authFetch('/api/auth/login', 'POST', { email: email, password: password });
+    // an account with no console rights signs straight back out again
+    if(!data.user.console){
+      setAuthToken(data.token);
+      await authFetch('/api/auth/logout', 'POST', {}).catch(() => {});
+      setAuthToken(null);
+      throw new Error('This account cannot open the console');
+    }
+    setAuthToken(data.token);
+    enterApp(data.user);
+  } catch(err){
+    loginMessage(err.message === 'offline' ? 'The local API is not running' : err.message);
+  } finally {
+    btn.disabled = false; btn.textContent = label;
+    document.getElementById('loginPassword').value = '';
+  }
+  return false;
+}
+
+function enterApp(user){
+  currentAdmin = user || null;
+  applyPrivileges();
+  document.getElementById('login').style.display='none';
+  document.getElementById('app').style.display='grid';
+  const who = document.getElementById('whoami');
+  const avatar = document.querySelector('.topbar .avatar');
+  if(user){
+    who.textContent = user.name || user.email;
+    who.title = user.email;
+    if(avatar) avatar.textContent = (user.name || user.email).trim().charAt(0).toUpperCase();
+  } else {
+    who.textContent = 'Local files';
+    if(avatar) avatar.textContent = 'L';
+  }
+  loadAllCMSData();
+}
+
+/* Without a database there is nobody to sign in as, so the console falls back
+   to the browser's own copy of the data, exactly as it did before accounts. */
+function enterDemo(){
+  enterApp(null);
+}
+
+async function logout(){
+  if(API_BASE && authToken()){
+    try { await authFetch('/api/auth/logout', 'POST', {}); } catch(e){}
+  }
+  setAuthToken(null);
+  currentAdmin = null;
+  document.getElementById('app').style.display='none';
+  document.getElementById('login').style.display='flex';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+  loginMessage('');
+  prepareLoginScreen();
+}
+
+/* A page refresh should not mean signing in again - but the server, not the
+   browser, decides whether the stored token is still good. */
+async function restoreSession(){
+  if(!API_BASE || !authToken()) return false;
+  try {
+    const data = await authFetch('/api/auth/me');
+    if(data.user && data.user.console){ enterApp(data.user); return true; }
+  } catch(e){}
+  setAuthToken(null);
+  return false;
+}
+
+let usersCache = [];
+
+const ROLE_LABEL = { admin:'Administrator', staff:'Staff', customer:'Member' };
+const LEVEL_LABEL = { none:'No access', view:'View only', edit:'Can edit' };
+
+/* A one-line summary of what a staff account may do, so the table answers the
+   usual question without opening anything. */
+function permSummary(user){
+  if(user.role === 'admin') return 'Everything, including users';
+  if(user.role !== 'staff') return 'Website account only';
+  const perms = user.permissions || {};
+  const edit = PERM_MODULES.filter(m => perms[m] === 'edit').map(m => MODULE_LABEL[m]);
+  const view = PERM_MODULES.filter(m => perms[m] === 'view').map(m => MODULE_LABEL[m]);
+  const parts = [];
+  if(edit.length) parts.push('Edits ' + edit.join(', '));
+  if(view.length) parts.push('Views ' + view.join(', '));
+  return parts.length ? parts.join(' &middot; ') : 'Nothing yet';
+}
+
+async function renderUsers(){
+  const body = document.getElementById('usersBody');
+  const sub = document.getElementById('usersSub');
+  const badge = document.getElementById('badge-users');
+  if(!API_BASE || !authToken()){
+    body.innerHTML = '<tr><td colspan="7" style="color:var(--muted)">Accounts live in MongoDB. Start the API and sign in to see them.</td></tr>';
+    sub.textContent = 'Database offline.';
+    return;
+  }
+  try {
+    const users = await authFetch('/api/auth/users');
+    usersCache = users;
+    badge.textContent = users.length;
+    sub.textContent = users.length + ' account(s), newest first.';
+    const day = v => v ? new Date(v).toLocaleDateString() : '--';
+    const me = currentAdmin && currentAdmin.id;
+    body.innerHTML = users.length
+      ? users.map(u => {
+          const disabled = u.status === 'disabled';
+          const self = String(u.id) === String(me);
+          return '<tr' + (disabled ? ' style="opacity:.55"' : '') + '>' +
+            '<td class="name">' + esc(u.name || '--') +
+              (self ? ' <span class="perm-summary">(you)</span>' : '') + '</td>' +
+            '<td>' + esc(u.email) + '</td>' +
+            '<td>' + (u.super ? '<span class="pill pill-info" title="Named in .env; cannot be demoted, disabled, deleted or reset by anyone else">Super admin</span>'
+                    : u.role === 'admin' ? '<span class="pill pill-info">Administrator</span>'
+                    : u.role === 'staff' ? '<span class="pill pill-ok">Staff</span>'
+                    : '<span class="pill pill-warn">Member</span>') +
+              (disabled ? ' <span class="pill">Disabled</span>' : '') + '</td>' +
+            '<td class="perm-summary">' + permSummary(u) + '</td>' +
+            '<td>' + day(u.createdAt) + '</td>' +
+            '<td>' + day(u.lastLoginAt) + '</td>' +
+            '<td><div class="user-actions">' +
+              '<button class="btn btn-ghost btn-sm" onclick="openUserEditor(\'' + u.id + '\')">Edit</button>' +
+              (u.super && !self ? '' :
+                '<button class="btn btn-ghost btn-sm" onclick="resetUserPassword(\'' + u.id + '\')">Reset password</button>') +
+              (self || u.super ? '' :
+                '<button class="btn btn-ghost btn-sm" onclick="toggleUserStatus(\'' + u.id + '\')">' +
+                  (disabled ? 'Enable' : 'Disable') + '</button>' +
+                '<button class="btn btn-danger btn-sm" onclick="deleteUser(\'' + u.id + '\')">Delete</button>') +
+            '</div></td>' +
+          '</tr>';
+        }).join('')
+      : '<tr><td colspan="7" style="color:var(--muted)">Nobody has registered yet.</td></tr>';
+  } catch(err){
+    body.innerHTML = '<tr><td colspan="7" style="color:var(--muted)">' + esc(err.message) + '</td></tr>';
+  }
+}
+
+// ---------- ADDING AND EDITING AN ACCOUNT ----------------------------------
+let editingUserId = null;
+
+function userError(text){
+  const box = document.getElementById('userError');
+  box.textContent = text || '';
+}
+
+/* The tick grid is built from the module list, so a new module appears here
+   the moment it exists rather than needing new markup. Only staff have one:
+   an administrator has everything, a member has nothing. */
+let permDraft = {};
+
+function permRowsHtml(perms){
+  return PERM_MODULES.map(m => {
+    const level = (perms && perms[m]) || 'none';
+    return '<div class="perm-row"><span class="perm-name">' + MODULE_LABEL[m] + '</span>' +
+      ['none','view','edit'].map(l =>
+        '<label><input type="radio" name="perm_' + m + '" value="' + l + '"' +
+        (level === l ? ' checked' : '') + '>' + LEVEL_LABEL[l] + '</label>').join('') +
+      '</div>';
+  }).join('');
+}
+
+function setPermGrid(perms){
+  permDraft = Object.assign({}, perms || {});
+  document.getElementById('userPerms').innerHTML = permRowsHtml(permDraft);
+  document.getElementById('userPermsField').classList.toggle('hidden',
+    document.getElementById('user_role').value !== 'staff');
+}
+
+function readPermGrid(){
+  const out = {};
+  PERM_MODULES.forEach(m => {
+    const picked = document.querySelector('input[name="perm_' + m + '"]:checked');
+    out[m] = picked ? picked.value : (permDraft[m] || 'none');
+  });
+  return out;
+}
+
+/* Switching account type keeps whatever was ticked, so flipping to Member by
+   mistake and back does not wipe the choices. */
+function renderPermGrid(){
+  setPermGrid(document.querySelector('input[name="perm_cases"]') ? readPermGrid() : permDraft);
+}
+
+function openUserEditor(id){
+  editingUserId = id || null;
+  const user = id ? usersCache.find(u => String(u.id) === String(id)) : null;
+  document.getElementById('userModalTitle').textContent = user ? 'Edit user' : 'Add user';
+  document.getElementById('user_name').value = user ? (user.name || '') : '';
+  document.getElementById('user_email').value = user ? user.email : '';
+  document.getElementById('user_password').value = '';
+  document.getElementById('user_role').value = user ? user.role : 'staff';
+  // the email is the account's identity and the password has its own button
+  document.getElementById('user_email').disabled = !!user;
+  document.getElementById('user_role').disabled = !!(user && user.super);
+  document.getElementById('userPasswordField').classList.toggle('hidden', !!user);
+  setPermGrid(user ? user.permissions : { cases:'edit', products:'edit', inventory:'edit', faq:'edit', homepage:'edit' });
+  userError('');
+  document.getElementById('userModal').classList.remove('hidden');
+}
+
+function closeUserEditor(){
+  document.getElementById('userModal').classList.add('hidden');
+  editingUserId = null;
+}
+
+async function saveUser(){
+  const btn = document.getElementById('userSaveBtn');
+  const role = document.getElementById('user_role').value;
+  const payload = {
+    name: document.getElementById('user_name').value.trim(),
+    role: role,
+    permissions: role === 'staff' ? readPermGrid() : {}
+  };
+  // a name change on the super admin must not carry a role field along
+  if(document.getElementById('user_role').disabled){ delete payload.role; delete payload.permissions; }
+  btn.disabled = true;
+  userError('');
+  try {
+    if(editingUserId){
+      await authFetch('/api/auth/users/' + editingUserId, 'PATCH', payload);
+      logActivity('users', 'Updated account: ' + document.getElementById('user_email').value);
+      toast('Account updated', true);
+    } else {
+      payload.email = document.getElementById('user_email').value.trim();
+      payload.password = document.getElementById('user_password').value;
+      const made = await authFetch('/api/auth/users', 'POST', payload);
+      logActivity('users', 'Added ' + ROLE_LABEL[made.user.role].toLowerCase() + ': ' + made.user.email);
+      toast('Account created', true);
+    }
+    closeUserEditor();
+    renderUsers();
+  } catch(err){
+    userError(err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function resetUserPassword(id){
+  const user = usersCache.find(u => String(u.id) === String(id));
+  const password = prompt('New password for ' + (user ? user.email : 'this account') +
+    '\n\nThey will be signed out everywhere and can change it themselves later.');
+  if(password === null) return;
+  try {
+    await authFetch('/api/auth/users/' + id + '/password', 'POST', { password: password });
+    logActivity('users', 'Reset the password for ' + (user ? user.email : id));
+    toast('Password changed. That account has been signed out everywhere.', true);
+    renderUsers();
+  } catch(err){ toast(esc(err.message), false); }
+}
+
+async function toggleUserStatus(id){
+  const user = usersCache.find(u => String(u.id) === String(id));
+  if(!user) return;
+  const next = user.status === 'disabled' ? 'active' : 'disabled';
+  if(next === 'disabled' && !confirm('Disable ' + user.email + '? They will be signed out immediately.')) return;
+  try {
+    await authFetch('/api/auth/users/' + id, 'PATCH', { status: next });
+    logActivity('users', (next === 'disabled' ? 'Disabled ' : 'Enabled ') + user.email);
+    toast(next === 'disabled' ? 'Account disabled' : 'Account enabled', true);
+    renderUsers();
+  } catch(err){ toast(esc(err.message), false); }
+}
+
+async function deleteUser(id){
+  const user = usersCache.find(u => String(u.id) === String(id));
+  if(!user) return;
+  if(!confirm('Delete ' + user.email + '? This cannot be undone.')) return;
+  try {
+    await authFetch('/api/auth/users/' + id, 'DELETE');
+    logActivity('users', 'Deleted account: ' + user.email);
+    toast('Account deleted', false);
+    renderUsers();
+  } catch(err){ toast(esc(err.message), false); }
+}
+
+// ---------- PRIVILEGES IN THE CONSOLE ---------------------------------------
+/* The server is what actually refuses a save. These functions only keep the
+   screen honest: no buttons for things this account cannot do, and no modules
+   it cannot open. */
+const PERM_MODULES = ['cases', 'products', 'inventory', 'faq', 'homepage', 'sales'];
+const MODULE_LABEL = { cases:'Cases', products:'Products', inventory:'Inventory',
+                       faq:'FAQ', homepage:'Homepage text', sales:'Sales' };
+
+function permLevel(module){
+  if(!currentAdmin) return 'edit';            // local-files mode: nothing to gate
+  if(currentAdmin.role === 'admin') return 'edit';
+  const perms = currentAdmin.permissions || {};
+  return perms[module] || 'none';
+}
+const canView = m => permLevel(m) !== 'none';
+const canEdit = m => permLevel(m) === 'edit';
+const isAdminUser = () => !currentAdmin || currentAdmin.role === 'admin';
+
+function applyPrivileges(){
+  const body = document.body;
+  PERM_MODULES.forEach(m => {
+    const level = permLevel(m);
+    body.classList.toggle('no-' + m, level === 'none');
+    body.classList.toggle('ro-' + m, level === 'view');
+  });
+  // accounts and whole-site exports stay with administrators
+  body.classList.toggle('no-users', !isAdminUser());
+  body.classList.toggle('no-export', !isAdminUser());
+
+  // if the open section is one this account cannot see, move somewhere it can
+  if(PERM_MODULES.indexOf(activeNav) !== -1 && !canView(activeNav)) switchNav('dashboard');
+  if(activeNav === 'users' && !isAdminUser()) switchNav('dashboard');
+  updateViewOnlyNote();
+}
+
+function updateViewOnlyNote(){
+  const note = document.getElementById('viewOnlyNote');
+  if(!note) return;
+  note.classList.toggle('hidden',
+    !(PERM_MODULES.indexOf(activeNav) !== -1 && permLevel(activeNav) === 'view'));
+}
+
+// ---------- SALES ---------------------------------------------------------
+/* The monthly sales book. Everything here goes through the API; the
+   spreadsheet is built by the server from what is stored. */
+const SALE_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+let salesInvoices = [];
+let salesCustomers = [];
+let salesMonthsWithData = {};
+let editingSaleId = null;
+let editingCustomerId = null;
+let saleCustomerId = null;
+const hk = n => 'HK$' + (Math.round((parseFloat(n) || 0) * 100) / 100).toLocaleString('en-HK');
+const saleProducts = () => (productsData || []).filter(p => p.sku);
+
+function initSalesControls(){
+  const m = document.getElementById('salesMonth');
+  if(m.options.length) return;
+  const now = new Date();
+  SALE_MONTHS.forEach((name, i) => {
+    const o = document.createElement('option'); o.value = i + 1; o.textContent = name; m.appendChild(o);
+  });
+  m.value = now.getMonth() + 1;
+  document.getElementById('salesYear').value = now.getFullYear();
+}
+
+async function loadSales(){
+  initSalesControls();
+  const body = document.getElementById('salesBody');
+  if(!API_BASE || !authToken()){
+    body.innerHTML = '<tr><td colspan="8" style="color:var(--muted)">Sales live in MongoDB. Start the API and sign in.</td></tr>';
+    return;
+  }
+  const year = document.getElementById('salesYear').value;
+  const month = document.getElementById('salesMonth').value;
+  try {
+    let yearInvoices;
+    [salesInvoices, salesCustomers, yearInvoices] = await Promise.all([
+      authFetch('/api/sales/invoices?year=' + year + '&month=' + month),
+      authFetch('/api/sales/customers'),
+      authFetch('/api/sales/invoices?year=' + year)
+    ]);
+    salesMonthsWithData = {};
+    yearInvoices.forEach(i => { if(i.status !== 'void'){ const m = parseInt(i.date.slice(5, 7), 10); salesMonthsWithData[m] = (salesMonthsWithData[m] || 0) + 1; } });
+    renderSales();
+    renderCustomers();
+  } catch(err){
+    body.innerHTML = '<tr><td colspan="8" style="color:var(--muted)">' + esc(err.message) + '</td></tr>';
+  }
+}
+
+function renderSales(){
+  const q = (document.getElementById('salesSearch').value || '').toLowerCase().trim();
+  const showVoid = document.getElementById('salesShowVoid').checked;
+  const rows = salesInvoices.filter(inv => (showVoid || inv.status !== 'void') &&
+    (!q || String(inv.number).includes(q) || (inv.customerName || '').toLowerCase().includes(q) ||
+      (inv.phone || '').includes(q)));
+  const live = salesInvoices.filter(i => i.status !== 'void');
+  const total = live.reduce((s, i) => s + (i.total || 0), 0);
+  const unpaid = live.filter(i => i.status === 'unpaid');
+  const bottles = live.reduce((s, i) => s + i.lines.reduce((t, l) => t + l.qty, 0), 0);
+  document.getElementById('salesKpis').innerHTML = [
+    ['<b>' + live.length + '</b>', 'Invoices'],
+    ['<b>' + hk(total) + '</b>', 'Total amount'],
+    ['<b>' + bottles + '</b>', 'Bottles sold'],
+    ['<b>' + unpaid.length + '</b>', 'Unpaid' + (unpaid.length ? ' &middot; ' + hk(unpaid.reduce((s, i) => s + i.total, 0)) : '')]
+  ].map(([v, l]) => '<div class="inv-kpi"><div class="n">' + v + '</div><div class="lbl">' + l + '</div></div>').join('');
+  document.getElementById('badge-sales').textContent = live.length;
+  document.getElementById('salesSub').textContent = SALE_MONTHS[document.getElementById('salesMonth').value - 1] +
+    ' ' + document.getElementById('salesYear').value + ' - ' + live.length + ' invoice(s), ' + hk(total);
+
+  const body = document.getElementById('salesBody');
+  body.innerHTML = rows.length ? rows.map(inv => {
+    const products = inv.lines.map(l => esc(shortTitle(l.sku, l.title)) + ' &times;' + l.qty +
+      ' <span class="perm-summary">@' + hk(l.price) + '</span>').join('<br>');
+    const status = inv.status === 'void' ? '<span class="pill">Voided</span>'
+      : inv.status === 'unpaid' ? '<span class="pill pill-warn">Unpaid</span>' : '<span class="pill pill-ok">Paid</span>';
+    return '<tr' + (inv.status === 'void' ? ' style="opacity:.5"' : '') + '>' +
+      '<td class="name">#' + inv.number + '</td>' +
+      '<td>' + esc(inv.date) + '</td>' +
+      '<td>' + esc(inv.customerName) + (inv.phone ? '<div class="sku">' + esc(inv.phone) + '</div>' : '') + '</td>' +
+      '<td>' + products + (inv.remarks ? '<div class="sku">' + esc(inv.remarks) + '</div>' : '') + '</td>' +
+      '<td>' + esc(inv.payment || '--') + '</td>' +
+      '<td class="num">' + hk(inv.total) + '</td>' +
+      '<td>' + status + '</td>' +
+      '<td><div class="user-actions">' + (inv.status === 'void' ? '' :
+        '<button class="btn btn-ghost btn-sm" onclick="openSaleEditor(\'' + inv.id + '\')">Edit</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="voidSale(\'' + inv.id + '\')">Void</button>') +
+      '</div></td></tr>';
+  }).join('') : '<tr><td colspan="8" style="color:var(--muted)">' + emptyMonthNote() + '</td></tr>';
+}
+
+/* "No invoices" alone looks like a failed import; say where they are. */
+function emptyMonthNote(){
+  const months = Object.keys(salesMonthsWithData).map(Number).sort((a, b) => a - b);
+  if(!months.length) return 'No invoices in ' + document.getElementById('salesYear').value + ' yet. Use + New invoice to enter the first one.';
+  const latest = months[months.length - 1];
+  return 'No invoices this month yet. Latest month with invoices: ' +
+    '<a href="#" onclick="jumpToSalesMonth(' + latest + ');return false">' +
+    SALE_MONTHS[latest - 1] + ' (' + salesMonthsWithData[latest] + ')</a>.';
+}
+function jumpToSalesMonth(m){
+  document.getElementById('salesMonth').value = m;
+  loadSales();
+}
+
+/* The short names the client uses in the workbook headers. */
+const SALE_SHORT = { 'WH-PSP-500':'雲芝', 'WH-PSP-060':'雲芝 (小瓶裝)', 'WH-T3-120':'T3',
+                     'WH-PT3-090':'PT3', 'WH-HB-180':'乙肝清', 'WH-MB-060':'憶活素' };
+const shortTitle = (sku, title) => SALE_SHORT[sku] || title || sku;
+
+// ---- the invoice editor
+function openSaleEditor(id){
+  if(!saleProducts().length){ toast('Add products before entering invoices', false); return; }
+  editingSaleId = id || null;
+  const inv = id ? salesInvoices.find(i => i.id === id) : null;
+  document.getElementById('saleModalTitle').textContent = inv ? 'Edit invoice #' + inv.number : 'New invoice';
+  document.getElementById('custList').innerHTML = salesCustomers.map(c =>
+    '<option value="' + escAttr(c.name) + '">' + escAttr(c.phone || '') + '</option>').join('');
+  document.getElementById('sale_number').value = inv ? inv.number : '';
+  document.getElementById('sale_date').value = inv ? inv.date : new Date().toISOString().slice(0, 10);
+  document.getElementById('sale_customer').value = inv ? inv.customerName : '';
+  document.getElementById('sale_phone').value = inv ? inv.phone : '';
+  saleCustomerId = inv ? inv.customerId : null;
+  document.getElementById('sale_payment').value = inv ? inv.payment : '';
+  document.getElementById('sale_status').value = inv ? inv.status : 'paid';
+  document.getElementById('sale_remarks').value = inv ? inv.remarks : '';
+  document.getElementById('saleLines').innerHTML = '';
+  (inv ? inv.lines : [null]).forEach(addSaleLine);
+  document.getElementById('saleError').textContent = '';
+  document.getElementById('saleModal').classList.remove('hidden');
+  if(!inv) authFetch('/api/sales/invoices/next').then(d => {
+    if(!document.getElementById('sale_number').value) document.getElementById('sale_number').value = d.number;
+  }).catch(() => {});
+}
+function closeSaleEditor(){ document.getElementById('saleModal').classList.add('hidden'); editingSaleId = null; }
+
+function saleCustomerPicked(){
+  const name = document.getElementById('sale_customer').value.trim();
+  const cu = salesCustomers.find(c => c.name === name);
+  saleCustomerId = cu ? cu.id : null;
+  if(cu){
+    if(cu.phone) document.getElementById('sale_phone').value = cu.phone;
+    // their price for anything already on the invoice
+    document.querySelectorAll('#saleLines .line').forEach(row => {
+      const sku = row.querySelector('select').value;
+      if(cu.prices[sku] !== undefined) row.querySelector('.price').value = cu.prices[sku];
+    });
+    recalcSale();
+  }
+}
+
+function priceFor(sku){
+  const cu = salesCustomers.find(c => c.id === saleCustomerId) ||
+             salesCustomers.find(c => c.name === document.getElementById('sale_customer').value.trim());
+  if(cu && cu.prices[sku] !== undefined) return cu.prices[sku];
+  const p = saleProducts().find(p => p.sku === sku);
+  return p ? parseFloat(p.price) || 0 : 0;
+}
+
+function addSaleLine(line){
+  const wrap = document.getElementById('saleLines');
+  if(!wrap.children.length){
+    wrap.innerHTML = '<div class="head">Product</div><div class="head">Unit price</div><div class="head">Qty</div><div class="head" style="text-align:right">Amount</div><div></div>';
+  }
+  const options = saleProducts().map(p =>
+    '<option value="' + escAttr(p.sku) + '"' + (line && line.sku === p.sku ? ' selected' : '') + '>' +
+    esc(shortTitle(p.sku, p.title)) + '</option>').join('');
+  const row = document.createElement('div');
+  row.className = 'line';
+  row.style.display = 'contents';
+  row.innerHTML = '<select onchange="saleLineProduct(this)">' + options + '</select>' +
+    '<input class="price" type="number" min="0" step="0.01" oninput="recalcSale()">' +
+    '<input class="qty" type="number" min="1" step="1" oninput="recalcSale()">' +
+    '<div class="amt">HK$0</div>' +
+    '<button type="button" class="btn btn-danger btn-sm x" onclick="this.parentNode.remove(); recalcSale()">&times;</button>';
+  wrap.appendChild(row);
+  const sel = row.querySelector('select');
+  row.querySelector('.price').value = line ? line.price : priceFor(sel.value);
+  row.querySelector('.qty').value = line ? line.qty : 1;
+  recalcSale();
+}
+function saleLineProduct(sel){
+  sel.parentNode.querySelector('.price').value = priceFor(sel.value);
+  recalcSale();
+}
+function readSaleLines(){
+  return Array.from(document.querySelectorAll('#saleLines .line')).map(row => ({
+    sku: row.querySelector('select').value,
+    price: parseFloat(row.querySelector('.price').value) || 0,
+    qty: parseInt(row.querySelector('.qty').value, 10) || 0
+  }));
+}
+function recalcSale(){
+  let total = 0;
+  document.querySelectorAll('#saleLines .line').forEach(row => {
+    const amt = (parseFloat(row.querySelector('.price').value) || 0) * (parseInt(row.querySelector('.qty').value, 10) || 0);
+    row.querySelector('.amt').textContent = hk(amt);
+    total += amt;
+  });
+  document.getElementById('saleTotal').textContent = hk(total);
+}
+
+async function saveSale(){
+  const btn = document.getElementById('saleSaveBtn');
+  const payload = {
+    number: document.getElementById('sale_number').value,
+    date: document.getElementById('sale_date').value,
+    customerId: saleCustomerId,
+    customerName: document.getElementById('sale_customer').value.trim(),
+    phone: document.getElementById('sale_phone').value.trim(),
+    lines: readSaleLines(),
+    payment: document.getElementById('sale_payment').value,
+    status: document.getElementById('sale_status').value,
+    remarks: document.getElementById('sale_remarks').value.trim()
+  };
+  btn.disabled = true;
+  document.getElementById('saleError').textContent = '';
+  try {
+    const r = editingSaleId
+      ? await authFetch('/api/sales/invoices/' + editingSaleId, 'PATCH', payload)
+      : await authFetch('/api/sales/invoices', 'POST', payload);
+    logActivity('sales', (editingSaleId ? 'Edited' : 'Added') + ' invoice #' + r.invoice.number + ' - ' + r.invoice.customerName);
+    toast('Invoice #' + r.invoice.number + ' saved' +
+      (r.stockApplied && r.stockApplied.length ? ' - stock updated' : ''), true);
+    closeSaleEditor();
+    // a new customer typed on the invoice is worth keeping for next time
+    if(!saleCustomerId && payload.customerName && !salesCustomers.some(c => c.name === payload.customerName)){
+      const prices = {}; payload.lines.forEach(l => { prices[l.sku] = l.price; });
+      await authFetch('/api/sales/customers', 'POST', { name: payload.customerName, phone: payload.phone, prices: prices }).catch(() => {});
+    }
+    loadSales();
+    if(typeof loadAllCMSData === 'function' && r.stockApplied && r.stockApplied.length) loadAllCMSData();
+  } catch(err){
+    document.getElementById('saleError').textContent = err.message;
+  } finally { btn.disabled = false; }
+}
+
+async function voidSale(id){
+  const inv = salesInvoices.find(i => i.id === id);
+  if(!inv) return;
+  const reason = prompt('Void invoice #' + inv.number + ' (' + inv.customerName + ')?\nIt stays in the records marked void and any stock it took is put back.\n\nReason (optional):');
+  if(reason === null) return;
+  try {
+    await authFetch('/api/sales/invoices/' + id + '/void', 'POST', { reason: reason });
+    logActivity('sales', 'Voided invoice #' + inv.number);
+    toast('Invoice #' + inv.number + ' voided', false);
+    loadSales();
+  } catch(err){ toast(esc(err.message), false); }
+}
+
+// ---- customers
+function renderCustomers(){
+  const products = saleProducts();
+  document.getElementById('custHead').innerHTML = '<th>Name</th><th>Phone</th>' +
+    products.map(p => '<th class="num">' + esc(shortTitle(p.sku, p.title)) + '</th>').join('') + '<th></th>';
+  document.getElementById('custPill').textContent = salesCustomers.length;
+  const body = document.getElementById('custBody');
+  body.innerHTML = salesCustomers.length ? salesCustomers.map(c => '<tr>' +
+    '<td class="name">' + esc(c.name) + (c.notes ? '<div class="sku">' + esc(c.notes) + '</div>' : '') + '</td>' +
+    '<td>' + esc(c.phone || '--') + '</td>' +
+    products.map(p => '<td class="num">' + (c.prices[p.sku] !== undefined ? hk(c.prices[p.sku]) : '<span class="perm-summary">--</span>') + '</td>').join('') +
+    '<td><div class="user-actions">' +
+      '<button class="btn btn-ghost btn-sm" onclick="openCustomerEditor(\'' + c.id + '\')">Edit</button>' +
+      '<button class="btn btn-danger btn-sm" onclick="deleteCustomer(\'' + c.id + '\')">Delete</button>' +
+    '</div></td></tr>').join('')
+    : '<tr><td colspan="' + (products.length + 3) + '" style="color:var(--muted)">No customers yet. They are also added automatically when typed on an invoice.</td></tr>';
+}
+
+function openCustomerEditor(id){
+  editingCustomerId = id || null;
+  const c = id ? salesCustomers.find(x => x.id === id) : null;
+  document.getElementById('custModalTitle').textContent = c ? 'Edit customer' : 'Add customer';
+  document.getElementById('cust_name').value = c ? c.name : '';
+  document.getElementById('cust_phone').value = c ? c.phone : '';
+  document.getElementById('cust_notes').value = c ? c.notes : '';
+  document.getElementById('custPrices').innerHTML = saleProducts().map(p =>
+    '<label>' + esc(shortTitle(p.sku, p.title)) + ' <span class="perm-summary">(list ' + hk(p.price) + ')</span>' +
+    '<input type="number" min="0" step="0.01" data-sku="' + escAttr(p.sku) + '" value="' +
+    (c && c.prices[p.sku] !== undefined ? c.prices[p.sku] : '') + '"></label>').join('');
+  document.getElementById('custError').textContent = '';
+  document.getElementById('custModal').classList.remove('hidden');
+}
+function closeCustomerEditor(){ document.getElementById('custModal').classList.add('hidden'); editingCustomerId = null; }
+
+async function saveCustomer(){
+  const prices = {};
+  document.querySelectorAll('#custPrices input').forEach(i => { if(i.value !== '') prices[i.dataset.sku] = parseFloat(i.value); });
+  const payload = {
+    name: document.getElementById('cust_name').value.trim(),
+    phone: document.getElementById('cust_phone').value.trim(),
+    notes: document.getElementById('cust_notes').value.trim(),
+    prices: prices
+  };
+  const btn = document.getElementById('custSaveBtn');
+  btn.disabled = true;
+  try {
+    if(editingCustomerId) await authFetch('/api/sales/customers/' + editingCustomerId, 'PATCH', payload);
+    else await authFetch('/api/sales/customers', 'POST', payload);
+    logActivity('sales', (editingCustomerId ? 'Updated' : 'Added') + ' customer: ' + payload.name);
+    toast('Customer saved', true);
+    closeCustomerEditor();
+    loadSales();
+  } catch(err){ document.getElementById('custError').textContent = err.message; }
+  finally { btn.disabled = false; }
+}
+
+async function deleteCustomer(id){
+  const c = salesCustomers.find(x => x.id === id);
+  if(!c || !confirm('Delete ' + c.name + '?')) return;
+  try {
+    await authFetch('/api/sales/customers/' + id, 'DELETE');
+    logActivity('sales', 'Deleted customer: ' + c.name);
+    toast('Customer deleted', false);
+    loadSales();
+  } catch(err){ toast(esc(err.message), false); }
+}
+
+// ---- the workbook
+async function downloadSalesReport(monthOnly){
+  if(!API_BASE || !dbLive || !authToken()){ toast('The report needs the database. Start the API and sign in.', false); return; }
+  const year = document.getElementById('salesYear').value;
+  const month = document.getElementById('salesMonth').value;
+  const url = API_BASE + '/api/reports/sales.xlsx?year=' + year + (monthOnly ? '&month=' + month : '');
+  try {
+    const res = await fetch(url, { headers: { Authorization: 'Bearer ' + authToken() } });
+    if(!res.ok){
+      const info = await res.json().catch(() => ({}));
+      toast(res.status === 404 ? 'The API is running an older version. Stop it and run <code>npm run dev</code> again.'
+                               : esc(info.error || 'Could not build the report'), false);
+      return;
+    }
+    const match = /filename="([^"]+)"/.exec(res.headers.get('Content-Disposition') || '');
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = match ? match[1] : 'Sales report.xlsx';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    logActivity('sales', 'Downloaded the ' + (monthOnly ? SALE_MONTHS[month - 1] + ' ' : '') + year + ' sales workbook');
+    toast('Sales workbook downloaded', true);
+  } catch(e){ toast('Could not reach the API', false); }
+}
+
+// ---------- INIT & NAVIGATION ----------
+(async function bootLogin(){
+  const start = async () => { if(!await restoreSession()) await prepareLoginScreen(); };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+
+/* ================= DASHBOARD =================================================
+   Read-only overview built from the same in-memory data the modules edit, so it
+   is always current — every save calls logActivity(), which re-renders it. */
+
+const ACTIVITY_KEY = 'wh_activity_log';
+
+function logActivity(module, text){
+  const entry = { module: module, text: text, at: new Date().toISOString() };
+  try {
+    const log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]');
+    log.unshift(entry);
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log.slice(0, 25)));
+  } catch(e){}
+  // Keep the trail in MongoDB too, so it survives clearing this browser and is
+  // visible to anyone else working on the same database.
+  if(API_BASE && dbLive){
+    fetch(API_BASE + '/api/activity', {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' },
+        authToken() ? { Authorization: 'Bearer ' + authToken() } : {}),
+      body: JSON.stringify(entry)
+    }).catch(() => {});
+  }
+  if(activeNav === 'dashboard') renderDashboard();
+}
+
+function timeAgo(iso){
+  const then = new Date(iso).getTime();
+  if(!then) return '';
+  const mins = Math.floor((Date.now() - then) / 60000);
+  if(mins < 1) return 'just now';
+  if(mins < 60) return mins + ' min ago';
+  const hrs = Math.floor(mins / 60);
+  if(hrs < 24) return hrs + (hrs === 1 ? ' hour ago' : ' hours ago');
+  const days = Math.floor(hrs / 24);
+  return days + (days === 1 ? ' day ago' : ' days ago');
+}
+
+function currentHomepageValues(){
+  const ids = ['notice_badge','notice_msg','hero_title','hero_sub','cta_1','cta_2',
+               'stat_1','stat_2','contact_phone','contact_email'];
+  const out = {};
+  ids.forEach(k => {
+    const el = document.getElementById('hp_' + k);
+    out[k] = el ? el.value.trim() : '';
+  });
+  return out;
+}
+
+/* Everything an editor would want flagged, gathered in one pass. */
+function collectAttention(){
+  const items = [];
+  const add = (text, nav) => items.push({ text: text, nav: nav });
+
+  const noPrice = productsData.filter(p => !parseFloat(p.price));
+  if(noPrice.length) add(noPrice.length + ' product(s) have no price set: ' +
+    noPrice.map(p => p.title || p.sku).join(', '), 'products');
+
+  const noPic = productsData.filter(p => !p.image && !(Array.isArray(p.images) && p.images.length));
+  if(noPic.length) add(noPic.length + ' product(s) have no picture and fall back to the default photo', 'products');
+
+  const noAlt = productsData.filter(p => Array.isArray(p.images) && p.images.some(x => x.url && !x.alt));
+  if(noAlt.length) add(noAlt.length + ' product(s) have a picture with no ALT text', 'products');
+
+  const noDesc = productsData.filter(p => !(p.desc || '').trim());
+  if(noDesc.length) add(noDesc.length + ' product(s) have no description', 'products');
+
+  const dupeSku = {};
+  productsData.forEach(p => { const k = (p.sku || '').trim(); if(k) dupeSku[k] = (dupeSku[k] || 0) + 1; });
+  const dupes = Object.keys(dupeSku).filter(k => dupeSku[k] > 1);
+  if(dupes.length) add('Duplicate SKU: ' + dupes.join(', ') + ' — each product needs its own code', 'products');
+
+  const noZh = casesData.filter(c => !c.zh || !(c.zh.title || '').trim());
+  if(noZh.length) add(noZh.length + ' case(s) have no Chinese version — the site\'s main language', 'cases');
+
+  const noSummary = casesData.filter(c => c.zh && (c.zh.title || '').trim() && !(c.zh.summary || '').trim());
+  if(noSummary.length) add(noSummary.length + ' case(s) have no summary, so their card looks empty', 'cases');
+
+  const outOfStock = productsData.filter(p => invState(p) === 'out');
+  if(outOfStock.length) add(outOfStock.length + ' product(s) are out of stock and cannot be bought: ' +
+    outOfStock.map(p => p.title || p.sku).join(', '), 'inventory');
+
+  const lowStock = productsData.filter(p => invState(p) === 'low');
+  if(lowStock.length) add(lowStock.length + ' product(s) are at or below their reorder level: ' +
+    lowStock.map(p => (p.title || p.sku) + ' (' + stockOf(p) + ' left)').join(', '), 'inventory');
+
+  const untracked = productsData.filter(p => invState(p) === 'untracked');
+  if(untracked.length) add(untracked.length + ' product(s) have no stock tracking yet', 'inventory');
+
+  const badFaq = faqData.filter(f => !(f.q || '').trim() || !(f.a || '').trim());
+  if(badFaq.length) add(badFaq.length + ' FAQ entr(y/ies) are missing a question or an answer', 'faq');
+
+  const hp = currentHomepageValues();
+  if(!hp.contact_phone || !hp.contact_email)
+    add('Homepage contact details are incomplete', 'homepage');
+
+  return items;
+}
+
+function renderTiles(){
+  const inStock = productsData.filter(p => /^in/i.test(p.status || 'In Stock')).length;
+  const preOrder = productsData.filter(p => /^pre/i.test(p.status || '')).length;
+  const outStock = productsData.filter(p => /^out/i.test(p.status || '')).length;
+  const faqCats = {};
+  faqData.forEach(f => { if(f.cat) faqCats[f.cat] = 1; });
+  const withZh = casesData.filter(c => c.zh && (c.zh.title || '').trim()).length;
+  const trackedCount = productsData.filter(isTracked).length;
+  const unitsOnHand = productsData.filter(isTracked).reduce((sum, p) => sum + stockOf(p), 0);
+  const hp = currentHomepageValues();
+  const hpFilled = Object.keys(hp).filter(k => hp[k]).length;
+
+  const tiles = [
+    { n: casesData.length, lbl: 'Patient cases',
+      sub: withZh + ' with a Chinese version', nav: 'cases' },
+    { n: productsData.length, lbl: 'Products',
+      sub: inStock + ' in stock · ' + preOrder + ' pre-order · ' + outStock + ' out of stock', nav: 'products' },
+    { n: unitsOnHand.toLocaleString('en-US'), lbl: 'Units in stock',
+      sub: trackedCount + ' of ' + productsData.length + ' products tracked', nav: 'inventory' },
+    { n: faqData.length, lbl: 'FAQ entries',
+      sub: Object.keys(faqCats).length + ' categories', nav: 'faq' },
+    { n: hpFilled + '/10', lbl: 'Homepage fields',
+      sub: 'banner, hero, stats, contact', nav: 'homepage' }
+  ];
+
+  document.getElementById('dashTiles').innerHTML = tiles.map(t => `
+    <button class="stat-tile" onclick="switchNav('${t.nav}')">
+      <div class="top"><span class="pill pill-info">open →</span></div>
+      <div class="n">${t.n}</div>
+      <div class="lbl">${esc(t.lbl)}</div>
+      <div class="sub">${esc(t.sub)}</div>
+    </button>`).join('');
+}
+
+function renderAttention(){
+  const items = collectAttention();
+  const box = document.getElementById('dashAttention');
+  const pill = document.getElementById('attnPill');
+
+  if(items.length === 0){
+    pill.className = 'pill pill-ok';
+    pill.textContent = 'All clear';
+    box.innerHTML = '<li><span class="dot ok"></span><span class="txt">Nothing to fix — every product has a price, ' +
+      'a picture and a description, and every case has its Chinese version.</span></li>';
+    return;
+  }
+  pill.className = 'pill pill-warn';
+  pill.textContent = items.length + (items.length === 1 ? ' item' : ' items');
+  box.innerHTML = items.map(it => `
+    <li><span class="dot warn"></span>
+      <span class="txt">${esc(it.text)}</span>
+      <button class="go" onclick="switchNav('${it.nav}')">Fix →</button></li>`).join('');
+}
+
+function renderActivity(){
+  let log = [];
+  try { log = JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); } catch(e){}
+  const box = document.getElementById('dashActivity');
+  document.getElementById('actPill').textContent = log.length;
+  if(!log.length){
+    box.innerHTML = '<li><span class="txt dash-empty">No changes yet. ' +
+      'Anything you add, edit or delete will be listed here.</span></li>';
+    return;
+  }
+  const names = { cases: 'Cases', products: 'Products', inventory: 'Inventory',
+                  faq: 'FAQ', homepage: 'Homepage' };
+  box.innerHTML = log.slice(0, 8).map(e => `
+    <li><span class="tag">${esc(names[e.module] || e.module)}</span>
+      <span class="txt">${esc(e.text)}<div class="when">${esc(timeAgo(e.at))}</div></span></li>`).join('');
+}
+
+function renderLangs(){
+  const box = document.getElementById('dashLangs');
+  const total = casesData.length;
+  document.getElementById('langPill').textContent = total + ' cases';
+  if(!total){
+    box.innerHTML = '<li><span class="txt dash-empty">No cases yet.</span></li>';
+    return;
+  }
+  box.innerHTML = LANGS.map(l => {
+    const done = casesData.filter(c => c[l.code] && (c[l.code].title || '').trim()).length;
+    const pct = Math.round(done / total * 100);
+    return `<li><span class="txt"><b>${esc(l.label)}</b> — ${done}/${total} (${pct}%)
+      <div class="bar"><span style="width:${pct}%"></span></div></span></li>`;
+  }).join('');
+}
+
+/* Compare what is in this browser against the JSON files the site actually ships. */
+async function renderPublish(){
+  const box = document.getElementById('dashPublish');
+  const pill = document.getElementById('pubPill');
+  const targets = [
+    { key: 'cases',    file: '../data/cases.json',    label: 'Cases',         local: () => casesData },
+    { key: 'products', file: '../data/products.json', label: 'Products',      local: () => productsData },
+    { key: 'faq',      file: '../data/faq.json',      label: 'FAQ',           local: () => faqData },
+    { key: 'homepage', file: '../data/homepage.json', label: 'Homepage text', local: currentHomepageValues }
+  ];
+
+  const rows = await Promise.all(targets.map(async t => {
+    try {
+      const res = await fetch(t.file, { cache: 'no-store' });
+      if(!res.ok) throw new Error('http ' + res.status);
+      const published = await res.json();
+      const same = JSON.stringify(published) === JSON.stringify(t.local());
+      return { label: t.label, state: same ? 'ok' : 'draft' };
+    } catch(e){
+      return { label: t.label, state: 'unknown' };
+    }
+  }));
+
+  rows.push({ label: 'Inventory (CSV)', state: await inventoryCsvState() });
+  rows.push({ label: 'MongoDB', state: dbLive ? 'live' : 'offline' });
+
+  const drafts = rows.filter(r => r.state === 'draft').length;
+  const unknown = rows.filter(r => r.state === 'unknown').length;
+  if(drafts){ pill.className = 'pill pill-warn'; pill.textContent = drafts + ' unpublished'; }
+  else if(unknown){ pill.className = 'pill pill-info'; pill.textContent = 'file check unavailable'; }
+  else { pill.className = 'pill pill-ok'; pill.textContent = 'all published'; }
+
+  const view = {
+    ok:      { dot: 'ok',   note: 'matches the published file' },
+    draft:   { dot: 'warn', note: 'changed in this browser, not yet in the repository' },
+    unknown: { dot: 'idle', note: 'published file could not be read' },
+    live:    { dot: 'ok',   note: 'connected — run `npm run export` to write these files' },
+    offline: { dot: 'idle', note: 'not running — start it with `npm run dev`' }
+  };
+  box.innerHTML = rows.map(r => `
+    <li><span class="dot ${view[r.state].dot}"></span>
+      <span class="txt"><b>${esc(r.label)}</b><div class="when">${esc(view[r.state].note)}</div></span></li>`).join('');
+}
+
+function renderDashboard(){
+  if(typeof casesData === 'undefined') return;
+  renderTiles();
+  renderAttention();
+  renderActivity();
+  renderLangs();
+  renderPublish();
+  const stamp = new Date().toLocaleTimeString();
+  document.getElementById('dashSub').textContent = 'Everything on the site at a glance · updated ' + stamp;
+}
+
+/* ---- local MongoDB API ------------------------------------------------------
+   `npm run dev` serves the database at :4000. When it answers, it is the single
+   source of truth and every save goes straight into MongoDB, so a second tab or
+   a second machine sees the same numbers. When it does not answer, the admin
+   behaves exactly as before: localStorage first, then the committed data files.
+   Publishing is still `npm run export` + commit - the live site stays static. */
+
+const API_BASE = (function(){
+  if (window.WH_API_BASE) return window.WH_API_BASE;
+  const host = location.hostname;
+  // Only look for a local API on a local machine; never from the published site.
+  if (host === 'localhost' || host === '127.0.0.1' || host === '') return 'http://localhost:4000';
+  return null;
+})();
+
+let dbLive = false;
+
+function setDbChip(live, detail){
+  dbLive = live;
+  const chip = document.getElementById('dbChip');
+  const text = document.getElementById('dbChipText');
+  if(!chip || !text) return;
+  chip.classList.toggle('live', !!live);
+  text.textContent = live ? ('MongoDB connected' + (detail ? ' · ' + detail : ''))
+                          : 'Local files (MongoDB offline)';
+  chip.title = live
+    ? 'Saving straight into MongoDB. Run `npm run export` and commit to publish.'
+    : 'The API at ' + (API_BASE || 'localhost:4000') + ' is not answering. ' +
+      'Edits stay in this browser. Start it with `npm run dev`.';
+}
+
+async function apiGet(type){
+  if(!API_BASE) return null;
+  try {
+    const res = await fetch(API_BASE + '/api/cms?type=' + encodeURIComponent(type), { cache: 'no-store' });
+    if(!res.ok) return null;
+    return await res.json();
+  } catch(e){ return null; }
+}
+
+async function apiPut(type, data){
+  if(!API_BASE || !dbLive) return false;
+  try {
+    const res = await fetch(API_BASE + '/api/cms?type=' + encodeURIComponent(type), {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' },
+        authToken() ? { Authorization: 'Bearer ' + authToken() } : {}),
+      body: JSON.stringify(data)
+    });
+    // a refusal must be visible: the screen would otherwise show a save that
+    // the database never accepted
+    if(res.status === 401 || res.status === 403){
+      const info = await res.json().catch(() => ({}));
+      toast(esc(info.error || 'That change was refused'), false);
+      return false;
+    }
+    return res.ok;
+  } catch(e){ return false; }
+}
+
+async function apiCheck(){
+  if(!API_BASE){ setDbChip(false); return false; }
+  try {
+    const res = await fetch(API_BASE + '/api/health', { cache: 'no-store' });
+    if(!res.ok){ setDbChip(false); return false; }
+    const info = await res.json();
+    setDbChip(true, info.db);
+    return true;
+  } catch(e){ setDbChip(false); return false; }
+}
+
+/* One stock movement, applied by the server so concurrent edits cannot
+   overwrite each other. Returns null when the API is not available, and the
+   caller falls back to adjusting in the browser. */
+async function apiAdjustStock(sku, type, qty, note){
+  if(!API_BASE || !dbLive || !sku) return null;
+  try {
+    const res = await fetch(API_BASE + '/api/stock/' + encodeURIComponent(sku) + '/adjust', {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' },
+        authToken() ? { Authorization: 'Bearer ' + authToken() } : {}),
+      body: JSON.stringify({ type: type, qty: qty, note: note })
+    });
+    if(res.status === 401 || res.status === 403){
+      const info = await res.json().catch(() => ({}));
+      toast(esc(info.error || 'That change was refused'), false);
+      return null;
+    }
+    if(!res.ok) return null;
+    return await res.json();
+  } catch(e){ return null; }
+}
+
+/* ---- CSV export of every module ---------------------------------------------
+   The JSON files are what the site loads; these CSVs are the same content in a
+   form that opens in Excel, for stock counts, proofreading and hand-off.
+   Only inventory.csv is read back in - the rest are for people, not the site. */
+
+function csvFromRows(head, rows){
+  return '﻿' + [head.map(csvCell).join(',')]
+    .concat(rows.map(r => r.map(csvCell).join(','))).join('\r\n') + '\r\n';
+}
+
+function downloadCsvFile(filename, text){
+  const blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+/* Repeating fields are flattened one item per line inside the cell, with " | "
+   between an item's parts, so nothing is lost and Excel still shows it. */
+function csvList(arr, keys){
+  if(!Array.isArray(arr) || !arr.length) return '';
+  return arr.map(item => keys.map(k => (item && item[k]) || '').join(' | ')).join('\n');
+}
+
+function buildProductsCsv(){
+  const head = ['SKU', 'Product', 'Price (HKD)', 'Status', 'Category', 'Badges', 'Description',
+                'Definition / Terminology', 'Product story', 'Partners',
+                'Pictures (url | ALT)', 'Testimony (who | when | text)',
+                'Researcher papers (title | url)', 'Articles (title | url)',
+                '3D model', 'On hand', 'Reorder at'];
+  const rows = productsData.map(p => [
+    p.sku || '', p.title || '', (parseFloat(p.price) || 0).toFixed(2), p.status || '',
+    p.cat || '', p.badges || '', p.desc || '',
+    p.definition || '', p.story || '', p.partners || '',
+    csvList(p.images, ['url', 'alt']),
+    csvList(p.testimonies, ['who', 'when', 'text']),
+    csvList(p.papers, ['title', 'url']),
+    csvList(p.articles, ['title', 'url']),
+    p.model || '',
+    isTracked(p) ? stockOf(p) : '',
+    isTracked(p) ? reorderOf(p) : ''
+  ]);
+  return csvFromRows(head, rows);
+}
+
+function buildCasesCsv(){
+  const head = ['#'];
+  LANGS.forEach(l => head.push(l.label + ' - title', l.label + ' - subtitle',
+                               l.label + ' - summary', l.label + ' - content'));
+  const rows = casesData.map((c, i) => {
+    const r = [i + 1];
+    LANGS.forEach(l => {
+      const o = c[l.code] || {};
+      r.push(o.title || '', o.subtitle || '', o.summary || '', o.content || '');
+    });
+    return r;
+  });
+  return csvFromRows(head, rows);
+}
+
+function buildFaqCsv(){
+  return csvFromRows(['#', 'Category', 'Question', 'Answer'],
+    faqData.map((f, i) => [i + 1, f.cat || '', f.q || '', f.a || '']));
+}
+
+function buildHomepageCsv(){
+  const hp = currentHomepageValues();
+  const labels = {
+    notice_badge: 'Notice badge', notice_msg: 'Notice message',
+    hero_title: 'Hero headline', hero_sub: 'Hero subtitle',
+    cta_1: 'Button 1', cta_2: 'Button 2',
+    stat_1: 'Stat 1', stat_2: 'Stat 2',
+    contact_phone: 'Contact phone', contact_email: 'Contact email'
+  };
+  return csvFromRows(['Field', 'Value'],
+    Object.keys(labels).map(k => [labels[k], hp[k] || '']));
+}
+
+function buildMovementsCsv(){
+  return csvFromRows(['When', 'SKU', 'Product', 'Movement', 'Change', 'On hand after', 'Note'],
+    movements.map(m => [m.at || '', m.sku || '', m.title || '',
+                        MOVE_LABEL[m.type] || m.type || '',
+                        (m.delta > 0 ? '+' : '') + m.delta, m.after, m.note || '']));
+}
+
+function exportAllCsvPackage(){
+  const files = [
+    ['products.csv', buildProductsCsv()],
+    ['inventory.csv', buildInventoryCsv()],
+    ['cases.csv', buildCasesCsv()],
+    ['faq.csv', buildFaqCsv()],
+    ['homepage.csv', buildHomepageCsv()],
+    ['inventory-log.csv', buildMovementsCsv()]
+  ];
+  // Browsers drop simultaneous downloads, so space them out.
+  files.forEach((f, i) => setTimeout(() => downloadCsvFile(f[0], f[1]), i * 300));
+  toast('Downloading ' + files.length + ' CSV files', true);
+}
+
+/* ---- data/inventory.csv : the published stock file --------------------------
+   Stock is kept in a CSV so it can be opened in Excel, edited by whoever does
+   the stock count, and committed to the repository. The site reads the same
+   file, so what is counted here is what shoppers see. Precedence is:
+   edits in this browser  >  data/inventory.csv  >  data/products.json. */
+
+const INVENTORY_CSV = '../data/inventory.csv';
+const CSV_HEAD = ['SKU', 'Product', 'Price (HKD)', 'On hand', 'Reorder at',
+                  'Status', 'Stock value (HKD)', 'Last updated'];
+
+/* A small RFC4180 reader: handles quoted fields, embedded commas and newlines. */
+function parseCsv(text){
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  text = String(text).replace(/^﻿/, '');
+  for(let i = 0; i < text.length; i++){
+    const c = text[i];
+    if(inQuotes){
+      if(c === '"'){
+        if(text[i + 1] === '"'){ field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else if(c === '"'){ inQuotes = true; }
+    else if(c === ','){ row.push(field); field = ''; }
+    else if(c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
+    else if(c !== '\r'){ field += c; }
+  }
+  if(field !== '' || row.length){ row.push(field); rows.push(row); }
+  if(!rows.length) return [];
+  const head = rows.shift().map(h => h.trim());
+  return rows.filter(r => r.some(v => String(v).trim() !== '')).map(r => {
+    const o = {};
+    head.forEach((h, i) => { o[h] = (r[i] === undefined ? '' : String(r[i]).trim()); });
+    return o;
+  });
+}
+
+function csvCell(v){
+  return '"' + String(v === undefined || v === null ? '' : v).replace(/"/g, '""') + '"';
+}
+
+function buildInventoryCsv(){
+  const lines = [CSV_HEAD.map(csvCell).join(',')];
+  productsData.forEach(p => {
+    const n = stockOf(p);
+    lines.push([
+      p.sku || '',
+      p.title || '',
+      (parseFloat(p.price) || 0).toFixed(2),
+      n === null ? '' : n,
+      isTracked(p) ? reorderOf(p) : '',
+      p.status || '',
+      n === null ? '' : (n * (parseFloat(p.price) || 0)).toFixed(2),
+      p.stockUpdated || ''
+    ].map(csvCell).join(','));
+  });
+  return '﻿' + lines.join('\r\n') + '\r\n';
+}
+
+/* Apply CSV rows onto the products, matched on SKU.
+   force=false only fills products that have no stock figure yet, so the CSV
+   seeds a fresh browser without overwriting work done here. */
+function applyInventoryRows(rows, force){
+  let applied = 0, unknown = [];
+  rows.forEach(r => {
+    const sku = (r['SKU'] || '').trim();
+    if(!sku) return;
+    const p = productsData.find(x => (x.sku || '').trim() === sku);
+    if(!p){ unknown.push(sku); return; }
+    if(!force && isTracked(p)) return;
+
+    const raw = (r['On hand'] || '').trim();
+    if(raw === ''){ if(force) { p.stock = undefined; } }
+    else { p.stock = Math.max(0, parseInt(raw, 10) || 0); }
+
+    const reorder = parseInt((r['Reorder at'] || '').trim(), 10);
+    if(!isNaN(reorder)) p.reorder = Math.max(0, reorder);
+
+    // A Pre-order product keeps that status; otherwise stock decides it.
+    const status = (r['Status'] || '').trim();
+    if(/^pre/i.test(status)) p.status = 'Pre-order';
+    if(r['Last updated']) p.stockUpdated = r['Last updated'];
+    applied++;
+  });
+  return { applied: applied, unknown: unknown };
+}
+
+async function loadInventoryCsv(){
+  try {
+    const res = await fetch(INVENTORY_CSV, { cache: 'no-store' });
+    if(!res.ok) return;
+    applyInventoryRows(parseCsv(await res.text()), false);
+    productsData.forEach(syncStatusToStock);
+  } catch(e){ /* file:// or not published yet - the admin still works */ }
+}
+
+/* The Excel report is made by the server from the database, so what is
+   downloaded is what is stored - not this screen's copy. */
+async function downloadInventoryReport(){
+  if(!API_BASE || !dbLive || !authToken()){
+    toast('The report needs the database. Start the API and sign in.', false);
+    return;
+  }
+  try {
+    const res = await fetch(API_BASE + '/api/reports/inventory.xlsx', {
+      headers: { Authorization: 'Bearer ' + authToken() }
+    });
+    if(!res.ok){
+      const info = await res.json().catch(() => ({}));
+      // a 404 means the API answering is an older build without this report
+      toast(res.status === 404
+        ? 'The API is running an older version. Stop it and run <code>npm run dev</code> again.'
+        : esc(info.error || 'Could not build the report'), false);
+      return;
+    }
+    const match = /filename="([^"]+)"/.exec(res.headers.get('Content-Disposition') || '');
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = match ? match[1] : 'Inventory report.xlsx';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    logActivity('inventory', 'Downloaded the inventory report');
+    toast('Inventory report downloaded', true);
+  } catch(e){
+    toast('Could not reach the API', false);
+  }
+}
+
+function downloadInventoryCsv(){
+  downloadCsvFile('inventory.csv', buildInventoryCsv());
+  toast('inventory.csv downloaded - save it into the data/ folder and commit it', true);
+}
+
+function importInventoryCsv(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const rows = parseCsv(reader.result);
+    if(!rows.length){ toast('That file has no rows', false); input.value = ''; return; }
+    if(rows[0]['SKU'] === undefined){
+      toast('No "SKU" column found - use the exported file as your template', false);
+      input.value = '';
+      return;
+    }
+    const res = applyInventoryRows(rows, true);
+    productsData.forEach(p => {
+      if(isTracked(p)) p.stockUpdated = new Date().toISOString().slice(0, 10);
+    });
+    persistProducts();
+    logActivity('inventory', 'Imported stock for ' + res.applied + ' product(s) from CSV');
+    renderInventory();
+    renderProdList();
+    input.value = '';
+    toast('Imported ' + res.applied + ' product(s)' +
+      (res.unknown.length ? ' - unknown SKU skipped: ' + res.unknown.join(', ') : ''), true);
+  };
+  reader.readAsText(file);
+}
+
+/* Does the browser still agree with the published CSV? */
+async function inventoryCsvState(){
+  try {
+    const res = await fetch(INVENTORY_CSV, { cache: 'no-store' });
+    if(!res.ok) return 'unknown';
+    const published = parseCsv(await res.text());
+    const mine = parseCsv(buildInventoryCsv());
+    const key = r => [r['SKU'], r['On hand'], r['Reorder at'], r['Status']].join('|');
+    const a = published.map(key).sort().join('\n');
+    const b = mine.map(key).sort().join('\n');
+    return a === b ? 'ok' : 'draft';
+  } catch(e){ return 'unknown'; }
+}
+
+/* ================= INVENTORY ================================================
+   Stock lives on the product record, so it publishes through the same
+   data/products.json the storefront already reads. Hitting zero flips the
+   product to Out of Stock, which the catalogue, product page and cart honour.
+   Every change is written to a movement log for an audit trail. */
+
+const MOVEMENTS_KEY = 'wh_inventory_log';
+const DEFAULT_REORDER = 10;
+let movements = [];
+let editingInvIdx = null;
+
+const MOVE_LABEL = {
+  receive:    'Received new stock',
+  sale:       'Sold / shipped',
+  damage:     'Damaged or expired',
+  correction: 'Stock count correction',
+  initial:    'Opening stock'
+};
+
+function isTracked(p){ return p && p.stock !== undefined && p.stock !== null && p.stock !== ''; }
+function stockOf(p){ return isTracked(p) ? (parseInt(p.stock, 10) || 0) : null; }
+function reorderOf(p){
+  const v = parseInt(p && p.reorder, 10);
+  return isNaN(v) ? DEFAULT_REORDER : v;
+}
+
+/* untracked | out | low | ok */
+function invState(p){
+  if(!isTracked(p)) return 'untracked';
+  const n = stockOf(p);
+  if(n <= 0) return 'out';
+  if(n <= reorderOf(p)) return 'low';
+  return 'ok';
+}
+
+function money(v){
+  const n = parseFloat(v) || 0;
+  return 'HK$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/* Keep the storefront's status field in step with the count. A pre-order
+   product is left alone: it is meant to sell with nothing on the shelf. */
+function syncStatusToStock(p){
+  if(!isTracked(p)) return;
+  const isPreorder = /^pre/i.test(p.status || '');
+  if(isPreorder) return;
+  p.status = stockOf(p) <= 0 ? 'Out of Stock' : 'In Stock';
+}
+
+function persistProducts(){
+  productsData.forEach(syncStatusToStock);
+  localStorage.setItem('wh_products_data', JSON.stringify(productsData));
+  notifyCMSSync('products', productsData);
+}
+
+function loadMovements(){
+  try { movements = JSON.parse(localStorage.getItem(MOVEMENTS_KEY) || '[]'); }
+  catch(e){ movements = []; }
+  if(!Array.isArray(movements)) movements = [];
+}
+
+function saveMovements(){
+  localStorage.setItem(MOVEMENTS_KEY, JSON.stringify(movements.slice(0, 500)));
+}
+
+function recordMovement(p, type, delta, after, note){
+  movements.unshift({
+    at: new Date().toISOString(),
+    sku: p.sku || '',
+    title: p.title || '',
+    type: type,
+    delta: delta,
+    after: after,
+    note: (note || '').trim()
+  });
+  saveMovements();
+}
+
+/* ---------- table ---------- */
+function renderInventory(){
+  const badge = document.getElementById('badge-inventory');
+  if(badge) badge.textContent = productsData.filter(isTracked).length;
+
+  const body = document.getElementById('invBody');
+  if(!body) return;
+
+  const q = (document.getElementById('invSearch').value || '').trim().toLowerCase();
+  const filter = document.getElementById('invFilter').value;
+  const sort = document.getElementById('invSort').value;
+
+  let rows = productsData.map((p, i) => ({ p: p, i: i, state: invState(p) }));
+  rows = rows.filter(r => {
+    const matchesQ = !q || ((r.p.title || '') + ' ' + (r.p.sku || '')).toLowerCase().includes(q);
+    const matchesF = filter === 'all' || filter === r.state;
+    return matchesQ && matchesF;
+  });
+
+  const rank = { out: 0, low: 1, ok: 2, untracked: 3 };
+  if(sort === 'name') rows.sort((a, b) => (a.p.title || '').localeCompare(b.p.title || ''));
+  else if(sort === 'value') rows.sort((a, b) =>
+    (stockOf(b.p) || 0) * (parseFloat(b.p.price) || 0) - (stockOf(a.p) || 0) * (parseFloat(a.p.price) || 0));
+  else rows.sort((a, b) => (rank[a.state] - rank[b.state]) || ((stockOf(a.p) || 0) - (stockOf(b.p) || 0)));
+
+  document.getElementById('invEmpty').classList.toggle('hidden', rows.length > 0);
+
+  const badgeFor = {
+    ok:        '<span class="badge badge-green">In stock</span>',
+    low:       '<span class="badge" style="background:#fff7ed;color:#9a3412">Low stock</span>',
+    out:       '<span class="badge" style="background:#fef2f2;color:#b42318">Out of stock</span>',
+    untracked: '<span class="badge badge-gray">Not tracked</span>'
+  };
+
+  body.innerHTML = rows.map(r => {
+    const p = r.p, n = stockOf(p);
+    const value = (n || 0) * (parseFloat(p.price) || 0);
+    const qtyCell = r.state === 'untracked'
+      ? '<span style="color:var(--muted)">—</span>'
+      : '<span class="qty ' + (r.state === 'out' ? 'out' : r.state === 'low' ? 'low' : '') + '">' + n + '</span>';
+    return `
+      <tr>
+        <td><div class="name">${esc(p.title || 'Untitled')}</div>
+            <div class="sku">${esc(p.sku || 'no SKU')}</div></td>
+        <td class="num">${esc(money(p.price))}</td>
+        <td class="num">${qtyCell}</td>
+        <td class="num"><input class="reorder" type="number" min="0" step="1"
+              value="${reorderOf(p)}" onchange="setReorder(${r.i}, this.value)"></td>
+        <td>${badgeFor[r.state]}</td>
+        <td class="num">${r.state === 'untracked' ? '—' : esc(money(value))}</td>
+        <td><div class="acts">
+          ${r.state === 'untracked'
+            ? `<button class="btn btn-primary btn-sm" onclick="startTracking(${r.i})">Start tracking</button>`
+            : `<button class="btn btn-ghost btn-sm js-edit" onclick="openInvAdjust(${r.i})">Adjust</button>`}
+        </div></td>
+      </tr>`;
+  }).join('');
+
+  renderInvKpis();
+  renderInvMovements();
+}
+
+function renderInvKpis(){
+  const tracked = productsData.filter(isTracked);
+  const units = tracked.reduce((sum, p) => sum + stockOf(p), 0);
+  const value = tracked.reduce((sum, p) => sum + stockOf(p) * (parseFloat(p.price) || 0), 0);
+  const low = productsData.filter(p => invState(p) === 'low').length;
+  const out = productsData.filter(p => invState(p) === 'out').length;
+
+  const kpis = [
+    { n: tracked.length + '/' + productsData.length, lbl: 'Products tracked', cls: '' },
+    { n: units.toLocaleString('en-US'), lbl: 'Units on hand', cls: '' },
+    { n: money(value), lbl: 'Total stock value', cls: '' },
+    { n: low, lbl: 'Low stock', cls: low ? 'alert' : '' },
+    { n: out, lbl: 'Out of stock', cls: out ? 'danger' : '' }
+  ];
+  document.getElementById('invKpis').innerHTML = kpis.map(k =>
+    `<div class="inv-kpi ${k.cls}"><div class="n">${esc(String(k.n))}</div>
+     <div class="lbl">${esc(k.lbl)}</div></div>`).join('');
+}
+
+function renderInvMovements(){
+  const box = document.getElementById('invMovements');
+  if(!box) return;
+  document.getElementById('mvPill').textContent = movements.length;
+  if(!movements.length){
+    box.innerHTML = '<li><span class="mv-body dash-empty">No stock movements yet. ' +
+      'Receiving, selling or correcting stock will be listed here.</span></li>';
+    return;
+  }
+  box.innerHTML = movements.slice(0, 15).map(m => {
+    const sign = m.delta > 0 ? '+' : '';
+    return `<li>
+      <span class="mv-delta ${m.delta > 0 ? 'up' : m.delta < 0 ? 'down' : ''}">${sign}${m.delta}</span>
+      <span class="mv-body"><b>${esc(m.title || m.sku)}</b> — ${esc(MOVE_LABEL[m.type] || m.type)}
+        ${m.note ? '· ' + esc(m.note) : ''}
+        <div class="mv-when">${esc(timeAgo(m.at))} · ${m.after} on hand after</div></span></li>`;
+  }).join('');
+}
+
+/* ---------- actions ---------- */
+function setReorder(idx, value){
+  const p = productsData[idx];
+  if(!p) return;
+  p.reorder = Math.max(0, parseInt(value, 10) || 0);
+  persistProducts();
+  logActivity('inventory', 'Reorder level for ' + (p.title || p.sku) + ' set to ' + p.reorder);
+  renderInventory();
+  toast('Reorder level updated', true);
+}
+
+function startTracking(idx){
+  const p = productsData[idx];
+  if(!p) return;
+  p.stock = 0;
+  if(p.reorder === undefined) p.reorder = DEFAULT_REORDER;
+  recordMovement(p, 'initial', 0, 0, 'Started tracking stock');
+  persistProducts();
+  logActivity('inventory', 'Started tracking stock for ' + (p.title || p.sku));
+  renderInventory();
+  openInvAdjust(idx);
+}
+
+function openInvAdjust(idx){
+  editingInvIdx = idx;
+  const p = productsData[idx];
+  if(!p) return;
+  document.getElementById('invModalTitle').textContent = 'Adjust stock — ' + (p.title || p.sku);
+  document.getElementById('inv_type').value = 'receive';
+  document.getElementById('inv_qty').value = 1;
+  document.getElementById('inv_note').value = '';
+  document.getElementById('invModal').classList.remove('hidden');
+  updateInvPreview();
+}
+
+function closeInvAdjust(){
+  document.getElementById('invModal').classList.add('hidden');
+  editingInvIdx = null;
+}
+
+/* What the movement will do, spelled out before it is applied. */
+function invAdjustResult(){
+  const p = productsData[editingInvIdx];
+  if(!p) return null;
+  const type = document.getElementById('inv_type').value;
+  const qty = Math.max(0, parseInt(document.getElementById('inv_qty').value, 10) || 0);
+  const before = stockOf(p) || 0;
+  let after;
+  if(type === 'correction') after = qty;
+  else if(type === 'receive') after = before + qty;
+  else after = before - qty;
+  const clamped = Math.max(0, after);
+  return { p: p, type: type, qty: qty, before: before, after: clamped,
+           delta: clamped - before, wouldGoNegative: after < 0 };
+}
+
+function updateInvPreview(){
+  const r = invAdjustResult();
+  const box = document.getElementById('invPreview').querySelector('span');
+  const label = document.getElementById('inv_qty_label');
+  if(!r){ box.textContent = ''; return; }
+  label.textContent = r.type === 'correction' ? 'Counted quantity (exact figure on the shelf)' : 'Quantity';
+  let msg = r.before + ' on hand → <b>' + r.after + '</b> on hand';
+  if(r.wouldGoNegative) msg += ' — stock cannot go below zero, so it will be set to 0';
+  if(r.after === 0) msg += '. This product will be marked <b>Out of Stock</b> on the site';
+  else if(r.after <= reorderOf(r.p)) msg += '. That is at or below the reorder level of ' + reorderOf(r.p);
+  box.innerHTML = msg;
+}
+
+async function applyInvAdjust(){
+  const r = invAdjustResult();
+  if(!r) return;
+  if(r.type !== 'correction' && r.qty === 0){
+    toast('Enter a quantity first', false);
+    return;
+  }
+  const note = document.getElementById('inv_note').value;
+
+  // Let MongoDB do the arithmetic when it is available: one atomic update,
+  // so two people adjusting the same product cannot overwrite each other.
+  const server = await apiAdjustStock(r.p.sku, r.type, r.qty, note);
+  if(server){
+    r.p.stock = server.after;
+    r.p.status = server.status;
+    r.p.stockUpdated = new Date().toISOString().slice(0, 10);
+    if(r.p.reorder === undefined) r.p.reorder = DEFAULT_REORDER;
+    movements.unshift(server.movement);
+    saveMovements();
+    localStorage.setItem('wh_products_data', JSON.stringify(productsData));
+    logActivity('inventory', (MOVE_LABEL[r.type] || 'Stock change') + ': ' +
+      (r.p.title || r.p.sku) + ' now ' + server.after + ' on hand');
+    closeInvAdjust();
+    renderInventory();
+    renderProdList();
+    toast('Stock updated in MongoDB — ' + (r.p.title || r.p.sku) + ' now ' + server.after + ' on hand', true);
+    return;
+  }
+
+  r.p.stock = r.after;
+  r.p.stockUpdated = new Date().toISOString().slice(0, 10);
+  if(r.p.reorder === undefined) r.p.reorder = DEFAULT_REORDER;
+  recordMovement(r.p, r.type, r.delta, r.after, note);
+  persistProducts();
+  logActivity('inventory', (MOVE_LABEL[r.type] || 'Stock change') + ': ' +
+    (r.p.title || r.p.sku) + ' now ' + r.after + ' on hand');
+  closeInvAdjust();
+  renderInventory();
+  renderProdList();
+  toast('Stock updated — ' + (r.p.title || r.p.sku) + ' now ' + r.after + ' on hand', true);
+}
+
+function exportInventoryCsv(){ downloadInventoryCsv(); }
+
+function switchNav(sectionId){
+  activeNav = sectionId;
+  ['dashboard','cases','products','inventory','faq','homepage','users','sales'].forEach(s => {
+    const el = document.getElementById('sec-' + s);
+    const navEl = document.getElementById('nav-' + s);
+    if(s === sectionId){
+      el.classList.remove('hidden');
+      if(navEl) navEl.classList.add('active');
+    } else {
+      el.classList.add('hidden');
+      if(navEl) navEl.classList.remove('active');
+    }
+  });
+  if(sectionId === 'dashboard') renderDashboard();
+  if(sectionId === 'inventory') renderInventory();
+  if(sectionId === 'users') renderUsers();
+  if(sectionId === 'sales') loadSales();
+  updateViewOnlyNote();
+}
+
+function openSitePreview(){
+  document.getElementById('siteModal').classList.remove('hidden');
+}
+function closeSitePreview(){
+  document.getElementById('siteModal').classList.add('hidden');
+}
+
+// ---------- 1. CASES LOGIC ----------
+async function loadInitialCases(){
+  try{
+    const res = await fetch('../data/cases.json',{cache:'no-store'});
+    if(!res.ok) throw new Error('http '+res.status);
+    casesData = await res.json();
+    toast('Loaded '+casesData.length+' cases', true);
+  }catch(e){
+    casesData = JSON.parse(JSON.stringify(FALLBACK_CASES));
+    toast('Loaded demo cases', true);
+  }
+  renderCasesList();
+}
+
+function gCase(item, lang, field){ 
+  return (item[lang] && item[lang][field]) || (item['en'] && item['en'][field]) || (item['zh'] && item['zh'][field]) || ''; 
+}
+
+function renderCasesList(){
+  const q = (document.getElementById('casesSearch').value||'').trim().toLowerCase();
+  const list = document.getElementById('casesList');
+  document.getElementById('casesCount').textContent = casesData.length;
+  document.getElementById('badge-cases').textContent = casesData.length;
+
+  const filtered = casesData.map((c,i)=>({c,i})).filter(({c})=>{
+    if(!q) return true;
+    const text = (gCase(c,'en','title')+' '+gCase(c,'en','subtitle')+' '+gCase(c,'zh','title')).toLowerCase();
+    return text.includes(q);
+  });
+
+  if(filtered.length === 0){
+    list.innerHTML = '<p style="color:var(--muted);padding:20px">No matching cases found.</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(({c,i})=>`
+    <div class="data-card">
+      <div class="idx">${i+1}</div>
+      <div class="body">
+        <div class="badge">${esc(gCase(c, activeCaseLang, 'subtitle')) || 'Condition'}</div>
+        <h3>${esc(gCase(c, activeCaseLang, 'title')) || 'Untitled Case'}</h3>
+        <div class="summary">${esc(gCase(c, activeCaseLang, 'summary'))}</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost btn-sm" onclick="openCaseEditor(${i})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCase(${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openCaseEditor(idx){
+  editingCaseIdx = idx;
+  activeCaseLang = 'en';
+  document.getElementById('cases-listView').classList.add('hidden');
+  document.getElementById('cases-editView').classList.remove('hidden');
+  document.getElementById('casesEditTitle').textContent = idx === null ? 'Add New Case' : 'Edit Patient Case';
+  renderCaseLangTabs();
+  loadCaseFields();
+}
+
+function closeCaseEditor(){
+  document.getElementById('cases-editView').classList.add('hidden');
+  document.getElementById('cases-listView').classList.remove('hidden');
+}
+
+function renderCaseLangTabs(){
+  document.getElementById('casesLangTabs').innerHTML = LANGS.map(l =>
+    `<button class="lang-tab ${l.primary?'primary':''} ${l.code===activeCaseLang?'active':''}" onclick="switchCaseLang('${l.code}')">${l.label}</button>`
+  ).join('');
+}
+
+function switchCaseLang(code){
+  stashCaseFields();
+  activeCaseLang = code;
+  renderCaseLangTabs();
+  loadCaseFields();
+}
+
+function getCaseDraft(){
+  if(editingCaseIdx === null){ return (window.__caseDraft = window.__caseDraft || {}); }
+  return casesData[editingCaseIdx];
+}
+
+function loadCaseFields(){
+  const item = getCaseDraft();
+  const d = item[activeCaseLang] || {};
+  document.getElementById('f_case_title').value = d.title || '';
+  document.getElementById('f_case_subtitle').value = d.subtitle || '';
+  document.getElementById('f_case_summary').value = d.summary || '';
+  document.getElementById('f_case_content').value = d.content || '';
+  updateCasePreview();
+}
+
+function stashCaseFields(){
+  const item = getCaseDraft();
+  item[activeCaseLang] = {
+    title: document.getElementById('f_case_title').value,
+    subtitle: document.getElementById('f_case_subtitle').value,
+    summary: document.getElementById('f_case_summary').value,
+    content: document.getElementById('f_case_content').value
+  };
+}
+
+function updateCasePreview(){
+  document.getElementById('casePreviewContent').innerHTML = 
+    `<b>${esc(document.getElementById('f_case_title').value || 'Patient Name')}</b> — <i>${esc(document.getElementById('f_case_subtitle').value || 'Condition')}</i><br>` +
+    `<p style="margin-top:6px">${document.getElementById('f_case_content').value || 'Full story content preview...'}</p>`;
+}
+
+function caseLabel(c){
+  if(!c) return 'untitled';
+  const src = c.zh || c.en || {};
+  return (src.title || '').trim() || 'untitled';
+}
+
+function saveCase(){
+  const wasNew = editingCaseIdx === null;
+  stashCaseFields();
+  const draft = getCaseDraft();
+  if(editingCaseIdx === null){
+    casesData.unshift(draft);
+    window.__caseDraft = null;
+  }
+  closeCaseEditor();
+  renderCasesList();
+  localStorage.setItem('wh_cases_data', JSON.stringify(casesData));
+  notifyCMSSync('cases', casesData);
+  logActivity('cases', (wasNew ? 'Added case: ' : 'Edited case: ') + caseLabel(draft));
+  toast('Saved case successfully!', true);
+}
+
+function deleteCase(i){
+  if(!confirm('Are you sure you want to delete this case entry?')) return;
+  const gone = casesData[i];
+  casesData.splice(i, 1);
+  renderCasesList();
+  localStorage.setItem('wh_cases_data', JSON.stringify(casesData));
+  notifyCMSSync('cases', casesData);
+  logActivity('cases', 'Deleted case: ' + caseLabel(gone));
+  toast('Case entry deleted', false);
+}
+
+
+// ---------- 2. PRODUCTS LOGIC ----------
+function renderProdList(){
+  const q = (document.getElementById('prodSearch').value||'').trim().toLowerCase();
+  const cat = document.getElementById('prodFilter').value;
+  const list = document.getElementById('prodList');
+  document.getElementById('prodCount').textContent = productsData.length;
+  document.getElementById('badge-products').textContent = productsData.length;
+
+  const filtered = productsData.filter(p => {
+    const matchesQ = !q || (p.title + ' ' + p.sku + ' ' + p.desc).toLowerCase().includes(q);
+    const matchesCat = cat === 'all' || p.cat === cat;
+    return matchesQ && matchesCat;
+  });
+
+  if(filtered.length === 0){
+    list.innerHTML = '<p style="color:var(--muted);padding:20px">No products match your filter.</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map((p, i) => `
+    <div class="data-card">
+      <div class="idx">${i+1}</div>
+      <div class="body">
+        <h3>
+          ${esc(p.title)}
+          <span class="badge ${p.status==='In Stock'?'badge-green':'badge-gray'}">${p.status}</span>
+        </h3>
+        <div class="summary">${esc(p.desc)}</div>
+        <div class="meta">
+          <span><b>Price:</b> HK$ ${p.price}</span>
+          <span><b>SKU:</b> ${p.sku}</span>
+          <span><b>Stock:</b> ${isTracked(p) ? stockOf(p) + ' on hand' : 'not tracked'}</span>
+          ${p.model ? `<span><b>3D Model:</b> <code>${p.model}</code></span>` : ''}
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost btn-sm" onclick="openProdEditor(${i})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProd(${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ---- repeatable sub-lists on the product editor ---------------------------
+   Pictures, testimony and reference links are lists rather than single values,
+   so each gets a small add/remove editor driven by this one spec. --------- */
+const REPEATERS = {
+  images:      { fields: [ { k: 'url',   ph: 'https://…  picture URL' },
+                           { k: 'alt',   ph: 'ALT text — describe the picture' } ] },
+  testimonies: { fields: [ { k: 'who',   ph: 'Who — e.g. Ms. Chan (64)' },
+                           { k: 'when',  ph: 'When — e.g. March 2025' },
+                           { k: 'text',  ph: 'What they said…', full: true } ] },
+  papers:      { fields: [ { k: 'title', ph: 'Paper title' },
+                           { k: 'url',   ph: 'https://pubmed.ncbi.nlm.nih.gov/…' } ] },
+  articles:    { fields: [ { k: 'title', ph: 'Article title' },
+                           { k: 'url',   ph: 'https://…' } ] }
+};
+
+let prodRepeat = { images: [], testimonies: [], papers: [], articles: [] };
+
+function escAttr(s){ return esc(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+/* Pull whatever the editor has typed back into state before we re-render. */
+function readRepeater(key){
+  const box = document.getElementById('rep_' + key);
+  if(!box) return prodRepeat[key] || [];
+  prodRepeat[key] = Array.prototype.map.call(box.querySelectorAll('.rep-row'), row => {
+    const obj = {};
+    REPEATERS[key].fields.forEach(f => {
+      const input = row.querySelector('[data-rf="' + f.k + '"]');
+      obj[f.k] = input ? input.value.trim() : '';
+    });
+    return obj;
+  });
+  return prodRepeat[key];
+}
+
+function renderRepeater(key){
+  const box = document.getElementById('rep_' + key);
+  if(!box) return;
+  const rows = prodRepeat[key] || [];
+  if(rows.length === 0){
+    box.innerHTML = '<div class="rep-empty">Nothing added yet — this section stays hidden on the website.</div>';
+    return;
+  }
+  box.innerHTML = rows.map((item, i) => {
+    const short = REPEATERS[key].fields.filter(f => !f.full)
+      .map(f => '<input data-rf="' + f.k + '" placeholder="' + escAttr(f.ph) + '" value="' + escAttr(item[f.k] || '') + '">').join('');
+    const long = REPEATERS[key].fields.filter(f => f.full)
+      .map(f => '<textarea data-rf="' + f.k + '" rows="3" placeholder="' + escAttr(f.ph) + '">' + esc(item[f.k] || '') + '</textarea>').join('');
+    return '<div class="rep-row"><span class="rep-num">' + (i + 1) + '</span>' +
+           '<div class="rep-grid">' + short + '</div>' + long +
+           '<button type="button" class="btn btn-danger btn-sm rep-del" onclick="removeRepeaterRow(\'' + key + '\', ' + i + ')">Remove</button></div>';
+  }).join('');
+}
+
+function addRepeaterRow(key){
+  readRepeater(key);
+  const blank = {};
+  REPEATERS[key].fields.forEach(f => { blank[f.k] = ''; });
+  prodRepeat[key].push(blank);
+  renderRepeater(key);
+}
+
+function removeRepeaterRow(key, i){
+  readRepeater(key);
+  prodRepeat[key].splice(i, 1);
+  renderRepeater(key);
+}
+
+/* Load a product's lists into the editor (p === null for a brand-new product).
+   Products saved before these fields existed only have a single `image`, so
+   that is lifted into the pictures list rather than dropped. */
+function setRepeaters(p){
+  const list = (arr, keys) => Array.isArray(arr)
+    ? arr.map(x => { const o = {}; keys.forEach(k => { o[k] = (x && x[k]) || ''; }); return o; })
+    : [];
+  prodRepeat = {
+    images: Array.isArray(p && p.images) && p.images.length
+      ? list(p.images, ['url', 'alt'])
+      : (p && p.image ? [{ url: p.image, alt: p.imageAlt || '' }] : []),
+    testimonies: list(p && p.testimonies, ['who', 'when', 'text']),
+    papers: list(p && p.papers, ['title', 'url']),
+    articles: list(p && p.articles, ['title', 'url'])
+  };
+  Object.keys(REPEATERS).forEach(renderRepeater);
+}
+
+function openProdEditor(idx){
+  editingProdIdx = idx;
+  document.getElementById('prod-listView').classList.add('hidden');
+  document.getElementById('prod-editView').classList.remove('hidden');
+  document.getElementById('prodEditTitle').textContent = idx === null ? 'Add New Product' : 'Edit Product Listing';
+
+  if(idx !== null){
+    const p = productsData[idx];
+    document.getElementById('f_prod_title').value = p.title;
+    document.getElementById('f_prod_sku').value = p.sku;
+    document.getElementById('f_prod_price').value = p.price;
+    document.getElementById('f_prod_status').value = p.status;
+    document.getElementById('f_prod_badges').value = p.badges;
+    document.getElementById('f_prod_model').value = p.model || '';
+    document.getElementById('f_prod_desc').value = p.desc;
+    document.getElementById('f_prod_definition').value = p.definition || '';
+    document.getElementById('f_prod_story').value = p.story || '';
+    document.getElementById('f_prod_partners').value = p.partners || '';
+    setRepeaters(p);
+  } else {
+    document.getElementById('f_prod_title').value = '';
+    document.getElementById('f_prod_sku').value = 'WH-NEW-001';
+    document.getElementById('f_prod_price').value = '990.00';
+    document.getElementById('f_prod_status').value = 'In Stock';
+    document.getElementById('f_prod_badges').value = 'GMP Certified';
+    document.getElementById('f_prod_model').value = '';
+    document.getElementById('f_prod_desc').value = '';
+    document.getElementById('f_prod_definition').value = '';
+    document.getElementById('f_prod_story').value = '';
+    document.getElementById('f_prod_partners').value = '';
+    setRepeaters(null);
+  }
+}
+
+function closeProdEditor(){
+  document.getElementById('prod-editView').classList.add('hidden');
+  document.getElementById('prod-listView').classList.remove('hidden');
+}
+
+function saveProd(){
+  const wasNew = editingProdIdx === null;
+  const images = readRepeater('images').filter(x => x.url);
+  const prodObj = {
+    id: editingProdIdx === null ? Date.now() : productsData[editingProdIdx].id,
+    title: document.getElementById('f_prod_title').value || 'New Product',
+    sku: document.getElementById('f_prod_sku').value || 'WH-PROD',
+    price: document.getElementById('f_prod_price').value || '0.00',
+    status: document.getElementById('f_prod_status').value,
+    cat: 'special',
+    badges: document.getElementById('f_prod_badges').value,
+    stock: editingProdIdx === null ? undefined : productsData[editingProdIdx].stock,
+    reorder: editingProdIdx === null ? undefined : productsData[editingProdIdx].reorder,
+    model: document.getElementById('f_prod_model').value,
+    desc: document.getElementById('f_prod_desc').value,
+    definition: document.getElementById('f_prod_definition').value.trim(),
+    story: document.getElementById('f_prod_story').value.trim(),
+    partners: document.getElementById('f_prod_partners').value.trim(),
+    images: images,
+    // Kept in step with the pictures list: the catalogue cards and the older
+    // pages still read a single `image`/`imageAlt`.
+    image: images.length ? images[0].url : '',
+    imageAlt: images.length ? images[0].alt : '',
+    testimonies: readRepeater('testimonies').filter(x => x.text || x.who),
+    papers: readRepeater('papers').filter(x => x.url || x.title),
+    articles: readRepeater('articles').filter(x => x.url || x.title)
+  };
+
+  if(editingProdIdx === null){
+    productsData.unshift(prodObj);
+  } else {
+    productsData[editingProdIdx] = prodObj;
+  }
+  closeProdEditor();
+  renderProdList();
+  localStorage.setItem('wh_products_data', JSON.stringify(productsData));
+  notifyCMSSync('products', productsData);
+  logActivity('products', (wasNew ? 'Added product: ' : 'Edited product: ') + prodObj.title);
+  renderInventory();
+  toast('Saved product listing!', true);
+}
+
+function deleteProd(i){
+  if(!confirm('Are you sure you want to delete this product listing?')) return;
+  const gone = productsData[i];
+  productsData.splice(i, 1);
+  renderProdList();
+  localStorage.setItem('wh_products_data', JSON.stringify(productsData));
+  notifyCMSSync('products', productsData);
+  logActivity('products', 'Deleted product: ' + ((gone && gone.title) || 'untitled'));
+  renderInventory();
+  toast('Product deleted', false);
+}
+
+
+// ---------- 3. FAQ LOGIC ----------
+function renderFaqList(){
+  const q = (document.getElementById('faqSearch').value||'').trim().toLowerCase();
+  const cat = document.getElementById('faqFilter').value;
+  const list = document.getElementById('faqList');
+  document.getElementById('faqCount').textContent = faqData.length;
+  document.getElementById('badge-faq').textContent = faqData.length;
+
+  const filtered = faqData.filter(item => {
+    const matchesQ = !q || (item.q + ' ' + item.a).toLowerCase().includes(q);
+    const matchesCat = cat === 'all' || item.cat === cat;
+    return matchesQ && matchesCat;
+  });
+
+  if(filtered.length === 0){
+    list.innerHTML = '<p style="color:var(--muted);padding:20px">No FAQ entries match your search.</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map((item, i) => `
+    <div class="data-card">
+      <div class="idx">${i+1}</div>
+      <div class="body">
+        <span class="badge badge-blue">${esc(item.cat)}</span>
+        <h3 style="margin-top:6px">${esc(item.q)}</h3>
+        <div class="summary" style="margin-top:6px">${esc(item.a)}</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-ghost btn-sm" onclick="openFaqEditor(${i})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteFaq(${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openFaqEditor(idx){
+  editingFaqIdx = idx;
+  document.getElementById('faq-listView').classList.add('hidden');
+  document.getElementById('faq-editView').classList.remove('hidden');
+  document.getElementById('faqEditTitle').textContent = idx === null ? 'Add New FAQ' : 'Edit FAQ Entry';
+
+  if(idx !== null){
+    const item = faqData[idx];
+    document.getElementById('f_faq_cat').value = item.cat;
+    document.getElementById('f_faq_q').value = item.q;
+    document.getElementById('f_faq_a').value = item.a;
+  } else {
+    document.getElementById('f_faq_cat').value = 'General';
+    document.getElementById('f_faq_q').value = '';
+    document.getElementById('f_faq_a').value = '';
+  }
+}
+
+function closeFaqEditor(){
+  document.getElementById('faq-editView').classList.add('hidden');
+  document.getElementById('faq-listView').classList.remove('hidden');
+}
+
+function saveFaq(){
+  const wasNewFaq = editingFaqIdx === null;
+  const faqObj = {
+    id: editingFaqIdx === null ? Date.now() : faqData[editingFaqIdx].id,
+    cat: document.getElementById('f_faq_cat').value,
+    q: document.getElementById('f_faq_q').value || 'Untitled Question',
+    a: document.getElementById('f_faq_a').value || ''
+  };
+
+  if(editingFaqIdx === null){
+    faqData.unshift(faqObj);
+  } else {
+    faqData[editingFaqIdx] = faqObj;
+  }
+  closeFaqEditor();
+  renderFaqList();
+  localStorage.setItem('wh_faq_data', JSON.stringify(faqData));
+  notifyCMSSync('faq', faqData);
+  logActivity('faq', (wasNewFaq ? 'Added FAQ: ' : 'Edited FAQ: ') + faqObj.q);
+  toast('Saved FAQ entry!', true);
+}
+
+function deleteFaq(i){
+  if(!confirm('Are you sure you want to delete this FAQ entry?')) return;
+  const gone = faqData[i];
+  faqData.splice(i, 1);
+  renderFaqList();
+  localStorage.setItem('wh_faq_data', JSON.stringify(faqData));
+  notifyCMSSync('faq', faqData);
+  logActivity('faq', 'Deleted FAQ: ' + ((gone && gone.q) || 'untitled'));
+  toast('FAQ entry deleted', false);
+}
+
+
+// ---------- 4. HOMEPAGE TEXT LOGIC ----------
+function saveHomepageText(){
+  const hpData = {
+    notice_badge: document.getElementById('hp_notice_badge').value,
+    notice_msg: document.getElementById('hp_notice_msg').value,
+    hero_title: document.getElementById('hp_hero_title').value,
+    hero_sub: document.getElementById('hp_hero_sub').value,
+    cta_1: document.getElementById('hp_cta_1').value,
+    cta_2: document.getElementById('hp_cta_2').value,
+    stat_1: document.getElementById('hp_stat_1').value,
+    stat_2: document.getElementById('hp_stat_2').value,
+    contact_phone: document.getElementById('hp_contact_phone').value,
+    contact_email: document.getElementById('hp_contact_email').value
+  };
+  localStorage.setItem('wh_homepage_text', JSON.stringify(hpData));
+  notifyCMSSync('homepage', hpData);
+  logActivity('homepage', 'Updated homepage text');
+  toast('Saved homepage text & header notices!', true);
+}
+
+
+// ---------- HELPER & TOAST ----------
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+let toastTimer;
+function toast(msg, ok){
+  const t = document.getElementById('toast');
+  t.innerHTML = msg;
+  t.className = 'show' + (ok ? ' ok' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = '', 2800);
+}
+</script>
+</body>
+</html>

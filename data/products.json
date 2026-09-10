@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "title": "雲芝糖肽精華 PSP (標準裝 500粒)",
+    "sku": "WH-PSP-500",
+    "price": "3800.00",
+    "status": "In Stock",
+    "cat": "yunzhi",
+    "badges": "GMP 認證, 有效成份>90%",
+    "model": "bottle_PEPTIDES.glb",
+    "desc": "高濃度雲芝糖肽提取精華。多糖與蛋白肽比例超越國家標準1.8倍，加拿大GMP藥廠生產，輔助免疫調節與健康維護。"
+  },
+  {
+    "id": 2,
+    "title": "雲芝糖肽精華 PSP (試用裝 60粒)",
+    "sku": "WH-PSP-060",
+    "price": "680.00",
+    "status": "In Stock",
+    "cat": "yunzhi",
+    "badges": "GMP 認證, 便攜試用",
+    "model": "bottle_PEPTIDES.glb",
+    "desc": "60粒便攜裝雲芝糖肽精華，適合初次體驗及日常攜帶使用。"
+  },
+  {
+    "id": 3,
+    "title": "T3 複合配方 (120粒)",
+    "sku": "WH-T3-120",
+    "price": "1900.00",
+    "status": "In Stock",
+    "cat": "t3",
+    "badges": "專利配方, 大學證實功效倍增",
+    "model": "bottle_YUNZHI.glb",
+    "desc": "康草堂獨家T3草本配方，配合雲芝PSP協同使用，提升細胞活力與自我修復。"
+  },
+  {
+    "id": 4,
+    "title": "PT3 強化配方 (90粒)",
+    "sku": "WH-PT3-090",
+    "price": "2480.00",
+    "status": "In Stock",
+    "cat": "special",
+    "badges": "高濃縮, 雙重協同",
+    "model": "bottle_PT3.glb",
+    "desc": "雲芝糖肽PSP與T3配方精華的高效組合，提供強化輔助保護。"
+  },
+  {
+    "id": 5,
+    "title": "乙肝清 草本護肝膠囊",
+    "sku": "WH-HB-180",
+    "price": "1880.00",
+    "status": "In Stock",
+    "cat": "special",
+    "badges": "天然草本, 護肝排毒",
+    "model": "bottle_HEP.glb",
+    "desc": "專為肝臟保健設計的天然草本配方，輔助改善肝臟代謝與日常防護。"
+  },
+  {
+    "id": 6,
+    "title": "憶活素 腦部保健膠囊",
+    "sku": "WH-MB-060",
+    "price": "880.00",
+    "status": "In Stock",
+    "cat": "special",
+    "badges": "腦部保健, 專利成份",
+    "model": "",
+    "desc": "維持大腦思維敏捷與神經健康支持。"
+  }
+]

@@ -1,0 +1,9 @@
+node_modules/
+.env
+npm-debug.log*
+
+# The client's own workbooks: real customers, phone numbers and medical
+# remarks. This repository is public - these stay on the machine that needs
+# them and are imported with `npm run import:sales`.
+*.xlsx
+!data/templates/*.xlsx
