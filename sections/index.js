@@ -10,11 +10,32 @@
  *
  *   registry  { type: wholeModule }   - the editor wants config AND component
  *   default   { type: Component }     - the renderer only wants the component
+ *
+ * Every section here is built from markup that exists on the live pages, using
+ * the live class names. See each file's header for its source page and line.
  */
 import * as PageHeader from './PageHeader.jsx';
+import * as Hero from './Hero.jsx';
+import * as TextBlock from './TextBlock.jsx';
+import * as ProductGrid from './ProductGrid.jsx';
+import * as ProductDetail from './ProductDetail.jsx';
+import * as Gallery from './Gallery.jsx';
+import * as RelatedProducts from './RelatedProducts.jsx';
+import * as ContactCards from './ContactCards.jsx';
+import * as CtaBand from './CtaBand.jsx';
+import * as FaqAccordion from './FaqAccordion.jsx';
 
 export const registry = {
-  'page-header': PageHeader
+  'page-header': PageHeader,
+  'hero': Hero,
+  'text-block': TextBlock,
+  'product-grid': ProductGrid,
+  'product-detail': ProductDetail,
+  'gallery': Gallery,
+  'related-products': RelatedProducts,
+  'contact-cards': ContactCards,
+  'cta-band': CtaBand,
+  'faq-accordion': FaqAccordion
 };
 
 /* { type: Component } — the shape the renderer wants. */
