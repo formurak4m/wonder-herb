@@ -16,7 +16,12 @@
     "import:sales": "node --env-file-if-exists=.env scripts/import-sales.js",
     "test:sales": "node scripts/test-sales.js",
     "test:sweep": "node scripts/test-ui-sweep.js",
-    "test:all": "node scripts/test-api.js && node scripts/test-auth.js && node scripts/test-sales.js && node scripts/test-ui-mongo.js && node scripts/test-ui-auth.js && node scripts/test-ui-sweep.js"
+    "test:all": "node scripts/test-api.js && node scripts/test-auth.js && node scripts/test-sales.js && node scripts/test-ui-mongo.js && node scripts/test-ui-auth.js && node scripts/test-ui-sweep.js",
+    "editor:dev": "vite --config editor/vite.config.mjs",
+    "editor:build": "vite build --config editor/vite.config.mjs",
+    "sections:build": "node renderer/build-sections.js",
+    "render": "node renderer/render.js",
+    "test:seo": "node scripts/test-seo.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

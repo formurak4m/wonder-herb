@@ -100,8 +100,8 @@ The one idea that makes it work: **section components are React and are used by 
   3. Create three folders: `sections/` (shared React components), `editor/` (Vite React app for Puck), `renderer/` (Node script that server-renders sections to HTML).
   4. Add scripts to `package.json` (do NOT remove existing ones):
      ```json
-     "editor:dev": "vite --config editor/vite.config.js",
-     "editor:build": "vite build --config editor/vite.config.js",
+     "editor:dev": "vite --config editor/vite.config.mjs",
+     "editor:build": "vite build --config editor/vite.config.mjs",
      "sections:build": "node renderer/build-sections.js",
      "render": "node renderer/render.js",
      "test:seo": "node scripts/test-seo.js"
@@ -334,7 +334,7 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 
 ### P8-T2 · Editor shell wired to the API
 - **Goal:** load a page tree, edit, save.
-- **Files:** `editor/App.jsx`, `editor/main.jsx`, `editor/vite.config.js`.
+- **Files:** `editor/App.jsx`, `editor/main.jsx`, `editor/vite.config.mjs`.
 - **Steps:**
   1. On load, `GET /api/pages/:slug` and pass the tree as Puck `data`.
   2. On publish/save in Puck, `PUT /api/pages/:slug` with the updated tree.
