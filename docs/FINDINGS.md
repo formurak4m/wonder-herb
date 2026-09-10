@@ -1,7 +1,8 @@
 # FINDINGS.md — known issues, and the phase that fixes each
 
 Findings 1–5 come from recording the Phase 0 baseline (`node scripts/baseline.js`); finding 6 from
-adding the Phase 1 toolchain. 8–10 September 2026.
+adding the Phase 1 toolchain; 7 from adding the page routes at P2-T1; 8–11 from building the
+section library at P4-T2. 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
 
@@ -17,6 +18,10 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 5 | `<img src="">` placeholder fires a spurious request | Cosmetic | Phase 13 |
 | 6 | Pages deploys the whole repo, so editor source and build output ship publicly | Medium | Phase 8 |
 | 7 | `/api/inventory.csv` drops the reorder point for untracked products | Medium | Phase 12 |
+| 8 | `products.json` has no `image` or `link` — **hard blocker for Phase 9** | **High** | Phase 9 (blocking) |
+| 9 | The data and the live site disagree on two product prices | **Client decision** | Raise with client |
+| 10 | `faq-accordion` is a static list, not an accordion | Client decision | Client, if ever |
+| 11 | No text+image block exists; the P4-T2 section list was wrong | Resolved | Closed at P4-T2 |
 
 ---
 
@@ -227,3 +232,116 @@ they cannot drift again.
 demoed to the client before then, since it is a four-character change. Not fixed at P2-T1: that task
 was scoped to adding page routes, and refactoring an unrelated live route while in the file is how
 regressions get in.
+
+---
+
+## 8 · `products.json` has no `image` or `link` — HARD BLOCKER for Phase 9
+
+**What.** The product grid on the live site shows a photo and a "詳細介紹" link per card. Neither
+field exists in `data/products.json`. Its keys are exactly:
+
+```
+id, title, sku, price, status, cat, badges, model, desc
+```
+
+**Where the data really lives.** The source of truth today is a **hard-coded array inside the
+page**: `productData` at `產品介紹.html:1733`, duplicated per language, with the shape
+
+```js
+{ id, name, price, priceText, desc, image, badge, link }
+```
+
+`data/products.json` supplies only stock, status and price; the page's own array supplies the
+photo, the detail-page link and all seven languages of the name and description. **That array is
+what has to move into the data model.**
+
+**Why it matters — this blocks the migration, it does not merely inconvenience it.** Phase 9
+migrates 產品介紹 to a page tree rendered by `product-grid`. Rendered against today's data, the
+grid publishes **with no product photos and no links to the detail pages** — a visibly broken
+catalogue on a commerce site, and a visual diff that cannot pass. The section is written to
+degrade cleanly rather than emit a broken `<img>`, and `test:sections` asserts both halves
+(`no broken <img> when the data has no image`, and `it DOES render them once the data has them`),
+so the code is ready; the *data* is not.
+
+**Two further gaps in the same place:**
+- `title` is a **plain string**, not a per-language object, unlike `cases.json`. This breaks
+  non-negotiable 6 for products specifically. `resolveField` passes strings through unchanged, so
+  sections work with either shape and the migration can be staged.
+- `badges` ("GMP 認證, 有效成份>90%") is a trust-badge list, **not** the corner ribbon the live card
+  shows ("只在指定中西醫診所出售"). They are different things; the ribbon has no home in the data
+  at all. `product-grid` reads an explicit `ribbon` key rather than mis-mapping `badges`.
+
+**Required before Phase 9 can start on 產品介紹 or any product page:**
+1. Add `image` and `link` to the product model (API, seed, export, and the admin's product form).
+2. Migrate `productData` from `產品介紹.html:1733` into `data/products.json`, including the
+   per-language `title`/`desc`, and delete the hard-coded array.
+3. Re-check the prices while doing it — see finding 9.
+
+Sequencing note: this overlaps finding 2. The image URLs move to R2 at Phase 10, so doing the data
+migration first and the R2 move second means editing the same field twice. Worth deciding the order
+before either starts.
+
+---
+
+## 9 · The data and the live site disagree on two product prices — client decision
+
+**What.** Two products carry different prices in the database than the website shows the customer:
+
+| SKU | `data/products.json` | Live page (`產品介紹.html`) |
+|---|---|---|
+| `WH-MB-060` (憶活素 MemoProve) | **880.00** | **HK$520.00** |
+| `WH-PT3-090` (PT3) | **2480.00** | 僅限診所 — clinic only, no price shown |
+
+**Where.** `data/products.json` versus the `productData` array at `產品介紹.html:1733`. Both are
+visible in the Phase 0 baseline screenshot `baseline/screens/產品介紹.1280.png`, which shows
+HK$520.00 and 僅限診所.
+
+**Why it matters — and why it is not a build issue.** This is not a bug in anything being built; it
+is a discrepancy in the client's own records that the migration happened to surface. It matters to
+them in two directions: the storefront may be charging HK$520 for something booked at HK$880, and
+the admin's **inventory valuation multiplies the database figure by stock on hand**, so their stock
+value report is wrong if the site price is the correct one. The PT3 case is different in kind —
+the site deliberately hides the price because it is clinic-only, while the database carries a real
+2480.00 used by the customer price list.
+
+**Do not change either number.** Whichever is right is a question only the client can answer, and
+guessing would corrupt either the storefront or their books. **Raise with the client**, then correct
+the losing side once, in the data, as part of finding 8's migration.
+
+---
+
+## 10 · `faq-accordion` is a static list, not an accordion — client decision
+
+**What.** The section registered as `faq-accordion` renders a plain always-open list, because that
+is what the live page does. `常見問題.html` has no toggle, no collapse, no `aria-expanded` and no
+JavaScript for it — every answer is permanently visible.
+
+**Where.** `常見問題.html:1` `<div class="faq-list">`; the section is `sections/FaqAccordion.jsx`.
+
+**Why it matters.** Only so nobody "fixes" it later by adding collapse behaviour on the assumption
+that the name describes the intent. Making the FAQ collapsible is a **change to how the site behaves
+for visitors** — it affects how much text is visible on landing, and therefore how the page reads to
+both customers and crawlers. That is the client's call, not a refactor.
+
+**No phase owns this.** The name was kept because it is the identifier BUILD_TASKS P4-T2 fixes and
+page trees will reference. If the client does want collapsing, it is a small change to one section
+plus a little client script — but ask first.
+
+---
+
+## 11 · There is no text+image block on this site — RESOLVED at P4-T2
+
+**What.** BUILD_TASKS P4-T2 listed `text-and-image` among the ten core sections. No such block
+exists anywhere on the site. A survey of every plausible class (`text-image`, `image-text`,
+`media-block`, `split-block`, `content-image`, `two-col`, `info-grid`, `feature-row`, …) and of
+every `*grid*` class across all 18 pages found nothing that pairs a column of text with an image.
+
+**Why it matters.** Building it would have meant inventing both the markup and the CSS to style it
+— the same failure mode as the `wh-page-header` class names, and one the tests cannot catch because
+they check markup, not paint.
+
+**Resolved.** `related-products` was built instead: real markup from `產品_T3.html:1`, present on all
+six product pages, and required by the Phase 9 product-page migration. BUILD_TASKS P4-T2's section
+list has been corrected. Recorded here so the absence is not rediscovered as a gap later — if a
+text+image layout is ever wanted, it is a **new design**, to be agreed with the client, not a
+migration of something that exists.

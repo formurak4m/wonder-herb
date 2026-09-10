@@ -227,6 +227,7 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
     // every field needs a default, or the editor starts with undefined props
     defaultProps: { heading: '', sub: '', variant: 'centered', headingId: '' },
     variants: ['centered', 'video'],
+    // emptyWithoutContent: true,   <- only if the section renders nothing when empty
   };
   export default function PageHeader({ heading, sub, variant = 'centered', headingId }) {
     const id = headingId ? headingId : undefined;   // never render id=""
@@ -242,6 +243,13 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
   ```
   Do not emit the live pages' `data-i18n` attributes: those exist so the browser can swap
   languages after load, which pre-rendering replaces with plain per-language links.
+
+  **`emptyWithoutContent: true`** — a section may render nothing until it has content: an
+  unmatched sku, an empty gallery or an empty related list should disappear rather than publish
+  a broken shell. Where that is intended, declare it in the config. `test:sections` then requires
+  the section to render empty with its defaults, and still fails any *other* section that renders
+  blank by accident. Rendering nothing is a decision to review once, not a silent blank.
+  Currently declared by `product-detail`, `gallery` and `related-products`.
   ```js
   // sections/index.js  — the single registry both sides import
   import * as PageHeader from './PageHeader.jsx';
@@ -262,7 +270,9 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 
 ### P4-T2 · Build the core sections
 - **Goal:** cover the core pages (home, products, product-detail, contact).
-- **Sections to build now:** `page-header`, `hero`, `text-block`, `text-and-image`, `product-grid`, `product-detail`, `contact-cards`, `cta-band`, `gallery`, `faq-accordion`.
+- **Sections to build now:** `page-header`, `hero`, `text-block`, `related-products`, `product-grid`, `product-detail`, `contact-cards`, `cta-band`, `gallery`, `faq-accordion`. (All ten built at P4-T2.)
+  > `text-and-image` was in this list and has been **removed**: the site has no two-column text+image block anywhere — a survey of every plausible class and every `*grid*` across all 18 pages found none — so building one meant inventing markup and CSS. `related-products` replaces it: real, on all six product pages, and needed by the Phase 9 migration.
+  > `faq-accordion` keeps its name but renders a **static list, not an accordion**. The live block on `常見問題.html` has no toggle, no collapse and no `aria-expanded`; every answer is always visible. Adding collapse is a behaviour change for the client to approve, not something to introduce behind the name.
 - **Steps:**
   1. For each, copy the exact HTML from the matching current page, convert to JSX, extract editable bits into `fields`, keep the existing CSS class names so current styles apply unchanged.
   2. Data-backed sections (`product-grid`, `product-detail`, `faq-accordion`) take a `source` field naming the data file (`products.json`, `faq.json`) and receive the loaded `data` prop from the renderer.
