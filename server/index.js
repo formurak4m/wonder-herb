@@ -11,7 +11,8 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 const cors = require('cors');
 const { connect, COLLECTIONS, AUTH_COLLECTIONS, normalise, ensureIndexes,
-        ensureAuthIndexes, ensureSalesIndexes, URL, DB_NAME } = require('./db');
+        ensureAuthIndexes, ensureSalesIndexes, PAGE_COLLECTIONS,
+        ensurePageIndexes, URL, DB_NAME } = require('./db');
 const auth = require('./auth');
 const reports = require('./reports');
 const sales = require('./sales');
@@ -599,6 +600,55 @@ app.delete('/api/auth/users/:id', asyncRoute(async (req, res) => {
   res.json({ success: true });
 }));
 
+/* ------------------------------------------------------------------ pages
+   Page layouts as data: one tree per page, addressed by slug. The renderer
+   turns these into pre-rendered static HTML at publish time.
+
+   Reads are open, like the rest of the content API - a page tree is public
+   content and is what the site gets built from. Writes are administrators
+   only, via the same requireAdmin guard the account routes use. Phase 12
+   replaces that with a finer permission. */
+const cleanSlug = v => String(v === undefined || v === null ? '' : v).trim().toLowerCase();
+const SLUG_OK = /^[a-z0-9][a-z0-9_-]*$/;
+
+app.get('/api/pages', asyncRoute(async (req, res) => {
+  const db = await connect();
+  res.json(await db.collection(PAGE_COLLECTIONS.pages)
+    .find({}, { projection: { _id: 0 } }).sort({ slug: 1 }).toArray());
+}));
+
+app.get('/api/pages/:slug', asyncRoute(async (req, res) => {
+  const db = await connect();
+  const doc = await db.collection(PAGE_COLLECTIONS.pages)
+    .findOne({ slug: cleanSlug(req.params.slug) }, { projection: { _id: 0 } });
+  if (!doc) return res.status(404).json({ error: 'No such page: ' + req.params.slug });
+  res.json(doc);
+}));
+
+app.put('/api/pages/:slug', asyncRoute(async (req, res) => {
+  const actor = await requireAdmin(req, res);
+  if (!actor) return;
+  const slug = cleanSlug(req.params.slug);
+  if (!SLUG_OK.test(slug)) {
+    return res.status(400).json({ error: 'Bad slug: ' + req.params.slug });
+  }
+  const body = req.body;
+  if (!body || typeof body !== 'object' || Array.isArray(body)) {
+    return res.status(400).json({ error: 'Expected a page tree object' });
+  }
+  if (!Array.isArray(body.sections)) {
+    return res.status(400).json({ error: 'A page tree needs a sections array' });
+  }
+  const db = await connect();
+  const { _id, ...rest } = body;          // the slug in the URL wins
+  const doc = Object.assign({}, rest, {
+    slug: slug, updatedAt: new Date(), updatedBy: actor.user.email
+  });
+  await db.collection(PAGE_COLLECTIONS.pages)
+    .replaceOne({ slug: slug }, doc, { upsert: true });
+  res.json({ success: true, slug: slug, sections: doc.sections.length });
+}));
+
 /* ------------------------------------------------------------------ sales
    Invoices, customers and the yearly sales workbook. */
 sales.mount(app, { connect: connect, requireCan: requireCan, asyncRoute: asyncRoute });
@@ -674,7 +724,8 @@ app.use(express.static(SITE_ROOT, {
 
 if (require.main === module) {
   connect()
-    .then(db => ensureAuthIndexes(db).then(() => ensureSalesIndexes(db)).then(() => ensureSuperAdmin(db)))
+    .then(db => ensureAuthIndexes(db).then(() => ensureSalesIndexes(db))
+                  .then(() => ensurePageIndexes(db)).then(() => ensureSuperAdmin(db)))
     .then(() => app.listen(PORT, () => {
       console.log('Site                 ->  http://localhost:' + PORT + '/');
       console.log('Admin                ->  http://localhost:' + PORT + '/admin/');

@@ -47,6 +47,16 @@ const SALES_COLLECTIONS = {
   invoices: 'invoices'
 };
 
+/* Page layouts stored as data: one document per page, addressed by slug.
+   Deliberately NOT in COLLECTIONS. That map drives the generic list routes -
+   every module in it is read and written as one ordered list, and it is what
+   /api/cms and /api/health enumerate. A page tree is a single document fetched
+   by slug, so it gets its own map and its own routes, the same way auth and
+   sales do. Unlike those two it IS public content and does get exported. */
+const PAGE_COLLECTIONS = {
+  pages: 'pages'
+};
+
 /* Numbers stored as numbers, text as text — so the database can be queried and
    sorted properly instead of holding everything as strings.
    `price` stays the "3800.00" string the site's markup already renders. */
@@ -106,6 +116,12 @@ async function ensureSalesIndexes(db) {
   await db.collection(SALES_COLLECTIONS.customers).createIndex({ name: 1 });
 }
 
-module.exports = { connect, close, COLLECTIONS, AUTH_COLLECTIONS, SALES_COLLECTIONS, normalise,
-                   ensureSalesIndexes,
+/* One tree per page. */
+async function ensurePageIndexes(db) {
+  await db.collection(PAGE_COLLECTIONS.pages).createIndex({ slug: 1 }, { unique: true });
+}
+
+module.exports = { connect, close, COLLECTIONS, AUTH_COLLECTIONS, SALES_COLLECTIONS,
+                   PAGE_COLLECTIONS, normalise,
+                   ensureSalesIndexes, ensurePageIndexes,
                    ensureIndexes, ensureAuthIndexes, URL, DB_NAME };

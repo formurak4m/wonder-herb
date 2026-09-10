@@ -136,7 +136,8 @@ The one idea that makes it work: **section components are React and are used by 
 - **Goal:** store page layouts as data, next to existing content.
 - **Files:** `server/db.js` (add a `pages` collection), `data/pages/` (exported trees).
 - **Steps:**
-  1. Add `pages` to `COLLECTIONS` in `server/db.js` and ensure an index on `{ slug: 1 }` unique.
+  1. Add a **separate** `PAGE_COLLECTIONS = { pages: 'pages' }` map in `server/db.js` with its own routes, and ensure an index on `{ slug: 1 }` unique.
+     > **Not in `COLLECTIONS`.** That map is enumerated by `LIST_MODULES`, so adding `pages` to it would silently change `/api/health` and `/api/cms`, and the generic POST would treat a page tree as an ordered list that `writeList` replaces wholesale — data loss for per-slug documents. `AUTH_COLLECTIONS` and `SALES_COLLECTIONS` are kept out for the same structural reason.
   2. Page-tree shape (store one document per page):
      ```json
      {

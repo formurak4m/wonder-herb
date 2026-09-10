@@ -16,6 +16,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 4 | All 18 pages overflow horizontally on a 390px viewport | Low | Phase 9 / 13 |
 | 5 | `<img src="">` placeholder fires a spurious request | Cosmetic | Phase 13 |
 | 6 | Pages deploys the whole repo, so editor source and build output ship publicly | Medium | Phase 8 |
+| 7 | `/api/inventory.csv` drops the reorder point for untracked products | Medium | Phase 12 |
 
 ---
 
@@ -190,3 +191,39 @@ Recommendation: **(b)**, with (a) as the interim if the editor needs to be reach
 
 **Do not fix this before Phase 8.** Changing the deploy workflow is the one thing that can take the
 live site down, and there is no reason to touch it while this work is still on a branch.
+
+---
+
+## 7 · `/api/inventory.csv` drops the reorder point for untracked products
+
+**What.** The live API's CSV route emits the reorder point only when the product has stock:
+
+```js
+tracked ? (p.reorder === undefined ? 10 : p.reorder) : '',
+```
+
+A reorder point is set per product and does not depend on stock being counted, so for any product
+without an `On hand` figure the column comes out blank and the configured value is lost to anything
+reading that endpoint.
+
+**Where.** `server/index.js`, the `GET /api/inventory.csv` route.
+
+**Why it matters.** This is the **same defect** that was fixed in `scripts/export.js` at P0-T1a — the
+publish path was corrected, this one was not, so the two now disagree. Today all six SKUs are
+untracked with the default reorder of 10, so nothing visible is wrong. The moment the client sets a
+real reorder point, `npm run export` writes it correctly to `data/inventory.csv` while this endpoint
+serves it blank — and the CSV route exists precisely so the site's reader works against the live
+database "with no change to how it parses". A silent disagreement between the live API and the
+published file is worse than either being wrong alone.
+
+**Fix.** Identical to the export fix:
+```js
+p.reorder === undefined || p.reorder === null ? (tracked ? 10 : '') : p.reorder,
+```
+Better still, have this route and `buildInventoryCsv` in `scripts/export.js` share one function, so
+they cannot drift again.
+
+**Fixed in Phase 12**, alongside the other API-hardening work — or sooner if inventory editing is
+demoed to the client before then, since it is a four-character change. Not fixed at P2-T1: that task
+was scoped to adding page routes, and refactoring an unrelated live route while in the file is how
+regressions get in.
