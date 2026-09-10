@@ -11,3 +11,7 @@ npm-debug.log*
 # Visual + SEO regression references (BUILD_TASKS P0-T2). Local only, never
 # deployed: hundreds of MB of screenshots that the renderer is compared against.
 baseline/
+
+# Build artifact: the section components bundled for the Node renderer.
+# Rebuilt on demand with `npm run sections:build`; never belongs on the public site.
+renderer/.build/

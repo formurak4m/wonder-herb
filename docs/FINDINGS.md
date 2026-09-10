@@ -1,6 +1,7 @@
 # FINDINGS.md — known issues, and the phase that fixes each
 
-Issues found while recording the Phase 0 baseline (`node scripts/baseline.js`, 8–10 September 2026).
+Findings 1–5 come from recording the Phase 0 baseline (`node scripts/baseline.js`); finding 6 from
+adding the Phase 1 toolchain. 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
 
@@ -14,6 +15,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 3 | `購物車.html` has no `<h1>` — will fail the SEO gate | Medium — needs a decision | Phase 6 |
 | 4 | All 18 pages overflow horizontally on a 390px viewport | Low | Phase 9 / 13 |
 | 5 | `<img src="">` placeholder fires a spurious request | Cosmetic | Phase 13 |
+| 6 | Pages deploys the whole repo, so editor source and build output ship publicly | Medium | Phase 8 |
 
 ---
 
@@ -146,3 +148,45 @@ image in the baseline manifest is explained and nobody re-investigates it later.
 
 **Fixed in Phase 13** when these pages become sections — the modal should render no `<img>` until
 it has a source.
+
+---
+
+## 6 · The Pages deploy publishes the editor source and the build toolchain
+
+**What.** `.github/workflows/static.yml` uploads the **entire repository**:
+
+```yaml
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: '.'
+```
+
+So once the Phase 1 work reaches `main`, `editor/`, `sections/` and `renderer/` — the Puck editor
+source, the shared section components, and later the renderer's build output — are all served from
+the public site. `renderer/.build/` is gitignored and so never reaches the deploy, but
+`editor/dist/` from `npm run editor:build` would if it were ever committed.
+
+**Where.** `.github/workflows/static.yml`, the `path: '.'` upload step.
+
+**Why it matters.** Not a visitor-facing break: none of the 18 static pages load anything from
+these folders, so the site behaves identically and the fallback-to-committed-files guarantee is
+untouched. The problems are narrower:
+- the editor's source is published to anyone who guesses the path,
+- the deploy artifact grows with build output that has no business on a CDN,
+- it sits awkwardly against non-negotiable 4 ("editor instrumentation must not ship to
+  production") — the spirit of that rule is that the public site carries nothing editor-related.
+
+**Fixed in Phase 8**, when the editor app becomes real and is first worth excluding. Two options,
+decide then:
+- **(a)** Exclude the folders from the Pages upload — build a clean publish directory, or add an
+  ignore step before `upload-pages-artifact`. Keeps one workflow.
+- **(b)** Build the editor to an output directory outside the deployed tree entirely, and host it
+  with the API rather than on Pages — which is where it belongs anyway once Phase 11 hosts the API,
+  since the editor is useless without it.
+
+Recommendation: **(b)**, with (a) as the interim if the editor needs to be reachable before Phase 11.
+
+**Do not fix this before Phase 8.** Changing the deploy workflow is the one thing that can take the
+live site down, and there is no reason to touch it while this work is still on a branch.
