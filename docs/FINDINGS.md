@@ -2,7 +2,8 @@
 
 Findings 1–5 come from recording the Phase 0 baseline (`node scripts/baseline.js`); finding 6 from
 adding the Phase 1 toolchain; 7 from adding the page routes at P2-T1; 8–11 from building the
-section library at P4-T2; 12–13 from actually looking at the rendered sections at P4-T3.
+section library at P4-T2; 12–13 from actually looking at the rendered sections at P4-T3; 14 from the
+fidelity waivers at P4-T4.
 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
@@ -24,7 +25,8 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 10 | `faq-accordion` is a static list, not an accordion | Client decision | Client, if ever |
 | 11 | No text+image block exists; the P4-T2 section list was wrong | Resolved | Closed at P4-T2 |
 | 12 | Pre-rendered pages publish **visually blank** without the reveal script | **High — passes green, looks broken** | Phase 5 (P5-T1 template) |
-| 13 | Only 1 of 10 sections has a structural fidelity map | Medium | Phase 9 / 13 |
+| 13 | Sections silently dropped markup from their source blocks | Resolved | Closed at P4-T4 |
+| 14 | Body copy uses **bold, lists and links**; plain-text fields drop them | Decided — option (c) | P4-T5 |
 
 ---
 
@@ -57,8 +59,17 @@ platform we are migrating *away from*, and it is easy to miss because the pages 
 - the Wix-hosted images including `og:`/`twitter:` social previews,
 - the Google Drive photos in finding 2.
 
-**Do not cancel Wix until this is done.** Add a check at Phase 18: `grep -rn "wixstatic" *.html`
-must return nothing.
+**Do not cancel Wix until this is done.** The Phase 18 gate must check **two** patterns, not one:
+
+```
+grep -rn "wixstatic" *.html        # CDN-hosted media: the video, og:/twitter: images
+grep -rn "_files/ugd" *.html       # Wix's FILE STORE, served from wonder-herb.com
+```
+
+Both must return nothing. The second is easy to miss because the URL is on the client's **own
+domain** — `https://www.wonder-herb.com/_files/ugd/…` — and so looks self-hosted. It is not: that
+path is Wix's user-file store and dies with the account. It currently serves the two research PDFs
+linked from `研究報告.html`. Found while surveying in-copy links for finding 14.
 
 ---
 
@@ -399,29 +410,146 @@ Belt and braces, worth doing at the same time:
 
 ---
 
-## 13 · Only one section is checked against its source markup
+## 13 · Sections silently dropped markup from their source blocks — RESOLVED at P4-T4
 
-**What.** `test:sections` gained a structural fidelity check at P4-T3: it parses the real block out
-of the real page, collects every tag name and class token, and requires the rendered section to
-contain them all — so a section cannot silently drop markup that no assertion happens to cover.
-It is currently declared for **`contact-cards` only**. The other nine print a NOTE every run:
+**What.** `contact-cards` dropped all fifteen `<i>` icons from the live markup and passed every
+check: the contract checks test the *shape* of a section, and hand-written HTML assertions only test
+what their author remembered to look at. The icons were missed precisely because nobody remembered
+them, so nothing asserted on them.
 
-```
-NOTE  9 section(s) have no fidelity map yet:
-      page-header, hero, text-block, product-grid, product-detail, gallery,
-      related-products, cta-band, faq-accordion
-```
+**The fix — the expectation is no longer hand-written.** `test:sections` now parses the real block
+out of the real page, collects every tag name and class token, and requires the rendered section to
+contain them all. The source page is the authority; the test author's memory is not. Anything
+deliberately not emitted goes in `allow` **with a reason**, so a drop is either caught or waived
+consciously — never silent.
 
-**Why it matters.** This check exists because `contact-cards` dropped all fifteen `<i>` icons from
-the live markup and passed every other check — contract checks test the shape of a section, and
-hand-written HTML assertions only test what their author remembered. **The same fault could be
-sitting in any of the other nine and nothing would report it.** One is already suspected: `hero`'s
-CTA buttons contain `<i class="fab fa-whatsapp">` on the live page and the section does not emit it.
+**What it found.** Declared for all ten sections at P4-T4. **Seven of the ten were dropping
+markup**, every one of them an icon:
 
-**Where.** `scripts/test-sections.js`, the `FIDELITY` map. Adding a section means one entry: source
-page, selector, sample props, and an `allow` list for anything deliberately not emitted (with a
-reason, so a drop is waived consciously rather than silently).
+| Section | Dropped |
+|---|---|
+| `contact-cards` | 15 `<i>` — map pin, phone, WhatsApp, envelope, person (found at P4-T3) |
+| `hero` | WhatsApp glyph on the primary CTA; both carousel chevrons |
+| `product-detail` | cart-plus, chevron-down, flask, and all three trust-badge glyphs |
+| `related-products` | seedling / heartbeat / box on each related card |
+| `cta-band` (banner) | WhatsApp glyph on the button |
+| `faq-accordion` | question-circle, flask, leaf, shield-alt, chart-line on the questions |
 
-**Fixed in Phase 9 / 13**, as each section's page is migrated and its markup is being compared to the
-baseline anyway — that is the natural moment to write the map and act on what it flags. Doing all
-nine now would mean editing nine sections outside the task that owns them.
+`page-header`, `text-block`, `product-grid` and `gallery` were already faithful.
+
+**Two things worth keeping in mind.** `product-grid`'s source is a **template literal inside
+`renderProducts()`**, not static HTML, so the check extracts it with a nesting-aware scanner that
+keeps markup from conditional fragments. And the only waivers across all ten are inline copy
+formatting (`strong`, `em`, `span`, `br`, `ul`, `li`) — that is a separate content-model question,
+logged as finding 14.
+
+**Where.** `scripts/test-sections.js`, the `FIDELITY` map. A new section needs one entry: source
+page, selector (or template regex), sample props, and any `allow` waivers. `every registered section
+has a fidelity map` fails if a section is added without one, so the coverage cannot silently rot.
+
+---
+
+## 14 · Body copy uses bold, lists and links — plain-text fields drop them
+
+**DECISION NEEDED, and it is a content-model decision, not an implementation detail.** The section
+fields are plain text today. The live copy is not. Whatever is chosen here is hard to change later,
+because it decides what the client can type and what every future section's fields look like.
+
+### What the site actually contains
+
+Measured across all 18 pages, counting only inline tags inside body copy (`p`, `li`, `h2`–`h4`),
+excluding header, footer, nav and modal chrome:
+
+| Inline tag | Count | Where it lives |
+|---|---|---|
+| `<strong>` | **48** | `.product-details-card` (42), `.faq-answer` (6) |
+| `<em>` | 6 | the same two |
+| `<a>` | 4 | `.faq-answer` (1 → 研究報告.html), 研究報告.html copy (3 → PDFs) |
+| `<br>` | 5 | inside copy strings |
+| `<span>` | 21 | styling-only wrappers |
+| `<ul>` in copy | **18 blocks** | `.product-details-card` (16), `.faq-answer` (2) |
+
+**It is confined to two containers.** Every single `<strong>`/`<em>` in body copy is inside
+`.product-details-card` or `.faq-answer` — that is, **two sections: `text-block` (card variant) and
+`faq-accordion`**. No other current section is affected. Phase 13 adds one more case: 研究報告.html
+has three PDF links inside copy, which will belong to a future `report-list`.
+
+### The shape of it matters more than the count
+
+Of the 54 emphasis instances:
+
+- **42 are a bold lead-in label** — `<li><strong>超強抗氧化：</strong> 比一般合成維生素E高出60倍…`
+- 6 are bold mid-sentence — `…由<strong>澳洲昆士蘭科技大學前列腺頑疾研究中心</strong>進行臨床研究…`
+- 6 are a whole paragraph in bold
+
+So **78% is one repeating structural pattern**, not free-form formatting. That changes which option
+is cheapest.
+
+Note also that lists are only a gap in **`faq-accordion`**: `text-block` already has a `bullets`
+field and emits real `<ul>`/`<li>`, which is why its fidelity waiver covers only `strong`/`em`/
+`br`/`span`.
+
+### The options
+
+**(a) A constrained inline formatter.** A tiny markdown subset — bold, and probably links — parsed
+into React elements. Never `dangerouslySetInnerHTML`; the parser emits elements, so there is no raw
+HTML from the editor and no XSS surface. Lives in `sections/`, so the editor canvas and the renderer
+use the same parser and cannot diverge.
+- *Cost:* a parser plus tests, a `rich: true` marker on the fields that use it, and a Puck field
+  that teaches the syntax.
+- *Risk:* the client types Chinese through an IME. Asking them to type ASCII `**` around CJK text is
+  awkward and will be got wrong. It is also a door: once bold exists, colour and size get requested.
+- *Gain:* full parity, including the 6 mid-sentence bolds and the links.
+
+**(b) Keep plain text and accept the loss.**
+- *Cost:* nothing now.
+- *Risk:* 48 bold lead-ins disappear from the **product pages — the client's main sales copy** — and
+  the benefit lists read as undifferentiated runs of text. The Phase 9 visual diff will show it, and
+  it has to be signed off as an accepted permanent difference. The client has bold today in Wix;
+  losing it in a migration sold as an upgrade is a visible downgrade on the pages that sell.
+
+**(c) Model the pattern structurally instead of parsing it.** Because 78% is a bold lead-in,
+represent it as fields rather than markup: a paragraph/bullet becomes `{ label, text }`, and the
+section renders `<strong>{label}</strong> {text}`. Whole-paragraph bold becomes a per-item
+`emphasis: true`. No parser, no syntax for the client to learn, no XSS surface, and the editor shows
+two ordinary text boxes.
+- *Covers:* the 42 lead-ins plus the 6 whole-paragraph bolds ≈ **89%**.
+- *Leaves:* 6 mid-sentence bolds (plain, or reword), the 2 FAQ lists (give `faq-accordion` the
+  `bullets` treatment `text-block` already has), and the 4 in-copy links.
+- *Cost:* small, and confined to the two affected sections.
+
+### DECISION TAKEN — option (c), structural modelling. 11 September 2026.
+
+No formatter and no markdown syntax. Two reasons, both decisive:
+
+1. **The client types Chinese through an IME.** Asking them to wrap CJK text in ASCII `**` is a bug
+   factory — the wrong asterisks, full-width characters, half-closed pairs — and every mistake ships
+   as literal punctuation on a customer-facing page.
+2. **A pattern that repeats 78% of the time is structure, not formatting.** Parsing it back out of a
+   string would be reconstructing information we could simply have kept.
+
+Implemented at **P4-T5**, scoped to the two affected sections:
+
+- `text-block` (card variant) and `faq-accordion` take `{ label, text }` per paragraph/bullet,
+  rendering `<strong>{label}</strong> {text}` — this is the bold lead-in, 42 of the 54 instances.
+- Whole-paragraph bold (6 instances) becomes a per-item `emphasis: true`.
+- `faq-accordion` also gains the `bullets` field that `text-block` already has, covering the two
+  `<ul>` blocks inside FAQ answers.
+- The fidelity maps drop the corresponding waivers: `strong`, `ul` and `li` become **emitted and
+  checked**, not waived.
+
+### Accepted leftovers — deliberately not solved, recorded so they are not rediscovered
+
+| Leftover | Count | Decision |
+|---|---|---|
+| Bold **mid-sentence** | 6 | Accepted as a minor known loss. Reword if it ever matters. |
+| Links inside copy | 4 | Not solved now. |
+| `<br>` / `<span>` in copy strings | 5 / 21 | Stay waived: line breaks and styling-only wrappers are copy, not structure. |
+
+On the four links: **three are the PDF downloads on 研究報告.html** and belong in a structured report
+list at Phase 13, at which point they stop being in-copy links at all. **One is a real in-copy link**
+(a FAQ answer pointing at 研究報告.html). If that single case proves it needs solving, revisit option
+(a) — a formatter limited to links only — rather than reopening bold.
+
+Also recorded in finding 1: those three PDFs live on Wix's file store, so the Phase 18 cutover gate
+was widened to grep `_files/ugd` as well as `wixstatic`.
