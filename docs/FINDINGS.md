@@ -3,7 +3,8 @@
 Findings 1–5 come from recording the Phase 0 baseline (`node scripts/baseline.js`); finding 6 from
 adding the Phase 1 toolchain; 7 from adding the page routes at P2-T1; 8–11 from building the
 section library at P4-T2; 12–13 from actually looking at the rendered sections at P4-T3; 14 from the
-fidelity waivers at P4-T4; 15 from rendering a real page end to end at P5-T1.
+fidelity waivers at P4-T4; 15 from rendering a real page end to end at P5-T1; 16–17 from
+running the real publish pipeline for the first time at P7-T1.
 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
@@ -28,6 +29,8 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 13 | Sections silently dropped markup from their source blocks | Resolved | Closed at P4-T4 |
 | 14 | Body copy uses **bold, lists and links**; plain-text fields drop them | Decided — option (c) | P4-T5 |
 | 15 | Chrome's layout depends on JS, and there is no shared stylesheet | **High — D1 required, not optional** | P5-T1 / Phase 9 |
+| 16 | **`export` published staff emails and an internal audit trail to a public URL** | **HIGH — security** | Fixed at P7-T1a |
+| 17 | `export` wrote `updatedAt` bookkeeping into public site data; one real stock change is unpublished | Medium — fixed; stock is a **client decision** | P7-T1a / client |
 
 ---
 
@@ -697,3 +700,103 @@ Pages built from sections cannot each carry a private copy of their own CSS — 
 of which 27 KB is lifted CSS. Until it is done, `assets.stylesFrom` stays, and **the `!` warning
 that `renderer/render.js` prints on every lift stays with it**, so the stopgap cannot go quiet and
 become permanent.
+
+---
+
+## 16 · `npm run export` published an internal audit trail to a public URL — SECURITY, fixed at P7-T1a
+
+**Severity: HIGH.** Same class as the customers/invoices rule, reached by a path nobody had walked
+until P7-T1 ran a real publish for the first time.
+
+**What.** `scripts/export.js` wrote two database collections straight into `data/`:
+
+```js
+changed += writeIfChanged('inventory-log.json', JSON.stringify(movements, null, 2) + '\n');   // :145
+changed += writeIfChanged('activity-log.json',  JSON.stringify(activity,  null, 2) + '\n');   // :146
+```
+
+`data/` is deployed to GitHub Pages and **this repository is public**. So every admin action was one
+`npm run export` plus one commit away from `https://www.wonder-herb.com/data/activity-log.json`.
+
+What that file contains — the seven records present when this was found:
+
+```
+2026-09-08  sales      test@gmail.com   Downloaded the 2026 sales workbook
+2026-09-08  sales      test@gmail.com   Downloaded the Sep 2026 sales workbook
+2026-09-07  sales      test@gmail.com   Downloaded the 2026 sales workbook
+2026-09-07  sales      test@gmail.com   Downloaded the Sep 2026 sales workbook
+2026-09-04  inventory  test@gmail.com   Started tracking stock for 雲芝糖肽精華 PSP (標準裝 500粒)
+2026-09-04  inventory  test@gmail.com   Downloaded the inventory report
+2026-09-04  users      test@gmail.com   Added staff: tester1@gmail.com
+```
+
+Staff **email addresses**, who added whom, who downloaded the sales workbook, and when. With a real
+admin account instead of `test@gmail.com`, that is a named person's internal activity on a public
+URL. `inventory-log.json` is the stock-movement ledger and is the same category.
+
+**Nothing leaked.** Both files were untracked and were never committed or deployed. The accounts in
+them are test accounts. This was caught before the first real publish, which is the entire reason
+P7-T1 ran the pipeline for real instead of assuming it worked.
+
+**Why it was easy to miss.** The rule everyone remembers is "customers and invoices never leave the
+database". These are neither — they are operational logs, they sound harmless, and the two lines
+that emit them sit among five lines that emit legitimate site content. Nothing read them back:
+`admin/index.html:1332` writes a file called `inventory-log.json` as a **browser download**, not a
+fetch of `data/`, so removing them breaks nothing.
+
+**Fixed at P7-T1a.** Both are gone from `scripts/export.js` entirely — the collections are no longer
+read and no longer written. They stay in MongoDB, reachable only through the authenticated API,
+which is where an audit trail belongs.
+
+**Deleted, not gitignored, and that distinction is the point.** A `.gitignore` entry would leave the
+files being written into the deployed folder and rely on one line of config to keep them out of the
+build forever. The landmine has to go, not be covered over.
+
+**Cross-reference finding 6** (`Pages deploys the whole repo, so editor source and build output ship
+publicly`). Same root cause: **the deploy is the entire repository, so anything written into the
+working tree is published by default.** Finding 6 is about build artefacts; this one is about data.
+Phase 8 should treat them together — the durable fix is publishing an explicit allow-list of
+directories rather than everything.
+
+---
+
+## 17 · The export wrote database bookkeeping into public site data — fixed at P7-T1a
+
+**What.** Every exported record carried an `updatedAt` timestamp:
+
+```json
+{ "id": 1, "title": "雲芝糖肽精華 PSP (標準裝 500粒)", "...": "...",
+  "updatedAt": "2026-09-04T03:35:14.523Z" }
+```
+
+`updatedAt` is how the database tracks its own writes. It is not site content, nothing on the public
+pages renders it, and no section component reads it.
+
+**Why it matters more than it looks.** It appears on the **last** field of every record, so adding
+it moves the trailing comma on the line above. A five-record content change becomes a diff touching
+every record in the file. That makes `git diff data/` — the human review step that stands between an
+edit and the live site — much harder to read, which is precisely the check that must stay sharp.
+Measured: the real content change in the drift found at P7-T1 was **one field on one product**, in a
+diff reporting 56 insertions across five files.
+
+**Fixed at P7-T1a.** `forSite()` now strips `updatedAt`, and it is applied to every content list
+(cases, products, faq, homepage), not only products. Products additionally keep their existing strip
+of `stock`, `reorder` and `stockUpdated`.
+
+### The one real change underneath the noise — NOT a build issue, do not "fix" it
+
+With the noise removed, the committed `data/` and the live database diverge on exactly **one field**:
+
+| | `data/products.json` (committed) | MongoDB (live) |
+|---|---|---|
+| 雲芝糖肽精華 PSP (標準裝 500粒) | `"status": "In Stock"` | `"status": "Out of Stock"` |
+| `data/inventory.csv`, same row | `…,3800.00,,10,In Stock,,` | `…,3800.00,0,10,Out of Stock,0.00,` |
+
+It is a genuine admin action, not corruption — the audit log records it as *"Started tracking stock
+for 雲芝糖肽精華 PSP (標準裝 500粒)"* on 2026-09-04, and it has simply never been published.
+
+**Status: with the client.** Whether a flagship product shows as out of stock on a customer-facing
+page is a business decision, not a build side-effect, so it must not ride along in a tooling commit.
+The database keeps the change, `data/` keeps the committed value, and the divergence is recorded
+here so it is not rediscovered as a bug. Resolve it by publishing deliberately or by correcting the
+stock in the admin — either way, on purpose.

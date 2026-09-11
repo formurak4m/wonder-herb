@@ -24,7 +24,8 @@
     "sections:build": "node renderer/build-sections.js",
     "render": "node renderer/render.js",
     "test:render": "node scripts/test-render.js",
-    "test:seo": "node scripts/test-seo.js"
+    "test:seo": "node scripts/test-seo.js",
+    "publish": "node scripts/publish.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

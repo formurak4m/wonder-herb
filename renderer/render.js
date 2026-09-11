@@ -140,6 +140,24 @@ function loadTree(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
+/* Write only if the content actually changed - the same rule scripts/export.js
+ * applies to data/. An unchanged publish must leave the working tree clean, or
+ * `git diff` stops being a useful description of what a publish did.
+ *
+ * Today the renderer only writes to gitignored renderer/.out/, so this changes
+ * nothing visible. It matters from P5-T2 onward, when the full-site build
+ * starts writing migrated pages to the repo root: by then the semantics are
+ * already here rather than being remembered later.
+ */
+function writeIfChanged(file, content) {
+  let before = null;
+  try { before = fs.readFileSync(file, 'utf8'); } catch (e) { /* new file */ }
+  if (before === content) return false;
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, content, 'utf8');
+  return true;
+}
+
 /* ---------------------------------------------------------------------- CLI
 
    node renderer/render.js [tree.json ...]
@@ -174,10 +192,10 @@ function main(argv) {
       const html = renderPage(tree, lang, data, { styles, chrome, registry });
       const rel = pagePath(tree, lang).replace(/^\//, '');
       const dest = path.join(OUT, rel);
-      fs.mkdirSync(path.dirname(dest), { recursive: true });
-      fs.writeFileSync(dest, html, 'utf8');
+      const changed = writeIfChanged(dest, html);
       console.log('    ' + lang + '  ' + rel + '  ' +
-                  Math.round(html.length / 1024) + ' KB  -> ' + pageUrl(tree, lang));
+                  Math.round(html.length / 1024) + ' KB  ' +
+                  (changed ? 'written  ' : 'unchanged') + '  -> ' + pageUrl(tree, lang));
     });
   });
 
@@ -191,6 +209,6 @@ if (require.main === module) {
 
 module.exports = {
   renderSection, renderBody, renderPage,
-  loadData, loadStyles, loadChrome, loadTree,
+  loadData, loadStyles, loadChrome, loadTree, writeIfChanged,
   LANGS_IN_SCOPE, LANGS, PRIMARY
 };

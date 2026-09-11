@@ -38,11 +38,11 @@ function writeIfChanged(file, content) {
   let before = null;
   try { before = fs.readFileSync(full, 'utf8'); } catch (e) { /* new file */ }
   if (before === content) {
-    console.log('  ' + file.padEnd(18) + 'unchanged');
+    console.log('  ' + file.padEnd(20) + 'unchanged');
     return false;
   }
   fs.writeFileSync(full, content, 'utf8');
-  console.log('  ' + file.padEnd(18) + 'written');
+  console.log('  ' + file.padEnd(20) + 'written');
   return true;
 }
 
@@ -108,11 +108,25 @@ function writePages(trees) {
   return changed;
 }
 
+/* Strip database bookkeeping. `updatedAt` is how MongoDB records its own
+   writes - nothing on the public pages renders it and no section component
+   reads it. Left in, it lands on the LAST field of every record, so adding it
+   moves the trailing comma on the line above and a one-field content change
+   shows up as a diff touching every record in the file. `git diff data/` is
+   the human review step between an edit and the live site; it has to stay
+   readable. See docs/FINDINGS.md finding 17.
+
+   Applied to every content list, not just products. */
+function forSite(doc) {
+  const { updatedAt, ...rest } = doc;
+  return rest;
+}
+
 /* The site reads products.json without stock fields; stock is the CSV's job.
    Keeping them apart means a stock change touches one small file, not the
    whole catalogue. */
-function forSite(product) {
-  const { stock, reorder, stockUpdated, ...rest } = product;
+function productForSite(product) {
+  const { stock, reorder, stockUpdated, ...rest } = forSite(product);
   return rest;
 }
 
@@ -120,11 +134,20 @@ function forSite(product) {
   console.log('Exporting MongoDB to data/ ...\n');
   const db = await connect();
 
+  /* NOT read here on purpose: the `movements` and `activity` collections.
+     They are the stock ledger and the admin audit trail - who added which
+     staff member, who downloaded the sales workbook, with email addresses and
+     timestamps. This script writes into data/, data/ is deployed to GitHub
+     Pages, and this repository is public, so exporting them put staff emails
+     and internal activity one commit away from a public URL.
+
+     They stay in MongoDB, reachable only through the authenticated API. Do not
+     add them back. docs/FINDINGS.md finding 16 (HIGH, security); same root
+     cause as finding 6 - the deploy is the whole repo, so anything written
+     into the working tree is published by default. */
   const cases = await readList(db, 'cases');
   const products = await readList(db, 'products');
   const faq = await readList(db, 'faq');
-  const movements = await readList(db, 'movements');
-  const activity = await readList(db, 'activity');
   const homepageDoc = await db.collection('homepage').findOne({ _id: 'homepage' });
   const homepage = homepageDoc ? stripId(homepageDoc) : {};
   const pages = await db.collection(PAGE_COLLECTIONS.pages)
@@ -137,13 +160,12 @@ function forSite(product) {
   }
 
   let changed = 0;
-  changed += writeIfChanged('cases.json', JSON.stringify(cases, null, 2) + '\n');
-  changed += writeIfChanged('products.json', JSON.stringify(products.map(forSite), null, 2) + '\n');
-  changed += writeIfChanged('faq.json', JSON.stringify(faq, null, 2) + '\n');
-  changed += writeIfChanged('homepage.json', JSON.stringify(homepage, null, 2) + '\n');
+  changed += writeIfChanged('cases.json', JSON.stringify(cases.map(forSite), null, 2) + '\n');
+  changed += writeIfChanged('products.json', JSON.stringify(products.map(productForSite), null, 2) + '\n');
+  changed += writeIfChanged('faq.json', JSON.stringify(faq.map(forSite), null, 2) + '\n');
+  changed += writeIfChanged('homepage.json', JSON.stringify(forSite(homepage), null, 2) + '\n');
+  // the CSV is built from the raw products - stock IS its content
   changed += writeIfChanged('inventory.csv', buildInventoryCsv(products));
-  changed += writeIfChanged('inventory-log.json', JSON.stringify(movements, null, 2) + '\n');
-  changed += writeIfChanged('activity-log.json', JSON.stringify(activity, null, 2) + '\n');
   changed += writePages(pages);
 
   console.log('\n' + changed + ' file(s) changed.');
