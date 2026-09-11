@@ -15,7 +15,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 |---|---|---|---|
 | 1 | Homepage background video hosted on the client's Wix CDN | High — breaks at cutover | Phase 10 |
 | 2 | Product photos hotlinked from Google Drive, and rate-limited | High | Phase 10 |
-| 3 | `購物車.html` has no `<h1>` — will fail the SEO gate | Medium — needs a decision | Phase 6 |
+| 3 | `購物車.html` has no `<h1>`; it and `account.html` have no JSON-LD | Resolved — allow-list | Closed at P6-T1a |
 | 4 | All 18 pages overflow horizontally on a 390px viewport | Low | Phase 9 / 13 |
 | 5 | `<img src="">` placeholder fires a spurious request | Cosmetic | Phase 13 |
 | 6 | Pages deploys the whole repo, so editor source and build output ship publicly | Medium | Phase 8 |
@@ -105,7 +105,7 @@ baseline should be re-recorded.
 
 ---
 
-## 3 · `購物車.html` has no `<h1>` and will fail the Phase 6 SEO gate
+## 3 · `購物車.html` has no `<h1>`, and neither utility page has JSON-LD — RESOLVED at P6-T1a
 
 **What.** The cart page renders **zero `<h1>` elements** and carries **no JSON-LD**. Its
 `<title>`, `<meta name="description">` and `<link rel="canonical">` are all present and correct:
@@ -119,20 +119,58 @@ h1 count   : 0
 
 **Where.** `購物車.html`; evidence in `baseline/head/購物車.html` and the manifest row.
 
-**Why it matters.** BUILD_TASKS P6-T1 asserts **exactly one `<h1>` per page** and treats the SEO
-check as a gate, not a report — so as written, this page cannot publish. It is the only page of the
-18 in this state.
+**Correction, made at P6-T1a.** The original wording put `account.html` "in the same category". A
+survey of all 18 baseline heads at P6-T1 showed the two pages are **not** the same case:
 
-**Decision needed at Phase 6 — do not guess:**
-- **(a)** Give the cart a visible `<h1>` (e.g. 購物車). Simplest, and arguably a real accessibility
-  improvement, but it changes the visible page against the baseline.
-- **(b)** Exempt utility pages (cart, account) from the `<h1>` and JSON-LD assertions, with an
-  explicit allow-list in `scripts/test-seo.js` so the exemption is visible and deliberate.
+| Page | `<h1>` | JSON-LD blocks | Assertions it fails |
+|---|---|---|---|
+| `購物車.html` (cart) | **0** | **0** | **two** — the `<h1>` check and the typed-JSON-LD check |
+| `account.html` | 1 | **0** | **one** — the typed-JSON-LD check only |
+| the other 16 | 1 | 1–5 | none |
 
-Recommendation: **(b)** — a cart is a transactional page, not a document. It also has no business
-carrying JSON-LD. But an exemption list is a hole in a gate, so it must be explicit and small, and
-the project owner should choose. `account.html` is in the same category (also 0 JSON-LD) and should
-be decided at the same time.
+So the cart is the only page missing a heading, and the two pages share only the missing JSON-LD.
+They still want the same treatment, but for a slightly different reason each.
+
+**Why it mattered.** BUILD_TASKS P6-T1 asserts exactly one `<h1>` per page and treats the SEO check
+as a gate, not a report — so as written, neither page could publish.
+
+**The two options that were put to the project owner:**
+- **(a)** Give the cart a visible `<h1>` (e.g. 購物車). Simplest, arguably an accessibility
+  improvement, but it changes the visible page against the baseline — and it does not settle the
+  JSON-LD question on either page, which would still need the same exemption.
+- **(b)** Exempt utility pages from the `<h1>` and JSON-LD assertions with an explicit allow-list in
+  `scripts/test-seo.js`.
+
+## RESOLVED at P6-T1a — option (b), with three conditions
+
+The project owner chose **(b)**. A cart and an account page are transactional UI, not documents:
+they have no `<h1>`-worthy subject and no honest schema.org type, and inventing either to satisfy a
+checker is the tail wagging the dog. But an exemption is a hole in a gate, so three conditions were
+attached, all implemented and all asserted by the suite itself:
+
+1. **Named pages only** — `購物車.html` and `account.html`. No patterns, no directories. Asserted:
+   every key must match `/^[^/\\*?]+\.html$/`.
+2. **Every entry carries a reason, printed on every run**, passing or failing. An exemption you see
+   each time is one you can argue with; one buried in a file is one nobody revisits.
+3. **The list is asserted to be exactly those two.** The agreed set is spelled out in a separate
+   `AGREED` constant, so adding a third page fails the gate until someone edits the assertion too —
+   two deliberate edits, both visible in one diff. The list cannot grow by accident.
+
+**The exemption is narrow, and that is the point.** These pages are excused from having a *subject*
+and a *schema type*. Title, description, canonical and hreflang are asserted on them in full.
+Being a utility page is not a reason to be uncrawlable.
+
+**One thing the exemption had to be widened to cover, worth recording.** `renderer/head.js` derives
+an `Organization` node on **every** page, so a migrated cart carries one JSON-LD block where the
+hand-coded cart carries none. The baseline `@types` comparison would therefore fail forever. That
+extra node is an SEO *improvement*, not a loss, so the comparison is waived for exempt pages rather
+than the node being suppressed in `head.js` — and both sides are still printed on every run, so the
+difference stays on screen instead of disappearing. "Any JSON-LD present must be valid JSON" still
+applies to them: not needing a schema type is not permission to ship a broken one.
+
+Proved at P6-T1a: a non-exempt page with no `<h1>` still fails; a third entry in the list fails the
+"exactly these" assertion; and the cart passes with no `<h1>` but still fails the moment its
+canonical is broken.
 
 ---
 

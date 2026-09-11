@@ -38,13 +38,29 @@
  * languages it starts doing real cross-language work without being rewritten.
  *
  * ------------------------------------------------------------------------
- * PENDING DECISION - docs/FINDINGS.md finding 3. 購物車.html renders zero <h1>
- * and carries no JSON-LD; account.html has an <h1> but also no JSON-LD. As
- * written, this gate would block both. The choice is between giving those
- * pages an <h1> or exempting utility pages with an explicit allow-list here.
- * It is the project owner's call and is NOT pre-empted in this file: there is
- * deliberately no allow-list yet. Neither page is rendered at Phase 5, so the
- * gate does not hit it today.
+ * THE ONE EXEMPTION - docs/FINDINGS.md finding 3, decided at P6-T1a.
+ *
+ * Two pages are transactional UI rather than documents: the cart renders zero
+ * <h1> and no JSON-LD, and account.html has an <h1> but no JSON-LD. Inventing
+ * a heading and a schema.org type to satisfy a checker would be the tail
+ * wagging the dog, so they are exempt - but an exemption is a hole in a gate,
+ * so this one is built to stay small and stay visible:
+ *
+ *   1. NAMED PAGES ONLY. No patterns, no directories, no prefixes. A filename
+ *      or nothing.
+ *   2. EVERY ENTRY CARRIES A REASON, printed on every run, passing or failing.
+ *      An exemption you see every time is one you can argue with; one buried
+ *      in a file is one nobody revisits.
+ *   3. THE LIST IS ASSERTED TO BE EXACTLY THESE TWO. Adding a third page fails
+ *      the gate until someone also edits the assertion - two deliberate edits,
+ *      both visible in one diff. The list cannot grow by accident.
+ *
+ * And the exemption is NARROW. These pages are excused from having a SUBJECT
+ * (an <h1>) and a SCHEMA TYPE (JSON-LD, including the baseline @types
+ * comparison - see the note where that is waived). They are not excused from
+ * anything else: title, description, canonical and hreflang are asserted on
+ * them in full, exactly as on every other page. Being a utility page is not a
+ * reason to be uncrawlable.
  * ------------------------------------------------------------------------
  */
 const fs = require('fs');
@@ -56,6 +72,15 @@ const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'renderer', '.out');
 const SAMPLE = path.join(ROOT, 'renderer', 'sample');
 const BASELINE = path.join(ROOT, 'baseline', 'head');
+
+/* The allow-list. Read the header before touching this. Keys are filenames as
+   they appear in a page tree's `path`; values are the reason, printed on every
+   run. If you are adding a page here you must also edit AGREED below - that is
+   the point. */
+const UTILITY_PAGES = {
+  '購物車.html': 'cart: transactional UI, no document subject, no honest schema type',
+  'account.html': 'account: signed-in UI, no document subject, no honest schema type'
+};
 
 const { pagePath, SITE, HREFLANG } = require(path.join(ROOT, 'renderer', 'head.js'));
 const { LANGS_IN_SCOPE, PRIMARY } = require(path.join(ROOT, 'renderer', 'render.js'));
@@ -79,6 +104,28 @@ const trees = fs.readdirSync(SAMPLE).filter(f => f.endsWith('.json'))
   .map(f => ({ file: path.join(SAMPLE, f), tree: JSON.parse(fs.readFileSync(path.join(SAMPLE, f), 'utf8')) }));
 
 if (!trees.length) die('SEO gate cannot run: no page trees in renderer/sample/.');
+
+console.log('\n=== the utility-page exemption (docs/FINDINGS.md finding 3) ===\n');
+
+/* Condition 3: the list cannot grow by accident. The agreed set is spelled out
+   HERE, separately from the list itself, so adding a page means editing two
+   places and both show up in one diff. If you are reading this because the
+   check below just failed: that is the gate working. Decide deliberately, then
+   edit this line too. */
+const AGREED = 'account.html + 購物車.html';
+const listed = Object.keys(UTILITY_PAGES).sort().join(' + ');
+check('the allow-list is exactly the two agreed pages', listed === AGREED,
+      listed === AGREED ? AGREED
+        : '\n        agreed at P6-T1a: ' + AGREED +
+          '\n        in the file now  : ' + listed);
+
+/* Condition 1: named pages only - a pattern would let the hole widen quietly. */
+check('every entry is a plain filename, not a pattern or a directory',
+      Object.keys(UTILITY_PAGES).every(k => /^[^/\\*?]+\.html$/.test(k)), listed);
+
+/* Condition 2: the reason is on screen every run, passing or failing. */
+Object.keys(UTILITY_PAGES).sort().forEach(k =>
+  console.log('        exempt from <h1> and JSON-LD ONLY - ' + k + ' - ' + UTILITY_PAGES[k]));
 
 console.log('\n=== render the pages the way publish does ===\n');
 
@@ -129,10 +176,21 @@ rendered.forEach((page, url) => {
   const name = rel + ' [' + lang + ']';
   console.log('\n=== ' + name + ' ===\n');
 
+  /* The exemption applies to the PAGE, not to a language variant of it, so it
+     is keyed on the tree's own path. It covers exactly two things: having a
+     subject (<h1>) and having a schema type (JSON-LD). Everything else in this
+     loop runs on these pages unchanged. */
+  const exemptReason = UTILITY_PAGES[String(tree.path || '')];
+
   // 1. exactly one <h1>
   const h1s = doc.querySelectorAll('h1');
-  check(name + ': exactly one <h1>', h1s.length === 1,
-        h1s.length + (h1s.length === 1 ? ' — "' + h1s[0].textContent.trim() + '"' : ''));
+  if (exemptReason) {
+    console.log('        waived: exactly one <h1> - ' + exemptReason +
+                '   (found: ' + h1s.length + ')');
+  } else {
+    check(name + ': exactly one <h1>', h1s.length === 1,
+          h1s.length + (h1s.length === 1 ? ' — "' + h1s[0].textContent.trim() + '"' : ''));
+  }
 
   // 2. non-empty title and description
   const title = (doc.querySelector('title') || {}).textContent || '';
@@ -163,9 +221,18 @@ rendered.forEach((page, url) => {
   const nodes = ldNodes(doc);
   check(name + ': every JSON-LD block is valid JSON',
         nodes.every(n => !n.bad), nodes.filter(n => n.bad).map(n => n.bad).join('; ') || nodes.length + ' node(s)');
-  check(name + ': every JSON-LD node has an @type',
-        nodes.length > 0 && nodes.every(n => n.bad || (typeof n['@type'] === 'string' && n['@type'])),
-        nodes.length ? typesOf(doc).join(', ') : 'NO JSON-LD AT ALL');
+  /* Which half is waived: "must HAVE JSON-LD, every node typed" is the one a
+     cart cannot meet. "Any JSON-LD present must be valid JSON" above still
+     applies to it - an exemption from needing a schema type is not permission
+     to ship a broken one. */
+  if (exemptReason) {
+    console.log('        waived: must have typed JSON-LD - ' + exemptReason +
+                '   (blocks present: ' + nodes.length + ')');
+  } else {
+    check(name + ': every JSON-LD node has an @type',
+          nodes.length > 0 && nodes.every(n => n.bad || (typeof n['@type'] === 'string' && n['@type'])),
+          nodes.length ? typesOf(doc).join(', ') : 'NO JSON-LD AT ALL');
+  }
 });
 
 /* ------------------------------------------------------ reciprocity ------ */
@@ -214,12 +281,26 @@ rendered.forEach((page, url) => {
         attr(page.doc, 'link[rel="canonical"]', 'href') === bCanonical,
         bCanonical);
 
+  /* The exemption has to cover this one too, and the reason is worth knowing:
+     head.js DERIVES an Organization node on every page, so a migrated cart
+     carries one JSON-LD block where the hand-coded cart carries none, and this
+     comparison would fail forever. That extra node is an SEO improvement, not
+     a loss - which is why the comparison is waived here rather than the node
+     suppressed in head.js. Both sides are still PRINTED, so the difference
+     stays on screen instead of disappearing. */
   const got = typesOf(page.doc), want = typesOf(bdoc);
-  check(page.rel + ': JSON-LD @types match the baseline',
-        got.join(',') === want.join(','),
-        got.join(',') === want.join(',')
-          ? want.length + ' node(s): ' + want.join(', ')
-          : '\n        baseline: ' + want.join(', ') + '\n        rendered: ' + got.join(', '));
+  const bExempt = UTILITY_PAGES[String(page.tree.path || '')];
+  if (bExempt) {
+    console.log('        waived: JSON-LD @types match the baseline - ' + bExempt);
+    console.log('                baseline: ' + (want.join(', ') || '(none)') +
+                '   rendered: ' + (got.join(', ') || '(none)'));
+  } else {
+    check(page.rel + ': JSON-LD @types match the baseline',
+          got.join(',') === want.join(','),
+          got.join(',') === want.join(',')
+            ? want.length + ' node(s): ' + want.join(', ')
+            : '\n        baseline: ' + want.join(', ') + '\n        rendered: ' + got.join(', '));
+  }
 
   const bTitle = ((bdoc.querySelector('title') || {}).textContent || '').trim();
   check(page.rel + ': <title> matches the baseline',
