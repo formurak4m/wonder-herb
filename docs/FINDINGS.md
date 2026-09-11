@@ -4,7 +4,8 @@ Findings 1–5 come from recording the Phase 0 baseline (`node scripts/baseline.
 adding the Phase 1 toolchain; 7 from adding the page routes at P2-T1; 8–11 from building the
 section library at P4-T2; 12–13 from actually looking at the rendered sections at P4-T3; 14 from the
 fidelity waivers at P4-T4; 15 from rendering a real page end to end at P5-T1; 16–17 from
-running the real publish pipeline for the first time at P7-T1.
+running the real publish pipeline for the first time at P7-T1; 18–19 from building the editor
+app at P8-T2.
 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
@@ -31,6 +32,8 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 15 | Chrome's layout depends on JS, and there is no shared stylesheet | **High — D1 required, not optional** | P5-T1 / Phase 9 |
 | 16 | **`export` published staff emails and an internal audit trail to a public URL** | **HIGH — security** | Fixed at P7-T1a |
 | 17 | `export` wrote `updatedAt` bookkeeping into public site data; one real stock change is unpublished | Medium — fixed; stock is a **client decision** | P7-T1a / client |
+| 18 | `renderer/i18n.js` is CommonJS, so the editor cannot import it; Vite shim is a stopgap | Medium | Phase 9 |
+| 19 | Product data has no per-language `title`/`desc` — same root cause as finding 8 | Medium — **client decision** | Phase 14 (decide at 9) |
 
 ---
 
@@ -701,6 +704,14 @@ of which 27 KB is lifted CSS. Until it is done, `assets.stylesFrom` stays, and *
 that `renderer/render.js` prints on every lift stays with it**, so the stopgap cannot go quiet and
 become permanent.
 
+**D2 also blocks the editor canvas, found at P8-T2.** Puck renders its canvas in an iframe, and
+there is no stylesheet to give it: the CSS the page needs is inlined in one of the 18 HTML files,
+not available as a link. So the canvas shows correct structure and correct content, **unstyled** —
+which for a client being sold a Wix-like editor is a visible shortfall, not a technical detail. The
+Preview button is the styled view until D2 lands (it renders through the real renderer, so it is
+accurate), and the canvas becomes properly styled for free once one sheet exists. This is the same
+finding, not a separate one: do not open a new ticket for "the canvas looks plain".
+
 ---
 
 ## 16 · `npm run export` published an internal audit trail to a public URL — SECURITY, fixed at P7-T1a
@@ -800,3 +811,69 @@ page is a business decision, not a build side-effect, so it must not ride along 
 The database keeps the change, `data/` keeps the committed value, and the divergence is recorded
 here so it is not rediscovered as a bug. Resolve it by publishing deliberately or by correcting the
 stock in the admin — either way, on purpose.
+
+---
+
+## 18 · `renderer/i18n.js` is CommonJS, so the editor cannot import it — owner Phase 9
+
+**What.** `renderer/i18n.js` ends in `module.exports = { resolveField, isLangMap, LANGS, PRIMARY }`.
+Plain Node loads it happily — the renderer, `scripts/export.js` and the test suite all do. The
+editor cannot: Vite's dev server serves source files as native ES modules, and a CommonJS file has
+no `default` export to import. The editor died on load with
+
+```
+The requested module '/renderer/i18n.js' does not provide an export named 'default'
+```
+
+**Why it was not caught by a test.** `scripts/test-editor-lang.js` bundles with esbuild, and
+esbuild's **bundler** does synthesise a default export for a CJS module. So the test passed while
+the app was broken. Only starting the real dev server showed it — a bundled test and a dev server
+are different loaders, and this file is consumed by both.
+
+**Stopgap, in place at P8-T2:** a 15-line `wh-cjs-interop` plugin in `editor/vite.config.mjs` wraps
+that one file in the standard `const module = { exports: {} }` shim. The alternative was to copy
+`LANGS`, `PRIMARY` and `isLangMap` into the editor, which would put the seven-language list in two
+places — exactly the duplication the shared `sections/` registry exists to prevent.
+
+**The real fix, owner Phase 9:** make `renderer/i18n.js` an ES module and let Node consume it
+through the same esbuild path `sections/` already uses. It is a change to `renderer/`, which P8-T2
+was not allowed to touch, and it is small — the file is 80 lines, pure, and has no imports of its
+own. **When it lands, delete the plugin.** The plugin's own comment says so, and it names this
+finding, so the stopgap cannot go quiet: a shim with no expiry date becomes architecture.
+
+Worth noting for whoever does it: this is the mirror image of the problem `renderer/build-sections.js`
+solves. Sections are ESM and Node needs CJS, so esbuild bundles one way. `i18n.js` is CJS and the
+editor needs ESM, and nothing bundles the other way. One module system for shared source, with
+esbuild as the single bridge, removes the whole class.
+
+---
+
+## 19 · The product data model is thinner than the page-tree model — owner Phase 14
+
+**What.** Page-tree content is per-language (`{ zh: '…', en: '…' }`) and the P8-T2 editor edits one
+language at a time. **Catalogue content is not.** `data/products.json` holds:
+
+```
+id, title, sku, price, status, cat, badges, model, desc
+```
+
+`title` and `desc` are plain strings. So in the editor, switching the content language to English
+translates the page heading and the copy blocks, and the **product cards stay in Chinese** — visible
+in `preview/shot-editor-4-language-en.png`. That is correct behaviour for the data as it stands, and
+it is not something the renderer or the editor can fix: there is no English title to render.
+
+**This is the same root cause as finding 8.** That one is `products.json` having no `image` or
+`link`; this one is no per-language `title` or `desc`. Both are the same sentence: **the product
+data model is thinner than the page-tree model, and the gap only shows up once something tries to
+render products properly.** Expect more of these. They should be fixed in one pass, as one schema
+decision, not one field at a time as each is rediscovered.
+
+**Owner: Phase 14** (all 7 languages), but the schema decision is worth taking with finding 8 at
+Phase 9, because that is when the product grid gets migrated for real and the missing `image` is
+already a hard blocker. Deciding "what shape is a product" once beats deciding it twice.
+
+**The decision, when it is taken:** do `title` and `desc` become per-language objects like every
+other text field on the site, or does the catalogue stay single-language on purpose? The second is
+defensible — product names are often left untranslated deliberately — but it has to be a decision.
+Right now it is an accident, and an accident that renders as a half-translated page. The client
+should be asked: are the product names and descriptions meant to be translated at all?
