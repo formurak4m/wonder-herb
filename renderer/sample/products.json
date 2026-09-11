@@ -1,0 +1,288 @@
+{
+  "_note": "P5-T1 proof fixture, not the publish path. The page tree for 產品介紹.html, with title/description/og/JSON-LD carried verbatim out of baseline/head/產品介紹.html. Real page trees live in data/pages/ and come from the editor via PUT /api/pages/:slug (P2-T1). Nothing renders over the live page: P5-T1 writes to renderer/.out/ only.",
+  "slug": "products",
+  "path": "產品介紹.html",
+  "title": {
+    "zh": "產品介紹 | Wonder Herb - 雲芝糖肽精華"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂 Wonder Herb 產品系列 – 雲芝糖肽精華 PSP，T3 配方，乙肝清，憶活素。加拿大GMP藥廠生產，有效成份高達90%以上。"
+    },
+    "dateModified": "2026-06-02T10:30:00+08:00",
+    "ogType": "website",
+    "image": "https://lh3.googleusercontent.com/d/1j4nnDKPYyQ7naWRboMd3fPS8pvrlEtDq",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "產品介紹"
+        },
+        "path": "產品介紹.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "FAQPage",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "康草堂的雲芝糖肽精華 PSP 與其他品牌有什麼不同？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "康草堂採用獨特提取技術將多醣與蛋白肽結合，人體吸收率更高；每批產品雙重檢測，有效成份高達90%以上，並有大學研究證實與T3結合功效倍增。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "哪些產品適合初次體驗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "推薦雲芝糖肽精華 PSP 試用裝（60粒），有效成份與標準裝一致，價格較親民，適合初次評估身體反應。"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "Product",
+        "name": "雲芝糖肽精華 (PSP) 試用裝",
+        "description": "60粒，多醣肽含量達國家標準1.8倍以上，提升免疫細胞活性，適合初次體驗。",
+        "sku": "WH-PSP-60",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "680.00",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "328",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "author": "麥女士家屬",
+            "reviewBody": "化療期間配合使用雲芝+T3，副作用明顯減輕。",
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "5"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "Product",
+        "name": "雲芝糖肽精華 (PSP) 標準裝",
+        "description": "500粒，強化免疫調節，適合長期輔助療程，雙重檢測有效成份>90%。",
+        "sku": "WH-PSP-500",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "3800.00",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "328",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "author": "陳小姐",
+            "reviewBody": "術後持續服用PSP，追蹤兩年無復發，體力恢復良好。",
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "5"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "Product",
+        "name": "T3 配方",
+        "description": "大學證實PSP+T3複合配方功效倍增，澳洲昆士蘭科技大學臨床研究支持。",
+        "sku": "WH-T3-120",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "1900.00",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "215",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "author": "陳先生",
+            "reviewBody": "T3配合PSP使用，化療副作用明顯減少。",
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "5"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "Product",
+        "name": "乙肝清",
+        "description": "全草本護肝配方，抑制HBV病毒，減輕肝纖維化。",
+        "sku": "WH-YGQ-300",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "1880.00",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.7",
+          "reviewCount": "128",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "author": "乙肝帶菌者陳先生",
+            "reviewBody": "服用六個月病毒量明顯下降，肝功能恢復正常。",
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "5"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "Product",
+        "name": "憶活素 MemoProve",
+        "description": "奧地利 EVER PHARMA 研發，修復腦細胞，增強記憶力與專注力。",
+        "sku": "WH-MEMO-60",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "520.00",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.6",
+          "reviewCount": "89",
+          "bestRating": "5",
+          "worstRating": "1"
+        },
+        "review": [
+          {
+            "@type": "Review",
+            "author": "學生陳同學",
+            "reviewBody": "服用兩個月後記憶力明顯改善。",
+            "reviewRating": {
+              "@type": "Rating",
+              "ratingValue": "5"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "Product",
+        "name": "PT3 (指定診所發售)",
+        "description": "專業級雲芝複合配方，僅在指定中西醫診所發售。",
+        "sku": "WH-PT3-PRO",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStoreOnly"
+        }
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    ],
+    "stylesFrom": "產品介紹.html",
+    "chromeFrom": "產品介紹.html"
+  },
+  "sections": [
+    {
+      "type": "page-header",
+      "fields": {
+        "heading": {
+          "zh": "產品系列"
+        },
+        "sub": {
+          "zh": "加拿大GMP藥廠 · 有效成份 >90% · 大學研究證實"
+        },
+        "headingId": "products-heading",
+        "variant": "centered"
+      }
+    },
+    {
+      "type": "product-grid",
+      "wrap": "container",
+      "fields": {
+        "source": "products.json",
+        "quickViewLabel": {
+          "zh": "快速瀏覽"
+        },
+        "detailLabel": {
+          "zh": "詳細介紹"
+        }
+      }
+    }
+  ]
+}
