@@ -606,3 +606,31 @@ time it does this, so it cannot quietly become permanent.
 rather than copied from each other, and it is what makes `<link rel="stylesheet">` in the template
 mean anything. Until then, every rendered page inlines a full copy of its source page's CSS — which
 is also why the proof page is 47 KB.
+
+### Registered as explicit Phase 9 decisions — owner Phase 9
+
+Both were confirmed by the project owner at P5-T1 review. They are decisions to be **made**, not
+notes to be remembered, and neither is optional.
+
+**D1 · Triage the per-page inline chrome script.** Each page carries roughly 500 lines of inline
+JavaScript that the chrome depends on. At Phase 9 every behaviour in it gets sorted into exactly one
+of three buckets, and the sorting is recorded:
+
+| Bucket | Meaning | Action |
+|---|---|---|
+| Load-bearing layout | the page is wrong without it, at any moment | needs a **pre-render-safe equivalent** — CSS, not JS |
+| Genuine enhancement | the page is correct without it, just less nice | keep as progressive JS |
+| Dies with pre-rendering | only exists because content arrives client-side | drop |
+
+The **nav offset is the first load-bearing case**, and it is the one that shows why the bucket
+matters: `NAV_OFFSET_SCRIPT` fixes it with scripts on, and **scripts-off cannot be fixed at
+runtime** — the nav height has to become a known value in CSS. Expect the same shape from anything
+else that lands in this bucket. Cart badge, mobile menu and the language switch are the obvious
+candidates for the other two buckets (the language switch becomes plain links and dies).
+
+**D2 · Extract a shared stylesheet. This is a Phase 9 precondition, not an optional cleanup.**
+Pages built from sections cannot each carry a private copy of their own CSS — that is what makes
+`<link rel="stylesheet">` in the template mean anything, and it is why the P5-T1 proof page is 47 KB
+of which 27 KB is lifted CSS. Until it is done, `assets.stylesFrom` stays, and **the `!` warning
+that `renderer/render.js` prints on every lift stays with it**, so the stopgap cannot go quiet and
+become permanent.
