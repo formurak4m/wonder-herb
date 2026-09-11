@@ -674,7 +674,7 @@ the same shape from anything else that lands in this bucket. Cart badge, mobile 
 language switch are the obvious candidates for the other two buckets (the language switch becomes
 plain links and dies).
 
-#### REQUIRED at Phase 9 — the nav height must be a known CSS value
+#### REQUIRED at Phase 9 — the nav height must be a known CSS value — **DONE at P9-T1**
 
 Promoted from a decision to a requirement by the project owner at the P5-T1a review, having seen the
 scripts-off screenshot. The reasoning, in their words: *a pre-rendered page whose heading hides under
@@ -697,6 +697,60 @@ tolerance. That is the test: same page, scripts off, heading where it belongs.
 This is also the concrete form of finding 12's "do the visual diff with scripts enabled AND again
 with them disabled". The second run is not a formality — it is the only run that can catch this
 class, and it has now caught it twice.
+
+##### Fixed at P9-T1 (D1). What shipped, and the two things that were not obvious
+
+`renderer/template.js` emits `CHROME_LAYOUT_CSS` into `<head>`, after the lifted page CSS so it
+outranks it, and only when the page actually has chrome:
+
+```css
+body { overflow-x: clip; }
+.fixed-nav-wrapper { position: sticky; }
+```
+
+**It is NOT a known height, and that turned out to matter.** The requirement above says "from a known
+height". There isn't one. `.header-inner` is `flex-wrap: wrap`, so across a width sweep the nav
+measures **190, 164, 141, 139 and 136 px** — and it is *taller* at 900–1100 px (190) than at 1280
+(164), so a constant read off a desktop screenshot would be 26 px short in the middle of the range.
+It is not even stable between runs of the same page: at 1100 px it measured 164 once and 190 another
+time, depending on whether the webfont had loaded when the measurement was taken. `sticky` pins the
+bar the way `fixed` did while leaving it in flow, so it reserves exactly its own height whatever that
+turns out to be. Measured gap between the nav's bottom edge and the start of page content: **0 px at
+all ten widths tested.**
+
+**`body { overflow-x: clip }` is load-bearing, and leaving it out passes the acceptance test.** All 18
+pages set `overflow-x: hidden` on both `html` and `body` (verified: the `.fixed-nav-wrapper` rule is
+byte-identical across all 18). The root element's value propagates to the viewport, which leaves
+body's own `hidden` making **body** a scroll container — and a sticky box sticks to its nearest
+scrollport. With `sticky` alone the `<h1>` lands in exactly the right place at both widths **and the
+nav scrolls off the screen** (measured: nav y = −1085 after scrolling 1085 px). `clip` clips
+identically without creating a scroll container. Recorded because the stated acceptance test — the
+heading's y-position — cannot see this failure at all.
+
+**`NAV_OFFSET_SCRIPT` was deleted, not kept as an enhancement.** The requirement above assumed it
+could stay on top to refine the value. It cannot: with the nav in flow, `body { padding-top }` is
+double-counting, and re-adding the script pushes the heading down by a second nav height (**+165 px**
+at 1280, **+138 px** at 390). A thing that is wrong whenever it runs is not a progressive
+enhancement. Nothing else referenced it.
+
+**Acceptance, met.** Same page, re-rendered, `<h1>` y-position:
+
+| width | scripts on | scripts off | delta | before D1 (scripts off) |
+|---|---|---|---|---|
+| 1280 | 219 | **219** | **0 px** | 55 |
+| 390 | 194 | **194** | **0 px** | 55 |
+
+The two 1280 screenshots are byte-identical PNGs. `preview/shot-07-rendered-js-off.png` — the
+acceptance reference named above — now reads y=219, matching scripts-on exactly.
+
+Spot-checked by lifting the same chrome from **`index.html`, `聯絡我們.html` and `購物車.html`** and
+rendering each at both widths: scripts-on/scripts-off delta **0 px** on all six, nav pinned on all
+six, no horizontal scrollbar introduced anywhere. Guarded by 5 checks in `scripts/test-render.js`,
+proven to bite (disable the emission → 3 of them fail, exit 1).
+
+**The 18 live hand-coded pages were not touched.** They keep `position: fixed` plus their own inline
+offset script, which is correct for them — they are not pre-rendered. When D2 extracts the shared
+stylesheet, this rule is one of the things that moves into it.
 
 **D2 · Extract a shared stylesheet. This is a Phase 9 precondition, not an optional cleanup.**
 Pages built from sections cannot each carry a private copy of their own CSS — that is what makes

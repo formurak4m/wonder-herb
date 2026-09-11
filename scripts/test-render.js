@@ -96,6 +96,31 @@ check('a page whose sections emit .reveal-on-scroll still gets both guards',
       revealHtml.indexOf('<noscript>') !== -1,
       revealCount + ' reveal token(s), observer + noscript both present');
 
+/* ------------------------------------------------- D1, finding 15 ---------
+   The nav must reserve its own space in CSS. This is the same "passes green,
+   looks broken" class as finding 12: drop the rule and every check above still
+   passes while the <h1> publishes underneath the nav bar for anyone with
+   JavaScript off. Measured before the fix: <h1> at y=55 against y=219. */
+console.log('\n=== the nav reserves its space in CSS (docs/FINDINGS.md finding 15, D1) ===\n');
+
+check('the chrome layout CSS is emitted for a page that has chrome',
+      /\.fixed-nav-wrapper \{ position: sticky; \}/.test(html));
+check('body overflow-x is neutralised, or sticky silently stops pinning',
+      /body \{ overflow-x: clip; \}/.test(html),
+      'body{overflow-x:hidden} makes body a scroll container');
+/* Cascade order: the lifted page CSS declares .fixed-nav-wrapper{position:fixed}.
+   The override is only an override if it comes after it. */
+check('it comes after the page CSS it overrides',
+      html.indexOf('.fixed-nav-wrapper { position: sticky; }') >
+      html.lastIndexOf('position: fixed;'),
+      'emitted below the lifted <style>, inside <head>');
+check('no runtime nav-offset script ships any more',
+      html.indexOf('paddingTop') === -1,
+      'the height is reserved by layout, not measured by JS');
+/* Bites the other way too: a page with no chrome must not carry chrome CSS. */
+check('a page without chrome does not get the chrome CSS',
+      revealHtml.indexOf('.fixed-nav-wrapper { position: sticky; }') === -1);
+
 /* --------------------------------------------------------- (c) content ---- */
 console.log('\n=== (c) the content is IN the HTML, not fetched ===\n');
 

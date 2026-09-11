@@ -65,29 +65,47 @@ const REVEAL_SCRIPT = [
   '})();'
 ].join('\n');
 
-/* The second load-bearing script, found while proving P5-T1 (docs/FINDINGS.md
- * finding 15). The chrome's .fixed-nav-wrapper is position:fixed, and NOTHING
- * in the CSS reserves room for it - the live pages measure the nav at runtime
- * and set body { padding-top } from JS (產品介紹.html:1963). Lift the chrome
- * markup without that script and the page's own <h1> renders underneath the
- * nav bar: same "passes green, looks broken" class as finding 12.
+/* D1, the chrome layout fix (docs/FINDINGS.md finding 15).
  *
- * Shipped only when the page actually has chrome. It is a stopgap in the same
- * way `chrome` itself is: the real fix is a known nav height in CSS so a
- * JavaScript-off visitor is correct too, and that comes with the Phase 9
- * decision about how chrome is modelled. */
-const NAV_OFFSET_SCRIPT = [
-  '(function () {',
-  '  var nav = document.querySelector(".fixed-nav-wrapper");',
-  '  if (!nav) return;',
-  '  var sync = function () {',
-  '    document.body.style.paddingTop = nav.getBoundingClientRect().height + "px";',
-  '  };',
-  '  sync();',
-  '  window.addEventListener("resize", sync);',
-  '  window.addEventListener("load", sync);',
-  '  if (document.fonts && document.fonts.ready) document.fonts.ready.then(sync);',
-  '})();'
+ * The chrome's .fixed-nav-wrapper is position:fixed and NOTHING in the page CSS
+ * reserves room for it - the live pages measure the nav at runtime and set
+ * body { padding-top } from JS (產品介紹.html:1963). That fixes the scripts-ON
+ * case only. With JavaScript off the page's own <h1> renders underneath the nav
+ * bar (measured: y=55 against y=219), so a pre-rendered page stays secretly
+ * JavaScript-dependent for its layout - which defeats part of why we pre-render
+ * at all. Same "passes green, looks broken" class as finding 12.
+ *
+ * The fix is CSS, and deliberately NOT a hardcoded nav height. The height is
+ * genuinely variable: .header-inner is `flex-wrap: wrap`, so the bar measures
+ * 164px at 1280 and 139px at 390, and it re-wraps again at intermediate widths
+ * and at the larger root font sizes the page sets under 768/480/380px.
+ * `position: sticky` pins the bar the way `fixed` did but leaves it IN FLOW, so
+ * it reserves exactly its own height whatever that turns out to be. No
+ * measurement, no magic number, no JavaScript.
+ *
+ * `body { overflow-x: clip }` is load-bearing here, not tidying. Every one of
+ * the 18 pages sets `overflow-x: hidden` on BOTH html and body. The root
+ * element's value propagates to the viewport, which leaves body's own `hidden`
+ * making BODY a scroll container - and a sticky box sticks to its nearest
+ * scrollport, which would then be a box that never scrolls. Measured: with
+ * sticky alone the <h1> clears the nav correctly at both widths AND the bar
+ * scrolls off the screen (nav y=-1085 after scrolling 1085px). `clip` clips
+ * identically without creating a scroll container, so the bar pins again.
+ * Worth stating plainly: fixing only the heading position passes D1's stated
+ * acceptance test and ships a nav that no longer stays put.
+ *
+ * NAV_OFFSET_SCRIPT is deleted, not demoted to a progressive enhancement. With
+ * the nav in flow, setting body padding-top is pure double-counting - it would
+ * push the heading down by a second nav height. A thing that is wrong when it
+ * runs cannot be kept "as an enhancement". */
+const CHROME_LAYOUT_CSS = [
+  '  <style>',
+  '    /* D1, docs/FINDINGS.md finding 15: the nav reserves its own space in CSS,',
+  '       so the page lays out correctly with zero JavaScript. This has to outrank',
+  '       the page CSS lifted above it, hence its position here. */',
+  '    body { overflow-x: clip; }',
+  '    .fixed-nav-wrapper { position: sticky; }',
+  '  </style>'
 ].join('\n');
 
 const NOSCRIPT_REVEAL =
@@ -108,6 +126,7 @@ function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main }) {
     '<html lang="' + htmlLang + '">\n' +
     '<head>\n' +
     head + '\n' +
+    (c.header ? CHROME_LAYOUT_CSS + '\n' : '') +
     NOSCRIPT_REVEAL + '\n' +
     '</head>\n' +
     '<body' + (bodyClass ? ' class="' + bodyClass + '"' : '') + '>\n' +
@@ -116,15 +135,11 @@ function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main }) {
     (c.footer ? c.footer + '\n' : '') +
     '\n<!-- scroll reveal: see docs/FINDINGS.md finding 12. Load-bearing. -->\n' +
     '<script>\n' + REVEAL_SCRIPT + '\n</script>\n' +
-    (c.header
-      ? '<!-- fixed-nav offset: see docs/FINDINGS.md finding 15. Load-bearing. -->\n' +
-        '<script>\n' + NAV_OFFSET_SCRIPT + '\n</script>\n'
-      : '') +
     (extra ? extra + '\n' : '') +
     '</body>\n' +
     '</html>\n';
 }
 
 module.exports = {
-  baseTemplate, REVEAL_SCRIPT, NAV_OFFSET_SCRIPT, NOSCRIPT_REVEAL, HTML_LANG
+  baseTemplate, REVEAL_SCRIPT, CHROME_LAYOUT_CSS, NOSCRIPT_REVEAL, HTML_LANG
 };
