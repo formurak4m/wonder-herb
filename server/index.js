@@ -6,6 +6,7 @@
  * committing. If this server is not running, both the admin and the site
  * fall back to the committed files exactly as before.
  */
+const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { ObjectId } = require('mongodb');
@@ -647,6 +648,78 @@ app.put('/api/pages/:slug', asyncRoute(async (req, res) => {
   await db.collection(PAGE_COLLECTIONS.pages)
     .replaceOne({ slug: slug }, doc, { upsert: true });
   res.json({ success: true, slug: slug, sections: doc.sections.length });
+}));
+
+/* ---------------------------------------------------------------- preview
+   Render a DRAFT tree through the real renderer and hand back the HTML.
+   P8-T2, BUILD_TASKS step 4.
+
+   WHY THIS IS A SERVER ROUTE AND NOT A BROWSER RENDER. Puck's canvas already
+   uses the same section components as the renderer (P8-T1 asserts that by
+   object identity), so section markup matches. But a published page is more
+   than its sections: the <head> from renderer/head.js, the document shell and
+   the load-bearing scroll-reveal script from renderer/template.js, the page
+   CSS and the chrome. Rebuilding any of that in the browser would create a
+   second implementation, and "the preview and the published page disagree" is
+   precisely the Puck fidelity gap this project is built to avoid (CLAUDE.md,
+   Conventions). So the preview calls renderPage - the same function
+   `npm run render` calls, in the same process family - and what the client sees
+   is what publishes.
+
+   Admin-only, via the existing requireAdmin. No new auth path.
+
+   SECURITY: a tree names the page its CSS and chrome come from
+   (`assets.stylesFrom` / `chromeFrom`), and the renderer reads that file off
+   disk. This route accepts a tree from the network, so those two values are
+   restricted to the actual page files in the repo root - otherwise a posted
+   tree could ask for `../.env` and have it inlined into the response. */
+const PAGE_FILE_OK = /^[^/\\]+\.html$/;
+function safeSourcePage(value) {
+  const name = String(value === undefined || value === null ? '' : value).trim();
+  if (!name) return '';
+  if (!PAGE_FILE_OK.test(name)) return '';
+  const full = path.join(__dirname, '..', name);
+  return fs.existsSync(full) ? name : '';
+}
+
+app.post('/api/preview', asyncRoute(async (req, res) => {
+  const actor = await requireAdmin(req, res);
+  if (!actor) return;
+
+  const body = req.body || {};
+  const tree = body.tree;
+  if (!tree || typeof tree !== 'object' || !Array.isArray(tree.sections)) {
+    return res.status(400).json({ error: 'Expected a page tree with a sections array' });
+  }
+
+  let renderer;
+  try {
+    renderer = require('../renderer/render');
+  } catch (err) {
+    return res.status(500).json({
+      error: 'Renderer not built. Run `npm run sections:build` first. (' + err.message + ')'
+    });
+  }
+
+  const assets = tree.assets || {};
+  const safe = Object.assign({}, tree, {
+    assets: Object.assign({}, assets, {
+      stylesFrom: safeSourcePage(assets.stylesFrom),
+      chromeFrom: safeSourcePage(assets.chromeFrom)
+    })
+  });
+
+  try {
+    const data = renderer.loadData();
+    const html = renderer.renderPage(safe, body.lang || renderer.PRIMARY, data, {
+      styles: renderer.loadStyles(safe.assets.stylesFrom),
+      chrome: renderer.loadChrome(safe.assets.chromeFrom)
+    });
+    res.json({ html: html, lang: body.lang || renderer.PRIMARY, bytes: html.length });
+  } catch (err) {
+    // an unknown section type or a broken tree is a 400, not a server fault
+    res.status(400).json({ error: 'Could not render this draft: ' + err.message });
+  }
 }));
 
 /* ------------------------------------------------------------------ sales
