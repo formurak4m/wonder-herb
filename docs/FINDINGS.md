@@ -27,7 +27,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 12 | Pre-rendered pages publish **visually blank** without the reveal script | **High — passes green, looks broken** | Phase 5 (P5-T1 template) |
 | 13 | Sections silently dropped markup from their source blocks | Resolved | Closed at P4-T4 |
 | 14 | Body copy uses **bold, lists and links**; plain-text fields drop them | Decided — option (c) | P4-T5 |
-| 15 | Chrome's layout depends on JS, and there is no shared stylesheet | Medium — partly handled | P5-T1 / Phase 9 |
+| 15 | Chrome's layout depends on JS, and there is no shared stylesheet | **High — D1 required, not optional** | P5-T1 / Phase 9 |
 
 ---
 
@@ -609,8 +609,9 @@ is also why the proof page is 47 KB.
 
 ### Registered as explicit Phase 9 decisions — owner Phase 9
 
-Both were confirmed by the project owner at P5-T1 review. They are decisions to be **made**, not
-notes to be remembered, and neither is optional.
+Both were confirmed by the project owner at P5-T1 review. Neither is optional. **D1 is a
+requirement, not an open decision** — it was promoted after the owner looked at the scripts-off
+screenshot. D2 is a precondition.
 
 **D1 · Triage the per-page inline chrome script.** Each page carries roughly 500 lines of inline
 JavaScript that the chrome depends on. At Phase 9 every behaviour in it gets sorted into exactly one
@@ -622,11 +623,35 @@ of three buckets, and the sorting is recorded:
 | Genuine enhancement | the page is correct without it, just less nice | keep as progressive JS |
 | Dies with pre-rendering | only exists because content arrives client-side | drop |
 
-The **nav offset is the first load-bearing case**, and it is the one that shows why the bucket
-matters: `NAV_OFFSET_SCRIPT` fixes it with scripts on, and **scripts-off cannot be fixed at
-runtime** — the nav height has to become a known value in CSS. Expect the same shape from anything
-else that lands in this bucket. Cart badge, mobile menu and the language switch are the obvious
-candidates for the other two buckets (the language switch becomes plain links and dies).
+The **nav offset is the first load-bearing case**, and it shows why the bucket matters:
+`NAV_OFFSET_SCRIPT` fixes it with scripts on, and **scripts-off cannot be fixed at runtime**. Expect
+the same shape from anything else that lands in this bucket. Cart badge, mobile menu and the
+language switch are the obvious candidates for the other two buckets (the language switch becomes
+plain links and dies).
+
+#### REQUIRED at Phase 9 — the nav height must be a known CSS value
+
+Promoted from a decision to a requirement by the project owner at the P5-T1a review, having seen the
+scripts-off screenshot. The reasoning, in their words: *a pre-rendered page whose heading hides under
+the nav with JS off is still secretly JavaScript-dependent for layout, which defeats part of why we
+pre-render.* Pre-rendering that only pays off when scripts run is not pre-rendering.
+
+So, not negotiable at Phase 9:
+
+- **The chrome must lay out correctly with zero JavaScript.** The space below the fixed nav is
+  reserved in CSS, from a known height, not measured at runtime.
+- **`NAV_OFFSET_SCRIPT` stays, but only as enhancement on top** — it may refine the value when the
+  nav actually changes height (mobile menu open, fonts settling, resize). **The layout must not
+  depend on it.** Delete the script and the page must still be correct.
+
+**Acceptance reference: `preview/shot-07-rendered-js-off.png`** (P5-T1a). Today that screenshot shows
+the `<h1>` clipped behind the nav at **y=55**, against **y=219** with scripts on. When D1 is done,
+re-render the same page and the scripts-off `<h1>` y-position must match the scripts-on one within
+tolerance. That is the test: same page, scripts off, heading where it belongs.
+
+This is also the concrete form of finding 12's "do the visual diff with scripts enabled AND again
+with them disabled". The second run is not a formality — it is the only run that can catch this
+class, and it has now caught it twice.
 
 **D2 · Extract a shared stylesheet. This is a Phase 9 precondition, not an optional cleanup.**
 Pages built from sections cannot each carry a private copy of their own CSS — that is what makes
