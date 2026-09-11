@@ -14,6 +14,7 @@ export const config = {
     body: { type: 'textarea' },
     label: { type: 'text' },
     href: { type: 'text' },
+    icon: { type: 'text' },      // live: "fab fa-whatsapp"
     variant: {
       type: 'select',
       options: [
@@ -22,12 +23,17 @@ export const config = {
       ]
     }
   },
-  defaultProps: { heading: '', body: '', label: '', href: '', variant: 'banner' },
+  defaultProps: { heading: '', body: '', label: '', href: '', icon: '', variant: 'banner' },
   variants: ['banner', 'button']
 };
 
-export default function CtaBand({ heading, body, label, href, variant = 'banner' }) {
-  const button = label ? <a href={href || '#'} className="btn-primary">{label}</a> : null;
+export default function CtaBand({ heading, body, label, href, icon, variant = 'banner' }) {
+  const button = label ? (
+    <a href={href || '#'} className="btn-primary">
+      {icon ? <i className={icon} aria-hidden="true"></i> : null}
+      {label}
+    </a>
+  ) : null;
 
   if (variant === 'button') {
     return <div className="cta-button">{button}</div>;

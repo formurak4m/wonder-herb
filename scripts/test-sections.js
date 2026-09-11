@@ -331,13 +331,143 @@ eq('cta-band button: the 常見問題 shape',
  */
 const { JSDOM } = require('jsdom');
 
+/* Some blocks are built by JavaScript rather than sitting in the HTML, so the
+   "source" is a template literal. Pull it out with a scanner that understands
+   nesting: `${...}` holes are replaced with a placeholder, and any markup
+   inside a nested template (a conditional fragment) is kept, because that is
+   real markup the section still has to produce. */
+function extractTemplate(src, startRe) {
+  const m = src.match(startRe);
+  if (!m) return null;
+  let i = src.indexOf('`', m.index + m[0].length - 1);
+  if (i === -1) return null;
+  return scan(src, i + 1).text;
+}
+
+function scan(s, i) {
+  let out = '';
+  while (i < s.length) {
+    const c = s[i];
+    if (c === '\\') { out += s[i] + (s[i + 1] || ''); i += 2; continue; }
+    if (c === '`') return { text: out, end: i + 1 };
+    if (c === '$' && s[i + 1] === '{') {
+      let depth = 1; i += 2;
+      while (i < s.length && depth > 0) {
+        if (s[i] === '`') { const r = scan(s, i + 1); out += r.text; i = r.end; continue; }
+        if (s[i] === '{') depth++;
+        else if (s[i] === '}') depth--;
+        i++;
+      }
+      out += 'X';
+      continue;
+    }
+    out += c; i++;
+  }
+  return { text: out, end: i };
+}
+
+/* ------------------------------------------------------------------------
+ * The fidelity map. One entry per section (an array where a section has more
+ * than one real shape on the site). Each entry names the page and the block,
+ * gives props that populate the section fully, and lists in `allow` anything
+ * the section deliberately does not emit - WITH A REASON.
+ *
+ * The props are chosen to exercise the markup, not to be realistic content:
+ * where the live block shows three badges and the data has two, the entry
+ * passes its own data. This test is about structure, not copy.
+ * ------------------------------------------------------------------------ */
+const INLINE_COPY = {
+  strong: 'inline emphasis inside body copy. Fields are plain text with a constrained ' +
+          'formatter (CLAUDE.md conventions); raw HTML from an editor is deliberately not supported',
+  em: 'as strong: inline emphasis is copy-level formatting, not section structure',
+  br: 'a line break inside a copy string: field content, not section structure',
+  span: 'an inline wrapper used only to style part of a sentence',
+  ul: 'a bulleted list inside one answer\'s copy; the section renders paragraphs, ' +
+      'and lists inside copy await the constrained formatter',
+  li: 'as ul: list items live inside answer copy, not in the section shell'
+};
+
 const FIDELITY = {
+  'page-header': [
+    { label: 'centered', page: '產品介紹.html', selector: '.page-header',
+      props: { heading: '產品系列', sub: '加拿大GMP藥廠 · 有效成份 >90%', headingId: 'products-heading' } },
+    { label: 'video', page: '研究報告.html', selector: '.page-header',
+      props: { heading: '研究報告', sub: '國際權威期刊', headingId: 'research-heading',
+               variant: 'video', videoUrl: 'https://cdn.example.com/hero.mp4' } }
+  ],
+
+  hero: {
+    page: 'index.html', selector: '.hero',
+    props: {
+      badge: '臨床驗證 · 加拿大GMP藥廠', heading: '雲芝糖肽精華 PSP', headingAccent: '+T3',
+      headingLine2: '天然輔助方案', body: '超過20年經驗', headingId: 'hero-heading',
+      stats: [{ number: '90%+', label: '有效成份含量' }],
+      primaryLabel: '立即查詢', primaryHref: 'https://wa.me/85293318571/',
+      primaryIcon: 'fab fa-whatsapp',
+      secondaryLabel: '了解產品系列', secondaryHref: '#products',
+      showCarousel: true
+    }
+  },
+
+  'text-block': [
+    { label: 'glass', page: 'index.html', selector: '.company-glass-card',
+      props: { heading: '康草堂', sub: '結合中西醫學理論',
+               paragraphs: [{ text: '第一段' }, { text: '第二段' }] } },
+    { label: 'card', page: '產品_T3.html', selector: '.product-details-card',
+      allow: { strong: INLINE_COPY.strong, em: INLINE_COPY.em, br: INLINE_COPY.br, span: INLINE_COPY.span },
+      props: { heading: '產品介紹', sub: '副標題', variant: 'card',
+               paragraphs: [{ text: '第一段' }], bullets: [{ text: '超強抗氧化' }] } }
+  ],
+
+  'product-grid': {
+    page: '產品介紹.html',
+    // built by renderProducts(); the markup is a template literal, not static HTML
+    template: /grid\.innerHTML = products\.map\(p => /,
+    props: {
+      source: 'products.json',
+      data: { products: [{ id: 1, title: '雲芝糖肽精華', price: '3800.00', desc: '說明',
+                           image: 'https://example.com/a.png', link: '產品_A.html',
+                           ribbon: '只在指定中西醫診所出售' }] },
+      quickViewLabel: '快速瀏覽', detailLabel: '詳細介紹'
+    }
+  },
+
+  'product-detail': {
+    page: '產品_T3.html', selector: '.product-info',
+    props: {
+      source: 'products.json', sku: 'WH-T3-120',
+      // its own data: the live panel shows three trust badges, the real row has two
+      data: { products: [{ id: 3, title: 'T3 複合配方', sku: 'WH-T3-120', price: '1900.00',
+                           desc: '60倍高活性', badges: 'GMP認證, 60倍吸收力, 大學臨床研究' }] },
+      quantityLabel: '數量：', addLabel: '加入購物車', addIcon: 'fas fa-cart-plus',
+      detailLabel: '詳細介紹', detailIcon: 'fas fa-chevron-down',
+      descIcon: 'fas fa-flask', unit: '/ 120粒軟膠囊', headingId: 'product-title',
+      badgeIcons: [{ icon: 'fas fa-certificate' }, { icon: 'fas fa-chart-line' },
+                   { icon: 'fas fa-university' }]
+    }
+  },
+
+  gallery: {
+    page: '產品_T3.html', selector: '.product-gallery',
+    props: { mainAlt: 'T3', images: [{ src: 'a.png', alt: '正面' }, { src: 'b.png', alt: '側面' }] }
+  },
+
+  'related-products': {
+    page: '產品_T3.html', selector: '.related-products',
+    props: {
+      heading: '你可能也感興趣', source: 'products.json',
+      data: { products: [{ sku: 'A', title: '雲芝糖肽精華', price: '3800.00', desc: 'x' }] },
+      items: [
+        { sku: 'A', href: '產品_A.html', icon: 'fas fa-seedling' },
+        { sku: 'B', href: '產品_B.html', label: '乙肝清', desc: '護肝', icon: 'fas fa-heartbeat' },
+        { sku: 'C', href: '產品_C.html', label: 'PT3', desc: '強化', icon: 'fas fa-box' }
+      ]
+    }
+  },
+
   'contact-cards': {
-    page: '聯絡我們.html',
-    selector: '.contact-grid',
-    allow: {
-      br: 'a line break inside the address string: field content, not section structure'
-    },
+    page: '聯絡我們.html', selector: '.contact-grid',
+    allow: { br: INLINE_COPY.br },
     props: {
       cards: [
         { flag: 'https://flagcdn.com/hk.svg', flagAlt: 'Hong Kong Flag', title: '亞洲總部',
@@ -350,6 +480,29 @@ const FIDELITY = {
             { icon: 'fas fa-user', text: '聯絡: 陳小姐' }
           ] }
       ]
+    }
+  },
+
+  'cta-band': [
+    { label: 'banner', page: '聯絡我們.html', selector: '.cta-banner',
+      props: { heading: '需要專業諮詢？', body: '我們的健康顧問團隊', label: '立即 WhatsApp 諮詢',
+               href: 'https://wa.me/85293318571/', icon: 'fab fa-whatsapp' } },
+    { label: 'button', page: '常見問題.html', selector: '.cta-button',
+      props: { variant: 'button', label: '探索產品系列', href: '產品介紹.html' } }
+  ],
+
+  'faq-accordion': {
+    page: '常見問題.html', selector: '.faq-list',
+    allow: { ul: INLINE_COPY.ul, li: INLINE_COPY.li, strong: INLINE_COPY.strong },
+    props: {
+      source: 'faq.json', defaultIcon: 'fas fa-question-circle',
+      data: { faq: [
+        { id: 1, q: 'Q1', a: 'A1' },
+        { id: 2, q: 'Q2', a: 'A2', icon: 'fas fa-flask' },
+        { id: 3, q: 'Q3', a: 'A3', icon: 'fas fa-leaf' },
+        { id: 4, q: 'Q4', a: 'A4', icon: 'fas fa-shield-alt' },
+        { id: 5, q: 'Q5', a: 'A5', icon: 'fas fa-chart-line' }
+      ] }
     }
   }
 };
@@ -371,37 +524,41 @@ function fingerprint(el) {
 console.log('\n=== structural fidelity against the live markup ===\n');
 
 Object.keys(FIDELITY).forEach(type => {
-  const spec = FIDELITY[type];
-  const src = new JSDOM(fs.readFileSync(path.join(ROOT, spec.page), 'utf8')).window.document;
-  const block = src.querySelector(spec.selector);
-  if (!block) {
-    check(type + ': found ' + spec.selector + ' in ' + spec.page, false, 'NOT FOUND');
-    return;
-  }
-  const want = fingerprint(block);
-  const html = render(components[type], spec.props);
-  const got = fingerprint(new JSDOM('<body>' + html + '</body>').window.document.body);
+  const specs = [].concat(FIDELITY[type]);
+  specs.forEach(spec => {
+    const name = type + (spec.label ? ' (' + spec.label + ')' : '');
+    const src = fs.readFileSync(path.join(ROOT, spec.page), 'utf8');
 
-  const allow = spec.allow || {};
-  const missing = Array.from(want).filter(t => !got.has(t) && !(t.replace(/^\./, '') in allow) && !(t in allow));
+    let block;
+    if (spec.template) {
+      const tpl = extractTemplate(src, spec.template);
+      if (!tpl) { check(name + ': found its template in ' + spec.page, false, 'NOT MATCHED'); return; }
+      block = new JSDOM('<body><div id="w">' + tpl + '</div></body>')
+        .window.document.getElementById('w');
+    } else {
+      block = new JSDOM(src).window.document.querySelector(spec.selector);
+      if (!block) { check(name + ': found ' + spec.selector + ' in ' + spec.page, false, 'NOT FOUND'); return; }
+    }
 
-  check(type + ': emits every tag and class the live ' + spec.selector + ' has',
-        missing.length === 0,
-        missing.length ? 'MISSING ' + missing.join(', ') : want.size + ' tokens, all present');
-  Object.keys(allow).forEach(t =>
-    console.log('         waived: ' + t + ' — ' + allow[t]));
+    const want = fingerprint(block);
+    const html = render(components[type], spec.props);
+    const got = fingerprint(new JSDOM('<body>' + html + '</body>').window.document.body);
+
+    const allow = spec.allow || {};
+    const missing = Array.from(want).filter(t =>
+      !got.has(t) && !(t.replace(/^\./, '') in allow) && !(t in allow));
+
+    check(name + ': emits everything ' + (spec.template ? 'its template' : spec.selector) + ' has',
+          missing.length === 0,
+          missing.length ? 'MISSING ' + missing.join(', ') : want.size + ' tokens, all present');
+    Object.keys(allow).forEach(t => console.log('         waived <' + t + '> — ' + allow[t]));
+  });
 });
 
-/* Sections with no fidelity map are a known, visible gap - listed every run so
-   it cannot be quietly forgotten. Not a failure: adding a map means editing
-   those sections' sample props, which is its own piece of work. */
 const unmapped = Object.keys(registry).filter(t => !(t in FIDELITY));
-if (unmapped.length) {
-  console.log('\n  NOTE  ' + unmapped.length + ' section(s) have no fidelity map yet:');
-  console.log('        ' + unmapped.join(', '));
-  console.log('        They are covered by the contract checks and their own HTML assertions,');
-  console.log('        but not yet compared against their source markup. See docs/FINDINGS.md.');
-}
+check('every registered section has a fidelity map', unmapped.length === 0,
+      unmapped.length ? 'UNMAPPED: ' + unmapped.join(', ') : Object.keys(registry).length + '/' +
+      Object.keys(registry).length + ' mapped');
 
 console.log('\n' + (fail ? '=== ' + fail + ' CHECK(S) FAILED ===' : '=== ALL CHECKS PASSED ==='));
 process.exit(fail ? 1 : 0);

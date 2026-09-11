@@ -24,8 +24,10 @@ export const config = {
     },
     primaryLabel: { type: 'text' },
     primaryHref: { type: 'text' },
+    primaryIcon: { type: 'text' },        // live: "fab fa-whatsapp"
     secondaryLabel: { type: 'text' },
     secondaryHref: { type: 'text' },
+    secondaryIcon: { type: 'text' },
     headingId: { type: 'text' },
     showCarousel: { type: 'radio', options: [
       { label: 'Yes', value: true }, { label: 'No', value: false }
@@ -33,15 +35,15 @@ export const config = {
   },
   defaultProps: {
     badge: '', heading: '', headingAccent: '', headingLine2: '', body: '',
-    stats: [], primaryLabel: '', primaryHref: '', secondaryLabel: '',
-    secondaryHref: '', headingId: '', showCarousel: true
+    stats: [], primaryLabel: '', primaryHref: '', primaryIcon: '', secondaryLabel: '',
+    secondaryHref: '', secondaryIcon: '', headingId: '', showCarousel: true
   },
   variants: ['default']
 };
 
 export default function Hero({
   badge, heading, headingAccent, headingLine2, body, stats,
-  primaryLabel, primaryHref, secondaryLabel, secondaryHref,
+  primaryLabel, primaryHref, primaryIcon, secondaryLabel, secondaryHref, secondaryIcon,
   headingId, showCarousel = true
 }) {
   const id = headingId ? headingId : undefined;
@@ -73,8 +75,18 @@ export default function Hero({
           ) : null}
           {primaryLabel || secondaryLabel ? (
             <div className="cta-group">
-              {primaryLabel ? <a href={primaryHref || '#'} className="btn-primary">{primaryLabel}</a> : null}
-              {secondaryLabel ? <a href={secondaryHref || '#'} className="btn-secondary">{secondaryLabel}</a> : null}
+              {primaryLabel ? (
+                <a href={primaryHref || '#'} className="btn-primary">
+                  {primaryIcon ? <i className={primaryIcon} aria-hidden="true"></i> : null}
+                  {primaryLabel}
+                </a>
+              ) : null}
+              {secondaryLabel ? (
+                <a href={secondaryHref || '#'} className="btn-secondary">
+                  {secondaryIcon ? <i className={secondaryIcon} aria-hidden="true"></i> : null}
+                  {secondaryLabel}
+                </a>
+              ) : null}
             </div>
           ) : null}
         </div>
@@ -84,8 +96,12 @@ export default function Hero({
                  aria-roledescription="carousel" aria-label="產品形象輪播展示">
               <div className="glass-thickness-layer" aria-hidden="true"></div>
               <div className="carousel-slides" id="heroSlides" aria-live="polite"></div>
-              <button className="carousel-btn prev" id="heroPrev" aria-label="上一張圖片"></button>
-              <button className="carousel-btn next" id="heroNext" aria-label="下一張圖片"></button>
+              <button className="carousel-btn prev" id="heroPrev" aria-label="上一張圖片">
+                <i className="fas fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <button className="carousel-btn next" id="heroNext" aria-label="下一張圖片">
+                <i className="fas fa-chevron-right" aria-hidden="true"></i>
+              </button>
               <div className="carousel-dots" id="heroDots" role="tablist" aria-label="輪播導航點"></div>
             </div>
           </div>

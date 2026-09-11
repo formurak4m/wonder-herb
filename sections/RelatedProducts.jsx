@@ -29,7 +29,8 @@ export const config = {
         sku: { type: 'text' },
         href: { type: 'text' },
         label: { type: 'text' },
-        desc: { type: 'text' }
+        desc: { type: 'text' },
+        icon: { type: 'text' }   // live: "fas fa-seedling" / "fas fa-heartbeat" / "fas fa-box"
       }
     },
     headingId: { type: 'text' }
@@ -58,6 +59,7 @@ export default function RelatedProducts({ heading, source, data, items, headingI
           const price = p.sku ? priceText(p, '') : '';
           return (
             <a href={item.href || '#'} className="related-card" key={i} aria-label={name}>
+              {item.icon ? <i className={item.icon} aria-hidden="true"></i> : null}
               <h3>{name}</h3>
               {desc ? <p>{desc}</p> : null}
               {price ? <span style={{ color: '#9b2e2e', fontWeight: 'bold' }}>{price}</span> : null}

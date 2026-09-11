@@ -25,13 +25,18 @@ export const config = {
   label: 'FAQ list',
   fields: {
     source: { type: 'text' },
-    category: { type: 'text' }
+    category: { type: 'text' },
+    // every live question opens with a glyph; the page varies it per topic
+    // (fa-question-circle, fa-flask, fa-leaf, fa-shield-alt, fa-chart-line).
+    // data/faq.json has no icon key yet, so an entry's own `icon` wins if it
+    // ever gains one, and this is the fallback.
+    defaultIcon: { type: 'text' }
   },
-  defaultProps: { source: 'faq.json', category: '' },
+  defaultProps: { source: 'faq.json', category: '', defaultIcon: '' },
   variants: ['default']
 };
 
-export default function FaqAccordion({ source, data, category }) {
+export default function FaqAccordion({ source, data, category, defaultIcon }) {
   const key = String(source || 'faq.json').replace(/\.json$/, '');
   const all = (data && Array.isArray(data[key])) ? data[key] : [];
   const items = category ? all.filter(f => f && f.cat === category) : all;
@@ -40,7 +45,12 @@ export default function FaqAccordion({ source, data, category }) {
     <div className="faq-list" role="list">
       {items.map(f => (
         <div className="faq-item" role="listitem" key={f.id}>
-          <h3 className="faq-question"><span>{f.q}</span></h3>
+          <h3 className="faq-question">
+            {(f.icon || defaultIcon)
+              ? <i className={f.icon || defaultIcon} aria-hidden="true"></i>
+              : null}
+            <span>{f.q}</span>
+          </h3>
           <div className="faq-answer">
             {String(f.a || '').split(/\n{2,}/).map(p => p.trim()).filter(Boolean)
               .map((p, i) => <p key={i}>{p}</p>)}

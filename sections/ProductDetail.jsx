@@ -29,15 +29,20 @@ export const config = {
     sku: { type: 'text' },
     quantityLabel: { type: 'text' },
     addLabel: { type: 'text' },
+    addIcon: { type: 'text' },          // live: "fas fa-cart-plus"
     detailLabel: { type: 'text' },
     detailHref: { type: 'text' },
+    detailIcon: { type: 'text' },       // live: "fas fa-chevron-down"
+    descIcon: { type: 'text' },         // live: "fas fa-flask", opens the short description
+    badgeIcons: { type: 'array', arrayFields: { icon: { type: 'text' } } },
     unit: { type: 'text' },
     priceNote: { type: 'text' },
     headingId: { type: 'text' }
   },
   defaultProps: {
-    source: 'products.json', sku: '', quantityLabel: '', addLabel: '',
-    detailLabel: '', detailHref: '#detailedInfo', unit: '', priceNote: '', headingId: ''
+    source: 'products.json', sku: '', quantityLabel: '', addLabel: '', addIcon: '',
+    detailLabel: '', detailHref: '#detailedInfo', detailIcon: '', descIcon: '',
+    badgeIcons: [], unit: '', priceNote: '', headingId: ''
   },
   // renders nothing at all until it has content: an empty panel would be worse
   emptyWithoutContent: true,
@@ -45,7 +50,8 @@ export const config = {
 };
 
 export default function ProductDetail({
-  source, data, sku, quantityLabel, addLabel, detailLabel, detailHref, unit, priceNote, headingId
+  source, data, sku, quantityLabel, addLabel, addIcon, detailLabel, detailHref, detailIcon,
+  descIcon, badgeIcons, unit, priceNote, headingId
 }) {
   const key = String(source || 'products.json').replace(/\.json$/, '');
   const items = (data && Array.isArray(data[key])) ? data[key] : [];
@@ -62,7 +68,12 @@ export default function ProductDetail({
         {priceText(p, priceNote)}
         {unit ? <span style={{ fontSize: '1rem', fontWeight: 'normal' }}>{' ' + unit}</span> : null}
       </div>
-      {p.desc ? <div className="product-short-desc">{p.desc}</div> : null}
+      {p.desc ? (
+        <div className="product-short-desc">
+          {descIcon ? <i className={descIcon} aria-hidden="true"></i> : null}
+          {p.desc}
+        </div>
+      ) : null}
       {quantityLabel ? (
         <div className="quantity-selector">
           <label htmlFor="quantity">{quantityLabel}</label>
@@ -72,13 +83,32 @@ export default function ProductDetail({
       ) : null}
       {addLabel || detailLabel ? (
         <div className="action-buttons">
-          {addLabel ? <button id="addToCartBtn" className="btn-primary" data-sku={p.sku}>{addLabel}</button> : null}
-          {detailLabel ? <a href={detailHref || '#detailedInfo'} className="btn-secondary">{detailLabel}</a> : null}
+          {addLabel ? (
+            <button id="addToCartBtn" className="btn-primary" data-sku={p.sku}>
+              {addIcon ? <i className={addIcon} aria-hidden="true"></i> : null}
+              {addLabel}
+            </button>
+          ) : null}
+          {detailLabel ? (
+            <a href={detailHref || '#detailedInfo'} className="btn-secondary">
+              {detailLabel}
+              {detailIcon ? <i className={detailIcon} aria-hidden="true"></i> : null}
+            </a>
+          ) : null}
         </div>
       ) : null}
       {badges.length ? (
         <div className="trust-badges">
-          {badges.map((b, i) => <div className="badge-item" key={i}><span>{b}</span></div>)}
+          {badges.map((b, i) => {
+            const ic = (Array.isArray(badgeIcons) ? badgeIcons : [])[i];
+            const cls = ic && typeof ic === 'object' ? ic.icon : ic;
+            return (
+              <div className="badge-item" key={i}>
+                {cls ? <i className={cls} aria-hidden="true"></i> : null}
+                <span>{b}</span>
+              </div>
+            );
+          })}
         </div>
       ) : null}
     </div>
