@@ -3,7 +3,7 @@
 Findings 1–5 come from recording the Phase 0 baseline (`node scripts/baseline.js`); finding 6 from
 adding the Phase 1 toolchain; 7 from adding the page routes at P2-T1; 8–11 from building the
 section library at P4-T2; 12–13 from actually looking at the rendered sections at P4-T3; 14 from the
-fidelity waivers at P4-T4.
+fidelity waivers at P4-T4; 15 from rendering a real page end to end at P5-T1.
 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
@@ -27,6 +27,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 12 | Pre-rendered pages publish **visually blank** without the reveal script | **High — passes green, looks broken** | Phase 5 (P5-T1 template) |
 | 13 | Sections silently dropped markup from their source blocks | Resolved | Closed at P4-T4 |
 | 14 | Body copy uses **bold, lists and links**; plain-text fields drop them | Decided — option (c) | P4-T5 |
+| 15 | Chrome's layout depends on JS, and there is no shared stylesheet | Medium — partly handled | P5-T1 / Phase 9 |
 
 ---
 
@@ -553,3 +554,55 @@ list at Phase 13, at which point they stop being in-copy links at all. **One is 
 
 Also recorded in finding 1: those three PDFs live on Wix's file store, so the Phase 18 cutover gate
 was widened to grep `_files/ugd` as well as `wixstatic`.
+
+---
+
+## 15 · Site chrome carries load-bearing scripts and there is no shared stylesheet
+
+**Found at P5-T1, while proving the renderer on a real page.** Two facts about this site that the
+renderer has to work around, both of which will shape the Phase 9 chrome decision.
+
+### (a) The fixed nav reserves its own space from JavaScript
+
+`.fixed-nav-wrapper` is `position: fixed` and **nothing in the CSS reserves room for it**. Every
+live page measures the nav at runtime and sets the offset by hand:
+
+```js
+document.body.style.paddingTop = nav.getBoundingClientRect().height + 'px';   // 產品介紹.html:1963
+```
+
+Render a page with the chrome markup but without that script and the page's own `<h1>` sits
+underneath the nav bar. Measured: `<h1>` at y=55 instead of y=245. **Same class as finding 12** —
+the markup is right, the text is in the HTML, every gate passes, and a human sees a broken page.
+
+**Handled at P5-T1**: `renderer/template.js` ships `NAV_OFFSET_SCRIPT` next to the reveal script,
+emitted only when the page has chrome. That fixes the scripts-on case. **It does not fix
+scripts-off** — with JavaScript disabled the overlap returns, because the height is only knowable at
+runtime. The real fix is a known nav height in CSS, and it belongs with the Phase 9 decision about
+whether chrome becomes sections or a shared partial.
+
+**The general lesson: lifting chrome markup lifts only half of it.** The behaviour lives in a 500-line
+inline `<script>` at the bottom of each page (nav offset, cart badge, mobile menu, language switch).
+Phase 9 has to decide, per behaviour, which are load-bearing layout (must ship), which are genuine
+enhancements, and which die with pre-rendering (the language switch becomes plain links).
+
+**Measured chrome gap, for whoever picks this up:** the lifted chrome renders 164 px tall against the
+live page's 190 px. All 26 px are in `.header-nav-panel` (40 px vs 76 px). Not chased at P5-T1
+because chrome is not modelled yet; it is a fidelity item for the Phase 9 visual diff, not a
+renderer bug — everything the renderer itself emits matched (`<h1>` 1232×67, same colour, same size,
+`.page-header` padding 55/55 on both).
+
+### (b) There is no shared stylesheet
+
+BUILD_TASKS P5-T1 step 3 says the template emits "the shared stylesheet link". There isn't one. Each
+of the 18 pages carries its own CSS **inline** in `<head>` — 27 KB on 產品介紹.html, 80 KB on
+index.html — and the rules differ page to page.
+
+**Stopgap at P5-T1**: a page tree names the page whose CSS it needs (`assets.stylesFrom`) and
+`renderer/render.js` lifts the `<style>` blocks verbatim. The render log prints a `!` warning every
+time it does this, so it cannot quietly become permanent.
+
+**Owner: Phase 9.** Extracting one shared sheet is the precondition for pages built from sections
+rather than copied from each other, and it is what makes `<link rel="stylesheet">` in the template
+mean anything. Until then, every rendered page inlines a full copy of its source page's CSS — which
+is also why the proof page is 47 KB.
