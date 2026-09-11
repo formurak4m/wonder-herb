@@ -14,13 +14,31 @@
  *
  *     id, cat, q, a
  *
- * `a` is a single string in the data, while the live page has multi-paragraph
- * answers. Blank lines in `a` are split into separate <p> elements, which
- * matches the markup without needing HTML in the field.
+ * `a` accepts BOTH shapes, because the data has not been migrated yet:
+ *
+ *   a string   - blank lines split it into <p> elements (what data/faq.json
+ *                holds today)
+ *   an array   - a list of blocks, each one of:
+ *                  "text"                     -> <p>
+ *                  { label, text, emphasis }  -> <p> with a bold lead-in
+ *                  { bullets: [ ... ] }       -> <ul> of the same copy items
+ *
+ * The array shape is the structural answer to inline formatting (finding 14,
+ * option c) and covers the two live answers that contain a <ul> and the six
+ * that contain a bold lead-in. Copy items are rendered by copyBody, shared
+ * with text-block so both sections treat a lead-in identically.
  *
  * `cat` (General, Usage & Dosage, Safety & Testing, Purchasing) is used to
  * filter, so one page can show a subset. Empty `category` means show all.
  */
+import { copyBody } from './TextBlock.jsx';
+
+/* One answer -> a list of blocks, whichever shape the data is in. */
+function answerBlocks(a) {
+  if (Array.isArray(a)) return a;
+  return String(a || '').split(/\n{2,}/).map(s => s.trim()).filter(Boolean);
+}
+
 export const config = {
   label: 'FAQ list',
   fields: {
@@ -52,8 +70,11 @@ export default function FaqAccordion({ source, data, category, defaultIcon }) {
             <span>{f.q}</span>
           </h3>
           <div className="faq-answer">
-            {String(f.a || '').split(/\n{2,}/).map(p => p.trim()).filter(Boolean)
-              .map((p, i) => <p key={i}>{p}</p>)}
+            {answerBlocks(f.a).map((b, i) =>
+              (b && typeof b === 'object' && Array.isArray(b.bullets))
+                ? <ul key={i}>{b.bullets.map((x, j) => <li key={j}>{copyBody(x)}</li>)}</ul>
+                : <p key={i}>{copyBody(b)}</p>
+            )}
           </div>
         </div>
       ))}

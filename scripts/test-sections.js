@@ -279,6 +279,46 @@ check('text-block card: the product-page class',
 check('text-block card: bullets become a <ul>',
       tbCard.indexOf('<ul><li>超強抗氧化</li></ul>') !== -1, 'ok');
 
+console.log('\n=== copy items: bold lead-in and emphasis (finding 14, option c) ===\n');
+
+const lead = render(components['text-block'], {
+  variant: 'card', paragraphs: [{ label: '超強抗氧化：', text: ' 比一般合成維生素E高出60倍' }]
+});
+check('a lead-in label renders as <strong>, with NO separator inserted',
+      lead.indexOf('<p><strong>超強抗氧化：</strong> 比一般合成維生素E高出60倍</p>') !== -1,
+      'colon inside the label, space from the text');
+
+const outside = render(components['text-block'], {
+  variant: 'card', paragraphs: [{ label: '獨特提取技術', text: '：在生產和提取過程中' }]
+});
+check('and the FAQ style, where the colon is outside the label',
+      outside.indexOf('<p><strong>獨特提取技術</strong>：在生產和提取過程中</p>') !== -1,
+      'both live styles reproduce exactly');
+
+const whole = render(components['text-block'], {
+  variant: 'card', paragraphs: [{ text: '整段加粗', emphasis: true }]
+});
+check('emphasis: true bolds the whole paragraph',
+      whole.indexOf('<p><strong>整段加粗</strong></p>') !== -1, 'ok');
+
+check('a plain string copy item still works',
+      render(components['text-block'], { variant: 'card', paragraphs: ['純文字'] })
+        .indexOf('<p>純文字</p>') !== -1, 'backwards compatible');
+
+const faqStructured = render(components['faq-accordion'], {
+  data: { faq: [{ id: 1, q: 'Q', a: [
+    { label: '獨特提取技術', text: '：在生產過程中' },
+    { bullets: [{ text: '第一點' }, { label: '第二：', text: ' 說明' }] }
+  ] }] }
+});
+check('faq answer: a structured block renders a bold lead-in',
+      faqStructured.indexOf('<p><strong>獨特提取技術</strong>：在生產過程中</p>') !== -1, 'ok');
+check('faq answer: a bullets block renders a real <ul>',
+      faqStructured.indexOf('<ul><li>第一點</li><li><strong>第二：</strong> 說明</li></ul>') !== -1, 'ok');
+check('faq answer: a plain string answer still splits into paragraphs',
+      render(components['faq-accordion'], { data: { faq: [{ id: 1, q: 'Q', a: 'one\n\ntwo' }] } })
+        .indexOf('<p>one</p><p>two</p>') !== -1, 'backwards compatible');
+
 const gal = render(components.gallery,
   { images: [{ src: 'a.png', alt: '正面' }, { src: 'b.png', alt: '側面' }], mainAlt: 'T3' });
 check('gallery: the live classes', gal.indexOf('class="product-gallery"') !== -1
@@ -414,9 +454,12 @@ const FIDELITY = {
       props: { heading: '康草堂', sub: '結合中西醫學理論',
                paragraphs: [{ text: '第一段' }, { text: '第二段' }] } },
     { label: 'card', page: '產品_T3.html', selector: '.product-details-card',
-      allow: { strong: INLINE_COPY.strong, em: INLINE_COPY.em, br: INLINE_COPY.br, span: INLINE_COPY.span },
+      allow: { em: INLINE_COPY.em, br: INLINE_COPY.br, span: INLINE_COPY.span },
       props: { heading: '產品介紹', sub: '副標題', variant: 'card',
-               paragraphs: [{ text: '第一段' }], bullets: [{ text: '超強抗氧化' }] } }
+               // a bold lead-in and a whole-bold paragraph: both must emit <strong>
+               paragraphs: [{ label: 'Tocotrienols', text: ' 是維生素E家族中最具生物活性的成員。' },
+                            { text: '整段加粗', emphasis: true }],
+               bullets: [{ label: '超強抗氧化：', text: ' 比一般合成維生素E高出60倍抗氧化能力' }] } }
   ],
 
   'product-grid': {
@@ -493,15 +536,20 @@ const FIDELITY = {
 
   'faq-accordion': {
     page: '常見問題.html', selector: '.faq-list',
-    allow: { ul: INLINE_COPY.ul, li: INLINE_COPY.li, strong: INLINE_COPY.strong },
     props: {
       source: 'faq.json', defaultIcon: 'fas fa-question-circle',
       data: { faq: [
+        // the plain-string answer the data holds today still works
         { id: 1, q: 'Q1', a: 'A1' },
         { id: 2, q: 'Q2', a: 'A2', icon: 'fas fa-flask' },
         { id: 3, q: 'Q3', a: 'A3', icon: 'fas fa-leaf' },
         { id: 4, q: 'Q4', a: 'A4', icon: 'fas fa-shield-alt' },
-        { id: 5, q: 'Q5', a: 'A5', icon: 'fas fa-chart-line' }
+        // and the structured shape: a bold lead-in, and a list inside the answer
+        { id: 5, q: 'Q5', icon: 'fas fa-chart-line',
+          a: [
+            { label: '獨特提取技術', text: '：在生產和提取過程中把雲芝多糖和蛋白肽結合起來。' },
+            { bullets: [{ text: '配合一線的頑疾治療時，雲芝糖肽對各類的頑疾患者非常有效。' }] }
+          ] }
       ] }
     }
   }
