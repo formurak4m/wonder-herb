@@ -473,6 +473,17 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
   2. Also snapshot the page tree in a `pages_history` collection on each save.
 - **Verify:** make a bad edit, publish, roll back, confirm the previous version is live again.
 
+### P12-T3 · Make the admin's product form multilingual
+- **Goal:** give staff a way to edit product names and descriptions in all seven languages. Today they can edit `zh` and **cannot reach the other six at all** — the form is a single `<input>` per field.
+- **Why it is a task and not a bug:** the data became per-language at P9-T1 (finding 19), recovering seven translations the live site already shipped. `server/index.js` `protectLangMaps()` stops a plain-string save from deleting them (finding 20, HIGH), so nothing is at risk — but a guard is not an editor. **This form is the client's only route to their own translations.** Until it lands, a typo in the German product name can only be fixed by a developer.
+- **Files:** `admin/index.html` (the product form and its save path).
+- **Steps:**
+  1. Add a content-language picker to the product form, matching the Puck editor's — one language at a time, not seven inputs per field (the P8-T1 reasoning: seven inputs bury the form, and one-at-a-time is how a person actually works, especially through a Chinese IME).
+  2. **Reuse `editor/lang.js`'s `project` / `merge`.** That logic is already proven by the 26 checks in `scripts/test-editor-lang.js`, including the two bugs it was written to catch: fallback poisoning, and losing translations when items are reordered. Do not write a second implementation — a second one will get the same two things wrong.
+  3. Keep the API guard afterwards. It is the floor for every caller, not a substitute for this.
+- **Verify:** edit a product's German name in the admin, save, confirm `zh` and the other five are untouched — the same round-trip `scripts/test-editor-lang.js` runs for page trees. Confirm an untranslated field shows **empty**, never the Chinese fallback.
+- **Gotcha:** `admin/index.html` is vanilla JS with no build step, and `editor/lang.js` is an ES module importing CommonJS (finding 18). Settle how the admin loads it — a small shared build, or the `<script type="module">` the page can already use — rather than copying the functions across, which would fork the logic the moment either side changes.
+
 ---
 
 ## MONTH 1 GATE

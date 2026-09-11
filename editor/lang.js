@@ -72,6 +72,19 @@ export function isTranslatableKey(key, field) {
   return !STRUCTURAL.has(key);
 }
 
+/* CONTENT (data/products.json, data/faq.json) is DISPLAYED in the editor, not
+ * edited there - the admin owns it. So it resolves with RENDER semantics, the
+ * same resolveField the renderer uses, fallback and all: the canvas must show
+ * what would publish.
+ *
+ * That is the opposite of `project` below, which deliberately refuses to fall
+ * back because its values are about to be EDITED. Two different jobs, two
+ * different rules, and mixing them up is how Chinese text gets saved as a
+ * German translation. Keep them apart. */
+export function resolveContent(data, lang) {
+  return data ? i18n.resolveField(data, lang) : data;
+}
+
 /* ---------------------------------------------------------------- project --
  * Values for ONE language. Language maps collapse to that language's value, or
  * '' if it has none - never a fallback. Everything else passes through. */

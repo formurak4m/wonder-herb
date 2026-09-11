@@ -176,25 +176,59 @@ console.log('\n=== the real data files, as the sections expect them ===\n');
 const PRODUCT_KEYS = ['id', 'title', 'sku', 'price', 'status', 'cat', 'badges', 'model', 'desc'];
 PRODUCT_KEYS.forEach(k =>
   check('products.json has "' + k + '"', realProducts.every(p => k in p), 'all ' + realProducts.length));
-check('products.json has NO "image" key (the grid must cope)',
-      !realProducts.some(p => 'image' in p), 'confirmed absent');
-check('products.json has NO "link" key (the grid must cope)',
-      !realProducts.some(p => 'link' in p), 'confirmed absent');
+/* These two used to assert the OPPOSITE - that image and link were absent -
+   because that was finding 8, and the grid had to degrade without them. P9-T1
+   recovered both from the page's own productData array, so the assertion flips:
+   every product must now have them, and a migration that dropped one would be
+   caught here. The "must cope without them" behaviour is still tested, below,
+   against an explicit fixture rather than against the live data file - a test
+   that depends on real data being broken stops working the moment it is fixed. */
+check('products.json has "image" for every product (finding 8, closed at P9-T1)',
+      realProducts.every(p => typeof p.image === 'string' && p.image), 'all ' + realProducts.length);
+check('products.json has "link" for every product (finding 8, closed at P9-T1)',
+      realProducts.every(p => typeof p.link === 'string' && p.link), 'all ' + realProducts.length);
+check('product titles and descriptions are per-language objects (finding 19)',
+      realProducts.every(p => p.title && typeof p.title === 'object' && p.title.zh && p.title.en),
+      Object.keys(realProducts[0].title).join(', '));
 ['id', 'cat', 'q', 'a'].forEach(k =>
   check('faq.json has "' + k + '"', realFaq.every(f => k in f), 'all ' + realFaq.length));
 
 console.log('\n=== product-grid, against data/products.json ===\n');
 
+/* The renderer resolves content for one language before a section sees it
+   (renderer/render.js `resolveData`). Sections render text, never language
+   maps, so the test has to feed them the same shape the renderer does. */
+const { resolveData } = require(path.join(ROOT, 'renderer', 'render.js'));
+const ZH = resolveData(DATA, 'zh');
+const zhProducts = ZH.products;
+
 const grid = render(components['product-grid'],
-  { source: 'products.json', data: DATA, quickViewLabel: '快速瀏覽', detailLabel: '詳細介紹' });
+  { source: 'products.json', data: ZH, quickViewLabel: '快速瀏覽', detailLabel: '詳細介紹' });
 check('one card per product', (grid.match(/class="product-card"/g) || []).length === realProducts.length,
       realProducts.length + ' cards');
 check('the real wrapper class', grid.indexOf('class="products-grid"') !== -1, 'products-grid');
-check('a real product title from the data', grid.indexOf(realProducts[0].title) !== -1, realProducts[0].title);
+check('a real product title from the data', grid.indexOf(zhProducts[0].title) !== -1, zhProducts[0].title);
 check('price formatted like the live page', grid.indexOf('HK$3,800.00') !== -1, 'HK$3,800.00');
-check('the real description from the data', grid.indexOf(realProducts[0].desc.slice(0, 12)) !== -1, 'present');
-check('no broken <img> when the data has no image', grid.indexOf('<img') === -1, 'no img emitted');
-check('no dead detail link when the data has no link', grid.indexOf('btn-detail') === -1, 'omitted');
+check('the real description from the data', grid.indexOf(zhProducts[0].desc.slice(0, 12)) !== -1, 'present');
+check('resolveData collapsed the language maps to strings',
+      typeof zhProducts[0].title === 'string' && typeof zhProducts[0].desc === 'string',
+      'a section never sees a language map');
+check('the grid emits a photo for every product now that the data has one',
+      (grid.match(/<img /g) || []).length === realProducts.length,
+      realProducts.length + ' <img>');
+check('and a detail link for every product',
+      (grid.match(/class="btn-detail"/g) || []).length === realProducts.length,
+      realProducts.length + ' links');
+
+/* The degrade-gracefully behaviour finding 8 forced, kept as a FIXTURE so it
+   survives the real data being fixed. */
+const bare = render(components['product-grid'], {
+  source: 'products.json', quickViewLabel: 'x', detailLabel: 'y',
+  data: { products: [{ id: 99, title: 'No photo', price: '10.00', desc: 'd' }] }
+});
+check('a product with no image emits no broken <img>', bare.indexOf('<img') === -1, 'no img emitted');
+check('a product with no link emits no dead <a>', bare.indexOf('btn-detail') === -1, 'no link emitted');
+check('and it still renders its card', bare.indexOf('No photo') !== -1, 'card present');
 check('quick view button still renders', grid.indexOf('class="btn-quickview"') !== -1, 'present');
 const gridWithImg = render(components['product-grid'],
   { source: 'products.json', data: { products: [{ id: 9, title: 'T', price: '10.00', image: 'x.png', link: 'p.html' }] },
@@ -205,9 +239,12 @@ check('and it DOES render them once the data has them',
 console.log('\n=== product-detail, against data/products.json ===\n');
 
 const detail = render(components['product-detail'],
-  { source: 'products.json', data: DATA, sku: 'WH-T3-120', quantityLabel: '數量：',
+  { source: 'products.json', data: ZH, sku: 'WH-T3-120', quantityLabel: '數量：',
     addLabel: '加入購物車', unit: '/ 120粒軟膠囊' });
-check('the real title for that sku', detail.indexOf('T3 複合配方 (120粒)') !== -1, 'matched by sku');
+/* derived from the data, not typed here: product names changed at P9-T1 when
+   the catalogue was migrated, and a hard-coded name goes stale silently */
+const t3 = zhProducts.find(p => p.sku === 'WH-T3-120');
+check('the real title for that sku', detail.indexOf(t3.title) !== -1, t3.title);
 check('the real price', detail.indexOf('HK$1,900.00') !== -1, 'HK$1,900.00');
 check('the live classes', detail.indexOf('class="product-info"') !== -1
       && detail.indexOf('class="product-title"') !== -1
@@ -215,18 +252,18 @@ check('the live classes', detail.indexOf('class="product-info"') !== -1
 check('badges split into badge-item, from the real badges string',
       (detail.match(/class="badge-item"/g) || []).length === 2, '專利配方 + 大學證實功效倍增');
 check('an unknown sku renders nothing rather than an empty panel',
-      render(components['product-detail'], { source: 'products.json', data: DATA, sku: 'NOPE' }) === '', '""');
+      render(components['product-detail'], { source: 'products.json', data: ZH, sku: 'NOPE' }) === '', '""');
 
 console.log('\n=== faq-accordion, against data/faq.json ===\n');
 
-const faq = render(components['faq-accordion'], { source: 'faq.json', data: DATA });
+const faq = render(components['faq-accordion'], { source: 'faq.json', data: ZH });
 check('one item per question', (faq.match(/class="faq-item"/g) || []).length === realFaq.length,
       realFaq.length + ' items');
 check('the live classes', faq.indexOf('class="faq-list"') !== -1
       && faq.indexOf('class="faq-question"') !== -1
       && faq.indexOf('class="faq-answer"') !== -1, 'faq-list/question/answer');
 check('the real question text', faq.indexOf(realFaq[0].q) !== -1, realFaq[0].q);
-const faqCat = render(components['faq-accordion'], { source: 'faq.json', data: DATA, category: 'General' });
+const faqCat = render(components['faq-accordion'], { source: 'faq.json', data: ZH, category: 'General' });
 const generalCount = realFaq.filter(f => f.cat === 'General').length;
 check('category filters by the real cat values',
       (faqCat.match(/class="faq-item"/g) || []).length === generalCount, generalCount + ' in General');
@@ -237,15 +274,15 @@ check('a paragraph per blank-line-separated block',
 console.log('\n=== related-products ===\n');
 
 const rel = render(components['related-products'],
-  { heading: '你可能也感興趣', source: 'products.json', data: DATA,
+  { heading: '你可能也感興趣', source: 'products.json', data: ZH,
     items: [{ sku: 'WH-PSP-500', href: '產品_雲芝糖肽精華_B.html' }] });
 check('the live classes', rel.indexOf('class="related-products"') !== -1
       && rel.indexOf('class="related-grid"') !== -1
       && rel.indexOf('class="related-card"') !== -1, 'related-products/grid/card');
 check('pulls title and price from the real data',
-      rel.indexOf('雲芝糖肽精華 PSP (標準裝 500粒)') !== -1 && rel.indexOf('HK$3,800.00') !== -1, 'ok');
+      rel.indexOf(zhProducts[0].title) !== -1 && rel.indexOf('HK$3,800.00') !== -1, zhProducts[0].title);
 check('empty items renders nothing',
-      render(components['related-products'], { items: [], data: DATA }) === '', '""');
+      render(components['related-products'], { items: [], data: ZH }) === '', '""');
 
 console.log('\n=== the presentational sections ===\n');
 

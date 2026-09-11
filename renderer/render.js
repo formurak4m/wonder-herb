@@ -81,13 +81,30 @@ function renderBody(tree, lang, data, registry) {
     .join('\n');
 }
 
+/* Content data, resolved for one language.
+ *
+ * A section's own `fields` go through resolveField in renderSection. The
+ * CONTENT a data-backed section reads (data/products.json, data/faq.json) did
+ * not - it was handed over raw. That was fine while every product title was a
+ * plain string, and stopped being fine at P9-T1 when the catalogue became
+ * per-language (finding 19): `<h2>{p.title}</h2>` with an object is not
+ * something React can render.
+ *
+ * Resolving here rather than in each section keeps the rule in one place - a
+ * section should never have to know about languages - and means the four
+ * data-backed sections needed no change at all. resolveField walks arrays and
+ * plain objects, so a whole content bundle can go through it at once. */
+function resolveData(data, lang) {
+  return data ? resolveField(data, lang) : data;
+}
+
 /* A whole document. opts.styles / opts.chrome are resolved by the caller
    (loadStyles / loadChrome below) so this function stays free of file IO. */
 function renderPage(tree, lang, data, opts) {
   const o = opts || {};
   const l = lang || PRIMARY;
   const registry = o.registry || sectionRegistry();
-  const body = renderBody(tree, l, data, registry);
+  const body = renderBody(tree, l, resolveData(data, l), registry);
   const head = buildHead(tree, l, {
     languages: o.languages || LANGS_IN_SCOPE,
     styles: o.styles || []
@@ -209,6 +226,6 @@ if (require.main === module) {
 
 module.exports = {
   renderSection, renderBody, renderPage,
-  loadData, loadStyles, loadChrome, loadTree, writeIfChanged,
+  loadData, loadStyles, loadChrome, loadTree, writeIfChanged, resolveData,
   LANGS_IN_SCOPE, LANGS, PRIMARY
 };

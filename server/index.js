@@ -86,6 +86,69 @@ async function writeHomepage(db, values) {
   return 1;
 }
 
+/* ===========================================================================
+   NEVER SILENTLY DROP LANGUAGES YOU WERE NOT SHOWN.
+   docs/FINDINGS.md finding 20. HIGH.
+
+   Product titles and descriptions became per-language objects at P9-T1
+   ({ zh: '…', en: '…', … }), recovered from seven translations the live site
+   already shipped. But admin/index.html edits a title in an <input>, and an
+   input holds a STRING. So an ordinary product edit - fixing a typo, changing
+   a price - would POST `title: "…"` over the language map and delete six
+   languages of the client's paid-for copy. No error, no warning; the admin
+   would look like it had worked.
+
+   This is the guard, and it lives HERE rather than in the form on purpose: the
+   API is the only way into the database, so the invariant holds for every
+   caller - the admin today, the Puck editor, a script, whatever is written
+   next. Fixing the form protects the form, and only until someone writes
+   another one.
+
+   The rule: a plain string arriving where a language map is stored is treated
+   as an edit to the PRIMARY language, not as a replacement of the whole map.
+   The merge is reported back to the caller, so it is visible rather than
+   magic.
+
+   The real fix for the UX - an admin form that knows about languages - is
+   registered as its own task (BUILD_TASKS P12-T3). Until it lands, staff can
+   edit zh safely and simply cannot reach the other six.
+   =========================================================================== */
+const LANG_CODES = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ru'];
+const PRIMARY_LANG = 'zh';
+
+function isLangMap(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return false;
+  const keys = Object.keys(v);
+  return keys.length > 0 && keys.every(k => LANG_CODES.indexOf(k) !== -1);
+}
+
+/* Identity for matching an incoming item to the one already stored. SKU first
+   because product ids are not stable across sources (see P9-T1). */
+const identityOf = item => (item && (item.sku || (item.id !== undefined ? 'id:' + item.id : null))) || null;
+
+function protectLangMaps(existing, incoming) {
+  const byKey = new Map();
+  existing.forEach(doc => { const k = identityOf(doc); if (k) byKey.set(k, doc); });
+
+  const merges = [];
+  const items = incoming.map(item => {
+    const before = byKey.get(identityOf(item));
+    if (!before || !item || typeof item !== 'object') return item;
+
+    const out = Object.assign({}, item);
+    Object.keys(out).forEach(field => {
+      if (isLangMap(before[field]) && typeof out[field] === 'string') {
+        const kept = Object.keys(before[field]).filter(l => l !== PRIMARY_LANG);
+        out[field] = Object.assign({}, before[field], { [PRIMARY_LANG]: out[field] });
+        merges.push({ item: identityOf(item), field: field, keptLanguages: kept });
+      }
+    });
+    return out;
+  });
+
+  return { items, merges };
+}
+
 const asyncRoute = fn => (req, res) => fn(req, res).catch(err => {
   console.error(err);
   res.status(500).json({ error: err.message });
@@ -134,8 +197,19 @@ app.post('/api/cms', asyncRoute(async (req, res) => {
   if (!Array.isArray(req.body)) {
     return res.status(400).json({ error: 'Expected an array for ' + type });
   }
-  const count = await writeList(db, type, req.body);
-  res.json({ success: true, type, count });
+  /* see protectLangMaps above - a plain string must not flatten a stored
+     language map, and the caller is told when that was prevented */
+  const stored = await readList(db, type);
+  const { items, merges } = protectLangMaps(stored, req.body);
+  const count = await writeList(db, type, items);
+  const body = { success: true, type, count };
+  if (merges.length) {
+    body.mergedIntoPrimary = merges;
+    body.notice = merges.length + ' field(s) arrived as plain text where a ' +
+      'translated value is stored. Each was saved as the ' + PRIMARY_LANG +
+      ' text and the other languages were kept.';
+  }
+  res.json(body);
 }));
 
 /* ---------------------------------------------------------------- activity

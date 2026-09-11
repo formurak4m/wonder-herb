@@ -2178,7 +2178,7 @@ function collectAttention(){
 
   const noPrice = productsData.filter(p => !parseFloat(p.price));
   if(noPrice.length) add(noPrice.length + ' product(s) have no price set: ' +
-    noPrice.map(p => p.title || p.sku).join(', '), 'products');
+    noPrice.map(p => whText(p.title) || p.sku).join(', '), 'products');
 
   const noPic = productsData.filter(p => !p.image && !(Array.isArray(p.images) && p.images.length));
   if(noPic.length) add(noPic.length + ' product(s) have no picture and fall back to the default photo', 'products');
@@ -2186,7 +2186,7 @@ function collectAttention(){
   const noAlt = productsData.filter(p => Array.isArray(p.images) && p.images.some(x => x.url && !x.alt));
   if(noAlt.length) add(noAlt.length + ' product(s) have a picture with no ALT text', 'products');
 
-  const noDesc = productsData.filter(p => !(p.desc || '').trim());
+  const noDesc = productsData.filter(p => !(whText(p.desc) || '').trim());
   if(noDesc.length) add(noDesc.length + ' product(s) have no description', 'products');
 
   const dupeSku = {};
@@ -2202,11 +2202,11 @@ function collectAttention(){
 
   const outOfStock = productsData.filter(p => invState(p) === 'out');
   if(outOfStock.length) add(outOfStock.length + ' product(s) are out of stock and cannot be bought: ' +
-    outOfStock.map(p => p.title || p.sku).join(', '), 'inventory');
+    outOfStock.map(p => whText(p.title) || p.sku).join(', '), 'inventory');
 
   const lowStock = productsData.filter(p => invState(p) === 'low');
   if(lowStock.length) add(lowStock.length + ' product(s) are at or below their reorder level: ' +
-    lowStock.map(p => (p.title || p.sku) + ' (' + stockOf(p) + ' left)').join(', '), 'inventory');
+    lowStock.map(p => (whText(p.title) || p.sku) + ' (' + stockOf(p) + ' left)').join(', '), 'inventory');
 
   const untracked = productsData.filter(p => invState(p) === 'untracked');
   if(untracked.length) add(untracked.length + ' product(s) have no stock tracking yet', 'inventory');
@@ -2488,8 +2488,8 @@ function buildProductsCsv(){
                 'Researcher papers (title | url)', 'Articles (title | url)',
                 '3D model', 'On hand', 'Reorder at'];
   const rows = productsData.map(p => [
-    p.sku || '', p.title || '', (parseFloat(p.price) || 0).toFixed(2), p.status || '',
-    p.cat || '', p.badges || '', p.desc || '',
+    p.sku || '', whText(p.title) || '', (parseFloat(p.price) || 0).toFixed(2), p.status || '',
+    p.cat || '', p.badges || '', whText(p.desc) || '',
     p.definition || '', p.story || '', p.partners || '',
     csvList(p.images, ['url', 'alt']),
     csvList(p.testimonies, ['who', 'when', 'text']),
@@ -2603,7 +2603,7 @@ function buildInventoryCsv(){
     const n = stockOf(p);
     lines.push([
       p.sku || '',
-      p.title || '',
+      whText(p.title) || '',
       (parseFloat(p.price) || 0).toFixed(2),
       n === null ? '' : n,
       isTracked(p) ? reorderOf(p) : '',
@@ -2800,7 +2800,7 @@ function recordMovement(p, type, delta, after, note){
   movements.unshift({
     at: new Date().toISOString(),
     sku: p.sku || '',
-    title: p.title || '',
+    title: whText(p.title) || '',
     type: type,
     delta: delta,
     after: after,
@@ -2823,13 +2823,13 @@ function renderInventory(){
 
   let rows = productsData.map((p, i) => ({ p: p, i: i, state: invState(p) }));
   rows = rows.filter(r => {
-    const matchesQ = !q || ((r.p.title || '') + ' ' + (r.p.sku || '')).toLowerCase().includes(q);
+    const matchesQ = !q || ((whText(r.p.title) || '') + ' ' + (r.p.sku || '')).toLowerCase().includes(q);
     const matchesF = filter === 'all' || filter === r.state;
     return matchesQ && matchesF;
   });
 
   const rank = { out: 0, low: 1, ok: 2, untracked: 3 };
-  if(sort === 'name') rows.sort((a, b) => (a.p.title || '').localeCompare(b.p.title || ''));
+  if(sort === 'name') rows.sort((a, b) => (whText(a.p.title) || '').localeCompare(whText(b.p.title) || ''));
   else if(sort === 'value') rows.sort((a, b) =>
     (stockOf(b.p) || 0) * (parseFloat(b.p.price) || 0) - (stockOf(a.p) || 0) * (parseFloat(a.p.price) || 0));
   else rows.sort((a, b) => (rank[a.state] - rank[b.state]) || ((stockOf(a.p) || 0) - (stockOf(b.p) || 0)));
@@ -2915,7 +2915,7 @@ function setReorder(idx, value){
   if(!p) return;
   p.reorder = Math.max(0, parseInt(value, 10) || 0);
   persistProducts();
-  logActivity('inventory', 'Reorder level for ' + (p.title || p.sku) + ' set to ' + p.reorder);
+  logActivity('inventory', 'Reorder level for ' + (whText(p.title) || p.sku) + ' set to ' + p.reorder);
   renderInventory();
   toast('Reorder level updated', true);
 }
@@ -2927,7 +2927,7 @@ function startTracking(idx){
   if(p.reorder === undefined) p.reorder = DEFAULT_REORDER;
   recordMovement(p, 'initial', 0, 0, 'Started tracking stock');
   persistProducts();
-  logActivity('inventory', 'Started tracking stock for ' + (p.title || p.sku));
+  logActivity('inventory', 'Started tracking stock for ' + (whText(p.title) || p.sku));
   renderInventory();
   openInvAdjust(idx);
 }
@@ -2936,7 +2936,7 @@ function openInvAdjust(idx){
   editingInvIdx = idx;
   const p = productsData[idx];
   if(!p) return;
-  document.getElementById('invModalTitle').textContent = 'Adjust stock — ' + (p.title || p.sku);
+  document.getElementById('invModalTitle').textContent = 'Adjust stock — ' + (whText(p.title) || p.sku);
   document.getElementById('inv_type').value = 'receive';
   document.getElementById('inv_qty').value = 1;
   document.getElementById('inv_note').value = '';
@@ -2999,11 +2999,11 @@ async function applyInvAdjust(){
     saveMovements();
     localStorage.setItem('wh_products_data', JSON.stringify(productsData));
     logActivity('inventory', (MOVE_LABEL[r.type] || 'Stock change') + ': ' +
-      (r.p.title || r.p.sku) + ' now ' + server.after + ' on hand');
+      (whText(r.p.title) || r.p.sku) + ' now ' + server.after + ' on hand');
     closeInvAdjust();
     renderInventory();
     renderProdList();
-    toast('Stock updated in MongoDB — ' + (r.p.title || r.p.sku) + ' now ' + server.after + ' on hand', true);
+    toast('Stock updated in MongoDB — ' + (whText(r.p.title) || r.p.sku) + ' now ' + server.after + ' on hand', true);
     return;
   }
 
@@ -3013,11 +3013,11 @@ async function applyInvAdjust(){
   recordMovement(r.p, r.type, r.delta, r.after, note);
   persistProducts();
   logActivity('inventory', (MOVE_LABEL[r.type] || 'Stock change') + ': ' +
-    (r.p.title || r.p.sku) + ' now ' + r.after + ' on hand');
+    (whText(r.p.title) || r.p.sku) + ' now ' + r.after + ' on hand');
   closeInvAdjust();
   renderInventory();
   renderProdList();
-  toast('Stock updated — ' + (r.p.title || r.p.sku) + ' now ' + r.after + ' on hand', true);
+  toast('Stock updated — ' + (whText(r.p.title) || r.p.sku) + ' now ' + r.after + ' on hand', true);
 }
 
 function exportInventoryCsv(){ downloadInventoryCsv(); }
@@ -3202,7 +3202,7 @@ function renderProdList(){
   document.getElementById('badge-products').textContent = productsData.length;
 
   const filtered = productsData.filter(p => {
-    const matchesQ = !q || (p.title + ' ' + p.sku + ' ' + p.desc).toLowerCase().includes(q);
+    const matchesQ = !q || (whText(p.title) + ' ' + p.sku + ' ' + whText(p.desc)).toLowerCase().includes(q);
     const matchesCat = cat === 'all' || p.cat === cat;
     return matchesQ && matchesCat;
   });
@@ -3329,13 +3329,17 @@ function openProdEditor(idx){
 
   if(idx !== null){
     const p = productsData[idx];
-    document.getElementById('f_prod_title').value = p.title;
+    /* The form shows ONE language. Saving sends a plain string, which the
+       API turns back into an edit of the primary language rather than a
+       replacement of the whole map (protectLangMaps, finding 20). Making
+       this form genuinely multilingual is BUILD_TASKS P12-T3. */
+    document.getElementById('f_prod_title').value = whText(p.title);
     document.getElementById('f_prod_sku').value = p.sku;
     document.getElementById('f_prod_price').value = p.price;
     document.getElementById('f_prod_status').value = p.status;
     document.getElementById('f_prod_badges').value = p.badges;
     document.getElementById('f_prod_model').value = p.model || '';
-    document.getElementById('f_prod_desc').value = p.desc;
+    document.getElementById('f_prod_desc').value = whText(p.desc);
     document.getElementById('f_prod_definition').value = p.definition || '';
     document.getElementById('f_prod_story').value = p.story || '';
     document.getElementById('f_prod_partners').value = p.partners || '';
@@ -3529,7 +3533,22 @@ function saveHomepageText(){
 
 
 // ---------- HELPER & TOAST ----------
-function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+/* Product titles and descriptions became per-language objects at P9-T1
+   ({zh:'…', en:'…', …} — docs/FINDINGS.md finding 19), recovered from the seven
+   translations the live site already shipped. The admin is a staff tool and
+   shows ONE language, so a language map collapses to the primary here.
+
+   This lives inside esc() on purpose: esc is the single choke point every one
+   of the 51 call sites already goes through, so one change covers them all.
+   Without it, esc threw `(s||'').replace is not a function` and the whole
+   product list failed to render — not a cosmetic problem, a broken screen. */
+function whText(v){
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    return v.zh || Object.values(v).find(x => typeof x === 'string' && x) || '';
+  }
+  return v;
+}
+function esc(s){ return (whText(s)||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 let toastTimer;
 function toast(msg, ok){

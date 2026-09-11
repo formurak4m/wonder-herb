@@ -1,68 +1,194 @@
 [
   {
     "id": 1,
-    "title": "雲芝糖肽精華 PSP (標準裝 500粒)",
+    "title": {
+      "zh": "雲芝糖肽精華 (PSP) – 標準裝",
+      "en": "Yunzhi PSP Essence – Standard Pack",
+      "de": "Yunzhi PSP Essence – Standardpackung",
+      "es": "Esencia Yunzhi PSP – Paquete estándar",
+      "fr": "Essence Yunzhi PSP – Pack standard",
+      "ja": "霊芝PSPエッセンンス – 通常パック",
+      "ru": "Эссенция Юньчжи PSP – Стандартный набор"
+    },
     "sku": "WH-PSP-500",
     "price": "3800.00",
     "status": "In Stock",
     "cat": "yunzhi",
     "badges": "GMP 認證, 有效成份>90%",
     "model": "bottle_PEPTIDES.glb",
-    "desc": "高濃度雲芝糖肽提取精華。多糖與蛋白肽比例超越國家標準1.8倍，加拿大GMP藥廠生產，輔助免疫調節與健康維護。"
+    "desc": {
+      "zh": "強化免疫調節，適合長期輔助療程。每批產品雙重檢測，有效成份 >90%。",
+      "en": "Strengthens immune regulation, ideal for long-term adjuvant therapy. Each batch dual-tested, active ingredients >90%.",
+      "de": "Stärkt Immunregulation, ideal für Langzeit-Adjuvans-Therapie. Chargen doppelt geprüft, Wirkstoffe >90%.",
+      "es": "Fortalecer la regulación inmune, ideal para terapia adyuvante a largo plazo.",
+      "fr": "Renforcer la régulation immunitaire, idéal pour la thérapie adjuvante à long terme.",
+      "ja": "免疫調整を強化、長期補助療法に最適。",
+      "ru": "Укрепление иммунной регуляции, идеально для долгосрочной адъювантной терапии."
+    },
+    "image": "https://lh3.googleusercontent.com/d/1j4nnDKPYyQ7naWRboMd3fPS8pvrlEtDq",
+    "link": "產品_雲芝糖肽精華_B.html"
   },
   {
     "id": 2,
-    "title": "雲芝糖肽精華 PSP (試用裝 60粒)",
+    "title": {
+      "zh": "雲芝糖肽精華 (PSP) - 試用裝",
+      "en": "Yunzhi PSP Essence - Trial Pack",
+      "de": "Yunzhi PSP Essence - Testpackung",
+      "es": "Esencia Yunzhi PSP - Paquete de prueba",
+      "fr": "Essence Yunzhi PSP - Pack d'essai",
+      "ja": "霊芝PSPエッセンンス - 試用パック",
+      "ru": "Эссенция Юньчжи PSP - Пробный набор"
+    },
     "sku": "WH-PSP-060",
     "price": "680.00",
     "status": "In Stock",
     "cat": "yunzhi",
     "badges": "GMP 認證, 便攜試用",
     "model": "bottle_PEPTIDES.glb",
-    "desc": "60粒便攜裝雲芝糖肽精華，適合初次體驗及日常攜帶使用。"
+    "desc": {
+      "zh": "多醣肽含量達國家標準1.8倍以上，提升免疫細胞活性，化療放療期間減輕副作用。",
+      "en": "Polysaccharide-peptide content >1.8x national standard, enhances immune cell activity, reduces side effects during chemo/radiotherapy.",
+      "de": "Polysaccharid-Peptid-Gehalt >1,8× nationaler Standard, verbessert Immunzellaktivität, reduziert Nebenwirkungen.",
+      "es": "Contenido de polisacárido-péptido >1,8× estándar nacional, mejora la actividad celular inmune.",
+      "fr": "Polysaccharide-peptide >1,8× norme nationale, améliore l'activité cellulaire immunitaire.",
+      "ja": "多糖体ペプチド含有量が国家基準の1.8倍以上、免疫細胞活性を向上。",
+      "ru": "Содержание полисахарид-пептида >1,8× национальный стандарт, улучшает активность иммунных клеток."
+    },
+    "image": "https://lh3.googleusercontent.com/d/1IXyoFL7qF2rpB5C-o6C3c1RVRBqoUMMk",
+    "link": "產品_雲芝糖肽精華_A.html"
   },
   {
     "id": 3,
-    "title": "T3 複合配方 (120粒)",
+    "title": {
+      "zh": "T3 配方",
+      "en": "T3 Formula",
+      "de": "T3 Formel",
+      "es": "Fórmula T3",
+      "fr": "Formule T3",
+      "ja": "T3 処方",
+      "ru": "Формула T3"
+    },
     "sku": "WH-T3-120",
     "price": "1900.00",
     "status": "In Stock",
     "cat": "t3",
     "badges": "專利配方, 大學證實功效倍增",
     "model": "bottle_YUNZHI.glb",
-    "desc": "康草堂獨家T3草本配方，配合雲芝PSP協同使用，提升細胞活力與自我修復。"
+    "desc": {
+      "zh": "大學研究證實：PSP + T3 複合配方使功效倍增，適合需要更強免疫調節的患者。",
+      "en": "University-proven synergistic formula doubles efficacy, ideal for patients needing stronger immune modulation.",
+      "de": "Universitätlich bewiesene synergistische Formel verdoppelt Wirksamkeit.",
+      "es": "Fórmula sinérgica probada por universidades duplica la eficacia.",
+      "fr": "Formule synergique prouvée par les universités, double l'efficacité.",
+      "ja": "大学実証の相乗効果処方が効果を倍増。",
+      "ru": "Университетская синергетическая формула удваивает эффективность."
+    },
+    "image": "https://lh3.googleusercontent.com/d/1NNv7Wxa-i8YbBEgfV7qVz5AgKpsog8Kb",
+    "link": "產品_T3.html"
   },
   {
     "id": 4,
-    "title": "PT3 強化配方 (90粒)",
+    "title": {
+      "zh": "PT3 (指定診所發售)",
+      "en": "PT3 (Clinic Only)",
+      "de": "PT3 (Nur Kliniken)",
+      "es": "PT3 (Solo clínicas)",
+      "fr": "PT3 (Cliniques uniquement)",
+      "ja": "PT3（クリニック限定）",
+      "ru": "PT3 (Только клиники)"
+    },
     "sku": "WH-PT3-090",
     "price": "2480.00",
     "status": "In Stock",
     "cat": "special",
     "badges": "高濃縮, 雙重協同",
     "model": "bottle_PT3.glb",
-    "desc": "雲芝糖肽PSP與T3配方精華的高效組合，提供強化輔助保護。"
+    "desc": {
+      "zh": "專業級配方，只在指定中西醫診所出售。請諮詢您的醫生。",
+      "en": "Professional-grade formula available only at selected TCM & Western medicine clinics. Please consult your doctor.",
+      "de": "Professionelle Formel nur in ausgewählten Kliniken erhältlich.",
+      "es": "Fórmula profesional solo disponible en clínicas seleccionadas.",
+      "fr": "Formule professionnelle disponible uniquement dans les cliniques sélectionnées.",
+      "ja": "プロフェッショナル処方は選定されたクリニックのみ。",
+      "ru": "Профессиональная формула доступна только в выбранных клиниках."
+    },
+    "image": "https://lh3.googleusercontent.com/d/1zKGlugAcxcelvZXRiYFjOR5ZVdrUQOPG",
+    "link": "產品_PT3.html",
+    "ribbon": {
+      "zh": "只在指定中西醫診所出售",
+      "en": "Clinic Only",
+      "de": "Nur Kliniken",
+      "es": "Solo clínicas",
+      "fr": "Cliniques uniquement",
+      "ja": "クリニック限定",
+      "ru": "Только клиники"
+    },
+    "priceNote": {
+      "zh": "僅限診所",
+      "en": "Clinic Only",
+      "de": "Nur Kliniken",
+      "es": "Solo clínicas",
+      "fr": "Cliniques uniquement",
+      "ja": "クリニック限定",
+      "ru": "Только клиники"
+    }
   },
   {
     "id": 5,
-    "title": "乙肝清 草本護肝膠囊",
+    "title": {
+      "zh": "乙肝清",
+      "en": "Hep BQ capsules",
+      "de": "Hep BQ Kapseln",
+      "es": "Cápsulas Hep BQ",
+      "fr": "Gélules Hep BQ",
+      "ja": "Hep BQカプセル",
+      "ru": "Капсулы Hep BQ"
+    },
     "sku": "WH-HB-180",
     "price": "1880.00",
     "status": "In Stock",
     "cat": "special",
     "badges": "天然草本, 護肝排毒",
     "model": "bottle_HEP.glb",
-    "desc": "專為肝臟保健設計的天然草本配方，輔助改善肝臟代謝與日常防護。"
+    "desc": {
+      "zh": "天然草本護肝配方，強化肝臟代謝，針對乙肝及肝功能受損人士。",
+      "en": "Natural herbal liver-support formula, enhances liver metabolism, targets hepatitis B and liver dysfunction.",
+      "de": "Natürliche Kräuterformel zur Leberunterstützung.",
+      "es": "Fórmula herbal natural para apoyo hepático.",
+      "fr": "Formule herbal naturelle pour le soutien hépatique.",
+      "ja": "ナチュラル肝サポート処方は。",
+      "ru": "Натуральная травяная формула для поддержки печени."
+    },
+    "image": "https://lh3.googleusercontent.com/d/1JshjDnhbCCCsQNUZOD3XnPz6Haw9Q_eE",
+    "link": "產品_乙肝清.html"
   },
   {
     "id": 6,
-    "title": "憶活素 腦部保健膠囊",
+    "title": {
+      "zh": "憶活素 MemoProve",
+      "en": "MemoProve",
+      "de": "MemoProve",
+      "es": "MemoProve",
+      "fr": "MemoProve",
+      "ja": "MemoProve",
+      "ru": "MemoProve"
+    },
     "sku": "WH-MB-060",
     "price": "880.00",
     "status": "In Stock",
     "cat": "special",
     "badges": "腦部保健, 專利成份",
     "model": "",
-    "desc": "維持大腦思維敏捷與神經健康支持。"
+    "desc": {
+      "zh": "奧地利 EVER PHARMA 研發配方，有助修復腦細胞、增強記憶力及專注力，經歐洲嚴格測試。",
+      "en": "Austrian EVER PHARMA formula helps repair brain cells, enhance memory and concentration, rigorously tested in Europe.",
+      "de": "Österreichische Formel zur Reparatur von Gehirnzellen.",
+      "es": "Fórmula austríaca para reparar células cerebrales.",
+      "fr": "Formule autrichienne pour réparer les cellules cérébrales.",
+      "ja": "オーストリア開発の脳細胞修復 формула。",
+      "ru": "Австрийская формула для восстановления клеток мозга."
+    },
+    "image": "https://lh3.googleusercontent.com/d/1DqnWVDZa45TvoRKRguh-IT4i_sfYbQhn",
+    "link": "產品_憶活素.html"
   }
 ]

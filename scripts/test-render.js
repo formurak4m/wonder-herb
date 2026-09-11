@@ -99,12 +99,24 @@ check('a page whose sections emit .reveal-on-scroll still gets both guards',
 /* --------------------------------------------------------- (c) content ---- */
 console.log('\n=== (c) the content is IN the HTML, not fetched ===\n');
 
-const products = data.products;
+/* Product titles and descriptions are per-language objects since P9-T1
+   (finding 19), so the expected strings come from the data resolved for the
+   language being rendered - the same resolveData the renderer applies. Comparing
+   against the raw row would compare against "[object Object]". */
+const products = render.resolveData(data, PRIMARY).products;
 check('every product title from data/products.json is in the output',
-      products.every(p => html.indexOf(p.title) !== -1),
-      products.length + ' product(s)');
+      products.every(p => typeof p.title === 'string' && html.indexOf(p.title) !== -1),
+      products.length + ' product(s), resolved to ' + PRIMARY);
+/* Compare against the ESCAPED text. One description contains ">90%", which
+   React correctly emits as "&gt;90%" - searching for the raw string would fail
+   on the one product whose copy has a special character in it, and would look
+   like missing content rather than working escaping. */
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 check('every product description is too',
-      products.every(p => p.desc && html.indexOf(p.desc) !== -1));
+      products.every(p => p.desc && html.indexOf(esc(p.desc)) !== -1),
+      products.length + ' description(s), HTML-escaped');
+check('the seven-language catalogue reaches the page as text, not as objects',
+      html.indexOf('[object Object]') === -1, 'no language map leaked into the HTML');
 check('the grid is filled, not an empty shell',
       (html.match(/class="product-card"/g) || []).length === products.length,
       (html.match(/class="product-card"/g) || []).length + ' card(s) — the live page ships this empty');

@@ -1937,6 +1937,17 @@
       return p || null;
     }
 
+    /* One language out of a per-language value, falling back to zh.
+       Product titles/descriptions became {zh, en, …} objects at P9-T1
+       (docs/FINDINGS.md finding 19); plain strings still pass through, so
+       older data keeps working. */
+    function whPick(v, lang) {
+      if (v && typeof v === 'object' && !Array.isArray(v)) {
+        return v[lang] || v.zh || Object.values(v).find(x => typeof x === 'string' && x) || '';
+      }
+      return v || '';
+    }
+
     let detailFallbackTried = false;
 
     function loadDetailFallback() {
@@ -1952,10 +1963,10 @@
           const priceNum = parseFloat(row.price) || 0;
           const entry = {
             id: row.id,
-            name: row.title || '',
+            name: whPick(row.title, 'zh'),
             price: priceNum,
             priceText: 'HK$' + priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            desc: row.desc || '',
+            desc: whPick(row.desc, 'zh'),
             image: row.image || (Array.isArray(row.images) && row.images[0] ? row.images[0].url : '') ||
                    'https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png',
             badge: row.badges || null,
@@ -1972,7 +1983,16 @@
             link: ''
           };
           Object.keys(productData).forEach(lang => {
-            if (Array.isArray(productData[lang])) productData[lang].push(Object.assign({}, entry));
+            /* The catalogue carries all seven languages since P9-T1, so give
+               each language array its OWN name and description instead of the
+               same Chinese string seven times. whPick falls back to zh, which
+               is the site-wide rule. */
+            if (Array.isArray(productData[lang])) {
+              productData[lang].push(Object.assign({}, entry, {
+                name: whPick(row.title, lang),
+                desc: whPick(row.desc, lang)
+              }));
+            }
           });
           // Stock for this product lives in data/inventory.csv, not products.json.
           if (typeof window.whApplyInventory === 'function') {
@@ -2468,10 +2488,10 @@
               const lead = p.image || (pics[0] && pics[0].url) || '';
               return {
                 id: p.id || Date.now(),
-                name: p.title || 'New Product',
+                name: whPick(p.title, currentLang) || 'New Product',
                 price: parseFloat(p.price) || 0,
                 priceText: formatMoney(p.price),
-                desc: p.desc || '',
+                desc: whPick(p.desc, currentLang),
                 image: lead || 'https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png',
                 imageAlt: p.imageAlt || (pics[0] && pics[0].alt) || '',
                 images: pics,

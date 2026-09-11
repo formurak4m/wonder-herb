@@ -5,7 +5,7 @@ adding the Phase 1 toolchain; 7 from adding the page routes at P2-T1; 8–11 fro
 section library at P4-T2; 12–13 from actually looking at the rendered sections at P4-T3; 14 from the
 fidelity waivers at P4-T4; 15 from rendering a real page end to end at P5-T1; 16–17 from
 running the real publish pipeline for the first time at P7-T1; 18–19 from building the editor
-app at P8-T2.
+app at P8-T2; 20 from migrating the product data model at P9-T1.
 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
@@ -34,6 +34,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 17 | `export` wrote `updatedAt` bookkeeping into public site data; one real stock change is unpublished | Medium — fixed; stock is a **client decision** | P7-T1a / client |
 | 18 | `renderer/i18n.js` is CommonJS, so the editor cannot import it; Vite shim is a stopgap | Medium | Phase 9 |
 | 19 | Product data has no per-language `title`/`desc` — same root cause as finding 8 | Medium — **client decision** | Phase 14 (decide at 9) |
+| 20 | **A plain-string write silently deleted a language map** (admin product form) | **HIGH — data loss** | Guarded at P9-T1; form at P12-T3 |
 
 ---
 
@@ -796,11 +797,24 @@ of `stock`, `reorder` and `stockUpdated`.
 
 ### The one real change underneath the noise — NOT a build issue, do not "fix" it
 
-With the noise removed, the committed `data/` and the live database diverge on exactly **one field**:
+**The true stock state, recorded here because nothing else durable holds it.**
 
-| | `data/products.json` (committed) | MongoDB (live) |
+> **`WH-PSP-500` — 雲芝糖肽精華 PSP, 標準裝 500粒, product id 2 — is *Out of Stock* in the
+> admin as of 2026-09-04.** That is the real-world fact. The committed `data/` says `In Stock`,
+> and has since before this branch started, because the change has never been published.
+
+Identify the row by **SKU**, never by title or id. The title was rewritten at P9-T1 (it now reads
+`雲芝糖肽精華 (PSP) – 標準裝`) and five of six product ids cross-map to a different SKU
+(finding 19).
+
+The exact field values, so the state is recoverable even if the database is dropped and reseeded
+from `data/`:
+
+| field | committed `data/` | the truth (admin, 2026-09-04) |
 |---|---|---|
-| 雲芝糖肽精華 PSP (標準裝 500粒) | `"status": "In Stock"` | `"status": "Out of Stock"` |
+| `status` | `In Stock` | `Out of Stock` |
+| `stock` | *(absent)* | `0` |
+| `reorder` | `10` | `10` — unchanged |
 | `data/inventory.csv`, same row | `…,3800.00,,10,In Stock,,` | `…,3800.00,0,10,Out of Stock,0.00,` |
 
 It is a genuine admin action, not corruption — the audit log records it as *"Started tracking stock
@@ -808,9 +822,14 @@ for 雲芝糖肽精華 PSP (標準裝 500粒)"* on 2026-09-04, and it has simply
 
 **Status: with the client.** Whether a flagship product shows as out of stock on a customer-facing
 page is a business decision, not a build side-effect, so it must not ride along in a tooling commit.
-The database keeps the change, `data/` keeps the committed value, and the divergence is recorded
-here so it is not rediscovered as a bug. Resolve it by publishing deliberately or by correcting the
-stock in the admin — either way, on purpose.
+**The database holds the truth; `data/` holds the last published value.** The divergence is
+deliberate and is recorded here so it is not rediscovered as a bug. Resolve it by publishing
+deliberately or by correcting the stock in the admin — either way, on purpose.
+
+**Do not un-park it to tidy a diff.** The database is the source of truth and `data/` is a view of
+it; editing the truth to make `git diff` easier to read inverts that relationship. If a commit needs
+to exclude the stock line, stage around it or accept the messier diff — never by writing a value
+into the database that is known to be false.
 
 ---
 
@@ -877,3 +896,67 @@ other text field on the site, or does the catalogue stay single-language on purp
 defensible — product names are often left untranslated deliberately — but it has to be a decision.
 Right now it is an accident, and an accident that renders as a half-translated page. The client
 should be asked: are the product names and descriptions meant to be translated at all?
+
+---
+
+## 20 · A plain-string write silently deleted a language map — SECURITY-CLASS DATA LOSS, guarded at P9-T1
+
+**Severity: HIGH.** Not a leak this time — a deletion. Of content the client paid a translator for.
+
+**What.** P9-T1 turned product `title` and `desc` into per-language objects, recovering seven
+languages that the live site already shipped. But `admin/index.html` edits a title in an `<input>`,
+and an input holds a **string**:
+
+```js
+admin/index.html:3332   document.getElementById('f_prod_title').value = p.title;   // load
+admin/index.html:3368   title: document.getElementById('f_prod_title').value       // save
+```
+
+So the first ordinary product edit — fixing a typo, changing a price — would `POST` a plain string
+over the language map and **delete six languages of that product's title and description**. No
+error, no warning; the admin would look like it had worked. The loss would surface weeks later, when
+someone opened the German site.
+
+**This is the same class as the editor's fallback-poisoning bug (P8-T2)**, reached through the
+business half instead of the editor: a UI that shows one language, writing back as though it were
+the whole truth. Expect this shape wherever a single-language control meets multilingual data.
+
+### The fix, and why it is at the API
+
+`server/index.js` `protectLangMaps()`, applied in `POST /api/cms`: a plain string arriving where a
+language map is stored is an edit to the **primary language**, not a replacement of the map. The
+other languages are preserved and **the merge is reported in the response** rather than happening
+silently:
+
+```json
+{ "success": true, "type": "products", "count": 6,
+  "mergedIntoPrimary": [ { "item": "WH-T3-120", "field": "title",
+                           "keptLanguages": ["en","de","es","fr","ja","ru"] } ],
+  "notice": "2 field(s) arrived as plain text where a translated value is stored…" }
+```
+
+**It lives at the API, not in the form, deliberately.** The API is the only way into the database, so
+the invariant holds for every caller — the admin today, the Puck editor, a migration script, whatever
+is written next. Fixing the form protects the form, and only until someone writes another one. The
+proper multilingual admin form is registered separately as **BUILD_TASKS P12-T3**; until it lands,
+staff can edit `zh` safely and simply cannot reach the other six.
+
+### The sequencing rule this teaches — the part worth keeping
+
+**A schema change is not safe to commit until the write path is guarded. The gap between them is
+when data dies.**
+
+Had the migration been committed on its own — it was correct, it passed its own tests, and the
+recovered translations were right — the very next product edit in the admin would have destroyed
+them. The migration and the guard are one unit: they land together or not at all. Generalised: when
+a stored shape becomes richer than the UI that edits it, ship the protection in the same change as
+the enrichment.
+
+### What it cost to find
+
+Seven separate breakages, discovered one gate-run at a time: the CSV export, the renderer, the
+editor canvas, two test files, the admin product list (a crash, not a cosmetic problem), the admin
+dashboard (another crash), and `product.html`'s fallback. **Every one was "something assumed `title`
+was a string."** A five-minute `grep` for the consumers of that shape, run BEFORE the migration,
+would have listed all of them up front. Survey the consumers of a shared data shape before changing
+it, not after the crashes.

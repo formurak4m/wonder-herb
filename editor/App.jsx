@@ -24,7 +24,7 @@ import '@puckeditor/core/puck.css';
 import { buildConfig } from './puck.config.js';
 import { registry } from '../sections/index.js';
 import * as api from './api.js';
-import { LANGS, PRIMARY, projectTree, mergeTree, withIds } from './lang.js';
+import { LANGS, PRIMARY, projectTree, mergeTree, withIds, resolveContent } from './lang.js';
 
 const LANG_LABEL = {
   zh: '中文 (主要)', en: 'English', de: 'Deutsch', es: 'Español',
@@ -120,7 +120,15 @@ export default function App() {
       .catch(err => { setError(err.message); setStatus(''); });
   }, [slug]);
 
-  const config = useMemo(() => buildConfig({ data: content, lang }), [content, lang]);
+  /* Content is resolved for the picked language before it reaches a section,
+     exactly as renderer/render.js `resolveData` does at publish time. Product
+     titles are per-language objects since P9-T1, and a section renders text,
+     not language maps - so the canvas and the published page must resolve at
+     the same point or they show different things. */
+  const config = useMemo(
+    () => buildConfig({ data: resolveContent(content, lang), lang }),
+    [content, lang]
+  );
 
   /* The Puck document for ONE language. Keyed on slug+lang so switching either
      remounts Puck with the new projection rather than keeping stale props. */

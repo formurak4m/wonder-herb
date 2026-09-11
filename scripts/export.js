@@ -7,6 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const { connect, close, COLLECTIONS, PAGE_COLLECTIONS } = require('../server/db');
+const { PRIMARY } = require('../renderer/i18n');
 
 const DATA = path.join(__dirname, '..', 'data');
 const PAGES_DIR = path.join(DATA, 'pages');
@@ -46,6 +47,19 @@ function writeIfChanged(file, content) {
   return true;
 }
 
+/* The stock spreadsheet is a working document for staff, not site content, so
+   it takes ONE language - the primary. Product titles became per-language
+   objects at P9-T1 (finding 19), and without this the Product column rendered
+   "[object Object]" for every row. Anything that puts a product title into a
+   string context needs this; there is no sensible implicit stringification of
+   a seven-language object. */
+function titleText(v) {
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    return v[PRIMARY] || Object.values(v).find(x => x) || '';
+  }
+  return v || '';
+}
+
 function buildInventoryCsv(products) {
   const lines = [CSV_HEAD.map(csvCell).join(',')];
   products.forEach(p => {
@@ -53,7 +67,7 @@ function buildInventoryCsv(products) {
     const n = tracked ? (parseInt(p.stock, 10) || 0) : null;
     const price = parseFloat(p.price) || 0;
     lines.push([
-      p.sku || '', p.title || '', price.toFixed(2),
+      p.sku || '', titleText(p.title), price.toFixed(2),
       n === null ? '' : n,
       // the reorder point is set per product; it does not depend on stock being tracked
       p.reorder === undefined || p.reorder === null ? (tracked ? 10 : '') : p.reorder,
