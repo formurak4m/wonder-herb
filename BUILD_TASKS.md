@@ -386,6 +386,7 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 - **Steps:**
   1. Assemble the published site into a build directory from an **explicit allow-list**, and upload only that: the 18 static HTML pages, `data/` content files, `admin/`, `api/`, and the site metadata (`sitemap.xml`, `robots.txt`, `llms.txt`, `CNAME`, favicons, media still in the repo).
   2. **Excluded by not being listed:** `editor/`, `sections/`, `renderer/` (including `.build/` and `.out/`), `server/`, `scripts/`, `docs/`, `baseline/`, `preview/`, `node_modules/`, `.env*`, and any log or report file.
+  2b. **But note P11-T2:** the client gets one admin site, which means the BUILT editor (`editor/dist/`, produced by `npm run editor:build`) is part of what ships, served under the admin's origin. So the allow-list is `editor/dist/` **in**, `editor/` source **out** — build output and source are not the same decision, and lumping them together either leaks the source or breaks the editor. Write the list that way now even though P11-T2 lands later; a list that has to be reopened is a list someone will get wrong.
   3. Prefer an allow-list over an ignore-list. An ignore-list fails **open** — a new folder ships unless someone remembers to exclude it. An allow-list fails **closed**, which is the behaviour that would have prevented finding 16.
 - **Verify:** deploy to a branch or preview environment first, never straight to `main`. Then assert on the **published output**, not on the repo: the 18 pages and `data/*.json` are reachable, and `editor/`, `server/`, `scripts/`, `renderer/` and any `*-log.json` return 404. Wire that assertion into the publish gate so the exclusion cannot silently regress.
 - **Gotcha:** `admin/index.html` and `api/cms.js` ARE part of the published site and must stay in the allow-list — the admin is served from Pages and falls back to the committed files when the API is down (CLAUDE.md hard rule 1). Dropping them would break that fallback. Excluding `server/` and `scripts/` does not: nothing the browser loads reads them.
@@ -434,6 +435,24 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
   5. Nightly backup: `mongodump` to R2 on a cron, keep 30 days.
 - **Verify:** log in to the admin from a different machine; edit and publish a page; restore last night's backup into a scratch DB successfully.
 - **Gotcha:** preserve the fallback behaviour: if the API is down, the committed `data/` still serves the site. Never make the live site depend on the API being up.
+
+### P11-T2 · ONE admin site, one login — a client requirement, not a nicety
+- **Goal:** the client reaches sales, inventory, products, customers, users **and** the visual page editor from **one place**, signing in **once**. They must never be given two URLs or asked to log in twice. The two-app split stays underneath; it must not surface.
+- **Why here and not earlier:** this needs (a) an editor that works — P8-T2, done; (b) real pages to edit, or "Edit site" opens onto one demo tree — Phase 9; (c) **a decision about which origin serves what**, which is exactly what Phase 11 decides. Building it before hosting means building against `localhost:5173` assumptions and redoing it. Doing it as part of hosting means hosting delivers one product rather than two.
+- **Files:** `admin/index.html` (a nav entry), `editor/vite.config.mjs` (`base`), `server/index.js` (serve the built editor), the host's routing config, `.github/workflows/static.yml` (via P8-T3's allow-list).
+- **Proposed shape — cheapest thing that actually solves it:**
+  1. `npm run editor:build` emits `editor/dist/`. Serve that **under the admin's own origin** at a subpath, e.g. `/admin/pages/`. Locally that is one `express.static` line; in production it is one routing rule on whatever hosts the admin.
+  2. Add a left-nav entry to `admin/index.html` — 頁面編輯 / "Edit site" — linking to that subpath. That is the entire client-visible change.
+  3. **Same origin means single sign-in comes for free.** The editor already reads the same `wh_admin_token` key from `localStorage` that `admin/index.html` writes (`admin/index.html:1354`). On one origin they are the same storage, so the editor's own sign-in screen becomes a fallback that is never seen. **No change to the auth model, no shared-cookie work, no second session.**
+  4. Set Vite `base` to the subpath, or the built asset URLs resolve at the wrong path.
+- **Verify:** sign in to `/admin` once, click 頁面編輯, edit and save a page **without being asked to log in again**; sign out in the admin and confirm the editor is signed out too; confirm there is exactly one URL to hand the client.
+- **Depends on:** **P8-T3** (the deploy allow-list must ship `editor/dist/` while still excluding `editor/` source — see the note there), **Phase 9** (pages worth editing), **Phase 12** (who is allowed to open the editor at all).
+- **Decisions this forces — take them at Phase 11, not now:**
+  1. **Same origin, or a separate host?** Same-origin subpath costs nothing and changes no auth. A separate host (`editor.wonder-herb.com`) means `localStorage` cannot be shared and single sign-in becomes a real auth change — a cookie on the parent domain, which means httpOnly + SameSite + CSRF handling the project does not have today. **This is the decision everything else hangs off.**
+  2. **Does the admin (and now the editor) stay on GitHub Pages, or move to the API host?** Moving them makes findings 6 and 16 largely vanish, because the deploy stops being "the whole repo". But `admin/index.html` is served from Pages *on purpose*: it falls back to the committed files when the API is down (CLAUDE.md hard rule 1). Moving it breaks that. Decide deliberately.
+  3. **Is the editor a public URL?** The admin already is — anyone can load it; the API is what gates writes. The editor is the same shape (`noindex` is already set). Acceptable, but say so out loud rather than discovering it.
+  4. **Is "may edit pages" a new permission,** or does it ride on the existing module ticks? Today `PUT /api/pages/:slug` uses `requireAdmin`; the editor UI itself is loadable by any signed-in user. Phase 12's question, but P11-T2 is when the client first sees the door.
+- **Gotcha:** the business half is NOT rebuilt in the editor. Sales, inventory, products, customers and users stay exactly where they are, in `admin/index.html` and its API. This task adds a doorway and a shared session — nothing more. CLAUDE.md non-negotiable 3.
 
 ---
 
