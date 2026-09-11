@@ -380,6 +380,16 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 - **Verify:** edit a heading in the editor, save, run `npm run publish`, confirm the change appears in the pre-rendered HTML.
 - **Gotcha:** selection/instrumentation attributes Puck adds are for the canvas only. The renderer output must be clean (already true, since the renderer calls the components directly, not through Puck).
 
+### P8-T3 · Publish an allow-list of directories, not the whole repo
+- **Goal:** close **findings 6 and 16 together** — they are one root cause: *the deploy is the entire repository, so anything written into the working tree is published by default.* Finding 6 is build artefacts (editor source, bundles) shipping publicly; finding 16 was an internal audit trail with staff emails one commit away from a public URL. Fixing them one at a time leaves the mechanism intact and the next leak unblocked.
+- **Files:** `.github/workflows/static.yml`. **This is the only file in the project that can change the live deploy, so it gets its own isolated review — show the diff and stop before applying it.** Do not fold this into another task's commit.
+- **Steps:**
+  1. Assemble the published site into a build directory from an **explicit allow-list**, and upload only that: the 18 static HTML pages, `data/` content files, `admin/`, `api/`, and the site metadata (`sitemap.xml`, `robots.txt`, `llms.txt`, `CNAME`, favicons, media still in the repo).
+  2. **Excluded by not being listed:** `editor/`, `sections/`, `renderer/` (including `.build/` and `.out/`), `server/`, `scripts/`, `docs/`, `baseline/`, `preview/`, `node_modules/`, `.env*`, and any log or report file.
+  3. Prefer an allow-list over an ignore-list. An ignore-list fails **open** — a new folder ships unless someone remembers to exclude it. An allow-list fails **closed**, which is the behaviour that would have prevented finding 16.
+- **Verify:** deploy to a branch or preview environment first, never straight to `main`. Then assert on the **published output**, not on the repo: the 18 pages and `data/*.json` are reachable, and `editor/`, `server/`, `scripts/`, `renderer/` and any `*-log.json` return 404. Wire that assertion into the publish gate so the exclusion cannot silently regress.
+- **Gotcha:** `admin/index.html` and `api/cms.js` ARE part of the published site and must stay in the allow-list — the admin is served from Pages and falls back to the committed files when the API is down (CLAUDE.md hard rule 1). Dropping them would break that fallback. Excluding `server/` and `scripts/` does not: nothing the browser loads reads them.
+
 ---
 
 ## Phase 9 — Migrate the core pages (zh)
