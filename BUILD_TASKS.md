@@ -496,6 +496,59 @@ When Phases 0-12 are done: the client can log in over the internet, edit the cor
 - Migrate the remaining 13-14 pages to trees, each verified against baseline, each passing `test:seo`, old files moved to `legacy/`.
 - **Verify:** all 18 pages render from trees; `legacy/` holds the retired originals; full test suite green.
 
+## Phase 13G — GEO: AI-crawler visibility, as deliberate work
+
+Lettered, not numbered, so Phases 14–18 keep their existing numbers.
+
+**Why this exists as its own phase.** GEO is a stated goal of this project alongside SEO, and right
+now it is being *protected* rather than *advanced* — and nothing in the project says so out loud,
+which is how it ends up assumed-covered by `test:seo`. It is not covered. `test:seo` asserts
+per-page head correctness (JSON-LD parses, canonical, hreflang reciprocity, meta present, heading
+order). It never opens `llms.txt`, `robots.txt` or `sitemap.xml`. Those three files are the GEO
+surface and **no gate reads any of them.**
+
+What already exists and must not be lost (all hand-made, all currently correct):
+- `robots.txt` explicitly allows **GPTBot, OAI-SearchBot, ChatGPT-User, PerplexityBot, ClaudeBot,
+  Google-Extended, Applebot-Extended, Bingbot**, and points at the sitemap. This is real GEO work
+  that someone did on purpose; a careless edit silently un-publishes the site to AI crawlers.
+- `llms.txt`: 24 lines, a curated index of 14 pages with one-line descriptions. All 14 links
+  currently resolve. It does not list `index.html`.
+- `sitemap.xml`: 15 URLs. It deliberately omits `account.html`, `product.html` and `購物車.html`
+  — the same utility/transactional pages `test:seo` allow-lists. Consistent, and worth asserting
+  rather than leaving as a coincidence.
+
+### P13G-T1 · Guard what exists, BEFORE the pages migrate — owner Phase 10
+
+Do this early. It is cheap, it is protective, and its whole value is that it runs *while* pages are
+being rebuilt. Migration is exactly when these rot: a page moves to `legacy/`, a slug changes, and
+`llms.txt` keeps pointing at a URL that 404s. Nothing would report it today.
+
+- Extend the gate (or add `test:geo`, wired into `test:all` like every other suite) to assert:
+  every `llms.txt` link resolves to a page that will actually be published; every non-utility page
+  is listed; `robots.txt` still carries each AI-crawler allow block by name, with a comment saying
+  removing one is a deliberate act; `sitemap.xml` covers exactly the published set minus the
+  utility allow-list; the three files agree with each other.
+- **Verify:** delete one AI-crawler block, or point one `llms.txt` link at a missing page — the
+  gate fails. Prove it bites, then restore.
+
+### P13G-T2 · Advance GEO deliberately — owner after Phase 13
+
+Correctly sequenced after migration, not before: tuning GEO now would tune for pages that are about
+to be rebuilt, and `llms.txt` in particular is a description of a page set that is still changing.
+
+- Regenerate `llms.txt` from the page trees rather than maintaining it by hand, so it cannot drift
+  from what is published. Decide then whether to add `llms-full.txt`.
+- Revisit the JSON-LD now that content is modelled: `Product` nodes can carry real `offers` from
+  `data/products.json`, and FAQ/Article types can be derived rather than carried verbatim. Note
+  that `data/products.json` has no rating or review data — do **not** invent `aggregateRating`.
+- Assess extractability for answer engines: heading hierarchy, question-shaped headings, whether
+  key claims sit in text rather than images. The site's evidence pages (`有效成份檢測`, `研究報告`,
+  `典型病例`) are its GEO strength and are currently the least structured.
+- Settle the medical-claims posture with the client before amplifying anything. This is a health
+  products site: making claims *more* machine-extractable raises the stakes on their accuracy.
+- **Verify:** `llms.txt` is generated and matches the published pages exactly; JSON-LD validates;
+  a crawl of the published output shows key claims as text.
+
 ## Phase 14 — All 7 languages
 - In `buildSite()`, loop all `LANGS`. Write non-primary languages under `/<lang>/` paths, add each to `sitemap.xml`, and complete the `hreflang` set with `x-default` -> zh.
 - Add a "what is missing" view in the editor listing fields not yet translated per language.

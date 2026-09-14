@@ -767,6 +767,69 @@ Preview button is the styled view until D2 lands (it renders through the real re
 accurate), and the canvas becomes properly styled for free once one sheet exists. This is the same
 finding, not a separate one: do not open a new ticket for "the canvas looks plain".
 
+##### Done at P9-T1 (D2) — as ONE SHEET PER PAGE, not one shared sheet
+
+`scripts/extract-css.js` writes `assets/page-<slug>.css` (that page's whole stylesheet, in its own
+original order) and `assets/chrome.css` (the D1 rules, linked last). `assets/site.css` was built,
+measured, and **deliberately not shipped**.
+
+**Why the shared extract was abandoned — the numbers.** Of 1073 distinct rule units across the 18
+pages, 97 are byte-identical on 15 or more of them, and 118 of 產品介紹's 198 rules matched. That
+looked like a 60% win. It was not, because hoisting a rule moves it ahead of every page rule, and
+**for two rules that tie on specificity the winner is whichever comes last**. Once every rule that
+cannot be safely reordered is held back, **24 rules survive — about 12% of the page, 3 KB against a
+21 KB page sheet.** That does not pay for the cascade risk it carries, so each page keeps its whole
+stylesheet. Per-page is reorder-proof by construction: same rules, same order, so the cascade is
+identical to the inline original by definition rather than by testing.
+
+**The first attempt shipped a broken page and every gate passed.** Worth recording in full, because
+it is the exact trap D2 was warned about:
+
+```
+div.container.header-inner   padding 16px 0px       ->  0px 24px
+div.container.copyright      padding 32px 24px 0px  ->  0px 24px
+```
+
+`.container` and `.header-inner` are **different selectors of equal specificity** on the same
+element. `.header-inner` was shareable, `.container` was not, so the hoist put `.container` after
+the rule it used to lose to. The nav went 190px → 158px, the footer 326px → 262px, and the page
+96px shorter. The safety check in place at the time compared rules with the **same selector** and
+could not see it. The generalised check — equal specificity, same media context, any shared
+property, reordered — catches it, and is what collapses the shareable set to 24.
+
+**The cascade gate: inline vs linked, not against the baseline.** The question D2 asks is whether
+delivering the *same* CSS as a linked sheet instead of an inline block changes any pixel, so the
+strict comparison is the D1-era inline render against the D2 linked render — identical content,
+identical renderer, only the delivery differs. Result, full-page screenshots:
+
+| case | differing pixels |
+|---|---|
+| 1280 scripts on | **0** |
+| 1280 scripts off | **0** |
+| 390 scripts on | **0** |
+| 390 scripts off | **0** |
+
+The first run of that gate showed 0.14% differing at 390 only. It was not the cascade: the product
+photos are hotlinked from Google Drive and lose their race non-deterministically (see the media
+finding). Blocking every remote request identically on both sides takes it to zero. A diff against
+`baseline/screens/` still shows ~20–28% and **is not this gate** — the rendered page legitimately
+differs from the live hand-coded one (the 26px chrome gap above, the migrated product names, and
+the live grid ships empty). That comparison belongs to the page migration, not to D2.
+
+**Consequences, all verified.** The `!` CSS-lift warning is gone for 產品介紹 — `assets.stylesFrom`
+is off its tree entirely. The rendered page dropped 48 KB → 21 KB. Puck's canvas now has a real
+sheet to link. D1 still passes unchanged: 0px scripts-on/off delta at both widths, nav sticky,
+`overflow-x: clip`, pinned on scroll, no horizontal scrollbar.
+
+**What this costs, stated plainly.** No cross-page CSS caching: 18 pages will ship 18 sheets with
+substantial overlap. That is a performance trade, not a correctness one, and it is recoverable —
+`scripts/extract-css.js` still computes and prints the shareable set on every run, so the shared
+sheet can be revisited later with a real cascade model (matching rules against an actual DOM rather
+than guessing from selector text). `SHARED_MIN` and the analysis stay in the script for exactly that.
+
+`scripts/extract-css.js` uses **css-tree**, which is present transitively rather than as a declared
+devDependency. It should be declared before anything depends on it staying.
+
 ---
 
 ## 16 · `npm run export` published an internal audit trail to a public URL — SECURITY, fixed at P7-T1a

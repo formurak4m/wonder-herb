@@ -103,23 +103,46 @@ check('a page whose sections emit .reveal-on-scroll still gets both guards',
    JavaScript off. Measured before the fix: <h1> at y=55 against y=219. */
 console.log('\n=== the nav reserves its space in CSS (docs/FINDINGS.md finding 15, D1) ===\n');
 
-check('the chrome layout CSS is emitted for a page that has chrome',
-      /\.fixed-nav-wrapper \{ position: sticky; \}/.test(html));
-check('body overflow-x is neutralised, or sticky silently stops pinning',
-      /body \{ overflow-x: clip; \}/.test(html),
-      'body{overflow-x:hidden} makes body a scroll container');
-/* Cascade order: the lifted page CSS declares .fixed-nav-wrapper{position:fixed}.
-   The override is only an override if it comes after it. */
-check('it comes after the page CSS it overrides',
-      html.indexOf('.fixed-nav-wrapper { position: sticky; }') >
-      html.lastIndexOf('position: fixed;'),
-      'emitted below the lifted <style>, inside <head>');
+/* At D2 these rules moved out of the template into assets/chrome.css, so the
+   page proves D1 by LINKING it - last, or the page sheet outranks it. */
+const chromeCss = fs.readFileSync(path.join(ROOT, 'assets', 'chrome.css'), 'utf8');
+check('assets/chrome.css holds the sticky rule',
+      /\.fixed-nav-wrapper \{ position: sticky; \}/.test(chromeCss));
+check('assets/chrome.css neutralises body overflow-x',
+      /body \{ overflow-x: clip; \}/.test(chromeCss),
+      'body{overflow-x:hidden} makes body a scroll container, and sticky then stops pinning');
+
+const sheets = (html.match(/<link rel="stylesheet" href="([^"]*)"/g) || [])
+  .map(l => l.replace(/.*href="/, '').replace(/"$/, ''));
+check('a page with chrome links assets/chrome.css',
+      sheets.indexOf('assets/chrome.css') !== -1, sheets.join(', '));
+check('and links it LAST, after the page sheet',
+      sheets[sheets.length - 1] === 'assets/chrome.css',
+      'anything after it would outrank the D1 rules');
 check('no runtime nav-offset script ships any more',
       html.indexOf('paddingTop') === -1,
       'the height is reserved by layout, not measured by JS');
-/* Bites the other way too: a page with no chrome must not carry chrome CSS. */
-check('a page without chrome does not get the chrome CSS',
-      revealHtml.indexOf('.fixed-nav-wrapper { position: sticky; }') === -1);
+
+/* The guard bites: a chrome page that forgets the sheet must fail loudly rather
+   than publish with the heading under the nav. */
+let d1Threw = '';
+try {
+  const noSheet = JSON.parse(JSON.stringify(tree));
+  noSheet.assets.stylesheets = noSheet.assets.stylesheets.filter(s => s !== 'assets/chrome.css');
+  renderPage(noSheet, PRIMARY, data, { chrome });
+} catch (err) { d1Threw = err.message; }
+check('dropping assets/chrome.css from a chrome page throws',
+      /does not link assets\/chrome\.css/.test(d1Threw), d1Threw || 'DID NOT THROW');
+
+let d1Order = '';
+try {
+  const wrongOrder = JSON.parse(JSON.stringify(tree));
+  wrongOrder.assets.stylesheets = wrongOrder.assets.stylesheets
+    .filter(s => s !== 'assets/chrome.css').concat(['assets/chrome.css', 'assets/late.css']);
+  renderPage(wrongOrder, PRIMARY, data, { chrome });
+} catch (err) { d1Order = err.message; }
+check('a stylesheet AFTER assets/chrome.css throws too',
+      /must be the last stylesheet/.test(d1Order), d1Order || 'DID NOT THROW');
 
 /* --------------------------------------------------------- (c) content ---- */
 console.log('\n=== (c) the content is IN the HTML, not fetched ===\n');

@@ -97,16 +97,18 @@ const REVEAL_SCRIPT = [
  * NAV_OFFSET_SCRIPT is deleted, not demoted to a progressive enhancement. With
  * the nav in flow, setting body padding-top is pure double-counting - it would
  * push the heading down by a second nav height. A thing that is wrong when it
- * runs cannot be kept "as an enhancement". */
-const CHROME_LAYOUT_CSS = [
-  '  <style>',
-  '    /* D1, docs/FINDINGS.md finding 15: the nav reserves its own space in CSS,',
-  '       so the page lays out correctly with zero JavaScript. This has to outrank',
-  '       the page CSS lifted above it, hence its position here. */',
-  '    body { overflow-x: clip; }',
-  '    .fixed-nav-wrapper { position: sticky; }',
-  '  </style>'
-].join('\n');
+ * runs cannot be kept "as an enhancement".
+ *
+ * AT D2 these two rules MOVED OUT of this file into assets/chrome.css, so that
+ * Puck's canvas can link them like any other stylesheet. They could not go into
+ * assets/site.css: that loads first so page CSS wins ties, and 產品介紹's own
+ * `body` rule is page-specific, so its `overflow-x: hidden` would beat the
+ * `clip`. chrome.css is therefore linked LAST, after the page sheet.
+ *
+ * Which leaves one way to lose D1 silently: a page tree that has chrome but
+ * forgets to link chrome.css would render with the nav overlapping the heading
+ * again, and every gate would still pass. CHROME_SHEET below is that guard. */
+const CHROME_SHEET = 'assets/chrome.css';
 
 const NOSCRIPT_REVEAL =
   '  <noscript><style>\n' +
@@ -120,13 +122,32 @@ function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main }) {
   const c = chrome || {};
   const content = main === false ? body : '<main>\n' + body + '\n</main>';
 
+  /* D1 is only in force if the page actually links assets/chrome.css, and it
+     must be the LAST stylesheet or the page sheet outranks it. Fail loudly:
+     without this the page renders with the heading under the nav and every
+     other gate still passes. */
+  if (c.header) {
+    const links = (head.match(/<link rel="stylesheet" href="([^"]*)"/g) || [])
+      .map(l => l.replace(/.*href="/, '').replace(/"$/, ''));
+    const at = links.indexOf(CHROME_SHEET);
+    if (at === -1) {
+      throw new Error('This page has chrome but does not link ' + CHROME_SHEET +
+        ' - the nav would overlap the heading with JavaScript off ' +
+        '(docs/FINDINGS.md finding 15, D1). Add it to the tree\'s assets.stylesheets.');
+    }
+    if (at !== links.length - 1) {
+      throw new Error(CHROME_SHEET + ' must be the last stylesheet, it is ' +
+        (at + 1) + ' of ' + links.length + ' - anything after it outranks the D1 ' +
+        'chrome rules (docs/FINDINGS.md finding 15, D1).');
+    }
+  }
+
   const extra = (scripts || []).map(s => '<script>\n' + s + '\n</script>').join('\n');
 
   return '<!doctype html>\n' +
     '<html lang="' + htmlLang + '">\n' +
     '<head>\n' +
     head + '\n' +
-    (c.header ? CHROME_LAYOUT_CSS + '\n' : '') +
     NOSCRIPT_REVEAL + '\n' +
     '</head>\n' +
     '<body' + (bodyClass ? ' class="' + bodyClass + '"' : '') + '>\n' +
@@ -141,5 +162,5 @@ function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main }) {
 }
 
 module.exports = {
-  baseTemplate, REVEAL_SCRIPT, CHROME_LAYOUT_CSS, NOSCRIPT_REVEAL, HTML_LANG
+  baseTemplate, REVEAL_SCRIPT, CHROME_SHEET, NOSCRIPT_REVEAL, HTML_LANG
 };
