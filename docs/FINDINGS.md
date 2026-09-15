@@ -40,7 +40,8 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 22 | **Staff login addresses and an invented health claim in public git history** (page-tree export + finding 16's own excerpt); publish gate checked a fixture | **HIGH — security** (same as 16) | Paths fixed at P9-T1; identities rotated; no history rewrite (owner) |
 | 23 | **A migrated page loses cart, mobile menu, quick view and language switch** | **High — blocks retiring any page** | Ported + `test:behaviour` at P9-T1; retirement pending review |
 | 24 | **Migrated pages are Chinese only: a visitor who chose another language lands in Chinese** | Medium — accepted regression (owner) | Phase 14 (per-language URLs) |
-| 25 | **The admin product form deletes every field it does not show** (`link`, `ribbon`, `priceNote`; any future flag) | **HIGH — data loss** (same class as 20) | P12-T3; blocks lifting PT3's price hold |
+| 25 | **A write path deletes every field its caller was not shown**: rule "the store merges, never replaces"; bites today in the product form (`link`, `ribbon`, `priceNote`) and the Puck save (section `wrap`) | **HIGH — data loss** (finding 20 was one case) | Puck path fixed at P9-T1 (`mergeTree`); every write path in the API: P12-T3; blocks lifting PT3's price hold |
+| 26 | **Invented star ratings + reviews in product JSON-LD**, served today by this repo's public GitHub Pages copy (not by the client's Wix site) | **HIGH — trust / health-product harm** | Stripped from the rebuild + live pages (`7a918b6`) and gated; `main` fix `6503a01` awaiting push; recommend unpublishing the Pages copy |
 
 ---
 
@@ -530,8 +531,11 @@ has three PDF links inside copy, which will belong to a future `report-list`.
 
 Of the 54 emphasis instances:
 
-- **42 are a bold lead-in label** — `<li><strong>超強抗氧化：</strong> 比一般合成維生素E高出60倍…`
-- 6 are bold mid-sentence — `…由<strong>澳洲昆士蘭科技大學前列腺頑疾研究中心</strong>進行臨床研究…`
+- **42 are a bold lead-in label** — shape `<li><strong>標籤：</strong> 內容…` (e.g. a benefit name, then its sentence)
+- 6 are bold mid-sentence — shape `…<strong>機構名稱</strong>…` (e.g. a research institution's name)
+
+(Placeholders, not the client's copy: the originals are efficacy claims, and this file does not
+reproduce them. They are on the product pages, e.g. 產品_T3.html's benefits list.)
 - 6 are a whole paragraph in bold
 
 So **78% is one repeating structural pattern**, not free-form formatting. That changes which option
@@ -1466,15 +1470,43 @@ product the live site sells only at clinics to be held or flagged, so lifting th
 flag fails.
 
 **Not ported, recorded:**
-- **Visible stock state.** Stock is baked in as `data-status` and enforced at the cart; the live
-  overlay's visual cue is not reproduced.
+- ~~Visible stock state~~ **Correction (15 Sep 2026): there was nothing to port.** The live
+  產品介紹 has no visual stock cue. Its inventory overlay (`whApplyInventory`) sets each product's
+  `status`, and the only thing that reads it is the add-to-cart refusal. The card template
+  (`renderProducts`) never renders status. Across all 18 pages the only visible stock label
+  (現貨供應 / 暫時缺貨 / 接受預訂) is on `product.html`. The migrated grid therefore matches the live page:
+  status is baked in as `data-status` and enforced at the cart. Showing stock on the grid would be a
+  **new** feature, and a client decision, since it would also publish PSP-500's out-of-stock state
+  (finding 17). It is not a P9-T1 gap. When 產品_* detail pages migrate, product.html's label is
+  their parity item.
 - **Phone navigation with scripts off.** The menu toggle is hidden rather than dead, so a phone
   visitor without JavaScript has footer links only. The live page is the same today (its toggle is
   dead). A no-JavaScript menu needs a chrome markup change, which belongs to the chrome modelling
   decision.
 - **Signed-in header.** The API is not hosted; the owner agreed it can wait.
-- **New visitor-facing copy**, for client review: the price-hold refusal line (zh) and the
-  seven-language "not available in this language" notice (finding 24).
+- ~~New visitor-facing copy, for client review~~ **Approved by the owner, 15 Sep 2026, and shown
+  inline.** The price-hold line is now 此產品暫未開放網上訂購，歡迎透過 WhatsApp 查詢購買方式。
+  (EN: "This product isn't available to order online. Message us on WhatsApp and we'll tell you how
+  to buy it."). It gives a reason and a next step, and it does not tell a customer who can see a
+  price that we are unsure of our own price.
+  - **No `alert()` anywhere in the cart any more.** A refusal appears inside the quick view, next to
+    the button, in a `role="alert"` region, and the modal stays open. A successful add closes the
+    modal and shows a dismissible status bar.
+  - `test:behaviour` asserts the exact approved wording, where it appears, and that **no dialog
+    ever opens**. A one-off mutation that reinstated `alert()` failed 3 checks; the file was
+    restored byte-identical.
+
+**Accepted behaviour change (owner, 15 Sep 2026): stock goes live at publish, not instantly.** The
+old page read `inventory.csv` when it loaded, so a stock change in the admin showed up once
+exported. The pre-rendered page bakes status in at render, so the change reaches the site only
+through `npm run publish` and a commit. **Flagged for `ADMIN_GUIDE.md`**, to be written when the page
+actually retires (BUILD_TASKS P9-T1).
+
+**Definition of done, 產品介紹, Phase 9 waivers (owner, 15 Sep 2026):**
+- **"Editable in Puck"** was waived only until the `mergeTree` fix landed (finding 25). It has, so
+  this now passes.
+- **"Heavy assets from R2/CDN"** is waived for Phase 9. The product photos are Google Drive
+  hotlinks, and moving them is Phase 10, which the plan puts after Phase 9. Re-check at Phase 10.
 
 ### Also found and fixed at P9-T1
 
@@ -1516,7 +1548,7 @@ list.
 1280 (desktop spans) and 390 (phone dropdown):
 - choosing a language saves it, so every other page still follows it;
 - the page tells the visitor, in the chosen language, that it is not yet available in that language
-  (e.g. "This page is not yet available in English.");
+  (e.g. "Sorry, this page is only available in Chinese for now.");
 - a visitor arriving with a saved non-Chinese choice sees that notice on landing, rather than a page
   that looks broken;
 - the live page opened next renders in the chosen language (checked on 常見問題).
@@ -1524,43 +1556,183 @@ list.
 When a page declares an alternate for the language (`<link rel="alternate" hreflang>`, Phase 14),
 the same click goes to that URL instead. No switcher change is needed at Phase 14.
 
-**New copy, for the client:** the notice exists in all seven languages, written for this purpose.
-It is short UI text, not product copy, but nobody on the client side has approved it
-(`assets/site.js`, `UNAVAILABLE`).
+**Copy approved by the owner, 15 Sep 2026.** "Sorry, this page is only available in Chinese for
+now." / 本頁暫時只提供中文版本。 It says what the visitor *is* looking at, not only what is
+missing. It exists in all seven languages (`assets/site.js`, `UNAVAILABLE`). The notice's text, its
+`lang` attribute and its **close button's screen-reader label** are all in the chosen language
+(e.g. 閉じる on the Japanese notice); the label had been English-only. `test:behaviour` asserts all
+three at 1280 (English) and 390 (Japanese).
 
 **Not covered:** the page does not redirect a visitor with a saved language to an alternate on
 load. Whether it should is a Phase 14 decision, with SEO consequences, and is not made here.
 
 ---
 
-## 25 · The admin product form deletes every field it does not show — HIGH, data loss — owner P12-T3
+## 25 · A write path deletes every field its caller was not shown — HIGH, data loss — owner P12-T3
 
-**Found at P9-T1 while choosing where the clinic-only flag should live. Established by reading the
-code, not by running it** (it would take a write to the dev database).
+> **THE RULE (general, and the reason this finding exists):**
+> **No write path may delete a field its caller was not shown.** A save means "these fields now have
+> these values". It never means "and every other field no longer exists". The store merges; it does
+> not replace. Removing a field takes an explicit instruction (`null`), never an omission.
+>
+> The invariant lives **in the store (the API), not in any form or editor**, for the same reason as
+> finding 20: the API is the only way into the database, so a rule there holds for every caller
+> (the admin, Puck, a script, whatever is written next). A fix in one form protects that form, and
+> only until someone writes another one.
 
-`saveProd()` in `admin/index.html` (around line 3367) builds the saved product from the form's
-inputs alone. The object has `id, title, sku, price, status, cat, badges, stock, reorder, model,
-desc, definition, story, partners, images, image, imageAlt, testimonies, papers, articles`, and
-nothing else. `POST /api/cms?type=products` then replaces the whole list. The finding-20 guard
-(`protectLangMaps`) protects a language map from a plain string; **it does nothing for a field that
-is simply absent**.
+**Finding 20 was one case of this rule, and the guard built for it does not cover the rule.**
+`protectLangMaps` stops a plain string from flattening a stored language map. That is one field
+type. It does nothing for a field that simply isn't sent, and nothing for the next field type
+anyone adds. Fixing each field type as it bites would give findings 30, 35, 40. **Fix the class
+once.**
 
-So one ordinary staff edit to a product (fixing a typo, changing stock) deletes that product's:
-- **`link`**: its 詳細介紹 button disappears from the pre-rendered grid (the section renders no dead
-  link);
-- **`ribbon`**: PT3 loses 只在指定中西醫診所出售;
-- **`priceNote`**: PT3's words-instead-of-price text;
-- **any flag added later**, including `clinicOnly`. Losing that would make a clinic-only product
-  sellable, silently.
+### Where it bites today, by write path
 
-The migration recovered `link`, `ribbon` and `priceNote` at P9-T1 (finding 19), and the form is what
-would lose them again. Same class as finding 20: a guard in the form protects only that form.
+| write path | caller | what it deletes today | how established |
+|---|---|---|---|
+| `POST /api/cms?type=products` (whole list replaced) | admin `saveProd()`, `admin/index.html` ~3367: builds the product from its inputs alone | **`link`** (the 詳細介紹 button disappears from the pre-rendered grid), **`ribbon`** (PT3's clinic-only ribbon), **`priceNote`**, and any later flag, e.g. **`clinicOnly`**, whose loss would make a clinic-only product sellable, silently | reading the code (running it needs a dev-database write) |
+| `PUT /api/pages/:slug` (document replaced) | Puck editor `mergeTree()`, `editor/lang.js`: rebuilds each section as `{ id, type, fields }` | **section-level keys**, today `"wrap": "container"` on 產品介紹's product-grid, so the next publish renders the grid without its container. A save with **no edits** loses it | **run:** the real `projectTree` → `mergeTree` on `data/pages/products.json`; the result lacks `wrap` |
+| `POST /api/cms?type=homepage` (document replaced) | admin `saveHomepageText()`: 10 inputs | nothing yet: the form happens to cover all 10 stored keys. **The first key added anywhere else is lost on the next save** | reading the code + `data/homepage.json` keys |
+| `POST /api/cms?type=faq` (whole list replaced) | admin `saveFaq()`: `id, cat, q, a` | nothing yet, for the same reason | same |
 
-**Fix, owner P12-T3.** At the API, keep fields the caller did not send, for an item matched by SKU
-(an explicit `null` removes a field), in the same place and for the same reason as `protectLangMaps`.
-Then make the form carry the fields it does not edit.
+The first two are losing data now; the last two are the same shape waiting for their first new
+field. `link`, `ribbon` and `priceNote` were recovered at P9-T1 (finding 19), and the product form
+is what would lose them again.
+
+### Fix, owner P12-T3 (merge, not replace, for every content write)
+
+1. **Lists** (`products`, `faq`, `cases`): match each incoming item to the stored one by a stable
+   identity (SKU for products, `id` otherwise; `identityOf` already exists). Start from the stored
+   item and apply the incoming fields over it. A field set to `null` is removed. An unmatched item
+   is new; a stored item absent from the list is deleted, so deleting a *record* still works.
+   **Only omitted *fields* are protected.** One known edge: a staff edit that *changes* the SKU
+   finds no match. Match by `id` as well, or treat an SKU change as its own explicit operation.
+2. **Single documents** (`homepage`): the same, at the top level.
+3. **Page trees**: apply the same merge at the top level and **per section**. Sections in stored
+   trees carry no stable id today (the editor derives one from position), so persist the section id
+   first, then merge node-level keys by it. Until then, fix `mergeTree` to start each section from
+   the stored node.
+4. **The response reports what was kept**, like `mergedIntoPrimary`, so a merge is visible.
+5. Then make each form carry what it doesn't edit. That's defence in depth, not the fix.
+
+**Verify, with a negative control, per write path:** save through the real caller with fields it
+doesn't show present in the store, and confirm they survive in MongoDB and in `data/` after export.
+Then run the same save against the pre-fix API and confirm they are lost. Add one test that loops
+every content write path, so a new path is covered by default.
 
 **Consequences now:**
 - `clinicOnly` stays out of the data until this is fixed.
 - **PT3's price hold cannot be lifted before it is.** `test:behaviour` fails a lifted hold without
   the flag.
+- ~~Nobody should save 產品介紹 in the Puck editor until item 3 lands~~ **Narrow fix landed at
+  P9-T1 (owner, 15 Sep 2026: the editor was corrupting the page just migrated, which can't wait).**
+  `mergeTree` in `editor/lang.js` now starts each edited section from its stored node. Unknown
+  node-level keys (`wrap`, and any added later) survive. A different section type at the same id
+  inherits nothing, and a new section has nothing to inherit. Top-level keys were already kept.
+  - `test:editor:lang` adds 5 checks: a no-edit save keeps `wrap` and an unknown future key; the key
+    travels with its section when reordered; a replacement inherits nothing; and **the real
+    `data/pages/products.json` through the app's own round trip changes nothing but gaining ids**.
+  - **Negative control:** against HEAD's pre-fix `mergeTree`, 4 of the 5 fail, including the real
+    tree losing `wrap`. The file was restored byte-identical.
+  - This covers the Puck write path only, at the client. The rule in the store (the API) for every
+    write path, items 1–5 above, stays P12-T3.
+
+---
+
+## 26 · Invented star ratings and reviews in the site's structured data — publicly served today — HIGH
+
+**The worst thing found in the data so far, worse than the invented claim (finding 22).** A star
+rating with a review count is a trust signal a customer acts on. On a health products site, made-up
+numbers make a medical product look more trusted than any evidence supports. BUILD_TASKS P13G-T2's
+hard rule already said never emit them; this is its first real test.
+
+**What.** Product JSON-LD carried `aggregateRating` (ratings of 4.6 to 4.9 with review counts of 89
+to 328) and one `review` each: a five-star `reviewRating`, a one-line review body, **no author** and
+no date. Nothing in `data/` holds a single rating or review. They were not described by any client
+source this project has seen, so they are treated as invented. They are described here, not quoted
+(standing practice, finding 22).
+
+**Removed at P9-T1 (15 Sep 2026)** from everything this rebuild publishes:
+- **The products page tree**, through the API then export. The 5 `aggregateRating` + 5 `review`
+  objects are gone; 25 rating keys became 0. The JSON-LD `@types` are unchanged, so the baseline
+  gate still passes.
+- **The `test:render` fixture** (`renderer/sample/products.json`), same removal.
+- **Guarded.** `test:seo` now fails any published page whose JSON-LD holds `aggregateRating`,
+  `review`, `reviewRating`, `ratingValue`, `reviewCount` or a Rating/Review type. Not waivable.
+  Proven both ways: a planted node is flagged, and the committed (rated) tree fails the real gate.
+  The file was restored byte-identical.
+
+**Where they are live TODAY. Checked 15 Sep 2026, read-only GETs and DNS:**
+
+| where | ratings? |
+|---|---|
+| `www.wonder-herb.com`, the client's real site (DNS → **Wix**) | **none**: homepage and 產品介紹 carry 0 `aggregateRating` |
+| `formurak4m.github.io/wonder-herb/`, **this repo's GitHub Pages deploy of `main`** | **yes, publicly**: `產品介紹.html` returns 200 with all five, no `noindex`, canonical pointing at wonder-herb.com |
+| `main` in this repo | **14 of 16 HTML pages** carry them, including pages with no product (the FAQ, articles, contact, research). Most repeat the same review count |
+| the 18 live pages on `rebuild/editor` | yes, the same markup; they would ship if merged |
+
+**So this is not the client publishing fake reviews on their own site**: their Wix site doesn't.
+It is **this project's public copy** that serves invented ratings under the client's brand. The
+markup first appears in the repo through GitHub web uploads on 4 June 2026 (`main`, e.g.
+`503c22d`, `b00c05a`), i.e. before and outside this rebuild. Whether a search engine has picked
+up the GitHub Pages copy: see the indexing check below.
+
+**Owner decisions, 15 Sep 2026: handle today.**
+1. **`main` (the public copy): stripped as its own commit, `6503a01`**, prepared and diff shown to
+   the owner. **Pushed only on the owner's approval** (main is touched for this fix only).
+   - 15 pages: `review`/`aggregateRating` keys on 14, plus a **standalone `Review` node in
+     `index.html`'s `@graph`**, which the first key-based pass missed and a node-level pass caught.
+   - Afterwards all 50 JSON-LD blocks on `main` parse, and none holds rating data.
+2. **The live pages on `rebuild/editor`: stripped, own commit `7a918b6`.** 16 pages, 90 removals.
+   This branch carried more than `main`, including `product.html` and extra `index.html` nodes.
+   All 51 JSON-LD blocks parse; no rating data remains in any tracked file.
+   - The stale HTML comments naming "Review" in each page's JSON-LD list were left alone, so the
+     commit is data only. One of them states the intent: building social proof.
+   - `test:seo`'s baseline comparison now ignores `Review` / `AggregateRating` types. The captured
+     heads contain them, and losing them is the fix, not a regression.
+
+**What the removed reviews actually were (described, not quoted):** each review restated a
+**patient's case** from the 典型病例 material as a five-star product review: an author name or
+honorific, a diagnosis including cancer, and a treatment outcome. They sat beside an
+`aggregateRating` whose "explanation" cited a large patient-feedback statistic that nothing in the
+data supports. So this is invented trust signals **built from medical case details**, published as
+product reviews. That is worse than a bare invented number.
+
+**Is the public copy indexed? Checked 15 Sep 2026, with limits stated:**
+- A `site:formurak4m.github.io` search and exact-URL searches through this session's web-search tool
+  returned **no `github.io` pages**. They did return the **github.com repository page** itself,
+  which shows the source files. That tool's backend is **not Google**, so this is not proof of
+  absence in Google or Bing.
+- **Nothing tells crawlers to stay away:** crawlers read `robots.txt` only at the host root,
+  `formurak4m.github.io/robots.txt`, which returns 404, so crawling is allowed. The project's own
+  `robots.txt` under `/wonder-herb/` is never read.
+- The pages' canonicals point at `www.wonder-herb.com/<page>.html` URLs that don't exist on the Wix
+  site. That makes it more likely, not less, that a search engine treats the github.io copy as the
+  real page.
+- **Wayback Machine:** no snapshot of the homepage or 產品介紹 (the full index lookup was
+  unavailable, 503).
+- GitHub API: the repository is **public**, `has_pages: true`, default branch `main`, 0 forks.
+- **Verdict so far: "fix it and move on" is likely, but it is not confirmed.** The owner should run
+  `site:formurak4m.github.io` in **Google and Bing** directly. Any hit makes it "fix and request
+  removal": after the copy is taken down (404), submit each URL to Google's *Refresh Outdated
+  Content* tool and Bing's *Content Removal* tool.
+
+**Recommendation: take the GitHub Pages copy down (unpublish), don't `noindex` it.**
+- **Nothing depends on it.** The client's real site is Wix until cutover, and development runs
+  locally.
+- **`noindex` would have to be committed into the very pages that cut over to production.**
+  Forgetting to remove it at Phase 18 would de-index the client's real site. A deploy-level
+  takedown carries no such risk.
+- **`noindex` leaves the content reachable** and only takes effect when re-crawled. A takedown
+  returns 404 at once, which is also the precondition for removal requests.
+- **How:** GitHub → Settings → Pages → *Unpublish site*, or disable the `static.yml` workflow. This
+  is a repository-settings change the owner makes; this session has no GitHub access. At cutover,
+  Pages is re-enabled deliberately, with the custom domain.
+- **Order:** push `6503a01` first, so the last served version is clean for any cache, then
+  unpublish.
+- **Residual:** the repository itself is public, so the source, including history with the
+  ratings, stays readable on github.com (the same position as finding 22). Making the repo private
+  would also end Pages on a free plan. That is a bigger decision, noted and not taken.
+3. **The client conversation.** The client should hear that a copy of their site built for this
+   project carried invented ratings and reviews, what was removed, and when. If they have genuine,
+   attributable reviews, publishing those is a new decision with them (P13G-T2).

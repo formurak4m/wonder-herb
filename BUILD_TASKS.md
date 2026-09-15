@@ -405,6 +405,77 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 - **Verify:** the migrated core pages render from trees, pass `npm run test:seo`, and match baseline visually. `npm run test:all` still green.
 - **Gotcha:** keep the 3D product viewer working: the `product-detail` section outputs the `<model-viewer>` (or current viewer) element pointing at the model URL, enhanced by the existing client script.
 
+#### 產品介紹 (the first page): status 15 Sep 2026, what is left before it moves to `legacy/`
+
+**Done:**
+- tree, render and SEO gate;
+- behaviour ported and tested (`test:behaviour`, with negative controls);
+- invented ratings removed and gated (finding 26);
+- editor save no longer drops node-level keys (finding 25, narrow fix);
+- visitor copy approved, shown inline, no `alert()`;
+- the stock cue needs nothing (the live page has none).
+
+**HOLD: do not retire until the client answers.** Retiring changes what the public sees on the
+strength of numbers we know are disputed (owner, 15 Sep 2026):
+- **(a) Disputed prices.** 憶活素 would go from HK$520 to HK$880, and PT3 from 僅限診所 to
+  HK$2,480 (findings 9, 23).
+- **(b) PSP-500 stock** (Group B). The rendered page bakes in stock status from data (finding 17).
+
+**Build items, ready to start once the client answers (estimates in the P9-T1 report):**
+1. Write the rendered page to the site root, with only-write-if-changed, through `npm run publish`
+   (the P5-T2 path, or a one-page step).
+2. Repoint what reads the old page from the root:
+   - the tree's `chromeFrom` and `scripts/extract-css.js`;
+   - the preview route's root-only source rule;
+   - `migrate-products.js`;
+   - the `test-sections.js` fidelity maps.
+3. Retarget `test-ui-mongo` / `test-ui-auth` / `test-ui-sweep`. They drive the old page's own
+   script; what they cover moves to the rendered page or to `legacy/`.
+4. Keep `legacy/` off the public site. The deploy uploads the whole repo, so either apply P8-T3 or
+   add `noindex` + a robots rule.
+5. Re-run the full visual diff against the 15 Sep baseline (1280/390, scripts on and off) and
+   reconcile every difference.
+
+**Then:** the move, `test:all` green, owner sign-off.
+
+#### Effort estimate for Phase 9. Recorded 15 Sep 2026 and accepted by the owner, so it is not re-derived.
+
+Measured on 產品介紹, the first page:
+- **~4 working days so far** (11–15 Sep), of which **~1 day is one-time**: sticky nav (D1),
+  per-page stylesheets (D2), the baseline re-capture, the behaviour framework, the SEO/data gates,
+  the catalogue migration and the security findings. The other 17 pages don't pay for those again.
+- **The five build items above: ~1.5–2.5 focused days for page one**, about 1 day of it one-time.
+
+| item | page one | each later page |
+|---|---|---|
+| 1. Render to the site root | 2–3 h | ~0 (built once) |
+| 2. Repoint chrome/CSS sources | 3–4 h as a repoint; ~1 day for a proper shared chrome partial | ~0 |
+| 3. Retarget UI tests | 3–5 h | 1–2 h per interactive page |
+| 4. Keep `legacy/` off the public site | ~1 h (noindex + robots); ~½ day for the proper P8-T3 allow-list | 0 |
+| 5. Visual diff + reconcile | 2–4 h | 2–4 h (the harness exists) |
+
+**Per remaining page:**
+- **Interactive pages** (cart, forms, viewers): **1–2 days**.
+- **Content-only pages: ½–1 day.**
+- The recurring work: build the tree, add missing sections, audit the page's own inline script,
+  clean its structured data (claims, ratings), reconcile the visual diff, retarget its tests.
+
+**Phase 9's remaining 17 pages: roughly 12–25 working days.** The main variable is **client
+questions** (prices, stock, claims copy, which the first page showed can hold a retirement
+indefinitely), not code. Re-estimate after page two, which is the first page without the one-time
+cost.
+
+**Recorded, accepted (owner):**
+- **Stock goes live at publish, not instantly.** The rendered page bakes stock in; the old page read
+  `inventory.csv` when it loaded. **FLAG FOR `ADMIN_GUIDE.md`**, written when the page actually
+  retires: an admin stock change reaches the website only after publish.
+- **Chinese-only regression** (finding 24).
+- **Definition-of-done waivers for Phase 9:**
+  - *"Editable in Puck"*: waived only until the `mergeTree` fix, which has landed, so it now passes
+    (`test:editor:lang`, with a negative control against the pre-fix code).
+  - *"Heavy assets from R2/CDN"*: waived. Product photos are Google Drive hotlinks, and moving them
+    is Phase 10, which comes after Phase 9 by design. Re-check at Phase 10.
+
 ---
 
 ## Phase 10 — Media + 3D to R2/CDN
@@ -526,8 +597,14 @@ Owned by Phase 11 rather than Phase 17 because hosting is what breaks it. Today'
   1. Add a content-language picker to the product form, matching the Puck editor's — one language at a time, not seven inputs per field (the P8-T1 reasoning: seven inputs bury the form, and one-at-a-time is how a person actually works, especially through a Chinese IME).
   2. **Reuse `editor/lang.js`'s `project` / `merge`.** That logic is already proven by the 26 checks in `scripts/test-editor-lang.js`, including the two bugs it was written to catch: fallback poisoning, and losing translations when items are reordered. Do not write a second implementation — a second one will get the same two things wrong.
   3. Keep the API guard afterwards. It is the floor for every caller, not a substitute for this.
-  4. **Stop the form deleting fields it does not show (finding 25, HIGH, added at P9-T1).** `saveProd()` rebuilds a product from its inputs alone, so any staff edit deletes `link`, `ribbon`, `priceNote` and any later flag, e.g. `clinicOnly`. Fix it at the API first: for an item matched by SKU, keep stored fields the caller did not send, and let an explicit `null` remove one. Put this beside `protectLangMaps`, for the same reason. Then have the form carry the fields it does not edit. **Blocks lifting PT3's price hold** (`assets/site.js` `PRICE_HOLD`): `clinicOnly` cannot go into the data while one save would erase it.
-- **Verify:** edit a product's German name in the admin, save, confirm `zh` and the other five are untouched — the same round-trip `scripts/test-editor-lang.js` runs for page trees. Confirm an untranslated field shows **empty**, never the Chinese fallback. **For step 4:** save PT3 through the form, then confirm `link`, `ribbon`, `priceNote` and `clinicOnly` are still in the database and in `data/products.json` after export. Add a negative control: the same save against the pre-fix API deletes them.
+  4. **The store merges, never replaces (finding 25, HIGH, added at P9-T1).** The rule is general: **no write path may delete a field its caller was not shown.** `protectLangMaps` covers one field type (language maps); this covers the class. Implement it once, in the API, for **every content write path**:
+     - `POST /api/cms` lists: match items by SKU/`id`, start from the stored item, apply incoming fields, `null` removes a field, an absent *item* is still deleted.
+     - `POST /api/cms?type=homepage`: the same, at the top level.
+     - `PUT /api/pages/:slug`: top level **and per section**. Persist a stable section id first, because stored trees derive one from position.
+     - Report what was kept in the response.
+
+     It bites **today** in two places: the admin product form deletes `link`, `ribbon` and `priceNote` (and would delete `clinicOnly`), and an unchanged Puck save deletes the product grid's section-level `"wrap": "container"` (proven by running `mergeTree`). Homepage and FAQ are the same shape waiting for their first new field. The forms and `mergeTree` get fixed too, as defence in depth, not as the fix. The Puck side of it was fixed narrowly at P9-T1 (`mergeTree` keeps node-level keys), so saving 產品介紹 in the editor is safe; the API rule for every path is still this step. **Blocks** lifting PT3's price hold (`assets/site.js` `PRICE_HOLD`).
+- **Verify:** edit a product's German name in the admin, save, confirm `zh` and the other five are untouched — the same round-trip `scripts/test-editor-lang.js` runs for page trees. Confirm an untranslated field shows **empty**, never the Chinese fallback. **For step 4:** one test loops **every** content write path. For each, it saves through the real caller (admin form, `mergeTree`) with fields the caller doesn't show present in the store, and confirms they survive in MongoDB and in `data/` after export. Include PT3 with `link`/`ribbon`/`priceNote`/`clinicOnly`, and 產品介紹's tree with `wrap`. Negative control: the same saves against the pre-fix API lose them. A new write path must fail this test until it merges.
 - **Gotcha:** `admin/index.html` is vanilla JS with no build step, and `editor/lang.js` is an ES module importing CommonJS (finding 18). Settle how the admin loads it — a small shared build, or the `<script type="module">` the page can already use — rather than copying the functions across, which would fork the logic the moment either side changes.
 
 ---
