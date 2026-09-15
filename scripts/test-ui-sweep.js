@@ -222,13 +222,20 @@ function loadPage(file, url, apiUp, apiBase, errors) {
     const [label, apiState, origin] = mode;
     up = apiState;
     const pageErrors = [];
+    const prerendered = [];
     for (const page of pages) {
       const pdom = await loadPage(page, origin + encodeURIComponent(page), apiUp, origin.includes('localhost') ? API : null, pageErrors);
       await settle(250);
-      // the language switcher on every page
+      // the language switcher on every hand-coded page. A PRE-RENDERED page
+      // (P9-T1) has no in-page switch and loads its behaviour from assets/,
+      // which jsdom does not execute: its cart, menu, quick view and language
+      // switch are proven by effect in test:behaviour, not here. Say so rather
+      // than let this check pass for it by default.
       const pw = pdom.window;
       if (typeof pw.setLanguage === 'function') {
         for (const lang of ['en', 'ja', 'zh']) { try { pw.setLanguage(lang); } catch (e) { pageErrors.push(page + ': setLanguage(' + lang + ') ' + e.message); } }
+      } else if (/<script src="assets\/site\.js"/.test(fs.readFileSync(path.join(ROOT, page), 'utf8'))) {
+        prerendered.push(page);
       }
       // every button with a handler on the page
       Array.from(pdom.window.document.querySelectorAll('button')).slice(0, 40).forEach(b => {
@@ -238,7 +245,8 @@ function loadPage(file, url, apiUp, apiBase, errors) {
       pdom.window.close();
     }
     check(pages.length + ' pages load, switch language and take clicks with no errors (' + label + ')',
-      pageErrors.length === 0, pageErrors.length ? '\n        ' + [...new Set(pageErrors)].slice(0, 12).join('\n        ') : '');
+      pageErrors.length === 0, pageErrors.length ? '\n        ' + [...new Set(pageErrors)].slice(0, 12).join('\n        ')
+        : (prerendered.length ? 'language switch not exercised on pre-rendered ' + prerendered.join(', ') + ' (test:behaviour covers it)' : ''));
   }
 
   server.close();

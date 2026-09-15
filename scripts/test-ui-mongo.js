@@ -150,16 +150,31 @@ function loadPage(file, url, apiUp, apiBase) {
   check('its stock was not lost by the edit', edited.stock === 3, String(edited.stock));
 
   // ------------------------------------------------------------ the site
-  console.log('\n=== The site reads the same database ===\n');
-  const cat = await loadPage('產品介紹.html',
-    'http://localhost:8000/%E7%94%A2%E5%93%81%E4%BB%8B%E7%B4%B9.html', apiUp, API);
-  await settle(300);
-  const cw = cat.window;
-  const live = cw.eval('productData.zh').find(p => p.sku === 'WH-DB-1');
-  check('the catalogue picks up the product from MongoDB', !!live, 'found');
-  check('and sees it as out of stock without any export step',
-    live && live.status === 'Out of Stock', live && live.status);
-  check('a shopper cannot add it', cw.addToCart(live.id, 1, live) === false);
+  /* RETARGETED AT P9-T1. 產品介紹 is now pre-rendered: its old hand-coded
+     version (legacy/) read MongoDB in the browser; the page GitHub Pages serves
+     has its catalogue baked in at PUBLISH. So "the site reads the same database"
+     now means: what the API returns is exactly what the publish renders - the
+     accepted behaviour change that a stock edit goes live at publish, not
+     instantly (BUILD_TASKS P9-T1). The cart's refusal of an out-of-stock card is
+     proven by effect in test:behaviour; this suite proves the database reaches
+     the card. product.html is still client-side, so its live check stays. */
+  console.log('\n=== The database reaches the site at publish ===\n');
+  const { execFileSync } = require('child_process');
+  execFileSync(process.execPath, [path.join(ROOT, 'renderer', 'build-sections.js')], { cwd: ROOT, stdio: 'pipe' });
+  const renderer = require('../renderer/render');
+  const tree = renderer.loadTree(path.join(ROOT, 'data', 'pages', 'products.json'));
+  const apiRows = await (await fetch(API + '/api/cms?type=products')).json();
+  const published = renderer.renderPage(tree, 'zh', Object.assign(renderer.loadData(), { products: apiRows }),
+    { chrome: renderer.loadChrome(tree.assets.chromeFrom) });
+  const pd = new JSDOM(published).window.document;
+  const card = sku => pd.querySelector('.product-card[data-sku="' + sku + '"]');
+  check('a product that exists only in MongoDB is on the published catalogue', !!card('WH-DB-1'), 'WH-DB-1 card');
+  check('with the stock state the admin just wrote (Out of Stock)',
+    card('WH-DB-1') && card('WH-DB-1').getAttribute('data-status') === 'Out of Stock',
+    card('WH-DB-1') && card('WH-DB-1').getAttribute('data-status'));
+  check('and a price edited in the admin is the price the published cart charges',
+    card('WH-DB-2') && card('WH-DB-2').getAttribute('data-price') === '999',
+    card('WH-DB-2') && card('WH-DB-2').getAttribute('data-price'));
 
   const det = await loadPage('product.html',
     'http://localhost:8000/product.html?sku=WH-DB-1', apiUp, API);
@@ -182,12 +197,13 @@ function loadPage(file, url, apiUp, apiBase) {
   check('the admin still loads the committed products',
     offline.window.eval('productsData').length === JSON.parse(read('data/products.json')).length);
 
-  const offlineCat = await loadPage('產品介紹.html',
-    'http://localhost:8000/%E7%94%A2%E5%93%81%E4%BB%8B%E7%B4%B9.html', apiUp, API);
-  await settle(300);
-  check('the catalogue still renders from the committed files',
-    offlineCat.window.document.querySelectorAll('.product-card').length > 0,
-    offlineCat.window.document.querySelectorAll('.product-card').length + ' cards');
+  /* The committed, pre-rendered 產品介紹 needs neither MongoDB nor scripts: the
+     catalogue is IN the file, one card per committed product. */
+  const committed = new JSDOM(read('產品介紹.html')).window.document;      // no runScripts: nothing executes
+  const committedCards = committed.querySelectorAll('.product-card').length;
+  check('the catalogue is in the committed page itself - no database, no scripts',
+    committedCards > 0 && committedCards === JSON.parse(read('data/products.json')).length,
+    committedCards + ' cards, ' + JSON.parse(read('data/products.json')).length + ' committed products');
 
   // ------------------------------------------------------------ published site
   console.log('\n=== The published site never calls localhost ===\n');
@@ -213,6 +229,14 @@ function loadPage(file, url, apiUp, apiBase) {
   check('no request to a local API from the live domain', calledApi === false);
   check('the live page still renders its catalogue',
     pub.window.document.querySelectorAll('.product-card').length > 0);
+  /* jsdom does not load the page's external behaviour scripts, so read them:
+     the pre-rendered page's behaviour must make no network calls at all. */
+  const behaviourSrc = (read('產品介紹.html').match(/<script src="(assets\/[^"]+)"/g) || [])
+    .map(t => t.replace(/^<script src="/, '').replace(/"$/, ''));
+  const calls = behaviourSrc.filter(f => /\bfetch\s*\(|XMLHttpRequest|localhost|127\.0\.0\.1/.test(read(f)));
+  check('its behaviour scripts make no network calls and name no local API',
+    behaviourSrc.length >= 2 && calls.length === 0,
+    behaviourSrc.join(', ') + (calls.length ? '   CALLS IN: ' + calls.join(', ') : ''));
 
   server.close();
   for (const c of Object.values(COLLECTIONS)) await db.collection(c).deleteMany({});
