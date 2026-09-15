@@ -9,7 +9,7 @@
  * with the behaviour files missing and requires them to FAIL. A check that
  * still passes without the code behind it is not testing that code.
  *
- *   PART 1  the SKU -> cart id table and the price hold, cross-checked against
+ *   PART 1  the SKU -> cart id table, cross-checked against
  *           independent sources (no browser)
  *   PART 2  the published page in Chromium, like production: a static server,
  *           no API, a production-like hostname (finding 21), 1280 and 390
@@ -40,13 +40,12 @@ const check = (label, cond, extra) => {
 const site = require(path.join(ROOT, 'assets', 'site.js'));
 const { CART_IDS, PRICE_HOLD, CART_KEY, LANG_KEY } = site;
 
-/* A live page, or its retired copy once it moves to legacy/. */
+/* The ORIGINAL hand-coded page: legacy/<name> once retired, else the root.
+   Never the pre-rendered output that replaces it (renderer/source-page.js). */
+const { originalPagePath } = require(path.join(ROOT, 'renderer', 'source-page.js'));
 function livePage(name) {
-  for (const dir of [ROOT, path.join(ROOT, 'legacy')]) {
-    const f = path.join(dir, name);
-    if (fs.existsSync(f)) return fs.readFileSync(f, 'utf8');
-  }
-  return null;
+  const f = originalPagePath(name);
+  return f ? fs.readFileSync(f, 'utf8') : null;
 }
 
 /* Evaluate an object literal lifted out of a repo file (the same technique
@@ -63,7 +62,6 @@ console.log('\n=== PART 1: SKU -> cart id, against three independent sources ===
 
 const migrate = fs.readFileSync(path.join(ROOT, 'scripts', 'migrate-products.js'), 'utf8');
 const MATCH = literal(migrate, /const MATCH = (\{[\s\S]*?\});/, 'MATCH in scripts/migrate-products.js');
-const DISPUTED = literal(migrate, /const DISPUTED = (\{[\s\S]*?\});/, 'DISPUTED in scripts/migrate-products.js');
 const products = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'products.json'), 'utf8').replace(/^﻿/, ''));
 const bySku = Object.fromEntries(products.map(p => [p.sku, p]));
 const same = (a, b) => JSON.stringify(Object.keys(a).sort()) === JSON.stringify(Object.keys(b).sort());
@@ -83,9 +81,9 @@ check('negative control: binding by the DATABASE id would fail source 1',
       wrong.length > 0, wrong.length + ' of 6 database ids name a different product, e.g. ' +
       wrong.slice(0, 2).map(s => s + ' db ' + dbIds[s] + ' vs cart ' + MATCH[s]).join(', '));
 
-// source 2: WH_SKU_PAGES, which every live page carries
+// source 2: WH_SKU_PAGES, which every original hand-coded page carries
 const pageFiles = fs.readdirSync(ROOT).filter(f => f.endsWith('.html'));
-const skuMaps = pageFiles.map(f => [f, fs.readFileSync(path.join(ROOT, f), 'utf8')])
+const skuMaps = pageFiles.map(f => [f, livePage(f)])
   .filter(([, h]) => /const WH_SKU_PAGES = \{/.test(h))
   .map(([f, h]) => [f, literal(h, /const WH_SKU_PAGES = (\{[\s\S]*?\});/, 'WH_SKU_PAGES in ' + f)]);
 const SKU_PAGES = skuMaps.length ? skuMaps[0][1] : {};
@@ -114,31 +112,24 @@ check('and the old catalogue\'s card for that id links to that SKU\'s page',
       Object.keys(CART_IDS).every(s => { const c = catalogue.find(x => x.id === CART_IDS[s]); return c && c.link === SKU_PAGES[s]; }),
       'productData.zh, all ' + Object.keys(CART_IDS).length);
 
-console.log('\n=== PART 1: the price hold cannot go stale in either direction ===\n');
+console.log('\n=== PART 1: prices come from data/products.json ===\n');
 
-const disputedPrices = Object.keys(DISPUTED).filter(s => DISPUTED[s].indexOf('price') !== -1);
-check('PRICE_HOLD is exactly the SKUs whose price scripts/migrate-products.js marks DISPUTED',
-      same(PRICE_HOLD, Object.fromEntries(disputedPrices.map(s => [s, 1]))),
-      Object.keys(PRICE_HOLD).join(', '));
-
+/* OWNER DECISION, 15 Sep 2026: the site content is not authoritative, so the
+   database price is THE price and nothing is held. The old pages' own numbers
+   are printed for the record only - a difference is background (findings 9,
+   23), not a failure. The hold MECHANISM is still tested in PART 2. */
+check('no SKU is on price hold (owner decision: data/products.json is the price)',
+      Object.keys(PRICE_HOLD).length === 0, Object.keys(PRICE_HOLD).join(', ') || 'none held');
+check('every SKU has a usable price in the data (a card with no price would be refused as no-price)',
+      Object.keys(CART_IDS).every(s => parseFloat(bySku[s].price) > 0),
+      Object.keys(CART_IDS).map(s => s + ' ' + bySku[s].price).join(', '));
 Object.keys(CART_IDS).forEach(sku => {
-  const prices = { data: parseFloat(bySku[sku].price) };
+  const old = [];
   const card = catalogue.find(x => x.id === CART_IDS[sku]);
-  if (card) prices.catalogue = card.price;
-  if (detail[sku]) prices.detailPage = detail[sku].price;
-  const agree = new Set(Object.values(prices)).size === 1;
-  const shown = Object.keys(prices).map(k => k + ' ' + prices[k]).join(', ');
-  if (sku in PRICE_HOLD) {
-    check(sku + ' is held, and its sources really do still disagree (else lift the hold)', !agree, shown);
-  } else {
-    check(sku + ' is sellable, and every source agrees on its price (else hold it)', agree, shown);
-  }
+  if (card && card.price !== parseFloat(bySku[sku].price)) old.push('old catalogue ' + card.price);
+  if (detail[sku] && detail[sku].price !== parseFloat(bySku[sku].price)) old.push('old detail page ' + detail[sku].price);
+  if (old.length) console.log('        note: ' + sku + ' sells at ' + bySku[sku].price + ' from the data; ' + old.join(', ') + ' (background, not a blocker)');
 });
-const zeroPriced = catalogue.filter(c => c.price === 0)
-  .map(c => Object.keys(CART_IDS).find(s => CART_IDS[s] === c.id));
-check('a product the live site sells only at clinics is held or flagged clinicOnly - never sellable by default',
-      zeroPriced.every(s => s in PRICE_HOLD || bySku[s].clinicOnly === true),
-      zeroPriced.join(', ') + (zeroPriced.every(s => s in PRICE_HOLD) ? ' (held)' : ''));
 
 /* ================================================================ render */
 
@@ -376,8 +367,12 @@ const EFFECTS = {
     try {
       await page.goto(url(this.scenario), { waitUntil: 'load' });
       const M = site.MSG;
+      /* No SKU is on hold in the shipped table (owner decision), so the hold
+         mechanism is exercised by holding one at runtime in this page only. */
+      const HELD_SKU = 'WH-MB-060';
+      await page.evaluate(sku => { window.WonderHerb.PRICE_HOLD[sku] = 'held by test:behaviour'; }, HELD_SKU);
       const cases = [[OUT_SKU, M.outOfStock, 'out-of-stock'], [CLINIC_SKU, M.clinicOnly, 'clinic-only'],
-                     ['WH-MB-060', M.priceHold, 'price-hold'], ['WH-PT3-090', M.priceHold, 'price-hold']];
+                     [HELD_SKU, M.priceHold, 'price-hold']];
       const seen = [];
       for (const [sku, words, reason] of cases) {
         const said = await addViaModal(page, sku, 1);
@@ -462,7 +457,7 @@ async function runEffect(name, scenario, width) {
         quickViewAllSix: 'quick view opens the RIGHT product for all 6 cards, by SKU, and closes',
         addStandardPack: '標準裝 x2 lands in the cart as cart id 2 / ' + BUY_SKU + ' / 3800, badges read 2, and 購物車.html names it',
         mergesWithLegacyCart: 'adds merge with items written by the old detail pages and by 購物車.html',
-        refusals: 'out-of-stock, clinic-only and both price holds are refused - visibly and logged - and the cart stays empty',
+        refusals: 'out-of-stock, clinic-only and a price hold (set at runtime) are refused - visibly and logged - and the cart stays empty',
         crossTabBadge: 'a second tab\'s badge follows the cart',
         languageSwitch: 'language switch is not dead: saves the choice, says this page is Chinese only, a live page follows it'
       };
@@ -494,6 +489,12 @@ async function runEffect(name, scenario, width) {
       check('every product is accepted or refused exactly as its data says, and no dialog ever opens',
             rows.every(r => r.ok) && page._dialogs.length === 0,
             rows.map(r => r.sku + ' ' + r.label + (r.ok ? '' : ' MISMATCH')).join(', ') + ', dialogs ' + page._dialogs.length);
+      /* owner decision: the cart charges exactly the data price, 憶活素 and PT3 included */
+      const inCart = await cart(page);
+      const priced = inCart.map(i => ({ sku: i.product.sku, got: i.product.price, want: parseFloat(bySku[i.product.sku].price) }));
+      check('every added item carries exactly its data/products.json price',
+            priced.length > 0 && priced.every(x => x.got === x.want),
+            priced.map(x => x.sku + ' ' + x.got + (x.got === x.want ? '' : ' (want ' + x.want + ')')).join(', '));
       await ctx.close();
     }
 

@@ -37,21 +37,20 @@
   };
 
   /* ==========================================================================
-     PRICE HOLD - these SKUs cannot be added to the cart until the client
-     settles their price. Refused loudly, never silently priced.
+     PRICE HOLD - SKUs that cannot be added to the cart while their price is
+     unsettled. Refused visibly, never silently priced.
 
-     The sources disagree and neither can be assumed right (finding 9,
-     scripts/migrate-products.js DISPUTED):
-       憶活素  database 880.00, its own detail page adds it to the cart at 520
-       PT3     database 2480.00, the live catalogue sells it at 0 as clinic-only
-     Picking either number puts a price in a customer's cart that nobody has
-     confirmed. test:behaviour fails if this list drifts from DISPUTED, or if a
-     held SKU's sources stop disagreeing (then the hold is stale: remove it).
+     EMPTY BY OWNER DECISION, 15 Sep 2026. The current site content is not
+     authoritative (the client will replace all of it), so the database value
+     in data/products.json is the price: 憶活素 HK$880, PT3 HK$2,480. Their old
+     pages said 520 and clinic-only; that disagreement is recorded in
+     docs/FINDINGS.md findings 9 and 23 as background, not a blocker. A
+     different price later is a data edit in the admin, not a code change.
+
+     The mechanism stays so a genuinely unsettled price can be held again:
+     add 'SKU': 'reason' here and the cart refuses it with MSG.priceHold.
      ========================================================================== */
-  var PRICE_HOLD = {
-    'WH-MB-060':  'database 880.00 vs detail page 520',
-    'WH-PT3-090': 'database 2480.00 vs live catalogue 0 (clinic-only)'
-  };
+  var PRICE_HOLD = {};
 
   var CART_KEY = 'wonderHerbCart';     // shared with every live page and 購物車.html
   var LANG_KEY = 'wonderherb_lang';    // shared with every live page
