@@ -201,6 +201,19 @@ function ratingKeys(nodes) {
   return found;
 }
 
+/* A page with a visible FAQ list: the FAQPage questions, in order, must be the
+   questions the page shows. Returns null when the page has no list. */
+function faqMismatch(doc, nodes) {
+  const shown = [...doc.querySelectorAll('.faq-list .faq-question')].map(h => h.textContent.replace(/\s+/g, ' ').trim());
+  if (!shown.length) return null;
+  const faq = nodes.filter(n => n['@type'] === 'FAQPage');
+  const named = faq.length === 1 ? (faq[0].mainEntity || []).map(q => String(q.name || '').trim()) : [];
+  if (faq.length !== 1) return faq.length + ' FAQPage node(s) for a page showing ' + shown.length + ' question(s)';
+  return JSON.stringify(named) === JSON.stringify(shown) ? '' :
+    'schema ' + named.length + ' vs shown ' + shown.length + ', first difference: ' +
+    JSON.stringify(named.find((q, i) => q !== shown[i]) || shown[named.length] || '');
+}
+
 /* ------------------------------------------------------- intrinsic ------- */
 
 rendered.forEach((page, url) => {
@@ -272,6 +285,15 @@ rendered.forEach((page, url) => {
   const ratings = ratingKeys(nodes);
   check(name + ': no aggregateRating / review / rating data in JSON-LD (never invented)',
         ratings.length === 0, ratings.length ? 'FOUND: ' + ratings.slice(0, 6).join(', ') : 'none');
+
+  // 7. a visible FAQ list and its FAQPage describe the same questions. Google's
+  //    rule for FAQ markup, and the failure a carried FAQPage walks into the
+  //    first time the client edits data/faq.json (renderer/render.js faqPageNode).
+  const faqDiff = faqMismatch(doc, nodes);
+  if (faqDiff !== null) {
+    check(name + ': FAQPage names exactly the questions the page shows', faqDiff === '',
+          faqDiff || doc.querySelectorAll('.faq-list .faq-question').length + ' question(s), in order');
+  }
 });
 
 /* The gate for the hard rule must be able to fail: a page carrying the exact
@@ -282,6 +304,17 @@ console.log('\n=== negative control: the rating check catches invented ratings =
     aggregateRating: { '@type': 'AggregateRating', ratingValue: '5', reviewCount: '1' },
     review: { '@type': 'Review', reviewRating: { ratingValue: '5' } } }]);
   check('a Product node with aggregateRating + review is flagged', planted.length >= 2, planted.join(', '));
+}
+
+console.log('\n=== negative control: the FAQPage check catches schema that disagrees with the page ===\n');
+{
+  const page = new JSDOM('<div class="faq-list"><h3 class="faq-question"><span>Q1</span></h3>' +
+                         '<h3 class="faq-question"><span>Q2</span></h3></div>').window.document;
+  const q = n => ({ '@type': 'Question', name: n, acceptedAnswer: { '@type': 'Answer', text: 'A' } });
+  check('matching questions pass', faqMismatch(page, [{ '@type': 'FAQPage', mainEntity: [q('Q1'), q('Q2')] }]) === '', 'ok');
+  check('a stale question is flagged', !!faqMismatch(page, [{ '@type': 'FAQPage', mainEntity: [q('Q1'), q('OLD')] }]), 'flagged');
+  check('a missing question is flagged', !!faqMismatch(page, [{ '@type': 'FAQPage', mainEntity: [q('Q1')] }]), 'flagged');
+  check('no FAQPage at all is flagged', !!faqMismatch(page, [{ '@type': 'Organization' }]), 'flagged');
 }
 
 /* ------------------------------------------------------ reciprocity ------ */

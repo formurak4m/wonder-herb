@@ -328,6 +328,30 @@ try { renderPage({ sections: [{ type: 'no-such-section', fields: {} }] }, PRIMAR
 catch (err) { threw = err.message; }
 check('an unknown section type throws', /Unknown section type: no-such-section/.test(threw), threw || 'DID NOT THROW');
 
+/* FAQPage is derived from the faq-accordion's data (renderer/render.js
+   faqPageNode). A tree that also carries one would ship two, one stale. */
+const faqData = { faq: [{ id: 1, cat: 'A', q: '問一', a: '答一' }, { id: 2, cat: 'B', q: '問二', a: [{ label: '標', text: '文' }] }] };
+const faqTree = extra => Object.assign({ slug: 'f', path: 'f.html',
+  sections: [{ type: 'faq-accordion', fields: { source: 'faq.json' } }] }, extra);
+threw = '';
+try { renderPage(faqTree({ seo: { jsonld: [{ '@type': 'FAQPage', mainEntity: [] }] } }), PRIMARY, faqData, {}); }
+catch (err) { threw = err.message; }
+check('a faq-accordion tree that also carries a FAQPage is refused', /also carries a FAQPage/.test(threw), threw || 'DID NOT THROW');
+{
+  const ld = html => JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])['@graph'];
+  const faqNode = html => ld(html).find(n => n['@type'] === 'FAQPage');
+  const all = faqNode(renderPage(faqTree(), PRIMARY, faqData, {}));
+  check('FAQPage is derived from the data the section renders',
+        !!all && all.mainEntity.map(q => q.name).join('|') === '問一|問二' &&
+        all.mainEntity[1].acceptedAnswer.text === '標文' && all.inLanguage === 'zh-Hant',
+        all ? all.mainEntity.map(q => q.name + '=' + q.acceptedAnswer.text).join(', ') : 'NO FAQPage');
+  const cat = faqNode(renderPage(Object.assign(faqTree(), { sections: [{ type: 'faq-accordion', fields: { source: 'faq.json', category: 'B' } }] }), PRIMARY, faqData, {}));
+  check('...with the same category filter', !!cat && cat.mainEntity.length === 1 && cat.mainEntity[0].name === '問二',
+        cat ? cat.mainEntity.length + ' question(s)' : 'NO FAQPage');
+  check('a page without a faq-accordion gets no derived FAQPage',
+        !faqNode(renderPage({ slug: 'n', path: 'n.html', sections: [] }, PRIMARY, faqData, {})), 'none');
+}
+
 check('a tree with no sections still renders a valid document',
       /^<!doctype html>/i.test(renderPage({ slug: 'empty', path: 'empty.html', sections: [] }, PRIMARY, data, {})));
 

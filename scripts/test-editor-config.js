@@ -166,7 +166,7 @@ check('the root config declares the page title and description',
 check('the config exposes root to Puck', config.root === rootConfig);
 
 /* ----------------------------------------------------------- the listing -- */
-console.log('\n=== the 10 sections as Puck sees them ===\n');
+console.log('\n=== the ' + puckTypes.length + ' sections as Puck sees them ===\n');
 puckTypes.forEach(t => {
   const c = config.components[t];
   console.log('        ' + t.padEnd(18) + String(c.label).padEnd(18) +

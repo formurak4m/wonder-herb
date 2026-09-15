@@ -24,6 +24,7 @@ import * as RelatedProducts from './RelatedProducts.jsx';
 import * as ContactCards from './ContactCards.jsx';
 import * as CtaBand from './CtaBand.jsx';
 import * as FaqAccordion from './FaqAccordion.jsx';
+import * as Callout from './Callout.jsx';
 
 export const registry = {
   'page-header': PageHeader,
@@ -35,7 +36,8 @@ export const registry = {
   'related-products': RelatedProducts,
   'contact-cards': ContactCards,
   'cta-band': CtaBand,
-  'faq-accordion': FaqAccordion
+  'faq-accordion': FaqAccordion,
+  'callout': Callout
 };
 
 /* { type: Component } — the shape the renderer wants. */

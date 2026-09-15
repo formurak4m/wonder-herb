@@ -416,6 +416,21 @@ eq('cta-band button: the 常見問題 shape',
    render(components['cta-band'], { variant: 'button', label: '探索產品系列', href: '產品介紹.html' }),
    '<div class="cta-button"><a href="產品介紹.html" class="btn-primary">探索產品系列</a></div>');
 
+eq('callout highlight: the 常見問題 highlight-box shape',
+   render(components['callout'], { heading: '標題', icon: 'fas fa-video', body: '說明文字',
+                                   label: '連結文字', href: 'https://example.com/a', linkIcon: 'fab fa-weixin' }),
+   '<div class="highlight-box"><h3><i class="fas fa-video" style="color:#9b2e2e;margin-right:8px" aria-hidden="true"></i> <span>標題</span></h3>' +
+   '<p>說明文字</p><a href="https://example.com/a" target="_blank" rel="noopener" class="expert-link">' +
+   '<i class="fab fa-weixin" aria-hidden="true"></i> <span>連結文字</span> <i class="fas fa-arrow-right" aria-hidden="true"></i></a></div>');
+eq('callout note: the tinted faq-item with the link inline, text after it',
+   render(components['callout'], { variant: 'note', heading: '標題', icon: 'fas fa-university',
+                                   body: '前文', label: '連結', href: 'a.html', after: '。' }),
+   '<div class="faq-item" style="background:#f1fffe"><h3 class="faq-question"><i class="fas fa-university" aria-hidden="true"></i> <span>標題</span></h3>' +
+   '<div class="faq-answer"><p>前文<a href="a.html" style="color:#2EADA5;font-weight:500">連結</a>。</p></div></div>');
+check('callout: no link label, no link (either variant)',
+      render(components['callout'], { heading: 'H', body: 'B' }).indexOf('<a ') === -1 &&
+      render(components['callout'], { variant: 'note', heading: 'H', body: 'B' }).indexOf('<a ') === -1, 'omitted');
+
 /* ------------------------------------------------- structural fidelity
  *
  * The blind spot this closes: `contact-cards` silently dropped all fifteen
@@ -601,6 +616,15 @@ const FIDELITY = {
                href: 'https://wa.me/85293318571/', icon: 'fab fa-whatsapp' } },
     { label: 'button', page: '常見問題.html', selector: '.cta-button',
       props: { variant: 'button', label: '探索產品系列', href: '產品介紹.html' } }
+  ],
+
+  callout: [
+    { label: 'highlight', page: '常見問題.html', selector: '.highlight-box',
+      props: { heading: '標題', icon: 'fas fa-video', body: '說明文字', label: '連結文字',
+               href: 'https://example.com/a', linkIcon: 'fab fa-weixin' } },
+    { label: 'note', page: '常見問題.html', selector: '.faq-section .container > .faq-item',
+      props: { variant: 'note', heading: '標題', icon: 'fas fa-university', body: '前文',
+               label: '連結', href: 'a.html', after: '。' } }
   ],
 
   'faq-accordion': {

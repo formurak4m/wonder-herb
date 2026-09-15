@@ -43,7 +43,7 @@ const path = require('path');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 const { resolveField, LANGS, PRIMARY } = require('./i18n');
-const { buildHead, pageUrl, pagePath } = require('./head');
+const { buildHead, pageUrl, pagePath, HREFLANG } = require('./head');
 const { baseTemplate } = require('./template');
 const { PRICE_HOLD } = require('../assets/site.js');
 const { readOriginalPage, isRetired } = require('./source-page');
@@ -107,10 +107,12 @@ function renderPage(tree, lang, data, opts) {
   const l = lang || PRIMARY;
   assertOneModalGrid(tree);
   const registry = o.registry || sectionRegistry();
-  const body = renderBody(tree, l, resolveData(data, l), registry);
+  const resolved = resolveData(data, l);
+  const body = renderBody(tree, l, resolved, registry);
   const head = buildHead(tree, l, {
     languages: o.languages || LANGS_IN_SCOPE,
-    styles: o.styles || []
+    styles: o.styles || [],
+    derived: [faqPageNode(tree, l, resolved)].filter(Boolean)
   });
   return baseTemplate({
     head: head,
@@ -122,6 +124,43 @@ function renderPage(tree, lang, data, opts) {
     // the template derives the behaviour scripts from these (finding 23)
     sectionTypes: (tree.sections || []).map(node => node.type)
   });
+}
+
+/* FAQPage JSON-LD, DERIVED from the questions the page actually shows.
+ *
+ * Structured data has to describe the visible page. A carried FAQPage (the
+ * rest of tree.seo.jsonld is carried verbatim, see head.js) goes stale the
+ * moment the client edits data/faq.json in the admin - and on 常見問題 it was
+ * stale from the start: the hand-coded page and data/faq.json hold different
+ * questions. So a page with a faq-accordion gets its FAQPage built from the
+ * same data, with the same category filter, the section renders.
+ *
+ * A tree that has a faq-accordion AND carries its own FAQPage is refused: one
+ * of the two would be wrong, and two FAQPage nodes is invalid besides. */
+function faqPageNode(tree, lang, data) {
+  const lists = (tree.sections || []).filter(n => n.type === 'faq-accordion');
+  if (!lists.length) return null;
+  const carried = ((tree.seo && tree.seo.jsonld) || []).some(n => n && n['@type'] === 'FAQPage');
+  if (carried) {
+    throw new Error(tree.path + ' has a faq-accordion and also carries a FAQPage in seo.jsonld; ' +
+                    'the FAQPage is derived from the section\'s data, remove the carried one');
+  }
+  const text = item => (item && typeof item === 'object')
+    ? (Array.isArray(item.bullets) ? item.bullets.map(text).join('\n') : String(item.label || '') + String(item.text || ''))
+    : String(item || '');
+  const answer = a => Array.isArray(a) ? a.map(text).join('\n') : String(a || '');
+  const questions = [];
+  lists.forEach(node => {
+    const f = resolveField(node.fields || {}, lang);
+    const key = String(f.source || 'faq.json').replace(/\.json$/, '');
+    const all = (data && Array.isArray(data[key])) ? data[key] : [];
+    (f.category ? all.filter(x => x && x.cat === f.category) : all).forEach(x => {
+      if (x && x.q) questions.push({ '@type': 'Question', name: String(x.q),
+        acceptedAnswer: { '@type': 'Answer', text: answer(x.a) } });
+    });
+  });
+  if (!questions.length) return null;
+  return { '@type': 'FAQPage', inLanguage: HREFLANG[lang] || lang, mainEntity: questions };
 }
 
 /* A page's quick view modal has fixed ids (#quickViewModal, #modalAddToCart),

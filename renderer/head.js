@@ -14,7 +14,9 @@
  * JSON-LD: DERIVED vs CARRIED
  *   Organization and BreadcrumbList are mechanical - the same site-wide facts
  *   and the page's own crumb trail - so they are built here from SITE and
- *   tree.seo.breadcrumb. Everything else (FAQPage, Product, Review,
+ *   tree.seo.breadcrumb. FAQPage is derived too, by renderer/render.js, when the
+ *   page has a faq-accordion: the schema must describe the questions the page
+ *   shows, and those come from data/faq.json. Everything else (Product, Review,
  *   AggregateRating) is CONTENT that the hand-written page states and that no
  *   data file holds: data/products.json has no rating, no review text and, per
  *   docs/FINDINGS.md finding 9, a price that disagrees with the schema block.
@@ -165,8 +167,11 @@ function buildHead(tree, lang, opts) {
   }
 
   /* Derived nodes first, then whatever the page itself states. The live
-     head orders them Organization, BreadcrumbList, FAQPage, Product... */
+     head orders them Organization, BreadcrumbList, FAQPage, Product...
+     opts.derived holds nodes the renderer built from the page's own content
+     (a FAQPage from the faq-accordion's data - see renderer/render.js). */
   const graph = [organizationNode(), breadcrumbNode(seo.breadcrumb)]
+    .concat(Array.isArray(o.derived) ? o.derived : [])
     .concat(Array.isArray(seo.jsonld) ? seo.jsonld : [])
     .filter(Boolean);
   if (graph.length) {
