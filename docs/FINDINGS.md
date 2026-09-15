@@ -5,7 +5,8 @@ adding the Phase 1 toolchain; 7 from adding the page routes at P2-T1; 8–11 fro
 section library at P4-T2; 12–13 from actually looking at the rendered sections at P4-T3; 14 from the
 fidelity waivers at P4-T4; 15 from rendering a real page end to end at P5-T1; 16–17 from
 running the real publish pipeline for the first time at P7-T1; 18–19 from building the editor
-app at P8-T2; 20 from migrating the product data model at P9-T1.
+app at P8-T2; 20 from migrating the product data model at P9-T1; 21–23 from migrating the first real
+page (產品介紹) at P9-T1.
 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
@@ -35,6 +36,11 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 18 | `renderer/i18n.js` is CommonJS, so the editor cannot import it; Vite shim is a stopgap | Medium | Phase 9 |
 | 19 | Product data has no per-language `title`/`desc` — same root cause as finding 8 | Medium — **client decision** | Phase 14 (decide at 9) |
 | 20 | **A plain-string write silently deleted a language map** (admin product form) | **HIGH — data loss** | Guarded at P9-T1; form at P12-T3 |
+| 21 | **The visual baseline records a localhost-only page**, not what production serves | **High — the migration gate's reference is wrong** | Re-captured 15 Sep 2026; font stack held |
+| 22 | **Staff login addresses and an invented health claim in public git history** (page-tree export + finding 16's own excerpt); publish gate checked a fixture | **HIGH — security** (same as 16) | Paths fixed at P9-T1; identities rotated; no history rewrite (owner) |
+| 23 | **A migrated page loses cart, mobile menu, quick view and language switch** | **High — blocks retiring any page** | Ported + `test:behaviour` at P9-T1; retirement pending review |
+| 24 | **Migrated pages are Chinese only: a visitor who chose another language lands in Chinese** | Medium — accepted regression (owner) | Phase 14 (per-language URLs) |
+| 25 | **The admin product form deletes every field it does not show** (`link`, `ribbon`, `priceNote`; any future flag) | **HIGH — data loss** (same class as 20) | P12-T3; blocks lifting PT3's price hold |
 
 ---
 
@@ -637,6 +643,12 @@ because chrome is not modelled yet; it is a fidelity item for the Phase 9 visual
 renderer bug — everything the renderer itself emits matched (`<h1>` 1232×67, same colour, same size,
 `.page-header` padding 55/55 on both).
 
+> **Corrected at P9-T1 — the 26 px was never a chrome gap.** It is the account icon, which the live
+> page's auth script shows only when `location.hostname` is `localhost`. The P5-T1 comparison was
+> against a localhost capture, so it compared against a header production never serves. Under a
+> production hostname the live nav is 164 px, exactly what the renderer emits. The D2 note that
+> attributed a 164/190 difference to webfont timing was also wrong about the cause. See finding 21.
+
 ### (b) There is no shared stylesheet
 
 BUILD_TASKS P5-T1 step 3 says the template emits "the shared stylesheet link". There isn't one. Each
@@ -847,20 +859,23 @@ changed += writeIfChanged('activity-log.json',  JSON.stringify(activity,  null, 
 `data/` is deployed to GitHub Pages and **this repository is public**. So every admin action was one
 `npm run export` plus one commit away from `https://www.wonder-herb.com/data/activity-log.json`.
 
-What that file contains — the seven records present when this was found:
+What that file contains — the seven records present when this was found. **Addresses redacted at
+P9-T1:** this excerpt originally quoted the two real staff login addresses verbatim, which put them
+in public git history (commit `4df742a`) — the leak this finding describes, re-committed as its
+own evidence. See finding 22.
 
 ```
-2026-09-08  sales      test@gmail.com   Downloaded the 2026 sales workbook
-2026-09-08  sales      test@gmail.com   Downloaded the Sep 2026 sales workbook
-2026-09-07  sales      test@gmail.com   Downloaded the 2026 sales workbook
-2026-09-07  sales      test@gmail.com   Downloaded the Sep 2026 sales workbook
-2026-09-04  inventory  test@gmail.com   Started tracking stock for 雲芝糖肽精華 PSP (標準裝 500粒)
-2026-09-04  inventory  test@gmail.com   Downloaded the inventory report
-2026-09-04  users      test@gmail.com   Added staff: tester1@gmail.com
+2026-09-08  sales      <staff account A>   Downloaded the 2026 sales workbook
+2026-09-08  sales      <staff account A>   Downloaded the Sep 2026 sales workbook
+2026-09-07  sales      <staff account A>   Downloaded the 2026 sales workbook
+2026-09-07  sales      <staff account A>   Downloaded the Sep 2026 sales workbook
+2026-09-04  inventory  <staff account A>   Started tracking stock for 雲芝糖肽精華 PSP (標準裝 500粒)
+2026-09-04  inventory  <staff account A>   Downloaded the inventory report
+2026-09-04  users      <staff account A>   Added staff: <staff account B>
 ```
 
 Staff **email addresses**, who added whom, who downloaded the sales workbook, and when. With a real
-admin account instead of `test@gmail.com`, that is a named person's internal activity on a public
+admin account instead of `<staff account A>`, that is a named person's internal activity on a public
 URL. `inventory-log.json` is the stock-movement ledger and is the same category.
 
 **Nothing leaked.** Both files were untracked and were never committed or deployed. The accounts in
@@ -1077,3 +1092,475 @@ dashboard (another crash), and `product.html`'s fallback. **Every one was "somet
 was a string."** A five-minute `grep` for the consumers of that shape, run BEFORE the migration,
 would have listed all of them up front. Survey the consumers of a shared data shape before changing
 it, not after the crashes.
+
+---
+
+## 21 · The visual baseline records a localhost-only page — owner: re-capture before page two
+
+**Found at P9-T1**, reconciling the first real migration's visual diff against `baseline/screens/`.
+The baseline was meant to reflect "what GitHub Pages actually serves" (CLAUDE.md). For two things,
+on every one of the 18 pages, it does not.
+
+### (a) The header is a localhost header
+
+The live pages' auth script decides whether to show the account icon by **hostname**, not by
+whether an API answers:
+
+```js
+if (host === 'localhost' || host === '127.0.0.1' || host === '') return 'http://localhost:4000';
+return null;   // www.wonder-herb.com: icon hidden
+```
+
+`scripts/baseline.js` served from `localhost`, so the icon showed. With it, `.header-actions` is 36 px
+wider, the nav menu wraps 聯絡我們 onto a second row, and the header is **190 px** at 1280. On a
+production hostname it is **164 px**. Proven by serving the *same live file* both ways (Chromium
+host-resolver mapping, no hosts-file edit):
+
+| page | host | account icon | nav | `<h1>` y |
+|---|---|---|---|---|
+| live | localhost | shown | 190 | 245 |
+| live | production-like | hidden | **164** | **219** |
+| migrated | either | hidden | **164** | **219** |
+
+All 18 pages carry `wh-account-link`. Every 1280 baseline therefore records a header production
+never serves, with everything below it shifted 26 px. On 產品介紹 the localhost baseline differs from
+the live page on a production host by **19.3%** of pixels on its own.
+
+### (b) The typography is a scripts-on-only typography
+
+All 18 pages declare `<html lang="zh-Hant">`. The live language script then runs
+`document.documentElement.lang = lang` with `lang = 'zh'` — its internal code, not a language tag.
+Chromium picks the CJK **fallback font** from `lang`, so the baseline was captured in the
+generic-Chinese fallback (on Windows, a Simplified-style face: real bold, `，。` set low-left). The
+pre-rendered page keeps `zh-Hant` and gets the Traditional-style face: **punctuation centred and, on
+this machine, visibly weaker bold** on product titles, footer headings and nav.
+
+Proven by changing only that attribute on the migrated page: **nav, page-header and footer went to
+0 differing pixels** at both widths.
+
+**A decision, not a fix to force.** Setting the migrated page to `lang="zh"` would turn the diff green
+by regressing the page's language semantics — the SEO gate asserts `zh-Hant`, the correct tag for a
+Hong Kong site. The real fix is to stop depending on `lang`-based fallback: declare an explicit CJK
+font stack after Inter (e.g. `"Noto Sans TC", "PingFang TC", "Microsoft JhengHei"`), so every visitor
+gets the intended face regardless of platform or script state. A typography choice for the client.
+
+### Before page two
+
+1. Re-capture the baseline under a **production hostname**, and add a **scripts-off** capture —
+   today there is none, so every scripts-off comparison is made against a scripts-on reference.
+2. Decide the CJK font stack, then re-capture.
+3. Until then, the honest reference for a migration diff is the live page captured under a
+   production hostname — what P9-T1 used to reconcile.
+
+### Re-captured (15 Sep 2026) — step 1 done, step 2 held
+
+`scripts/baseline.js` now serves from a production-like host (`wonder-herb.test`, Chromium host
+mapping) and captures scripts **on and off** (`screens/`, `screens-nojs/`). It was run against a
+checkout of commit 571a513. The old localhost set is kept in `baseline/_previous-localhost-2026-09-08/`.
+A third, localhost-only capture of the same commit splits old→new into content drift and the
+hostname effect:
+
+- **At 1280, the difference is the hostname.** Mean old→new is 14.7%: drift 0.2%, hostname 14.6%.
+  Every page is between 10% and 21%, and nearly all of it is the hostname. On 17 pages the account
+  icon goes, the nav goes from 190 to 164 px, and the page is 26 px shorter. account.html instead
+  grows 36 px, because its own content also depends on the hostname. 產品介紹 is 19.2%, all
+  hostname: that is the "19%" first read as a migration difference.
+- **At 390, there is almost no difference.** The icon does not affect the phone header. Only
+  account.html differs (23.9%). 有效成份檢測 shows 26.7% drift in the attribution pass, but that is a
+  Drive image failing to load in that pass only; old→new is 0.0%.
+- **Scripts-off vs scripts-on is 46% at both widths.** Most of it is unrevealed animation content;
+  the rest is client-rendered text that is missing without scripts. For example, 微信發表文章 has
+  420 characters of text scripts-off vs 1,704 scripts-on, and 產品介紹 has 409 vs 838.
+- **The head snapshots did not change on any page.** The SEO gate passes against the new set.
+- **Asset failures come from third-party hosts, not the site.** Failures are counted once per
+  capture. index.html shows 4: the same Wix video (finding 1), failing once in each of the four
+  captures. 聯絡我們 shows 2: the Google Maps embed script, which failed on this host and did not
+  fail on localhost.
+- **Step 2 is still open.** The typography in (b) is unchanged: the pages still switch `lang` to
+  `zh` when scripts run.
+
+---
+
+## 22 · Page-tree export published the editor's email; the gate checked a fixture — SECURITY, fixed at P9-T1
+
+**Severity: HIGH — security.** Same class and severity as finding 16, arriving through two new doors.
+
+**(a) PII in `data/`.** `PUT /api/pages/:slug` stamps `updatedBy` with the editor's email, and
+`scripts/export.js` wrote page trees **raw**. The committed `data/pages/products.json` carried the
+super-admin's login address, which is meant to exist only in `.env`. Same class as finding 16, on a
+path the P7-T1a fix never covered because page trees did not exist yet.
+
+**(a2) The second door was this file.** Finding 16 quoted the leaked audit trail as evidence,
+verbatim, including two more staff login addresses. Committed in `4df742a`. Redacted in the working
+tree at P9-T1; history is part of the decision below.
+
+### Blast radius — measured, all refs, read-only
+
+| what | where | commits | branches |
+|---|---|---|---|
+| super-admin login address (`updatedBy`) + one timestamp | `data/pages/products.json` | `deee63b`, `70390bb`, `6fd2752`, `571a513` | `origin/rebuild/editor` only |
+| two more login addresses + 7 audit lines (who downloaded the sales workbook, who added whom, dates) | `docs/FINDINGS.md` finding 16 | 12 commits, `4df742a` → tip | `origin/rebuild/editor` only |
+
+- **Exposed: login names only.** No password, scrypt hash, salt, session token, customer data or
+  invoice data appears in any commit on any ref. Finding 16's leak files (`activity-log.json`,
+  `inventory-log.json`) were never committed. `.env` was never committed.
+- **Those are every account that exists.** The database holds exactly three users, all active: the
+  super-admin, a second **admin**, and a staff account. All three login names are now public.
+- **Not on `main` or `geo`**, never deployed to the site. The only pull request (#1) is `geo → main`
+  and contains none of these commits. **No forks.** One star.
+- **Not exploitable today:** `MONGO_URL` is `127.0.0.1`; the API is not hosted, so there is no
+  reachable login endpoint. It becomes exploitable at **Phase 11** if these identities are carried
+  into the hosted system.
+- **What an attacker gets then:** a known admin username, removing half of a credential guess.
+  Passwords are scrypt-hashed with per-user salts (good), minimum length 8, and the login throttle is
+  5 failures per **email + IP** per 15 minutes, in memory — so it is bypassed by rotating IPs and reset
+  by a restart. Not a per-account lockout.
+- **No outbound email exists** in the app (no reset links), so the addresses being third-party gmail
+  mailboxes is not a takeover path today. It would be the moment password-reset email is added.
+
+### Options (project owner's decision)
+
+- **Rewrite history.** Rewrites 12 commits (`4df742a` onward) and force-pushes `rebuild/editor`.
+  Costs: every SHA changes, including ones cited in docs (`4df742a`, `deee63b`) and a commit message
+  (`6fd2752`); any other clone must re-clone. `git filter-repo` is not installed (it would be a new
+  tool — ask first). **It does not un-expose anything by itself:** GitHub keeps orphaned commits
+  readable by SHA until GitHub Support purges them, and anyone who already fetched keeps them. With no
+  forks and no PR pinning these commits, a Support purge is realistic.
+- **Change the identities.** Give the super-admin and admin addresses the business controls, remove
+  or disable the exposed accounts, strong unique passwords. Makes the exposed names worthless
+  regardless of history. Cheap; it is a local dev database, and Phase 11 starts a fresh hosted one.
+- **Accept.** Defensible only as "login names of a local dev database, never reachable" — and only if
+  a precondition is recorded that none of these identities reaches production.
+
+Recommendation: change the identities (and make "no exposed identity in the hosted DB" a Phase 11
+gate) regardless; rewrite + Support purge only if discoverability matters beyond that. Separately,
+harden the throttle to a per-account lockout before hosting.
+
+### DECIDED (project owner, 15 Sep 2026): rotate identities, do NOT rewrite history
+
+Recorded so nobody relitigates it, and so nobody assumes the history is clean. **It is not.** The
+exposed addresses remain readable in commits `4df742a`–`571a513` on `rebuild/editor`, and will stay
+readable on GitHub by commit hash indefinitely.
+
+**Why rotation beats a rewrite:** a rewrite costs 12 rehashed commits, a force-push, broken references
+to commit hashes in these docs and a commit message, and a new tool — and it would **not un-expose
+anything**, because GitHub serves the old commits by hash until Support purges them and every existing
+clone keeps them. Rotating the identities makes the leaked names worthless whatever history says, and
+is nearly free on a local dev database that Phase 11 replaces anyway.
+
+**What that obliges:**
+- All three accounts replaced with addresses the business controls, strong unique passwords, and the
+  exposed accounts **deleted**, not renamed. Owner's choices: **one account only** (the new
+  super-admin; real staff are created later with their own addresses), the new address supplied by the
+  owner **via `.env`** so it never passes through chat, a **random password written straight into
+  `.env`** and never printed, and the **audit trail left as is** (append-only, never exported; the
+  accounts it names will not exist).
+
+  **Rotation status: RUN on the dev database by the owner, 15 Sep 2026 — all four checks passed**
+  (one account, the new super-admin, no exposed fingerprint, old login refused).
+  `scripts/rotate-super-admin.js` works only through the app's own
+  rules (startup bootstrap, sign-in, `DELETE /api/auth/users/:id`), refuses the three exposed addresses
+  (by fingerprint) and the current address, never prints an address or password, leaves both new
+  values readable in `.env` for the owner to save, and restores `.env` exactly on failure.
+
+  **No domain or free-mail rule on this local rotation — owner's decision, 15 Sep 2026.**
+  wonder-herb.com has no mailboxes yet, so requiring that domain would have forced an *invented*
+  address: precisely the takeover hole being closed. The real requirement is an inbox a real person
+  can open, which no script can verify, so it rests with the owner. The domain and free-mail rules
+  belong on the hosted system and stay, unchanged, in the Phase 11 hard gate. Re-rehearsed after the
+  change with a non-business address: refusal of an exposed fingerprint, dry run, apply, all checks.
+  Rehearsed end-to-end in an isolated copy against a throwaway database seeded to the same shape:
+  3 accounts deleted, 1 super-admin left, old super-admin gets 401, no orphaned sessions; the failure
+  path left `.env` byte-identical. The exposed accounts no longer exist locally.
+- `.gitignore` ignored only the exact name `.env`, so a backup or `.env.production` would have been
+  committed with credentials in it. Now `.env.*` is ignored, `.env.example` excepted.
+- **BUILD_TASKS Phase 11 hard gate:** no exposed identity in the hosted database — the dev `users`
+  collection is never imported, and hosted accounts are checked against fingerprints of the exposed
+  addresses before go-live.
+- **BUILD_TASKS P11-T3:** a login throttle that survives hosting (persistent, per-account lockout).
+  Owned by Phase 11, not 17: on serverless the in-memory throttle is no throttle at all.
+
+> **STANDING PRACTICE — never quote leaked material verbatim as evidence.**
+> When documenting a leak: *describe* what was exposed, *cite* where (file, commit, field), and
+> *redact* the values. Never paste the leaked addresses, names, tokens or records into a finding, a
+> commit message, a test, a PR or a chat log to "show" the problem. Where a check has to recognise a
+> leaked value, store a fingerprint (e.g. sha256), never the value.
+>
+> This is not hypothetical: finding 16's evidence block quoted the audit trail word for word and put
+> two more staff logins into public history, turning a one-address exposure into three. The
+> repo-wide scan in `test:data` now catches an address quoted into any tracked file — but the scan has
+> limits (below), so the practice is the primary control and the scan is the backstop.
+
+**Fixed:** `pageForSite()` in `scripts/export.js` strips `updatedBy`, `updatedAt` and `_id` from
+published trees; the database keeps them. **Guarded:** new suite `scripts/test-published-data.js`
+(`test:data`) checks the **output** — every file under `data/` — for any email not on an exact
+public list (`info@wonder-herb.com`), bookkeeping and identity keys, private collections and personal
+CSV columns. It failed on the real committed file before the fix and passes after.
+
+**"Can an email still reach `data/` by any route?" — honestly, yes, as content, and the gate catches
+it.** No server route stamps identity onto exported content any more, and users, invoices,
+movements and activity are never exported. But `POST /api/cms` stores whatever fields a client sends,
+and `forSite()` removes only `updatedAt`, so an email can arrive typed into a case or FAQ, or as an
+extra field. Two gaps in the first version of the gate, both closed at P9-T1:
+- it allowed any `@wonder-herb.com` address, so `owner@wonder-herb.com` would have **passed**. Now an
+  exact list;
+- **`npm run publish` did not run it**, so a publish could write a leak and exit 0. It is now the last
+  publish stage, after export.
+
+Proven on the real `data/faq.json`, restored byte-identical afterwards: a gmail address typed into an
+answer, a company-domain staff address, and an extra `updatedBy` field each fail the gate.
+
+**Extended to the whole repository (P9-T1, after the owner's decision).** A `data/`-only scan
+structurally could not see this finding's second door, `docs/FINDINGS.md`. `test:data` now also scans
+**every tracked file plus every untracked file git would add** (so a new file is checked before its
+first commit), 100 text files today, with **per-location** allow-lists: the business contact on the
+public pages and in `data/`; the three distributor contacts on `聯絡我們.html` only; documentation
+placeholders in the setup files; one npm package author in `package-lock.json`. RFC 2606 reserved
+`example.*` addresses are allowed anywhere, because they can never be a real mailbox. The scanner file
+itself may contain only the addresses its own allow-list names — derived, not a blanket exemption.
+Every allowance prints its reason on each run. Proven on real files and restored byte-identical: an
+address appended to `docs/FINDINGS.md`, and one in a brand-new never-committed file, each fail.
+
+**Still not covered — the limits of this gate, written down so nobody assumes it is complete:**
+- **disguised addresses** (`name [at] gmail dot com`, split across lines or HTML entities);
+- **phone numbers, personal names and medical remarks inside free text** — only JSON keys named
+  `phone` / `remarks` are checked, and only under `data/`;
+- **binary files** (8 skipped today: images, `.glb`, spreadsheets that are not gitignored);
+- **git history** — the scan reads the working tree; it cannot see what is already committed, which
+  is exactly why the history in this finding stays exposed;
+- anything **outside the repository**: chat logs, PR descriptions, issue comments, the database itself.
+
+**(b) The publish gate never saw the real tree.** `npm run publish` and `test:seo` both rendered the
+P5-T1 fixture in `renderer/sample/`, never `data/pages/`. The tree the editor saves — the one that
+ships — had never been rendered or gated. That is how an **editor demo section** sat in the committed
+tree: a `text-block` lifted from 產品_T3.html, with English strings typed during the P8-T2 proof,
+including an **invented English efficacy claim** about the product's antioxidant strength, typed as test
+copy and never approved by anyone. None of it was on 產品介紹. It is not quoted here on purpose: a
+fabricated health claim should not be re-published as evidence any more than a leaked address should.
+**Fixed:** `renderer/render.js` renders `data/pages/*.json` by default (`publishedTrees()`), and
+`test:seo` gates that same list; the fixture is used only by `test:render`, by explicit path. The real
+tree was rebuilt through the API from the gated content.
+
+### What history still holds: an invented health claim, not only an email
+
+The rebuilt tree was committed on its own as `9749d61` (15 Sep 2026). The working tree and HEAD now
+contain neither the invented claim nor the address. **History does.** The same four commits carry
+both: `deee63b` introduced them, and `70390bb`, `6fd2752` and `571a513` carry them. Checked with a
+read-only `git log --all -S` search. `origin/rebuild/editor` points at `571a513`, so until the owner
+pushes, the public branch tip itself still carries the claim. Not on `main` or `geo`, and never
+deployed.
+
+What exactly is in history, described rather than quoted:
+- A Chinese sentence copied from 產品_T3.html. It is the client's own copy, placed on a page where the
+  client never put it.
+- An **English rendering that adds a claim of verification**. No source supports it; it was typed as
+  editor test copy. This is the fabricated part.
+
+**The decision stands: no history rewrite.** The same reason applies, and more strongly: a rewrite
+does not un-publish. GitHub serves old commits by hash until Support purges them, and clones keep
+them. The claim was never on the live site, and GitHub Pages serves only `main`'s tip, so no visitor
+and no crawler of wonder-herb.com has been shown it as the business's claim.
+
+**What is different, recorded so nobody reads rotation as covering it:**
+- **Rotation cannot neutralise a claim.** A leaked login becomes worthless once the account is gone.
+  A fabricated efficacy statement in the business's public repository stays exactly what it is, for
+  as long as the commit is readable. The email residual is now inert; this one is not.
+- **Two remedies stay open, and neither is taken now:**
+  - a GitHub Support purge of the four commits, if the client or a regulator ever raises it (costs as
+    above);
+  - **squash-merging `rebuild/editor` into `main` at cutover**. That keeps these commits out of
+    `main`'s history altogether; a normal merge would carry them into it. A Phase 11/cutover decision.
+- **The live site carries a larger claims exposure than this.** 產品_T3.html's own copy makes efficacy
+  statements, including one about tumour growth, and the site is served today. That is client copy and
+  belongs to the P13G-T2 claims review, not to this finding.
+- `scripts/test-sections.js` (fidelity fixture, commit `50e1d3c`) still copies that same client
+  Chinese sentence from 產品_T3.html. It is not fabricated, but it is a health claim reproduced in test
+  code. It should be replaced with neutral fixture text when that suite is next touched.
+
+---
+
+## 23 · A migrated page loses its behaviour — blocks retiring any page — owner Phase 9
+
+**Found at P9-T1**, before moving 產品介紹 to `legacy/`. Finding 15/D1 said Phase 9 must triage each
+page's inline script (~940 lines on this page). Measured, live vs migrated, static server, API off:
+
+| behaviour | live | migrated | bucket |
+|---|---|---|---|
+| add to cart | works, badge → 1 | **impossible** | load-bearing |
+| mobile menu @390 | opens (565 px panel) | **does not open** — no navigation on a phone | load-bearing |
+| 快速瀏覽 quick view | opens modal | nothing; modal not in page | enhancement, but the button is rendered |
+| language switch | 產品系列 → Product Series | dead | dies — per-language URLs, Phase 14 |
+| signed-in header | painted | not painted | enhancement |
+| live stock overlay | from `/api` or `inventory.csv` | not applied | decide — see below |
+| page errors | none | **none** | — |
+
+**The last row matters.** `test:ui-sweep` asserts every page "loads, switches language and takes
+clicks with no errors". The migrated page throws nothing because nothing is bound, so it **passes that
+check for the wrong reason**. A behaviour gate must assert the effect (menu opened, cart changed).
+
+**Now a definition-of-done requirement (owner, 15 Sep 2026).** BUILD_TASKS Appendix A: a migrated
+page must have its interactive behaviour ported and verified — by effect, with a negative control —
+before the original is retired. SEO + fidelity + visual diff are necessary and not sufficient: this
+page passed all three while functionally dead, with zero errors. Same class as finding 12.
+
+**Do not port the live script as-is.** Two measured traps:
+- `renderProducts()` and the CMS sync rebuild the grid client-side, overwriting the pre-rendered
+  content.
+- Card `data-id` comes from `data/products.json`, where **標準裝 is id 1**; the live script's array
+  calls 標準裝 **id 2**. A copied quick-view or cart lookup would open and sell the *trial pack* when a
+  visitor picks the standard pack — finding 19's SKU-vs-id trap again. Bind by SKU.
+
+**Stock.** The rendered grid shows no stock state; the live overlay applies it at runtime. With the
+PSP-500 change still parked (finding 17) nothing visible differs today, but a pre-rendered page must
+either bake stock in at publish or keep a small overlay. Decide with the behaviour port.
+
+### Ported at P9-T1 (15 Sep 2026): built, tested, NOT yet retired
+
+Built to the plan the owner approved. Behaviour lives in static files:
+- `assets/site.js`, shared by every page: the cart store, badges, phone menu and language switcher.
+- `assets/behaviour/quick-view.js`, loaded only when a tree contains `product-grid`.
+
+`renderer/template.js` derives both from the tree's section types. It refuses to render a body
+without them, so no caller can skip the derivation. Hooks are `data-sku` / `data-price` /
+`data-status` / `data-clinic-only`. The database `data-id` is removed from the card, so nothing can
+bind to it. The modal markup is emitted, hidden, by the section. The quick view fills it from the
+clicked card with `textContent`, so there is no product table in the script.
+
+**`npm run test:behaviour`** runs on a static server with no API, the production-like host, 1280
+and 390:
+- **Cart ids, checked against three sources.** The SKU → cart id table matches
+  `migrate-products.js` MATCH, `WH_SKU_PAGES` (identical on all 18 pages) and each detail page's own
+  cart id. A negative control shows the database's ids would fail: 5 of 6 name a different product.
+- **Effects.** The menu opens and closes. The quick view shows the right product for all 6 SKUs.
+  標準裝 x2 lands in the cart as cart id 2 / WH-PSP-500 / 3800, and the existing 購物車.html names
+  it correctly. Adds merge with items written by the old detail pages and by the cart page. The
+  badge follows the cart in a second tab. Refusals are visible and logged.
+- **Real data.** Every product on the unchanged catalogue is accepted or refused exactly as its data
+  says.
+- **Scripts off.** No visible control that needs JavaScript. All content and detail links present.
+  `<h1>` at the same y as with scripts on.
+- **Negative controls.** Without `site.js`, 6 of 6 dependent checks fail. Without `quick-view.js`, 4
+  of 4 fail, while independent checks still pass. Without the scripts-off rules, 13 (1280) and 8
+  (390) dead controls are found. A one-off mutation swapping the two PSP cart ids failed 7 checks,
+  including the cart page naming the wrong product. The file was restored byte-identical; the
+  mutation is not kept in the suite.
+- **Visual effect of the port** (pre-port vs ported, same conditions): **0 px** at both widths with
+  scripts on. With scripts off the change is deliberate: the hidden quick view buttons and switcher
+  differ by 2.1% at 1280; at 390 the cards' stacked button row goes, so the page is 90 px shorter.
+
+**Price hold: the disputed prices refuse, they do not pick a price.** `PRICE_HOLD` in
+`assets/site.js` lists 憶活素 and PT3. `test:behaviour` fails if that list drifts from
+`migrate-products.js` DISPUTED, **if a held SKU's sources stop disagreeing** (the hold is stale),
+or if a sellable SKU's sources start to (a new dispute). Adding a held product shows the visitor a
+message and logs the reason. `npm run render` prints `! PRICE HOLD` on every run. So 4 products are
+sellable, not the 5 in the owner's instruction. PT3 is held too: its dispute is between HK$2,480 and
+clinic-only. It also has no purchase path on the live site, so for a visitor the effect is unchanged.
+**The grid still DISPLAYS 憶活素 at HK$880 and PT3 at HK$2,480** (database values, as since the
+migration). The hold stops the cart, not the display; the displayed price is part of the client's
+answer.
+
+**Clinic-only is an explicit data flag** (`clinicOnly: true` → `data-clinic-only`), supported and
+tested with a fixture. **It is NOT in the data yet, on purpose:** the admin product form would
+delete it on the next save (finding 25). PT3 is refused by the price hold today. A test requires any
+product the live site sells only at clinics to be held or flagged, so lifting the hold without the
+flag fails.
+
+**Not ported, recorded:**
+- **Visible stock state.** Stock is baked in as `data-status` and enforced at the cart; the live
+  overlay's visual cue is not reproduced.
+- **Phone navigation with scripts off.** The menu toggle is hidden rather than dead, so a phone
+  visitor without JavaScript has footer links only. The live page is the same today (its toggle is
+  dead). A no-JavaScript menu needs a chrome markup change, which belongs to the chrome modelling
+  decision.
+- **Signed-in header.** The API is not hosted; the owner agreed it can wait.
+- **New visitor-facing copy**, for client review: the price-hold refusal line (zh) and the
+  seven-language "not available in this language" notice (finding 24).
+
+### Also found and fixed at P9-T1
+
+- **product-grid dropped its button icons** (快速瀏覽's eye, 詳細介紹's info). The P4-T4 fidelity check
+  reads the live card *template*, and its scanner turns every `${...}` hole into a placeholder — while
+  the icons arrive through a hole, `${translations[currentLang].quickview_btn}`. The check built to
+  catch dropped icons could not see these. Fixed in `sections/ProductGrid.jsx`; the fidelity map gained
+  `holes`, so hole-filled markup joins the expectation. Proven: it failed with
+  `MISSING i, .fas, .fa-eye, .fa-info-circle` before the fix.
+- **The floating WhatsApp button was missing.** It sits after `<footer>`, and `loadChrome` lifted only
+  nav and footer. Fixed; guarded in `test:render`.
+
+### Structured data now disagrees with the visible page — client + P13G-T2
+
+On the live page, JSON-LD and the grid agree because both come from the page. On the migrated page
+the grid reads the database, so the two disputed prices diverge: **憶活素 JSON-LD 520.00 vs visible
+HK$880; PT3 JSON-LD 0.00 ("clinic only") vs visible HK$2,480.** PT3 at 0 is what triggers the live
+page's clinic-only purchase block, so the database price would put a clinic-only product up for sale.
+The JSON-LD `sku` values are also placeholders (`WH-YGQ-300`, `WH-MEMO-60`, `WH-PT3-PRO`) matching no
+real SKU. Both resolve when the client answers the prices and P13G-T2 derives `Product` from data.
+
+---
+
+## 24 · Migrated pages are Chinese only — ACCEPTED REGRESSION (owner, 15 Sep 2026) — owner Phase 14
+
+**User impact, plainly: an English-speaking visitor who chose English on another page opens 產品介紹
+and gets it in Chinese.** The same applies to German, Spanish, French, Japanese and Russian. Every
+live page switches language in the browser, and the choice persists (`localStorage wonderherb_lang`),
+so today that visitor sees the products page in English. A pre-rendered page has one URL per
+language, and Month 1 renders `zh` only. Each page that migrates before Phase 14 adds itself to this
+list.
+
+**Why accepted, rather than the alternatives (owner):**
+- **Not "keep the old page live until languages render":** P9-T1 would never finish, and we would
+  learn nothing about the real per-page cost of a migration.
+- **Not "pull this page's languages forward":** that breaks the phase sequencing for one page.
+
+**The switcher is NOT dead**, which would be worse than Chinese-only. `test:behaviour` verifies at
+1280 (desktop spans) and 390 (phone dropdown):
+- choosing a language saves it, so every other page still follows it;
+- the page tells the visitor, in the chosen language, that it is not yet available in that language
+  (e.g. "This page is not yet available in English.");
+- a visitor arriving with a saved non-Chinese choice sees that notice on landing, rather than a page
+  that looks broken;
+- the live page opened next renders in the chosen language (checked on 常見問題).
+
+When a page declares an alternate for the language (`<link rel="alternate" hreflang>`, Phase 14),
+the same click goes to that URL instead. No switcher change is needed at Phase 14.
+
+**New copy, for the client:** the notice exists in all seven languages, written for this purpose.
+It is short UI text, not product copy, but nobody on the client side has approved it
+(`assets/site.js`, `UNAVAILABLE`).
+
+**Not covered:** the page does not redirect a visitor with a saved language to an alternate on
+load. Whether it should is a Phase 14 decision, with SEO consequences, and is not made here.
+
+---
+
+## 25 · The admin product form deletes every field it does not show — HIGH, data loss — owner P12-T3
+
+**Found at P9-T1 while choosing where the clinic-only flag should live. Established by reading the
+code, not by running it** (it would take a write to the dev database).
+
+`saveProd()` in `admin/index.html` (around line 3367) builds the saved product from the form's
+inputs alone. The object has `id, title, sku, price, status, cat, badges, stock, reorder, model,
+desc, definition, story, partners, images, image, imageAlt, testimonies, papers, articles`, and
+nothing else. `POST /api/cms?type=products` then replaces the whole list. The finding-20 guard
+(`protectLangMaps`) protects a language map from a plain string; **it does nothing for a field that
+is simply absent**.
+
+So one ordinary staff edit to a product (fixing a typo, changing stock) deletes that product's:
+- **`link`**: its 詳細介紹 button disappears from the pre-rendered grid (the section renders no dead
+  link);
+- **`ribbon`**: PT3 loses 只在指定中西醫診所出售;
+- **`priceNote`**: PT3's words-instead-of-price text;
+- **any flag added later**, including `clinicOnly`. Losing that would make a clinic-only product
+  sellable, silently.
+
+The migration recovered `link`, `ribbon` and `priceNote` at P9-T1 (finding 19), and the form is what
+would lose them again. Same class as finding 20: a guard in the form protects only that form.
+
+**Fix, owner P12-T3.** At the API, keep fields the caller did not send, for an item matched by SKU
+(an explicit `null` removes a field), in the same place and for the same reason as `protectLangMaps`.
+Then make the form carry the fields it does not edit.
+
+**Consequences now:**
+- `clinicOnly` stays out of the data until this is fixed.
+- **PT3's price hold cannot be lifted before it is.** `test:behaviour` fails a lifted hold without
+  the flag.

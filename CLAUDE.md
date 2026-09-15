@@ -26,7 +26,7 @@ Already built:
 - **Pages CMS pilot** (`.pages.yml`): git-based, WordPress-style form editor. Wired for Cases only so far. Uses the 7-language object model.
 - **Admin** is a single vanilla file: `admin/index.html`.
 - **7 languages**: `zh` (primary) + `en, de, es, fr, ja, ru` (optional, fall back to `zh`). Every text field is a per-language object.
-- **Visual + SEO baseline captured** (Phase 0): `node scripts/baseline.js` records all 18 pages at 1280px and 390px plus each page's rendered `<head>` into `baseline/` (gitignored, ~13 MB). Captured from a static server with the API off, so it reflects what GitHub Pages actually serves. These are the regression references the renderer must match. Re-run it if the live pages change before migration.
+- **Visual + SEO baseline captured** (Phase 0, re-captured 15 Sep 2026 at P9-T1): `node scripts/baseline.js` records all 18 pages at 1280px and 390px, **scripts on** (`baseline/screens/`) **and scripts off** (`baseline/screens-nojs/`), plus each page's rendered `<head>` (`baseline/head/`), into `baseline/` (gitignored). Captured from a static server with the API off, under a **production-like hostname** (`wonder-herb.test`, mapped inside Chromium), so it reflects what GitHub Pages serves. The live pages change by hostname: on `localhost` they show an account icon that makes the 1280 nav 190px instead of 164px. The first baseline was taken on localhost and was off by ~15% of pixels at 1280 for that reason alone, so every visual diff before the re-capture was measured against a wrong reference (`docs/FINDINGS.md` finding 21). Set `BASELINE_SITE` to a checkout of HEAD so the reference records committed content. The old localhost set is archived in `baseline/_previous-localhost-2026-09-08/`. Known remaining gap: scripts-on captures use the CJK fallback font for `lang="zh"`, because the live language script overwrites `zh-Hant` (finding 21b, font stack undecided). Re-run it if the live pages change before migration.
 - **Test suite**: `npm run test:all` = 404 checks, green. `jsdom` and `playwright` are devDependencies; nothing new ships to the public site.
 
 The two real gaps:
@@ -135,10 +135,14 @@ Month 2: all 18 pages, all 7 languages, full ~22 sections, add-page-from-templat
 
 ## Definition of done for a migrated page
 
-- Renders from the tree, visually matches the current page within tolerance.
+- Renders from the tree, visually matches the current page within tolerance, at 1280 and 390, **scripts on and scripts off**, against the production-hostname baseline. Every difference is either explained or fixed.
 - Pre-rendered: content is in the HTML, not fetched client-side.
 - SEO check passes: JSON-LD valid, hreflang reciprocal, canonical correct, meta present, heading order preserved.
+- **Interactive behaviour ported and verified by effect** (BUILD_TASKS Appendix A, `docs/FINDINGS.md` finding 23). Everything the old page did for a visitor (cart, phone menu, quick view, language switch, refusals) either works, or is recorded as an accepted regression with its user impact stated. `npm run test:behaviour` asserts outcomes, such as the menu opening or the cart holding the right SKU at the right price, **with a negative control** proving the checks fail when the behaviour files are missing. "No errors" is not verification: 產品介紹 passed SEO, fidelity and the visual diff with every control dead and zero errors.
+  - Behaviour lives in static files (`assets/site.js` shared, `assets/behaviour/<section>.js` per section), derived by `renderer/template.js` from the tree's section types. It never lives in section components (no hydration) or in inline scripts.
+  - Bind by **SKU**, never by database id. Hooks are plain `data-sku` / `data-price` / `data-status`, never `data-wh-*`.
+  - With scripts off, no control that needs JavaScript is shown.
 - Editable in Puck; all target-language fields present or falling back to `zh`.
 - Published output contains no editor-only attributes.
 - Heavy assets referenced from R2/CDN, not the repo.
-- Old hand-coded HTML retired only after the above pass.
+- Old hand-coded HTML retired only after the above pass (moved to `legacy/`, not deleted).

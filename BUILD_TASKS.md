@@ -436,6 +436,51 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 - **Verify:** log in to the admin from a different machine; edit and publish a page; restore last night's backup into a scratch DB successfully.
 - **Gotcha:** preserve the fallback behaviour: if the API is down, the committed `data/` still serves the site. Never make the live site depend on the API being up.
 
+> **HARD GATE — no exposed identity in the hosted database.** Hosting does not go live until this
+> passes. Not a note.
+>
+> Three login addresses from the local dev database are in public git history (docs/FINDINGS.md
+> finding 22). The decision was to rotate identities, not rewrite history, which is only safe if
+> **none of those identities ever reaches a reachable system**. So:
+>
+> - **Never import the dev `users` or `sessions` collections into the hosted database** — no
+>   `mongodump`/`mongorestore` of the dev DB wholesale. Content may be seeded from `data/`; accounts
+>   are created fresh (step 4) with addresses the business controls.
+> - **Check, don't trust:** before go-live, hash every hosted account's email (`sha256` of the
+>   trimmed, lower-cased address) and assert none matches these. They are fingerprints, not the
+>   addresses — the addresses are not quoted anywhere, by standing practice:
+>   ```
+>   87924606b4131a8aceeeae8868531fbb9712aaa07a5d3a756b26ce0f5d6ca674
+>   2fbd33c012587b73ab496d79e764917c7c40b0874531c77267b3a83c45aeeb9d
+>   7932b2e116b076a54f452848eaabd5857f61bd957fe8a218faf216f24c9885bb
+>   ```
+>   A fingerprint of a guessable address can be brute-forced, so this hides nothing from a
+>   determined reader — the addresses are already public. It exists so the check never re-quotes them.
+> - Also assert every hosted account uses a domain the business controls, and no account is a
+>   free-mail address (`gmail.com` etc.) that nobody here owns — that becomes a takeover route the
+>   moment password-reset email exists.
+> - **Verify:** run the check against the hosted DB and show it pass; insert a throwaway account whose
+>   email hashes to one of the fingerprints in a scratch DB and show it fail.
+
+### P11-T3 · Login throttle that survives hosting — security, owner Phase 11
+
+Owned by Phase 11 rather than Phase 17 because hosting is what breaks it. Today's throttle
+(`server/auth.js`) counts 5 failures per **email + IP** per 15 minutes in an **in-memory `Map`**:
+
+- **On Vercel serverless (an option in P11-T1) it is not a weak throttle, it is no throttle.** Each
+  instance has its own `Map`, and a cold start empties it.
+- On a VPS a restart clears it, and **rotating IPs defeats email+IP keying** everywhere — which matters
+  more now that every admin login name has been public (finding 22).
+
+- **Steps:** store failure counts in MongoDB (a collection with a TTL index), so they survive restarts
+  and are shared by every instance. Lock **per account** after N failures regardless of IP, with an
+  exponential back-off; keep a separate per-IP limit for spraying across accounts. Answer identically
+  for unknown and known accounts so the lockout is not a username oracle. Log lockouts to the activity
+  trail (never to `data/`). Give the super-admin a documented out-of-band unlock.
+- **Verify:** N wrong passwords from N different IPs lock the account; a restart (or a second instance)
+  does not reset the count; a correct password during lockout is still refused; the lock expires; an
+  unknown email gets the same response and timing class as a known one.
+
 ### P11-T2 · ONE admin site, one login — a client requirement, not a nicety
 - **Goal:** the client reaches sales, inventory, products, customers, users **and** the visual page editor from **one place**, signing in **once**. They must never be given two URLs or asked to log in twice. The two-app split stays underneath; it must not surface.
 - **Why here and not earlier:** this needs (a) an editor that works — P8-T2, done; (b) real pages to edit, or "Edit site" opens onto one demo tree — Phase 9; (c) **a decision about which origin serves what**, which is exactly what Phase 11 decides. Building it before hosting means building against `localhost:5173` assumptions and redoing it. Doing it as part of hosting means hosting delivers one product rather than two.
@@ -481,7 +526,8 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
   1. Add a content-language picker to the product form, matching the Puck editor's — one language at a time, not seven inputs per field (the P8-T1 reasoning: seven inputs bury the form, and one-at-a-time is how a person actually works, especially through a Chinese IME).
   2. **Reuse `editor/lang.js`'s `project` / `merge`.** That logic is already proven by the 26 checks in `scripts/test-editor-lang.js`, including the two bugs it was written to catch: fallback poisoning, and losing translations when items are reordered. Do not write a second implementation — a second one will get the same two things wrong.
   3. Keep the API guard afterwards. It is the floor for every caller, not a substitute for this.
-- **Verify:** edit a product's German name in the admin, save, confirm `zh` and the other five are untouched — the same round-trip `scripts/test-editor-lang.js` runs for page trees. Confirm an untranslated field shows **empty**, never the Chinese fallback.
+  4. **Stop the form deleting fields it does not show (finding 25, HIGH, added at P9-T1).** `saveProd()` rebuilds a product from its inputs alone, so any staff edit deletes `link`, `ribbon`, `priceNote` and any later flag, e.g. `clinicOnly`. Fix it at the API first: for an item matched by SKU, keep stored fields the caller did not send, and let an explicit `null` remove one. Put this beside `protectLangMaps`, for the same reason. Then have the form carry the fields it does not edit. **Blocks lifting PT3's price hold** (`assets/site.js` `PRICE_HOLD`): `clinicOnly` cannot go into the data while one save would erase it.
+- **Verify:** edit a product's German name in the admin, save, confirm `zh` and the other five are untouched — the same round-trip `scripts/test-editor-lang.js` runs for page trees. Confirm an untranslated field shows **empty**, never the Chinese fallback. **For step 4:** save PT3 through the form, then confirm `link`, `ribbon`, `priceNote` and `clinicOnly` are still in the database and in `data/products.json` after export. Add a negative control: the same save against the pre-fix API deletes them.
 - **Gotcha:** `admin/index.html` is vanilla JS with no build step, and `editor/lang.js` is an ES module importing CommonJS (finding 18). Settle how the admin loads it — a small shared build, or the `<script type="module">` the page can already use — rather than copying the functions across, which would fork the logic the moment either side changes.
 
 ---
@@ -528,8 +574,15 @@ being rebuilt. Migration is exactly when these rot: a page moves to `legacy/`, a
   is listed; `robots.txt` still carries each AI-crawler allow block by name, with a comment saying
   removing one is a deliberate act; `sitemap.xml` covers exactly the published set minus the
   utility allow-list; the three files agree with each other.
-- **Verify:** delete one AI-crawler block, or point one `llms.txt` link at a missing page — the
-  gate fails. Prove it bites, then restore.
+- **`sitemap.xml` must track the rendered page set, not the files on disk.** Every sitemap entry
+  resolves to a page that is actually published, and every published non-utility page has one. A
+  page migrated to a tree, or moved to `legacy/`, must not leave a stale entry pointing at the old
+  file or at nothing. `legacy/` itself is never in the sitemap.
+- **Every `llms.txt` link resolves** — to a published page, checked by the gate on every run, not
+  once by hand. (Today all 14 do; that is a fact about today, not a guarantee.)
+- **Verify:** delete one AI-crawler block, point one `llms.txt` link at a missing page, or leave a
+  sitemap entry for a page moved to `legacy/` — the gate fails each time. Prove it bites, then
+  restore.
 
 ### P13G-T2 · Advance GEO deliberately — owner after Phase 13
 
@@ -538,9 +591,18 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
 
 - Regenerate `llms.txt` from the page trees rather than maintaining it by hand, so it cannot drift
   from what is published. Decide then whether to add `llms-full.txt`.
+- **Fix the existing gap: `llms.txt` does not list `index.html`**, the homepage. Found at the Phase
+  13G registration; not fixed then because the file is about to be generated rather than edited.
 - Revisit the JSON-LD now that content is modelled: `Product` nodes can carry real `offers` from
-  `data/products.json`, and FAQ/Article types can be derived rather than carried verbatim. Note
-  that `data/products.json` has no rating or review data — do **not** invent `aggregateRating`.
+  `data/products.json`, and FAQ/Article types can be derived rather than carried verbatim.
+
+> **HARD RULE — never emit `aggregateRating`, `review` or any rating data that does not exist.**
+> `data/products.json` holds no ratings or reviews. Fabricating them violates Google's structured
+> data policies (manual action risk, loss of rich results), and on a **health products** site it
+> is a real-world harm: invented ratings make a medical product look more trusted than any evidence
+> supports. This is not a preference to weigh against rich-result gains. If genuine, attributable
+> review data is ever collected, adding it is a new decision with the client — not a default.
+> The gate should assert the absence, so this cannot be added by accident.
 - Assess extractability for answer engines: heading hierarchy, question-shaped headings, whether
   key claims sit in text rather than images. The site's evidence pages (`有效成份檢測`, `研究報告`,
   `典型病例`) are its GEO strength and are currently the least structured.
@@ -564,7 +626,7 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
 - **Verify:** the dashboard covers Home, Catalog, Orders, Customers/Leads, basic Analytics.
 
 ## Phase 17 — Security hardening + staging
-- Upload validation on the media library (content-type allowlist, size cap, reject executables). CSRF protection on state-changing routes. Rate limiting. Rotate and store deploy secrets properly. Add a staging environment (second cheap host or a separate branch that deploys to a preview URL).
+- Upload validation on the media library (content-type allowlist, size cap, reject executables). CSRF protection on state-changing routes. Rate limiting for the remaining routes — **login throttling is NOT here**, it is P11-T3 and must land before hosting. Rotate and store deploy secrets properly. Add a staging environment (second cheap host or a separate branch that deploys to a preview URL).
 - Test the backup by restoring it into staging.
 - **Verify:** an upload of a disallowed type is rejected; a restored backup boots on staging; secrets are not in Git.
 
@@ -582,6 +644,15 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
 - Editable in Puck; all in-scope language fields present or falling back to zh.
 - No editor-only attributes in the output.
 - Heavy assets referenced from R2/CDN, not the repo.
+- **Interactive behaviour ported and verified BEFORE the original is retired.** Every behaviour the
+  live page offers is either ported, or explicitly recorded as dying with pre-rendering (with the
+  reason), or explicitly deferred with an owner and the owner's sign-off. Verified by a test that
+  asserts the **effect** — the menu opened, the right product (by SKU) reached the cart, an
+  out-of-stock or clinic-only product was refused — at 1280 and 390, with a negative control proving
+  the test fails when the behaviour script is absent. "No errors thrown" is **not** verification: a
+  page with nothing bound throws nothing (docs/FINDINGS.md finding 23). Added at P9-T1 after
+  產品介紹 passed SEO, fidelity and the visual diff while its cart, phone menu, quick view and language
+  switch were all dead — the finding-12 pattern: passes every gate, broken for humans.
 - Old hand-coded file moved to `legacy/`, not deleted, until the phase is signed off.
 
 ## Appendix B — Commands quick reference
@@ -592,7 +663,8 @@ npm run export        # DB -> data/*.json (content + page trees)
 npm run sections:build# bundle sections for the Node renderer
 npm run render        # render page trees -> pre-rendered static HTML
 npm run test:seo      # SEO assertion gate (blocks bad publish)
-npm run publish       # export + sections:build + render + test:seo
+npm run publish       # export + sections:build + render + test:seo + test:data
+npm run test:behaviour# migrated pages' cart/menu/quick view/language, by effect, with negative controls
 npm run editor:dev    # Puck editor app (Vite)
 npm run test:all      # existing full test suite
 # deploy: commit to main -> GitHub Actions -> GitHub Pages
