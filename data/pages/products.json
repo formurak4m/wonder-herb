@@ -2,13 +2,11 @@
   "slug": "products",
   "path": "產品介紹.html",
   "title": {
-    "zh": "產品介紹 | Wonder Herb - 雲芝糖肽精華",
-    "en": "Products | Wonder Herb"
+    "zh": "產品介紹 | Wonder Herb - 雲芝糖肽精華"
   },
   "seo": {
     "description": {
-      "zh": "康草堂 Wonder Herb 產品系列 – 雲芝糖肽精華 PSP，T3 配方，乙肝清，憶活素。加拿大GMP藥廠生產，有效成份高達90%以上。",
-      "en": "Wonder Herb product range - PSP, T3, and more."
+      "zh": "康草堂 Wonder Herb 產品系列 – 雲芝糖肽精華 PSP，T3 配方，乙肝清，憶活素。加拿大GMP藥廠生產，有效成份高達90%以上。"
     },
     "dateModified": "2026-06-02T10:30:00+08:00",
     "ogType": "website",
@@ -253,77 +251,38 @@
     ],
     "stylesheets": [
       "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
-      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css",
+      "assets/page-products.css",
+      "assets/chrome.css"
     ],
-    "stylesFrom": "產品介紹.html",
     "chromeFrom": "產品介紹.html"
   },
   "sections": [
     {
-      "id": "s0-page-header",
       "type": "page-header",
       "fields": {
         "heading": {
-          "zh": "產品系列",
-          "en": "Product Range"
+          "zh": "產品系列"
         },
         "sub": {
-          "zh": "加拿大GMP藥廠 · 有效成份 >90% · 大學研究證實",
-          "en": "Canadian GMP facility · >90% active · university-verified"
+          "zh": "加拿大GMP藥廠 · 有效成份 >90% · 大學研究證實"
         },
-        "variant": "centered",
-        "headingId": "products-heading"
+        "headingId": "products-heading",
+        "variant": "centered"
       }
     },
     {
-      "id": "s1-product-grid",
       "type": "product-grid",
+      "wrap": "container",
       "fields": {
         "source": "products.json",
         "quickViewLabel": {
-          "zh": "快速瀏覽",
-          "en": "Quick view"
+          "zh": "快速瀏覽"
         },
         "detailLabel": {
-          "zh": "詳細介紹",
-          "en": "Details"
+          "zh": "詳細介紹"
         }
       }
-    },
-    {
-      "id": "s2-text-block",
-      "type": "text-block",
-      "fields": {
-        "variant": "card",
-        "heading": {
-          "zh": "產品功效及特性",
-          "en": "Benefits"
-        },
-        "bullets": [
-          {
-            "label": {
-              "zh": "超強抗氧化：",
-              "en": "Antioxidant: "
-            },
-            "text": {
-              "zh": " 比一般合成維生素E高出60倍抗氧化能力",
-              "en": " 60x the antioxidant power, verified"
-            }
-          },
-          {
-            "label": {
-              "zh": "心血管健康：",
-              "en": "Cardiovascular: "
-            },
-            "text": {
-              "zh": " 降低膽固醇，維護心血管",
-              "en": " supports cholesterol and heart health"
-            }
-          }
-        ]
-      }
     }
-  ],
-  "updatedAt": "2026-09-11T05:37:09.720Z",
-  "updatedBy": "admin@gmail.com"
+  ]
 }
