@@ -15,6 +15,9 @@
  *           no API, a production-like hostname (finding 21), 1280 and 390
  *   PART 3  scripts off
  *   PART 4  negative controls
+ *   PART 5  every OTHER published tree: the shared site.js behaviour (badge,
+ *           phone menu, language switch), scripts off, and a no-site.js
+ *           negative control per page - found from data/pages/, never named
  *
  * The page is rendered in memory from the REAL tree. Most checks use a copy of
  * the real product data with stock states set by the test, so the happy path
@@ -42,7 +45,13 @@ const { CART_IDS, PRICE_HOLD, CART_KEY, LANG_KEY } = site;
 
 /* The ORIGINAL hand-coded page: legacy/<name> once retired, else the root.
    Never the pre-rendered output that replaces it (renderer/source-page.js). */
-const { originalPagePath } = require(path.join(ROOT, 'renderer', 'source-page.js'));
+const { originalPagePath, isRetired } = require(path.join(ROOT, 'renderer', 'source-page.js'));
+
+/* A page still hand-coded, with its own client-side language switch - the
+   "a live page follows the choice" half of languageSwitch. It used to be
+   常見問題, until that page migrated too; pick one that has not. */
+const LIVE_PAGE = ['聯絡我們.html', '典型病例.html', '研究報告.html', '有效成份檢測.html', '小册子.html', '微信發表文章.html']
+  .find(p => !isRetired(p));
 function livePage(name) {
   const f = originalPagePath(name);
   return f ? fs.readFileSync(f, 'utf8') : null;
@@ -178,6 +187,28 @@ const SCENARIOS = {
   'no-quickview':{ html: html.fixture, block: ['assets/behaviour/quick-view.js'] }
 };
 
+/* EVERY OTHER PUBLISHED PAGE (P9, from page two on). The product checks above
+   are 產品介紹's own; what every pre-rendered page shares is assets/site.js -
+   the badge, the phone menu, the language switch - and the scripts-off rules.
+   Each other tree in data/pages/ is rendered from the real data and gets those
+   checks, plus a no-site.js negative control of its own. A new page is covered
+   by adding its tree; nothing here names it. */
+const stripScripts = h => h.replace(/<script\b(?![^>]*application\/ld\+json)[\s\S]*?<\/script>/gi, '');
+const OTHER_PAGES = render.publishedTrees().map(render.loadTree).filter(t => t.path !== PAGE).map(t => {
+  const page = render.renderPage(t, 'zh', realData,
+    { chrome: render.loadChrome(t.assets.chromeFrom), styles: render.loadStyles(t.assets.stylesFrom) });
+  const key = 'p-' + t.slug;
+  SCENARIOS[key] = { html: page, page: t.path };
+  SCENARIOS[key + '-no-site'] = { html: page, page: t.path, block: ['assets/site.js'] };
+  SCENARIOS[key + '-nojs'] = { page: t.path,
+    html: stripScripts(page).replace(/<noscript>([\s\S]*?)<\/noscript>/gi, '$1') };
+  SCENARIOS[key + '-nojs-unguarded'] = { page: t.path,
+    html: stripScripts(page).replace(/<noscript><style>\s*\/\* controls that need JavaScript[\s\S]*?<\/noscript>/i, '')
+                            .replace(/<noscript>([\s\S]*?)<\/noscript>/gi, '$1') };
+  const h1 = (page.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) || [])[1] || '';
+  return { key, file: t.path, h1: h1.replace(/<[^>]+>/g, '').trim(), sections: t.sections.map(n => n.type) };
+});
+
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.csv': 'text/csv; charset=utf-8' };
 
@@ -191,7 +222,7 @@ function serve() {
       const sc = m && SCENARIOS[m[1]];
       const file = m ? m[2] : rel.replace(/^\//, '');
       if (sc && sc.block && sc.block.indexOf(file) !== -1) { res.writeHead(404).end('blocked by the negative control'); return; }
-      if (sc && file === PAGE) {
+      if (sc && file === (sc.page || PAGE)) {
         res.writeHead(200, { 'Content-Type': MIME['.html'] }).end(sc.html);
         return;
       }
@@ -283,7 +314,7 @@ const EFFECTS = {
     if (width !== 390) return true;
     const ctx = await context(390); const page = await newPage(ctx);
     try {
-      await page.goto(url(this.scenario), { waitUntil: 'load' });
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
       await page.click('#menuToggle', { timeout: 2000 });
       const opened = await until(() => page.evaluate(() => {
         const p = document.getElementById('headerNavPanel');
@@ -299,7 +330,7 @@ const EFFECTS = {
   async quickViewAllSix(width) {
     const ctx = await context(width); const page = await newPage(ctx);
     try {
-      await page.goto(url(this.scenario), { waitUntil: 'load' });
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
       for (const sku of Object.keys(CART_IDS)) {
         if (!(await quickView(page, sku))) return false;
         const shown = await page.evaluate(() => ({ sku: document.getElementById('quickViewModal').getAttribute('data-sku'),
@@ -315,7 +346,7 @@ const EFFECTS = {
   async addStandardPack(width) {
     const ctx = await context(width); const page = await newPage(ctx);
     try {
-      await page.goto(url(this.scenario), { waitUntil: 'load' });
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
       const said = await addViaModal(page, BUY_SKU, 2);
       const items = await cart(page);
       const it = items[0] || {};
@@ -343,7 +374,7 @@ const EFFECTS = {
   async mergesWithLegacyCart(width) {
     const ctx = await context(width); const page = await newPage(ctx);
     try {
-      await page.goto(url(this.scenario), { waitUntil: 'load' });
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
       // one item as a detail page writes it, one as 購物車.html re-saves it (no productId)
       await page.evaluate(k => localStorage.setItem(k, JSON.stringify([
         { productId: 2, quantity: 1, product: { id: 2, name: '雲芝糖肽精華 (PSP) – 標準裝', price: 3800, image: '' } },
@@ -365,7 +396,7 @@ const EFFECTS = {
   async refusals(width) {
     const ctx = await context(width); const page = await newPage(ctx);
     try {
-      await page.goto(url(this.scenario), { waitUntil: 'load' });
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
       const M = site.MSG;
       /* No SKU is on hold in the shipped table (owner decision), so the hold
          mechanism is exercised by holding one at runtime in this page only. */
@@ -390,10 +421,38 @@ const EFFECTS = {
   async crossTabBadge(width) {
     const ctx = await context(width); const a = await newPage(ctx); const b = await newPage(ctx);
     try {
-      await a.goto(url(this.scenario), { waitUntil: 'load' });
-      await b.goto(url(this.scenario), { waitUntil: 'load' });
+      await a.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      await b.goto(url(this.scenario, this.file), { waitUntil: 'load' });
       await addViaModal(a, BUY2_SKU, 3);
       return await until(async () => (await badges(b)).every(x => x === '3'), 2500);
+    } finally { await ctx.close(); }
+  },
+
+  /* The next two need no product grid: any page with the site chrome. */
+  async badgeFromStoredCart(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      // a cart as the old pages and 購物車.html write it: 1 + 2 items
+      await page.evaluate(k => localStorage.setItem(k, JSON.stringify([
+        { productId: 2, quantity: 1, product: { id: 2, name: 'x', price: 1, image: '' } },
+        { product: { id: 1, name: 'y', price: 1, image: '' }, quantity: 2 }
+      ])), CART_KEY);
+      await page.reload({ waitUntil: 'load' });
+      const b = await badges(page);
+      this.detail = 'badges ' + b.join('/');
+      return b.length >= 2 && b.every(x => x === '3');
+    } finally { await ctx.close(); }
+  },
+
+  async crossTabStorage(width) {
+    const ctx = await context(width); const a = await newPage(ctx); const b = await newPage(ctx);
+    try {
+      await a.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      await b.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      await b.evaluate(k => localStorage.setItem(k, JSON.stringify([
+        { productId: 3, quantity: 4, product: { id: 3, name: 'z', price: 1, image: '' } }])), CART_KEY);
+      return await until(async () => { const x = await badges(a); return x.length >= 2 && x.every(v => v === '4'); }, 2500);
     } finally { await ctx.close(); }
   },
 
@@ -401,7 +460,7 @@ const EFFECTS = {
     const code = width === 390 ? 'ja' : 'en';
     const ctx = await context(width); const page = await newPage(ctx);
     try {
-      await page.goto(url(this.scenario), { waitUntil: 'load' });
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
       if (width === 390) {
         await page.click('#langCurrentBtn', { timeout: 2000 });
         if (!(await until(() => page.evaluate(() => document.getElementById('langDropdown').classList.contains('show')), 1000))) return false;
@@ -423,23 +482,23 @@ const EFFECTS = {
       }, LANG_KEY);
       const noticeOk = await until(() => page.evaluate(() => { const n = document.getElementById('langNotice'); return n && n.getBoundingClientRect().height > 0; }), 1000);
       // the choice carries: a live page opened next is in that language
-      await page.goto(url(this.scenario, '常見問題.html'), { waitUntil: 'load' });
+      await page.goto(url(this.scenario, LIVE_PAGE), { waitUntil: 'load' });
       const liveLang = await until(() => page.evaluate(c => document.documentElement.lang === c, code), 3000);
       // and coming back, the migrated page says so instead of looking broken
-      await page.goto(url(this.scenario), { waitUntil: 'load' });
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
       const onReturn = await page.evaluate(() => { const n = document.getElementById('langNotice'); return n ? n.firstChild.textContent : ''; });
       this.detail = 'saved ' + state.saved + ', notice "' + state.notice + '" (lang ' + state.noticeLang +
                     ', close label "' + state.closeLabel + '"), page still ' + state.lang +
-                    ', 常見問題 in ' + code + ': ' + liveLang + ', notice on return: ' + Boolean(onReturn);
+                    ', ' + LIVE_PAGE + ' in ' + code + ': ' + liveLang + ', notice on return: ' + Boolean(onReturn);
       return state.saved === code && noticeOk && state.notice === expected &&
              state.noticeLang === code && state.closeLabel === site.CLOSE[code] &&
-             state.h1 === '產品系列' && state.lang === 'zh-Hant' && liveLang && onReturn === expected;
+             state.h1 === (this.h1 || '產品系列') && state.lang === 'zh-Hant' && liveLang && onReturn === expected;
     } finally { await ctx.close(); }
   }
 };
 
-async function runEffect(name, scenario, width) {
-  const holder = { scenario, detail: undefined };
+async function runEffect(name, scenario, width, page) {
+  const holder = Object.assign({ scenario, detail: undefined }, page || {});
   const ok = await safely(() => EFFECTS[name].call(holder, width));
   return { ok, detail: holder.detail };
 }
@@ -459,6 +518,8 @@ async function runEffect(name, scenario, width) {
         mergesWithLegacyCart: 'adds merge with items written by the old detail pages and by 購物車.html',
         refusals: 'out-of-stock, clinic-only and a price hold (set at runtime) are refused - visibly and logged - and the cart stays empty',
         crossTabBadge: 'a second tab\'s badge follows the cart',
+        badgeFromStoredCart: 'the badge shows a cart stored by the old pages, on load',
+        crossTabStorage: 'a cart written in another tab (no quick view involved) reaches the badge',
         languageSwitch: 'language switch is not dead: saves the choice, says this page is Chinese only, a live page follows it'
       };
       for (const name of Object.keys(EFFECTS)) {
@@ -499,11 +560,11 @@ async function runEffect(name, scenario, width) {
     }
 
     /* ============================================================ PART 3 */
-    async function scriptsOff(scenario, width) {
+    async function scriptsOff(scenario, width, file) {
       const ctx = await browser.newContext({ viewport: WIDTHS[width] });
       await ctx.route('**/*', r => new URL(r.request().url()).hostname === HOST ? r.continue() : r.abort());
       const page = await ctx.newPage();
-      await page.goto(url(scenario), { waitUntil: 'load' });
+      await page.goto(url(scenario, file), { waitUntil: 'load' });
       const s = await page.evaluate(() => {
         const visible = el => { const cs = getComputedStyle(el); const r = el.getBoundingClientRect();
           return cs.display !== 'none' && cs.visibility !== 'hidden' && r.width > 0 && r.height > 0; };
@@ -531,6 +592,55 @@ async function runEffect(name, scenario, width) {
       const h1On = await p2.evaluate(() => Math.round(document.querySelector('h1').getBoundingClientRect().top));
       check('hiding them did not move the page: <h1> at the same y scripts on and off (D1)', h1On === s.h1, 'on ' + h1On + ', off ' + s.h1);
       await on.close();
+    }
+
+    /* ============================================================ PART 5 */
+    for (const p of OTHER_PAGES) {
+      const ctxPage = { file: p.file, h1: p.h1 };
+      console.log('\n=== PART 5: ' + p.file + ' (' + p.sections.join(', ') + ') - the shared behaviour ===\n');
+      const SHARED = {
+        'menuOpens@390': 'phone menu opens and Escape closes it',
+        'badgeFromStoredCart@1280': 'the badge shows the stored cart on load (1280)',
+        'badgeFromStoredCart@390': 'the badge shows the stored cart on load (390)',
+        'crossTabStorage@1280': 'a second tab\'s cart change reaches this page\'s badge',
+        'languageSwitch@1280': 'language switch (en): saves, says Chinese only, ' + LIVE_PAGE + ' follows, notice on return',
+        'languageSwitch@390': 'language switch (ja, from the phone dropdown): the same'
+      };
+      for (const [k, label] of Object.entries(SHARED)) {
+        const [name, w] = k.split('@');
+        const r = await runEffect(name, p.key, Number(w), ctxPage);
+        check(label, r.ok, r.detail);
+      }
+      {
+        const ctx = await context(390); const page = await newPage(ctx);
+        await page.goto(url(p.key, p.file), { waitUntil: 'load' });
+        await page.click('#menuToggle').catch(() => {});
+        check('no page errors, no dialogs', page._errors.length === 0 && page._dialogs.length === 0,
+              (page._errors.concat(page._dialogs).join(' | ')) || 'none');
+        await ctx.close();
+      }
+      for (const width of [1280, 390]) {
+        const off = await scriptsOff(p.key + '-nojs', width, p.file);
+        check('scripts off at ' + width + ': no visible control that needs JavaScript', off.dead.length === 0,
+              off.dead.length ? 'VISIBLE: ' + off.dead.join(', ') : 'none');
+        const on = await browser.newContext({ viewport: WIDTHS[width] });
+        await on.route('**/*', r => new URL(r.request().url()).hostname === HOST ? r.continue() : r.abort());
+        const p2 = await on.newPage();
+        await p2.goto(url(p.key, p.file), { waitUntil: 'load' });
+        const h1On = await p2.evaluate(() => Math.round(document.querySelector('h1').getBoundingClientRect().top));
+        await on.close();
+        check('  ...and <h1> at the same y scripts on and off (D1)', h1On === off.h1, 'on ' + h1On + ', off ' + off.h1);
+        const u = await scriptsOff(p.key + '-nojs-unguarded', width, p.file);
+        check('  negative control: without the scripts-off rules the dead controls ARE found', u.dead.length > 0,
+              u.dead.length + ' visible');
+      }
+      const failed = [];
+      for (const k of Object.keys(SHARED)) {
+        const [name, w] = k.split('@');
+        if ((await runEffect(name, p.key + '-no-site', Number(w), ctxPage)).ok) failed.push(k);
+      }
+      check('negative control: without assets/site.js every one of those fails', failed.length === 0,
+            failed.length ? 'STILL PASSING: ' + failed.join(', ') : Object.keys(SHARED).length + ' of ' + Object.keys(SHARED).length + ' fail');
     }
 
     /* ============================================================ PART 4 */

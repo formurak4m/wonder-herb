@@ -276,15 +276,20 @@ const replacedWrapped = L.mergeTree(WRAPPED, enReplaced, 'en', CONFIGS);
 check('a different type at the same id inherits NO node-level keys (a replacement, not an edit)',
       replacedWrapped.sections[1].wrap === undefined && replacedWrapped.sections[1].futureKey === undefined, 'none inherited');
 
-/* The real tree this bit: 產品介紹, through the same round trip the app does. */
-const REAL = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'pages', 'products.json'), 'utf8').replace(/^﻿/, ''));
-const realSaved = L.mergeTree(REAL, L.projectTree(REAL, 'zh', CONFIGS), 'zh', CONFIGS);
-const lostKeys = [];
-REAL.sections.forEach((s, i) => Object.keys(s).forEach(k => { if (JSON.stringify(s[k]) !== JSON.stringify(realSaved.sections[i][k])) lostKeys.push(s.type + '.' + k); }));
-Object.keys(REAL).forEach(k => { if (k !== 'sections' && JSON.stringify(REAL[k]) !== JSON.stringify(realSaved[k])) lostKeys.push('tree.' + k); });
-check('data/pages/products.json: an unchanged editor save changes nothing but adding section ids',
-      lostKeys.length === 0 && realSaved.sections.every(s => typeof s.id === 'string'),
-      lostKeys.length ? 'CHANGED: ' + lostKeys.join(', ') : 'wrap kept; ' + REAL.sections.length + ' sections identical + id');
+/* The real trees: 產品介紹 is the one this bit. Every published tree goes
+   through the same round trip the app does, so a migrated page is covered by
+   existing, not by being named here. */
+const PAGES_DIR = path.join(ROOT, 'data', 'pages');
+fs.readdirSync(PAGES_DIR).filter(f => f.endsWith('.json')).sort().forEach(file => {
+  const REAL = JSON.parse(fs.readFileSync(path.join(PAGES_DIR, file), 'utf8').replace(/^﻿/, ''));
+  const realSaved = L.mergeTree(REAL, L.projectTree(REAL, 'zh', CONFIGS), 'zh', CONFIGS);
+  const lostKeys = [];
+  REAL.sections.forEach((s, i) => Object.keys(s).forEach(k => { if (JSON.stringify(s[k]) !== JSON.stringify(realSaved.sections[i][k])) lostKeys.push(s.type + '.' + k); }));
+  Object.keys(REAL).forEach(k => { if (k !== 'sections' && JSON.stringify(REAL[k]) !== JSON.stringify(realSaved[k])) lostKeys.push('tree.' + k); });
+  check('data/pages/' + file + ': an unchanged editor save changes nothing but adding section ids',
+        lostKeys.length === 0 && realSaved.sections.every(s => typeof s.id === 'string'),
+        lostKeys.length ? 'CHANGED: ' + lostKeys.join(', ') : 'wrap kept; ' + REAL.sections.length + ' sections identical + id');
+});
 
 console.log('\n' + (fail ? '=== ' + fail + ' CHECK(S) FAILED ===' : '=== ALL CHECKS PASSED ==='));
 process.exit(fail ? 1 : 0);
