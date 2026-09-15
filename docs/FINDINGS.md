@@ -41,7 +41,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 23 | **A migrated page loses cart, mobile menu, quick view and language switch** | **High — blocks retiring any page** | Ported + `test:behaviour` at P9-T1; retirement pending review |
 | 24 | **Migrated pages are Chinese only: a visitor who chose another language lands in Chinese** | Medium — accepted regression (owner) | Phase 14 (per-language URLs) |
 | 25 | **A write path deletes every field its caller was not shown**: rule "the store merges, never replaces"; bites today in the product form (`link`, `ribbon`, `priceNote`) and the Puck save (section `wrap`) | **HIGH — data loss** (finding 20 was one case) | Puck path fixed at P9-T1 (`mergeTree`); every write path in the API: P12-T3; blocks lifting PT3's price hold |
-| 26 | **Invented star ratings + reviews in product JSON-LD**, served today by this repo's public GitHub Pages copy (not by the client's Wix site) | **HIGH — trust / health-product harm** | Stripped from the rebuild + live pages (`7a918b6`) and gated; `main` fix `6503a01` awaiting push; recommend unpublishing the Pages copy |
+| 26 | **Patient cases published as five-star product reviews, with invented ratings**: publicly served on the GitHub Pages copy 4 Jun – 15 Sep 2026 (not on the client's Wix site) | **CRITICAL — medical testimonial as customer review** | Removed from `main` (`6503a01`, deploy verified clean) and the branch (`7a918b6`, `d2ee9c4`), gated in `test:seo`; owner: unpublish Pages, check Google/Bing; source feeds P13G-T2 |
 
 ---
 
@@ -1639,18 +1639,40 @@ every content write path, so a new path is covered by default.
 
 ---
 
-## 26 · Invented star ratings and reviews in the site's structured data — publicly served today — HIGH
+## 26 · Patient cases published as five-star product reviews, with invented ratings — publicly served 4 Jun – 15 Sep 2026 — CRITICAL
 
-**The worst thing found in the data so far, worse than the invented claim (finding 22).** A star
-rating with a review count is a trust signal a customer acts on. On a health products site, made-up
-numbers make a medical product look more trusted than any evidence supports. BUILD_TASKS P13G-T2's
-hard rule already said never emit them; this is its first real test.
+**Severity: CRITICAL — medical testimonial content presented as customer reviews of health
+products.** The worst thing found in this project. It is worse than the invented claim (finding 22)
+and worse than invented star ratings alone.
 
-**What.** Product JSON-LD carried `aggregateRating` (ratings of 4.6 to 4.9 with review counts of 89
-to 328) and one `review` each: a five-star `reviewRating`, a one-line review body, **no author** and
-no date. Nothing in `data/` holds a single rating or review. They were not described by any client
-source this project has seen, so they are treated as invented. They are described here, not quoted
-(standing practice, finding 22).
+**What was published** (described, not quoted: standing practice, finding 22):
+- **Reviews built from patients' medical cases.** Each `Review` restated a patient's case as a
+  five-star product review: an author name or honorific, a **diagnosis, including cancer**, and a
+  treatment outcome attributed to the product.
+- **Some of those patients are real case-study subjects.** Of the 12 distinct review authors on
+  `main`, 3 match patients named in the client's own case studies (`data/cases.json` and 典型病例's
+  visible text). So the client's clinical case material was repurposed as star-rated product
+  endorsements.
+- **The other 9 appear in no case content at all.** Their origin is unknown; they may be invented
+  people. Checked by string match only; no names reproduced here.
+- **Invented ratings beside them:** `aggregateRating` values of 4.6–4.9 with review counts of 89–328,
+  repeated across pages including ones with no product. One carried an "explanation" citing a large
+  patient-feedback statistic that nothing in `data/` or any client source seen supports.
+- **No real data behind any of it:** nothing in `data/` holds a single rating or review.
+
+**Why this severity.**
+- A star rating with a review count is a trust signal a customer acts on.
+- Presenting patient outcomes, cancer included, as customer reviews **turns clinical anecdote into
+  product endorsement**. On a health products site that misleads a sick reader about what the
+  product does.
+- It is also structured data a search engine may show as rich results.
+- BUILD_TASKS P13G-T2's hard rule already said never emit rating data; this was its first real
+  test.
+
+**Publicly served from 4 June 2026** (the GitHub web uploads that introduced it on `main`) **until
+15 Sep 2026**, on this repo's GitHub Pages copy under the client's brand. The client's own Wix site
+never carried it, as far as was checked: homepage and 產品介紹 only. Wix rate-limited further
+checks (429), so those were stopped, not retried.
 
 **Removed at P9-T1 (15 Sep 2026)** from everything this rebuild publishes:
 - **The products page tree**, through the API then export. The 5 `aggregateRating` + 5 `review`
@@ -1678,25 +1700,25 @@ markup first appears in the repo through GitHub web uploads on 4 June 2026 (`mai
 up the GitHub Pages copy: see the indexing check below.
 
 **Owner decisions, 15 Sep 2026: handle today.**
-1. **`main` (the public copy): stripped as its own commit, `6503a01`**, prepared and diff shown to
-   the owner. **Pushed only on the owner's approval** (main is touched for this fix only).
+1. **`main` (the public copy): stripped as its own commit, `6503a01`. Diff approved by the owner,
+   pushed 15 Sep 2026 05:12 UTC, alone.**
    - 15 pages: `review`/`aggregateRating` keys on 14, plus a **standalone `Review` node in
      `index.html`'s `@graph`**, which the first key-based pass missed and a node-level pass caught.
-   - Afterwards all 50 JSON-LD blocks on `main` parse, and none holds rating data.
-2. **The live pages on `rebuild/editor`: stripped, own commit `7a918b6`.** 16 pages, 90 removals.
+     All 50 JSON-LD blocks on `main` parse, and none holds rating data.
+   - **Deploy verified:** the "Deploy static content to Pages" run for `6503a01` completed
+     successfully. All 16 pages on `formurak4m.github.io/wonder-herb/` were fetched live, with and
+     without cache-busting: **0 rating data** in any JSON-LD block.2. **The live pages on `rebuild/editor`: stripped, own commit `7a918b6`.** 16 pages, 90 removals.
    This branch carried more than `main`, including `product.html` and extra `index.html` nodes.
    All 51 JSON-LD blocks parse; no rating data remains in any tracked file.
    - The stale HTML comments naming "Review" in each page's JSON-LD list were left alone, so the
      commit is data only. One of them states the intent: building social proof.
    - `test:seo`'s baseline comparison now ignores `Review` / `AggregateRating` types. The captured
      heads contain them, and losing them is the fix, not a regression.
-
-**What the removed reviews actually were (described, not quoted):** each review restated a
-**patient's case** from the 典型病例 material as a five-star product review: an author name or
-honorific, a diagnosis including cancer, and a treatment outcome. They sat beside an
-`aggregateRating` whose "explanation" cited a large patient-feedback statistic that nothing in the
-data supports. So this is invented trust signals **built from medical case details**, published as
-product reviews. That is worse than a bare invented number.
+   - **Stale comments cleaned in a separate follow-up, `d2ee9c4`** (so `7a918b6` stayed
+     data-only). 14 comment lines in 14 files no longer list "Review", and 小册子's social-proof
+     comment now describes its block as `Product`. `main` still carries the same 13 comments.
+     They're harmless text, but `main` was authorised for the data fix only; they go at cutover or
+     on the owner's say.
 
 **Is the public copy indexed? Checked 15 Sep 2026, with limits stated:**
 - A `site:formurak4m.github.io` search and exact-URL searches through this session's web-search tool
@@ -1733,6 +1755,28 @@ product reviews. That is worse than a bare invented number.
 - **Residual:** the repository itself is public, so the source, including history with the
   ratings, stays readable on github.com (the same position as finding 22). Making the repo private
   would also end Pages on a free plan. That is a bigger decision, noted and not taken.
-3. **The client conversation.** The client should hear that a copy of their site built for this
-   project carried invented ratings and reviews, what was removed, and when. If they have genuine,
-   attributable reviews, publishing those is a new decision with them (P13G-T2).
+3. **The client conversation.** The client should hear three things. First, that a copy of their
+   site built for this project carried invented ratings, and reviews built from patient cases
+   (including some of their own case-study patients), publicly from 4 June to 15 September 2026.
+   Second, what was removed, and when. Third, that it was never on their Wix site, as far as was
+   checked. If they have genuine, attributable reviews, publishing those is a new decision with
+   them (P13G-T2), and patient case material needs the patients' consent for that use regardless.
+4. **With the owner (15 Sep 2026):**
+   - **Unpublish GitHub Pages** (Settings → Pages → Unpublish). Takedown was chosen over `noindex`,
+     because a stray `noindex` left at the Phase 18 cutover would de-index the client's real site.
+   - **Run `site:formurak4m.github.io` in Google and Bing.** Any hit means removal requests
+     (Google Refresh Outdated Content, Bing Content Removal); no hits means fix-and-move-on.
+
+**For the claims review (BUILD_TASKS P13G-T2): the source of this content may have supplied the
+on-page copy too.**
+- Whoever produced medical-case "reviews" and an unsupported patient-feedback statistic in June
+  2026 was writing health persuasion copy for these pages, and the same uploads carried the pages'
+  visible copy.
+- **So the on-page claims can no longer be presumed to be the client's own words.** That includes
+  產品_T3.html's statement about inhibiting tumour growth (noted at finding 22), the efficacy
+  multipliers, and the "university-proven" phrasing.
+- P13G-T2 must trace each health claim to a client-approved source (their Wix site, their
+  brochures, their written approval) before any migrated page publishes it. Unsourced claims are
+  held, not carried over.
+- Not established: whether the Wix site carries the same claims. Wix rate-limited the check (429),
+  so it wasn't retried.

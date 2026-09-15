@@ -666,6 +666,22 @@ being rebuilt. Migration is exactly when these rot: a page moves to `legacy/`, a
 Correctly sequenced after migration, not before: tuning GEO now would tune for pages that are about
 to be rebuilt, and `llms.txt` in particular is a description of a page set that is still changing.
 
+> **CLAIMS PROVENANCE: added 15 Sep 2026, and NOT deferred to after Phase 13 (docs/FINDINGS.md
+> finding 26).**
+> - **Why it can't wait.** The June 2026 uploads that put invented ratings into the live pages also
+>   turned patients' cases into five-star "reviews" and cited an unsupported patient-feedback
+>   statistic. Whoever wrote that was writing health persuasion copy, and the same uploads carried
+>   the pages' visible text. **So no health claim on the current pages can be presumed to be the
+>   client's own words.**
+> - **Examples:** 產品_T3.html's statement about inhibiting tumour growth, the efficacy multipliers,
+>   the "university-proven" phrasing.
+> - **Rule, applied per page at Phase 9 migration, not at the end:** before a migrated page
+>   publishes a health or efficacy claim, trace it to a client-approved source (their Wix site,
+>   their printed materials, or their written approval). An unsourced claim is **held**: not
+>   carried into the page tree, not rewritten by us.
+> - **Patient case material** (典型病例) needs the client's confirmation that the patients
+>   consented to its publication. It must never again be presented as a review or rating.
+
 - Regenerate `llms.txt` from the page trees rather than maintaining it by hand, so it cannot drift
   from what is published. Decide then whether to add `llms-full.txt`.
 - **Fix the existing gap: `llms.txt` does not list `index.html`**, the homepage. Found at the Phase
