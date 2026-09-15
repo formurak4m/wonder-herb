@@ -25,6 +25,8 @@
  *                   COMMITTED content, not uncommitted working-tree changes)
  *   BASELINE_OUT    where to write                default baseline/
  *   BASELINE_MODES  on,off                        default both
+ *   BASELINE_PAGES  comma-separated page files    default every root .html
+ *                   (e.g. to capture one migrated page for a visual diff)
  *
  * Outputs: screens/<page>.<w>.png (scripts on), screens-nojs/<page>.<w>.png
  * (scripts off), head/<page>.html (scripts on, 1280), manifest.json.
@@ -40,6 +42,7 @@ const ROOT = path.resolve(process.env.BASELINE_SITE || REPO);
 const OUT = path.resolve(process.env.BASELINE_OUT || path.join(REPO, 'baseline'));
 const HOST = process.env.BASELINE_HOST || 'wonder-herb.test';
 const MODES = (process.env.BASELINE_MODES || 'on,off').split(',').map(s => s.trim()).filter(Boolean);
+const ONLY = (process.env.BASELINE_PAGES || '').split(',').map(s => s.trim()).filter(Boolean);
 const PORT = 4177;
 const WIDTHS = [{ w: 1280, h: 900, tag: '1280' }, { w: 390, h: 844, tag: '390' }];
 
@@ -141,8 +144,9 @@ const FREEZE = `*,*::before,*::after{animation-duration:0s!important;animation-d
   html{scroll-behavior:auto!important}`;
 
 async function main() {
-  const pages = fs.readdirSync(ROOT).filter(f => f.toLowerCase().endsWith('.html')).sort();
-  if (!pages.length) throw new Error('no .html pages found in ' + ROOT);
+  const pages = fs.readdirSync(ROOT).filter(f => f.toLowerCase().endsWith('.html')).sort()
+    .filter(f => !ONLY.length || ONLY.includes(f));
+  if (!pages.length) throw new Error('no .html pages found in ' + ROOT + (ONLY.length ? ' matching BASELINE_PAGES' : ''));
 
   for (const m of MODES) {
     if (m !== 'on' && m !== 'off') throw new Error('BASELINE_MODES must be on and/or off, got: ' + m);
