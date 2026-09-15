@@ -726,7 +726,13 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
 ## Phase 18 — Cutover
 - Point the domain fully at the new pre-rendered site (already GitHub Pages via CNAME; confirm DNS and that all pages/languages are live). Submit the new sitemap to Search Console. Watch analytics and crawl stats for a week. Only then cancel Wix.
 - **Gate — the site still depends on Wix for media.** `grep -rn "wixstatic" *.html` must return **nothing** before Wix is switched off. It currently returns 45 hits across all 18 pages: the homepage background video plus the `og:image` / `twitter:image` social previews. Cancelling Wix with any of these left breaks the homepage and every link preview. Phase 10 is what clears it. See `docs/FINDINGS.md` finding 1.
-- **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed, and the `wixstatic` grep is clean. Then, and only then, switch Wix off.
+- **Correction (15 Sep 2026):** the domain is **not** "already GitHub Pages via CNAME". `www.wonder-herb.com` and the apex resolve to Wix today; the `CNAME` file in the repo does not point DNS anywhere. Cutover is a DNS change plus a deliberate re-enable of GitHub Pages, which the owner unpublished on 15 Sep 2026 (finding 26).
+- **Gate — finding 26 must not ship again.**
+  1. **Stale "Review" comments on `main`.** 13 pages still carry an HTML comment listing "Review" among their structured-data types, including one naming social proof as its purpose. Remove them before cutover; `rebuild/editor` already did (`d2ee9c4`). Check: `git grep -n -e '<!--[^>]*[Rr]eview[^>]*-->' -- '*.html'` on the branch being deployed returns **nothing**.
+  2. **No rating or review data anywhere in the deployed tree**, pre-rendered or hand-coded. `npm run test:seo` covers rendered pages. Also check that `git grep -n -e aggregateRating -e reviewCount -e ratingValue -e '"Review"' -- '*.html' 'data/'` returns nothing.
+  3. **No `noindex` anywhere** in what deploys: `git grep -n -i noindex -- '*.html'`, except the five that deliberately carry it today: `account.html`, `購物車.html`, `product.html`, `admin/index.html`, `editor/index.html`. A stray one de-indexes the client's real site. That risk is why the Pages copy was taken down rather than noindexed.
+  4. **No patient case material presented as a review or rating**, and every health claim traced to a client-approved source (P13G-T2 claims provenance).
+- **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed, the `wixstatic` grep is clean, and the four finding-26 checks above are clean. Then, and only then, switch Wix off.
 
 ---
 

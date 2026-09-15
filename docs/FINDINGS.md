@@ -41,7 +41,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 23 | **A migrated page loses cart, mobile menu, quick view and language switch** | **High — blocks retiring any page** | Ported + `test:behaviour` at P9-T1; retirement pending review |
 | 24 | **Migrated pages are Chinese only: a visitor who chose another language lands in Chinese** | Medium — accepted regression (owner) | Phase 14 (per-language URLs) |
 | 25 | **A write path deletes every field its caller was not shown**: rule "the store merges, never replaces"; bites today in the product form (`link`, `ribbon`, `priceNote`) and the Puck save (section `wrap`) | **HIGH — data loss** (finding 20 was one case) | Puck path fixed at P9-T1 (`mergeTree`); every write path in the API: P12-T3; blocks lifting PT3's price hold |
-| 26 | **Patient cases published as five-star product reviews, with invented ratings**: publicly served on the GitHub Pages copy 4 Jun – 15 Sep 2026 (not on the client's Wix site) | **CRITICAL — medical testimonial as customer review** | Removed from `main` (`6503a01`, deploy verified clean) and the branch (`7a918b6`, `d2ee9c4`), gated in `test:seo`; owner: unpublish Pages, check Google/Bing; source feeds P13G-T2 |
+| 26 | **Patient cases published as five-star product reviews, with invented ratings**: real case-study patients' identities attached to fabricated reviews, publicly served on the GitHub Pages copy 4 Jun – 15 Sep 2026 (not on the client's Wix site) | **CRITICAL — potentially legal / privacy (HK PDPO), needs legal advice** | Removed from `main` (`6503a01`, verified clean) and the branch; gated in `test:seo`. **Evidence preserved in history, do not rewrite.** Owner handles with the client |
 
 ---
 
@@ -1673,6 +1673,77 @@ and worse than invented star ratings alone.
 15 Sep 2026**, on this repo's GitHub Pages copy under the client's brand. The client's own Wix site
 never carried it, as far as was checked: homepage and 產品介紹 only. Wix rate-limited further
 checks (429), so those were stopped, not retried.
+
+> ### ⚠ POTENTIALLY A LEGAL AND PRIVACY MATTER, NOT ONLY AN SEO ONE (recorded 15 Sep 2026, project owner)
+>
+> **Real patients' identities, drawn from the client's own case studies, were attached to
+> fabricated product reviews with invented ratings, and published publicly for about three months**
+> (4 June – 15 September 2026).
+>
+> Under Hong Kong's Personal Data (Privacy) Ordinance (PDPO), information about a named person's
+> diagnosis and treatment is personal data, and health data is among the most sensitive kinds. Here
+> it was **used for a purpose it was almost certainly not collected for**: endorsing a product in
+> star-rated reviews the patients never wrote. The same content also presents clinical outcomes,
+> cancer included, as customer testimony for health products. That may raise questions beyond
+> privacy, e.g. about health-product advertising and misleading trade descriptions.
+>
+> **The project owner is not a lawyer, and nothing here is legal advice. This needs proper legal
+> advice.** It is stated plainly so that nobody treats it as a tidy-up. The SEO fix is done; the
+> exposure it created is not closed by the fix.
+>
+> **Handling (owner's decision, 15 Sep 2026):**
+> - The owner handles this with the client, including who produced the content.
+> - **No further investigation from this project's side:** no more fetching of the client's Wix
+>   site, and **no tracing of authorship through commit metadata**.
+> - **Do not delete the evidence.** No history rewrite on `main` for this content (see below).
+
+### Exposure window and URLs, recorded for the client and their advisers
+
+- **Window: 4 June 2026 → 15 September 2026, 05:12 UTC.**
+  - **Start:** the commits that added the content to `main` are dated 4 June 2026 (`503c22d`,
+    `ac197ae`, `b00c05a`), and `main` deploys to GitHub Pages on push. The exact first-served time
+    was not verified: the repository's Pages deployment history would show it, and that is the
+    owner's to retrieve.
+  - **End:** the deploy of `6503a01` completed at 05:12:19 UTC on 15 September 2026. All 16 live
+    pages were then fetched and verified free of rating data.
+  - The owner is unpublishing GitHub Pages, which ends public serving of the copy altogether.
+- **Where: `https://formurak4m.github.io/wonder-herb/`**, these 15 pages, including the site root (served as
+  `index.html`), each of which carried rating and/or review data on `main` at `1201c70`:
+  `index.html`, `典型病例.html`, `小册子.html`, `常見問題.html`, `微信發表文章.html`,
+  `有效成份檢測.html`, `產品_PT3.html`, `產品_T3.html`, `產品_乙肝清.html`, `產品_憶活素.html`,
+  `產品_雲芝糖肽精華_A.html`, `產品_雲芝糖肽精華_B.html`, `產品介紹.html`, `研究報告.html`,
+  `聯絡我們.html`.
+- **The client's own website was unaffected.** `www.wonder-herb.com` is served by Wix, not by this
+  repository. Basis: DNS on 15 Sep 2026, and the Wix homepage and 產品介紹 carried no rating data.
+  The other Wix pages were not checked (Wix rate-limited, and the owner has closed further checks).
+- **STILL PUBLICLY READABLE: the repository's history on github.com.** The repository is public, and
+  the removed content remains viewable in its history, including the case-derived reviews. That is
+  the evidence to preserve, and it is also continuing exposure. Whether to keep the repository
+  public while this is handled (e.g. making it private preserves every commit) is a decision for the
+  owner and the client's advisers. It is recorded, not taken.
+
+### Where the removed content is preserved: recoverable exactly, do not rewrite
+
+Git history holds every byte of what was published. To reproduce it:
+`git show <commit>:<path>`, or `https://github.com/formurak4m/wonder-herb/blob/<commit>/<path>`.
+
+| what | last commit that CONTAINS it | removed by | paths (rating/review objects at that commit) |
+|---|---|---|---|
+| **The publicly served copy** (`main`) | **`1201c70`** | `6503a01` | `index.html` 1, `典型病例.html` 4, `小册子.html` 4, `常見問題.html` 3, `微信發表文章.html` 3, `有效成份檢測.html` 3, `產品_PT3.html` 3, `產品_T3.html` 3, `產品_乙肝清.html` 3, `產品_憶活素.html` 3, `產品_雲芝糖肽精華_A.html` 3, `產品_雲芝糖肽精華_B.html` 3, `產品介紹.html` 10, `研究報告.html` 3, `聯絡我們.html` 3 |
+| The same pages on this branch (never deployed) | `c6c4237` | `7a918b6` | the 15 above, plus `product.html` (10); `index.html` holds 6 here |
+| The rebuild's page tree and render fixture (never deployed) | `472ad4a` | `2923574` | `data/pages/products.json` 5, `renderer/sample/products.json` 5 |
+
+- `1201c70` is contained in `origin/main`, `origin/geo` and `origin/rebuild/editor`. `c6c4237` is on
+  `origin/rebuild/editor`.
+- The commits that introduced the content on `main` are dated 4 June 2026 (`503c22d`, `ac197ae`,
+  `b00c05a`), listed as dates only: authorship is not examined here.
+- **Rules:**
+  - **Never rewrite `main`'s history, never force-push, and never delete `geo` or `rebuild/editor`
+    while this matter is open.** Doing so would destroy the record of exactly what was published
+    and when.
+  - If the repository's visibility changes, the history must be kept intact.
+  - Anyone needing the record should get it from these commits, not from a recollection or a
+    summary.
 
 **Removed at P9-T1 (15 Sep 2026)** from everything this rebuild publishes:
 - **The products page tree**, through the API then export. The 5 `aggregateRating` + 5 `review`
