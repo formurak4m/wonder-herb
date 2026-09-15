@@ -480,6 +480,65 @@ so the main variable is now **engineering**: new section types and the interacti
 - **Re-estimate after the first content page and the first product detail page.** Those two
   patterns cover 13 of the 17 pages.
 
+#### 常見問題 (page two, first content page): DONE 15 Sep 2026, awaiting owner review
+
+**Retired** (`fc8c6e8`). `legacy/常見問題.html` (git rename, noindex), and `/常見問題.html` is rendered
+from `data/pages/faq.json`, which is also in the database (export leaves `data/` unchanged).
+`test:all` is green: 14 suites, 943 passing checks.
+
+**Actual elapsed: ~25 minutes** (11:31 → about 11:56 IST, docs included). The ½-day estimate was
+~10× too high for a page whose sections exist.
+
+**What was novel** (`79a2d39`, `1f52e61`):
+- **`callout` section** (11th type): `.highlight-box` + `.expert-link`, and the tinted note with an
+  inline link (`body` + `label` + `after`). Unique to this page.
+- **FAQPage is derived, not carried.** `render.js faqPageNode` builds it from the data the
+  faq-accordion renders. A tree carrying its own FAQPage alongside is refused. `test:seo` check 7
+  fails any page whose FAQPage names different questions from its visible list.
+- **`test:behaviour` PART 5** runs the shared `site.js` effects on every other published tree:
+  - menu, badge, cross-tab, language;
+  - scripts off;
+  - per-page negative controls.
+
+  `test:editor:lang` round-trips every tree. Both find pages from `data/pages/`, so later content
+  pages get this coverage without test edits.
+
+**What was mechanical:**
+- **The tree:** lifted from the original by jsdom.
+- **Page CSS:** one `MIGRATED` line in `extract-css.js`.
+- **Chrome:** per-page `chromeFrom`.
+- **Legacy guard** and render-to-root: no change needed.
+- **Existing gates:** SEO, fidelity and publish needed none either.
+- **Visual diff harness:** generalised once to take any page (scratchpad).
+
+**Visible change, recorded:** the list now shows `data/faq.json`, the list the admin edits, instead
+of the 5 hand-coded Q&As. No data was changed (owner: content not authoritative).
+- This is also the first time an admin FAQ edit reaches the site; the admin screen already said it
+  did.
+- The seven-language `translations` for the old Q&As go with them (Chinese-only, finding 24).
+
+**Visual diff, reconciled:**
+- **Scripts on:** 39.0% at 1280 and 47.4% at 390. The data answers are shorter, so everything below
+  them moves up.
+- **The proof:** the same tree was rendered in memory with the original's own Q&As and icons.
+  - Under `lang="zh"` the page is the same height as the baseline.
+  - Its only difference is **one mid-sentence bold run in Q2**, which the copy model cannot express
+    (finding 14: lead-ins only).
+  - With that `<strong>` restored it **equals the control pixel for pixel**, region by region
+    (32,373 px at 1280, 15,006 at 390; the control is drift in the original itself).
+- **Scripts off vs scripts on** differs only in the nav switcher.
+
+**Small differences, accepted without a visual effect:**
+- the list is no longer inside `<section class="faq-section" aria-label>`, whose padding is 0;
+  the region label is gone;
+- the WeChat link's Simplified-Chinese `aria-label` is dropped, so the visible label is its name;
+- the carried Product node for PSP-500 still says `InStock` / price 0, as the original did
+  (background, content not authoritative).
+
+**Chrome partial: still optional, not blocking.** Per-page `chromeFrom` gave this page its own nav
+and footer with no extra work. It becomes worth building when chrome must change once for all pages,
+or when a page has no original to lift from (add-page-from-template).
+
 **Recorded, accepted (owner):**
 - **Stock goes live at publish, not instantly.** The rendered page bakes stock in; the old page read
   `inventory.csv` when it loaded. **FLAG FOR `ADMIN_GUIDE.md`**, written when the page actually
