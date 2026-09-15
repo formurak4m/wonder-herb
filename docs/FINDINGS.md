@@ -24,7 +24,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 6 | Pages deploys the whole repo, so editor source and build output ship publicly | Medium | Phase 8 |
 | 7 | `/api/inventory.csv` drops the reorder point for untracked products | Medium | Phase 12 |
 | 8 | `products.json` has no `image` or `link` — **hard blocker for Phase 9** | **High** | Phase 9 (blocking) |
-| 9 | The data and the live site disagree on two product prices | **Client decision** | Raise with client |
+| 9 | The data and the live site disagree on two product prices | Background (owner, 15 Sep 2026: site content not authoritative) | Closed for the build: `data/products.json` prices are used; a change is a data edit |
 | 10 | `faq-accordion` is a static list, not an accordion | Client decision | Client, if ever |
 | 11 | No text+image block exists; the P4-T2 section list was wrong | Resolved | Closed at P4-T2 |
 | 12 | Pre-rendered pages publish **visually blank** without the reveal script | **High — passes green, looks broken** | Phase 5 (P5-T1 template) |
@@ -32,18 +32,23 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 14 | Body copy uses **bold, lists and links**; plain-text fields drop them | Decided — option (c) | P4-T5 |
 | 15 | Chrome's layout depends on JS, and there is no shared stylesheet | **High — D1 required, not optional** | P5-T1 / Phase 9 |
 | 16 | **`export` published staff emails and an internal audit trail to a public URL** | **HIGH — security** | Fixed at P7-T1a |
-| 17 | `export` wrote `updatedAt` bookkeeping into public site data; one real stock change is unpublished | Medium — fixed; stock is a **client decision** | P7-T1a / client |
+| 17 | `export` wrote `updatedAt` bookkeeping into public site data; one real stock change was unpublished | Medium — fixed | P7-T1a; stock change committed 15 Sep 2026 (`e567a69`), data/ matches the database |
 | 18 | `renderer/i18n.js` is CommonJS, so the editor cannot import it; Vite shim is a stopgap | Medium | Phase 9 |
 | 19 | Product data has no per-language `title`/`desc` — same root cause as finding 8 | Medium — **client decision** | Phase 14 (decide at 9) |
 | 20 | **A plain-string write silently deleted a language map** (admin product form) | **HIGH — data loss** | Guarded at P9-T1; form at P12-T3 |
 | 21 | **The visual baseline records a localhost-only page**, not what production serves | **High — the migration gate's reference is wrong** | Re-captured 15 Sep 2026; font stack held |
 | 22 | **Staff login addresses and an invented health claim in public git history** (page-tree export + finding 16's own excerpt); publish gate checked a fixture | **HIGH — security** (same as 16) | Paths fixed at P9-T1; identities rotated; no history rewrite (owner) |
-| 23 | **A migrated page loses cart, mobile menu, quick view and language switch** | **High — blocks retiring any page** | Ported + `test:behaviour` at P9-T1; retirement pending review |
+| 23 | **A migrated page loses cart, mobile menu, quick view and language switch** | High — was blocking retirement | Ported + `test:behaviour`; 產品介紹 retired 15 Sep 2026 (`8d29617`) |
 | 24 | **Migrated pages are Chinese only: a visitor who chose another language lands in Chinese** | Medium — accepted regression (owner) | Phase 14 (per-language URLs) |
 | 25 | **A write path deletes every field its caller was not shown**: rule "the store merges, never replaces"; bites today in the product form (`link`, `ribbon`, `priceNote`) and the Puck save (section `wrap`) | **HIGH — data loss** (finding 20 was one case) | Puck path fixed at P9-T1 (`mergeTree`); every write path in the API: P12-T3; blocks lifting PT3's price hold |
 | 26 | **Patient cases published as five-star product reviews, with invented ratings**: real case-study patients' identities attached to fabricated reviews, publicly served on the GitHub Pages copy 4 Jun – 15 Sep 2026 (not on the client's Wix site) | **CRITICAL — potentially legal / privacy (HK PDPO), needs legal advice** | Removed from `main` (`6503a01`, verified clean) and the branch; gated in `test:seo`. **Evidence preserved in history, do not rewrite.** Owner handles with the client |
 
 ---
+
+> **Status note, 15 Sep 2026 (owner):** the current site content is **not authoritative**; the
+> client will replace all of it. Content findings (9, 17, 22's claims, 26) stay recorded as
+> **background**. They no longer block the build, and no further investigation, escalation or data
+> change is to be made on them unless the owner asks.
 
 ## 1 · The homepage video, and 45 other assets, are hosted on Wix
 

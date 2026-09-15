@@ -16,7 +16,7 @@ while the public site stays fast static HTML on GitHub Pages.
 
 **Stack:**
 - **API:** Node + Express + MongoDB.
-- **Public pages:** 18 hand-coded static HTML files.
+- **Public pages:** 18 pages: 17 hand-coded static HTML files plus 1 pre-rendered (`產品介紹.html`, rendered from `data/pages/products.json`; its hand-coded original is kept in `legacy/`).
 - **React 19** runs only on the server, in the renderer (`renderToStaticMarkup`), and in the Puck editor app (Vite). **No React ships to the public site.**
 - **Sections** are bundled for Node with esbuild (`npm run sections:build`).
 
@@ -25,7 +25,7 @@ while the public site stays fast static HTML on GitHub Pages.
 - **Not done:**
   - **P5-T2**: `buildSite`, so the renderer writes only to gitignored `renderer/.out/` and nothing pre-rendered is deployed yet.
   - **P8-T3**: the deploy allow-list, registered but not applied. The deploy is still the whole repo.
-- **In progress: Phase 9, P9-T1.** 產品介紹 is a page tree, rendered and SEO-gated, with its behaviour ported and tested (`test:behaviour`). Its visual reconciliation was done against the old localhost baseline and has to be re-run against the 15 Sep one. The old page is **not yet retired, and is ON HOLD until the client answers** the disputed prices and PSP-500 stock: retiring it would change public prices on numbers we know are disputed. The five remaining build items and the hold are listed under P9-T1 in `BUILD_TASKS.md`.
+- **Phase 9: P9-T1 page one DONE (15 Sep 2026), awaiting owner review before page two.** 產品介紹 is live as a pre-rendered page (`8d29617`), and its original is retired to `legacy/`, which carries noindex and is disallowed in robots.txt. The visual diff against the 15 Sep baseline is fully reconciled. Status, cost and the revised estimate for the other 17 pages (~10–14 working days) are under P9-T1 in `BUILD_TASKS.md`. Pages whose original is in `legacy/` are written to the root by `npm run render`; never hand-edit them.
 
 Work happens on `rebuild/editor` (off `geo`), pushed to origin. `main` is untouched, and **nothing from this branch is live**. Never push to or touch `main`. The owner commits.
 Hosting is deliberately deferred to Phase 11: everything runs locally until then. Do not connect or authorise the Vercel connector before Phase 11.
@@ -58,13 +58,13 @@ Already built:
   - Set `BASELINE_SITE` to a checkout of HEAD so the reference records committed content. The old localhost set is archived in `baseline/_previous-localhost-2026-09-08/`.
   - **Known remaining gap:** scripts-on captures use the CJK fallback font for `lang="zh"`, because the live language script overwrites `zh-Hant` (finding 21b, font stack undecided).
   - Re-run it if the live pages change before migration.
-- **Test suite**: `npm run test:all` = 14 suites, 874 checks, green (15 Sep 2026).
+- **Test suite**: `npm run test:all` = 14 suites, 879 checks, green (15 Sep 2026).
   - Suites: i18n, sections, render, seo, published-data, behaviour, editor config, editor language, API, auth, sales, UI + Mongo, UI auth, UI sweep.
   - `jsdom`, `playwright`, `vite`, `esbuild` and `@puckeditor/core` are devDependencies. Nothing new ships to the public site.
   - The Mongo-backed suites use `wonderherb_test`. **Never run two suites against one Mongo at once**: it fakes auth regressions.
 
 The two real gaps (both partly closed, neither closed for a visitor yet):
-1. **Content is rendered client-side on every live page.** Public pages are static shells that `fetch('./data/*.json')` and build content in the browser, so crawlers mostly see an empty shell. The renderer that fixes this exists and works on 產品介紹, but no pre-rendered page is deployed until P9-T1 retires the old page and P5-T2 writes output to the site.
+1. **Content is rendered client-side on 17 of the 18 pages.** Those are static shells that `fetch('./data/*.json')` and build content in the browser, so crawlers mostly see an empty shell. 產品介紹 is the first pre-rendered page (content in the HTML). Nothing from this branch is deployed until it merges to `main`.
 2. **The client cannot yet add or reorder sections.** The Puck editor and section model exist locally, but 17 of 18 page layouts are still hand-coded, and the editor isn't reachable by the client until Phase 11.
 
 Other issues:
@@ -79,11 +79,8 @@ Other issues:
   - `customers` and `invoices` are never exported to `data/` or exposed via `/api/cms`.
   - Credentials live only in the gitignored `.env`.
   - Old commits on `rebuild/editor` still contain former staff login addresses and an invented product claim. The owner decided against rewriting history (finding 22).
-  - **Finding 26 (CRITICAL, potentially a legal and privacy matter under HK PDPO; needs legal advice, the owner handles it with the client):** real case-study patients' identities were attached to fabricated five-star product reviews with invented ratings, publicly served on this repo's GitHub Pages copy from 4 Jun to 15 Sep 2026 (the client's Wix site was unaffected). Removed and verified (`6503a01` on `main`; `7a918b6`, `d2ee9c4` here); `test:seo` fails any rating data. **The published content is evidence, preserved in git history** (`1201c70` on `main`): **never rewrite `main`'s history, never force-push, never delete `geo` or `rebuild/editor`** while this is open. **Do not investigate further:** no fetching the client's Wix site, no tracing authorship through commit metadata. No health claim on the current pages can be presumed to be the client's own words (P13G-T2 claims provenance, per page).
-- **Waiting on the client:**
-  - two disputed prices (憶活素, PT3): the cart refuses them via `PRICE_HOLD` in `assets/site.js` (finding 9, 23);
-  - whether PSP-500's real out-of-stock state gets published: the database holds the truth and `data/` holds the last published value, deliberately (finding 17);
-  - the health-claims review of the client's own copy (P13G-T2).
+  - **Finding 26 (CRITICAL, potentially a legal and privacy matter under HK PDPO; needs legal advice, the owner handles it with the client):** real case-study patients' identities were attached to fabricated five-star product reviews with invented ratings, publicly served on this repo's GitHub Pages copy from 4 Jun to 15 Sep 2026 (the client's Wix site was unaffected). Removed and verified (`6503a01` on `main`; `7a918b6`, `d2ee9c4` here); `test:seo` fails any rating data. **The published content is evidence, preserved in git history** (`1201c70` on `main`): **never rewrite `main`'s history, never force-push, never delete `geo` or `rebuild/editor`** while this is open. **Do not investigate further:** no fetching the client's Wix site, no tracing authorship through commit metadata. Background only since 15 Sep 2026: site content is not authoritative, and claims provenance is not a migration gate.
+- **Site content is NOT authoritative (owner, 15 Sep 2026):** the client will replace all of it. Content disputes are not blockers, and nothing further is to be investigated, escalated or changed on them unless the owner asks. **Don't change site data unless the owner explicitly asks.** Prices come from `data/products.json` (no price hold); PSP-500's out-of-stock state is committed.
 - Currency is HKD.
 
 Known issues are logged in `docs/FINDINGS.md` (26 findings so far), each with the phase that owns its fix. The index table at the top shows which are fixed. **Do not fix a finding out of its phase** unless the owner says so.
@@ -222,7 +219,7 @@ Month 2: all 18 pages, all 7 languages, full ~22 sections, add-page-from-templat
 - **D2:** one stylesheet per page, with `chrome.css` linked last (finding 15).
 - **Identity rotation, not a history rewrite**, for the exposed logins (finding 22).
 - **Migrated pages are Chinese-only until Phase 14**, an accepted regression with the switcher kept working (finding 24).
-- **Disputed prices are refused at the cart, never picked.** Clinic-only is an explicit data flag, not "price 0" (finding 23). The refusal wording is owner-approved, shown inline, never `alert()`.
+- **Prices come from `data/products.json`; the price hold is empty** (the mechanism stays). Clinic-only is an explicit data flag, not "price 0". Cart messages are owner-approved and shown inline, never `alert()`.
 - **Never emit rating or review data that doesn't exist** (P13G-T2 hard rule, enforced by `test:seo`, finding 26).
 - **A pre-rendered page's stock changes go live at publish, not instantly.** Accepted; the client guide must say so at retirement.
 - **Phase 9 definition-of-done waivers:** "heavy assets from R2" (a Phase 10 dependency). "Editable in Puck" now passes after the `mergeTree` fix.
@@ -235,8 +232,6 @@ Month 2: all 18 pages, all 7 languages, full ~22 sections, add-page-from-templat
 - How much the client can change: delete a page, edit SEO, or admin-only?
 - Does the shop need real online orders + payment, or stay staff-entered?
 - **Client:**
-  - the two disputed prices;
-  - whether to publish PSP-500 as out of stock;
   - the CJK font stack (finding 21b);
   - the health-claims review (P13G-T2);
   - whether the public GitHub Pages copy with invented ratings is taken down (finding 26, owner + client).

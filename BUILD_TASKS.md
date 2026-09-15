@@ -405,65 +405,80 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 - **Verify:** the migrated core pages render from trees, pass `npm run test:seo`, and match baseline visually. `npm run test:all` still green.
 - **Gotcha:** keep the 3D product viewer working: the `product-detail` section outputs the `<model-viewer>` (or current viewer) element pointing at the model URL, enhanced by the existing client script.
 
-#### 產品介紹 (the first page): status 15 Sep 2026, what is left before it moves to `legacy/`
+#### 產品介紹 (the first page): DONE 15 Sep 2026, awaiting owner review before page two
 
-**Done:**
-- tree, render and SEO gate;
-- behaviour ported and tested (`test:behaviour`, with negative controls);
-- invented ratings removed and gated (finding 26);
-- editor save no longer drops node-level keys (finding 25, narrow fix);
-- visitor copy approved, shown inline, no `alert()`;
-- the stock cue needs nothing (the live page has none).
+**Retired.** The hand-coded original is `legacy/產品介紹.html` (`8d29617`), and `/產品介紹.html` is
+the pre-rendered page, written by `renderer/render.js`. `test:all` is green: 14 suites, 879 checks.
 
-**HOLD: do not retire until the client answers.** Retiring changes what the public sees on the
-strength of numbers we know are disputed (owner, 15 Sep 2026):
-- **(a) Disputed prices.** 憶活素 would go from HK$520 to HK$880, and PT3 from 僅限診所 to
-  HK$2,480 (findings 9, 23).
-- **(b) PSP-500 stock** (Group B). The rendered page bakes in stock status from data (finding 17).
+**Owner decisions that unblocked it (15 Sep 2026):**
+- **The site content is not authoritative;** the client will replace all of it. Content disputes
+  are no longer blockers. Findings 9, 17, 22 and 26 stay recorded as background, with no further
+  action or data changes on them.
+- **Prices come from `data/products.json`:** 憶活素 HK$880, PT3 HK$2,480. The price hold was
+  removed (`45106f0`); a different number later is a data edit.
+- **PSP-500 stock:** Group B was committed (`e567a69`), so `data/` and the database agree.
 
-**Build items, ready to start once the client answers (estimates in the P9-T1 report):**
-1. Write the rendered page to the site root, with only-write-if-changed, through `npm run publish`
-   (the P5-T2 path, or a one-page step).
-2. Repoint what reads the old page from the root:
-   - the tree's `chromeFrom` and `scripts/extract-css.js`;
-   - the preview route's root-only source rule;
-   - `migrate-products.js`;
-   - the `test-sections.js` fidelity maps.
-3. Retarget `test-ui-mongo` / `test-ui-auth` / `test-ui-sweep`. They drive the old page's own
-   script; what they cover moves to the rendered page or to `legacy/`.
-4. Keep `legacy/` off the public site. The deploy uploads the whole repo, so either apply P8-T3 or
-   add `noindex` + a robots rule.
-5. Re-run the full visual diff against the 15 Sep baseline (1280/390, scripts on and off) and
-   reconcile every difference.
+**The five build items, as built:**
+1. **Render to the site root** (`6187f62`): a tree is written to its page's root path once its
+   original is in `legacy/`, only if changed. A page not retired is never written over.
+2. **Chrome/CSS sources repointed** (`6187f62`): `renderer/source-page.js` (legacy/ first) feeds
+   `loadStyles` / `loadChrome`, the preview route, `extract-css.js`, `migrate-products.js` and the
+   fidelity maps. It is a repoint, not the shared chrome partial; that is still open, for when a
+   second page needs chrome.
+3. **UI tests retargeted** (`3505123`): `test-ui-mongo` now proves that the database reaches the
+   published card, and that the committed page needs no database and no scripts.
+   `test-ui-sweep` names the pre-rendered pages it doesn't language-switch. `test-ui-auth` is
+   unchanged.
+4. **`legacy/` kept off the public site** (`8d29617`): `noindex` on the retired copy, `/legacy/`
+   disallowed in every `robots.txt` crawler group, and `test:data` enforcing both, plus "nothing
+   links to it", with a negative control. P8-T3's deploy allow-list, the proper fix, is still not
+   applied.
+5. **Visual diff against the 15 Sep baseline, fully reconciled.**
+   - **Scripts on:** 15.1% at 1280, 14.8% at 390, and all of it has a known cause. Rendered in
+     memory with the old product order, the two old prices and `lang="zh"`, the page equals the
+     control exactly: 2,602 / 785 px, the page-header marquee only. So the difference is **product
+     order** (database order), **the two accepted prices**, and **the `lang` font effect** (finding
+     21b).
+   - **Scripts off:** the old page is an empty shell (0 product cards); the migrated page shows all
+     6. Migrated scripts-off vs scripts-on differs only by the hidden JS-only controls.
 
-**Then:** the move, `test:all` green, owner sign-off.
+**Recorded, accepted:**
+- stock changes go live at publish (flag for `ADMIN_GUIDE.md`);
+- the Chinese-only regression (finding 24);
+- definition-of-done waivers: "heavy assets from R2" (Phase 10 dependency); "editable in Puck"
+  passes after the `mergeTree` fix.
 
-#### Effort estimate for Phase 9. Recorded 15 Sep 2026 and accepted by the owner, so it is not re-derived.
+#### Effort: actual for page one, and the revised Phase 9 estimate (15 Sep 2026, replaces the earlier estimate)
 
-Measured on 產品介紹, the first page:
-- **~4 working days so far** (11–15 Sep), of which **~1 day is one-time**: sticky nav (D1),
-  per-page stylesheets (D2), the baseline re-capture, the behaviour framework, the SEO/data gates,
-  the catalogue migration and the security findings. The other 17 pages don't pay for those again.
-- **The five build items above: ~1.5–2.5 focused days for page one**, about 1 day of it one-time.
+**Actual, page one (from the commit timeline):** P9-T1 ran from Fri 11 Sep midday to Tue 15 Sep
+late morning, i.e. **~2.5 working days** (Fri afternoon, Mon, Tue; the weekend was not worked). The
+earlier "~4 days" counted calendar days.
+- **Roughly 1.5 days were one-time work or incidents** that the other pages won't repeat: the
+  catalogue data migration, D1 sticky nav, D2 per-page CSS, the baseline re-capture, the behaviour
+  framework and `test:behaviour`, the export email leak and identity rotation (finding 22), and the
+  invented ratings (finding 26).
+- **Roughly 1 day was page work:** the tree, product-grid fixes, behaviour wiring and
+  reconciliation.
+- **The five build items plus the move took under half a day**, against the 1.5–2.5 days
+  estimated. The harnesses already existed, item 2 was a repoint rather than a chrome partial, and
+  item 4 was noindex + robots rather than P8-T3.
 
-| item | page one | each later page |
-|---|---|---|
-| 1. Render to the site root | 2–3 h | ~0 (built once) |
-| 2. Repoint chrome/CSS sources | 3–4 h as a repoint; ~1 day for a proper shared chrome partial | ~0 |
-| 3. Retarget UI tests | 3–5 h | 1–2 h per interactive page |
-| 4. Keep `legacy/` off the public site | ~1 h (noindex + robots); ~½ day for the proper P8-T3 allow-list | 0 |
-| 5. Visual diff + reconcile | 2–4 h | 2–4 h (the harness exists) |
+**Revised estimate for the other 17 pages: ~10–14 working days.** Content is no longer a blocker,
+so the main variable is now **engineering**: new section types and the interactive pages.
 
-**Per remaining page:**
-- **Interactive pages** (cart, forms, viewers): **1–2 days**.
-- **Content-only pages: ½–1 day.**
-- The recurring work: build the tree, add missing sections, audit the page's own inline script,
-  clean its structured data (claims, ratings), reconcile the visual diff, retarget its tests.
+| pages | count | estimate | why |
+|---|---|---|---|
+| Content pages: 典型病例, 小册子, 常見問題, 微信發表文章, 有效成份檢測, 研究報告, 聯絡我們 | 7 | ½ day each → **3.5–4.5 days** | sections exist (faq, text, gallery, contact cards); tree + reconcile + scripts-off, little behaviour |
+| Product detail pages: 產品_T3, _PT3, _乙肝清, _憶活素, _雲芝糖肽精華_A / _B | 6 | first ~1 day, then 2–3 h each → **2–2.5 days** | one shared pattern: product-detail section, quantity + add to cart through `site.js`, and the 3D viewer where a page has one |
+| `index.html` (homepage) | 1 | **1–1.5 days** | hero video, 3D viewer, the most sections |
+| `product.html` (generic `?sku=` page, noindex) | 1 | **½–1 day** | client-side by design; either keep it hand-coded or replace it with the static detail pages |
+| `購物車.html` (cart/checkout, noindex) | 1 | **1.5–2.5 days** | the heaviest script on the site; may stay a hand-coded app page |
+| `account.html` (sign-in) | 1 | **1–2 days, likely deferred** | depends on the hosted API (Phase 11) |
 
-**Phase 9's remaining 17 pages: roughly 12–25 working days.** The main variable is **client
-questions** (prices, stock, claims copy, which the first page showed can hold a retirement
-indefinitely), not code. Re-estimate after page two, which is the first page without the one-time
-cost.
+- **One-time items still ahead,** inside the range above: the shared chrome partial (~1 day, once),
+  and whatever new section types these pages need beyond the core 10.
+- **Re-estimate after the first content page and the first product detail page.** Those two
+  patterns cover 13 of the 17 pages.
 
 **Recorded, accepted (owner):**
 - **Stock goes live at publish, not instantly.** The rendered page bakes stock in; the old page read
@@ -666,6 +681,8 @@ being rebuilt. Migration is exactly when these rot: a page moves to `legacy/`, a
 Correctly sequenced after migration, not before: tuning GEO now would tune for pages that are about
 to be rebuilt, and `llms.txt` in particular is a description of a page set that is still changing.
 
+> **SUPERSEDED (owner, 15 Sep 2026, later the same day):** the current site content is not authoritative; the client will replace all of it. The rule below is **not** a Phase 9 gate and is not to be acted on. It stays as background for whenever the client's replacement content is reviewed.
+>
 > **CLAIMS PROVENANCE: added 15 Sep 2026, and NOT deferred to after Phase 13 (docs/FINDINGS.md
 > finding 26).**
 > - **Why it can't wait.** The June 2026 uploads that put invented ratings into the live pages also
@@ -730,8 +747,8 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
 - **Gate — finding 26 must not ship again.**
   1. **Stale "Review" comments on `main`.** 13 pages still carry an HTML comment listing "Review" among their structured-data types, including one naming social proof as its purpose. Remove them before cutover; `rebuild/editor` already did (`d2ee9c4`). Check: `git grep -n -e '<!--[^>]*[Rr]eview[^>]*-->' -- '*.html'` on the branch being deployed returns **nothing**.
   2. **No rating or review data anywhere in the deployed tree**, pre-rendered or hand-coded. `npm run test:seo` covers rendered pages. Also check that `git grep -n -e aggregateRating -e reviewCount -e ratingValue -e '"Review"' -- '*.html' 'data/'` returns nothing.
-  3. **No `noindex` anywhere** in what deploys: `git grep -n -i noindex -- '*.html'`, except the five that deliberately carry it today: `account.html`, `購物車.html`, `product.html`, `admin/index.html`, `editor/index.html`. A stray one de-indexes the client's real site. That risk is why the Pages copy was taken down rather than noindexed.
-  4. **No patient case material presented as a review or rating**, and every health claim traced to a client-approved source (P13G-T2 claims provenance).
+  3. **No `noindex` anywhere** in what deploys: `git grep -n -i noindex -- '*.html'`, except the ones that deliberately carry it: `account.html`, `購物車.html`, `product.html`, `admin/index.html`, `editor/index.html`, and every retired original under `legacy/` (which must also stay out of the deploy). A stray one de-indexes the client's real site. That risk is why the Pages copy was taken down rather than noindexed.
+  4. **No patient case material presented as a review or rating** in what deploys. (Health-claim review applies to the client's replacement content, not the current copy: owner, 15 Sep 2026.)
 - **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed, the `wixstatic` grep is clean, and the four finding-26 checks above are clean. Then, and only then, switch Wix off.
 
 ---
