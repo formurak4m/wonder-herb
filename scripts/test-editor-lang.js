@@ -245,5 +245,46 @@ check('replacing a section with a different type does not inherit the old one\'s
       swapped.sections[0].fields.heading.zh === undefined,
       JSON.stringify(swapped.sections[0].fields.heading));
 
+/* ------------------------------------------------------------------------
+   A SAVE NEVER DELETES WHAT THE EDITOR WAS NOT SHOWN (docs/FINDINGS.md 25).
+   Puck only carries a section's props. Node-level keys it never sees (today
+   `wrap: "container"`) used to be dropped on every save - including a save
+   with no edits - so the next publish lost the grid's container. */
+console.log('\n=== a save keeps what the editor was never shown ===\n');
+
+const WRAPPED = JSON.parse(JSON.stringify(TREE));
+WRAPPED.sections[1].wrap = 'container';
+WRAPPED.sections[1].futureKey = { any: 'value' };          // a key nobody has invented yet
+WRAPPED.unknownTopLevel = 'kept';
+const noEdit = L.mergeTree(WRAPPED, L.projectTree(WRAPPED, 'zh', CONFIGS), 'zh', CONFIGS);
+check('a save with NO edits keeps a section\'s node-level wrap',
+      noEdit.sections[1].wrap === 'container', JSON.stringify(noEdit.sections[1].wrap));
+check('and any other node-level key, including ones not invented yet',
+      JSON.stringify(noEdit.sections[1].futureKey) === '{"any":"value"}' && noEdit.unknownTopLevel === 'kept',
+      'futureKey + top-level key survive');
+
+const enWrapped = L.projectTree(WRAPPED, 'en', CONFIGS);
+enWrapped.sections.reverse();
+const movedWrapped = L.mergeTree(WRAPPED, enWrapped, 'en', CONFIGS);
+check('reordered: the key travels with its own section, not its old position',
+      movedWrapped.sections[0].type === WRAPPED.sections[1].type && movedWrapped.sections[0].wrap === 'container' &&
+      movedWrapped.sections[1].wrap === undefined, 'matched by id');
+
+const enReplaced = L.projectTree(WRAPPED, 'en', CONFIGS);
+enReplaced.sections[1] = { type: 'cta-band', props: { heading: 'New', id: enReplaced.sections[1].props.id } };
+const replacedWrapped = L.mergeTree(WRAPPED, enReplaced, 'en', CONFIGS);
+check('a different type at the same id inherits NO node-level keys (a replacement, not an edit)',
+      replacedWrapped.sections[1].wrap === undefined && replacedWrapped.sections[1].futureKey === undefined, 'none inherited');
+
+/* The real tree this bit: 產品介紹, through the same round trip the app does. */
+const REAL = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'pages', 'products.json'), 'utf8').replace(/^﻿/, ''));
+const realSaved = L.mergeTree(REAL, L.projectTree(REAL, 'zh', CONFIGS), 'zh', CONFIGS);
+const lostKeys = [];
+REAL.sections.forEach((s, i) => Object.keys(s).forEach(k => { if (JSON.stringify(s[k]) !== JSON.stringify(realSaved.sections[i][k])) lostKeys.push(s.type + '.' + k); }));
+Object.keys(REAL).forEach(k => { if (k !== 'sections' && JSON.stringify(REAL[k]) !== JSON.stringify(realSaved[k])) lostKeys.push('tree.' + k); });
+check('data/pages/products.json: an unchanged editor save changes nothing but adding section ids',
+      lostKeys.length === 0 && realSaved.sections.every(s => typeof s.id === 'string'),
+      lostKeys.length ? 'CHANGED: ' + lostKeys.join(', ') : 'wrap kept; ' + REAL.sections.length + ' sections identical + id');
+
 console.log('\n' + (fail ? '=== ' + fail + ' CHECK(S) FAILED ===' : '=== ALL CHECKS PASSED ==='));
 process.exit(fail ? 1 : 0);

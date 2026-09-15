@@ -261,19 +261,39 @@ export function mergeTree(original, edited, lang, configs) {
   out.seo = Object.assign({}, original.seo, {
     description: merge(original.seo && original.seo.description, edited.description, lang, 'description')
   });
+  /* ===========================================================================
+     A SAVE MUST NEVER DELETE WHAT THE EDITOR WAS NOT SHOWN. docs/FINDINGS.md
+     finding 25.
+
+     Puck only knows a section's `props` (its fields). A stored section can carry
+     more than that at node level - today `wrap: "container"` on 產品介紹's
+     product-grid, which the renderer turns into the container <div>. Rebuilding
+     each section as { id, type, fields } dropped it on EVERY save, even one with
+     no edits, so the next publish rendered the grid without its container.
+
+     So an edited section starts from its stored node and only id / type /
+     fields are replaced: unknown node-level keys survive. A section of a
+     DIFFERENT type at the same id is a replacement, not an edit, and inherits
+     nothing (the same rule the fields already follow). A new section has no
+     stored node to inherit from.
+
+     Narrow fix, P9-T1. The general rule - every content write path merges,
+     enforced in the API - is BUILD_TASKS P12-T3 step 4.
+     =========================================================================== */
   out.sections = (edited.sections || []).map(node => {
     const props = node.props || {};
     const id = props.id;
     const before = byId.get(id);
+    const sameSection = Boolean(before && before.type === node.type);
     // a different type at the same id is a replacement, not an edit: it must
     // not inherit the previous section's translations
-    const base = before && before.type === node.type ? before.fields : undefined;
+    const base = sameSection ? before.fields : undefined;
     const { id: _drop, ...fields } = props;
-    return {
+    return Object.assign({}, sameSection ? before : {}, {
       id: id,
       type: node.type,
       fields: merge(base, fields, lang, undefined, fieldsOf(node.type))
-    };
+    });
   });
   return out;
 }
