@@ -254,14 +254,33 @@ async function quickView(page, sku) {
   return until(() => modalOpen(page), 1500);
 }
 
-/* Add through the UI; returns the dialog the visitor saw (or null). */
+/* Add through the UI. Returns what the visitor was SHOWN, in the page (never a
+   dialog): { where: 'modal' | 'notice', text, modalStayedOpen } or null.
+   A refusal leaves the modal open by design; the helper closes it afterwards
+   so the next card can be clicked. */
 async function addViaModal(page, sku, qty) {
   if (!(await quickView(page, sku))) return null;
-  const before = page._dialogs.length;
+  await page.evaluate(() => { const n = document.getElementById('cartNotice'); if (n) n.remove(); });
   await page.fill('#modalQty', String(qty || 1));
   await page.click('#modalAddToCart', { timeout: 2000 });
-  await until(async () => page._dialogs.length > before, 1500);
-  return page._dialogs[before] || null;
+  let shown = null;
+  await until(async () => {
+    shown = await page.evaluate(() => {
+      const m = document.getElementById('modalMessage');
+      if (m && !m.hidden && m.textContent) return { where: 'modal', text: m.textContent };
+      const n = document.getElementById('cartNotice');
+      if (n) return { where: 'notice', text: n.firstChild.textContent };
+      return null;
+    });
+    return Boolean(shown);
+  }, 1500);
+  if (!shown) return null;
+  shown.modalStayedOpen = await modalOpen(page);
+  if (shown.modalStayedOpen) {
+    await page.click('#quickViewModal .close-modal');
+    await until(async () => !(await modalOpen(page)), 1000);
+  }
+  return shown;
 }
 
 /* Each effect returns true/false, never throws: the negative controls need
@@ -310,8 +329,11 @@ const EFFECTS = {
       const items = await cart(page);
       const it = items[0] || {};
       const b = await badges(page);
-      this.detail = JSON.stringify(it.product || {}) + ' x' + it.quantity + ', badges ' + b.join('/');
-      if (!(said && said.indexOf('已將 2 件') === 0 && said.indexOf(NAME[BUY_SKU]) !== -1)) return false;
+      this.detail = JSON.stringify(it.product || {}) + ' x' + it.quantity + ', badges ' + b.join('/') +
+                    ', shown ' + (said ? said.where + ' "' + said.text + '"' : 'nothing') + ', dialogs ' + page._dialogs.length;
+      // confirmed inline, in a status bar, with the modal closed - and no browser dialog
+      if (!(said && said.where === 'notice' && !said.modalStayedOpen && said.text.indexOf('已將 2 件') === 0 &&
+            said.text.indexOf(NAME[BUY_SKU]) !== -1 && page._dialogs.length === 0)) return false;
       if (!(items.length === 1 && it.productId === 2 && it.product.id === 2 && it.product.sku === BUY_SKU &&
             it.product.price === 3800 && it.quantity === 2 && it.product.name === NAME[BUY_SKU])) return false;
       if (!(b.length >= 2 && b.every(x => x === '2'))) return false;
@@ -353,17 +375,20 @@ const EFFECTS = {
     const ctx = await context(width); const page = await newPage(ctx);
     try {
       await page.goto(url(this.scenario), { waitUntil: 'load' });
-      const cases = [[OUT_SKU, '缺貨', 'out-of-stock'], [CLINIC_SKU, '僅限診所', 'clinic-only'],
-                     ['WH-MB-060', '價格正在確認', 'price-hold'], ['WH-PT3-090', '價格正在確認', 'price-hold']];
+      const M = site.MSG;
+      const cases = [[OUT_SKU, M.outOfStock, 'out-of-stock'], [CLINIC_SKU, M.clinicOnly, 'clinic-only'],
+                     ['WH-MB-060', M.priceHold, 'price-hold'], ['WH-PT3-090', M.priceHold, 'price-hold']];
       const seen = [];
       for (const [sku, words, reason] of cases) {
         const said = await addViaModal(page, sku, 1);
         const logged = page._consoleErrors.some(e => e.indexOf(sku) !== -1 && e.indexOf(reason) !== -1);
-        seen.push(sku + ':' + (said && said.indexOf(words) !== -1 && logged ? 'refused' : 'NOT refused'));
+        // inside the modal, which stays open, exact approved wording, logged
+        const ok = said && said.where === 'modal' && said.modalStayedOpen && said.text === words && logged;
+        seen.push(sku + ':' + (ok ? 'refused' : 'NOT refused (' + JSON.stringify(said) + ')'));
       }
-      this.detail = seen.join(' ') + ', cart ' + (await cart(page)).length;
+      this.detail = seen.join(' ') + ', cart ' + (await cart(page)).length + ', dialogs ' + page._dialogs.length;
       return seen.every(s => s.endsWith(':refused')) && (await cart(page)).length === 0 &&
-             (await badges(page)).every(x => x === '0');
+             (await badges(page)).every(x => x === '0') && page._dialogs.length === 0;
     } finally { await ctx.close(); }
   },
 
@@ -389,23 +414,31 @@ const EFFECTS = {
       } else {
         await page.click('#langEnBtn', { timeout: 2000 });
       }
-      const expected = { en: 'This page is not yet available in English.', ja: 'このページはまだ日本語でご覧いただけません。' }[code];
-      const state = await page.evaluate(k => ({
-        saved: localStorage.getItem(k),
-        notice: (document.getElementById('langNotice') || {}).textContent || '',
-        h1: document.querySelector('h1').textContent, lang: document.documentElement.lang
-      }), LANG_KEY);
+      const expected = site.UNAVAILABLE[code];
+      const state = await page.evaluate(k => {
+        const n = document.getElementById('langNotice');
+        const b = n && n.querySelector('button');
+        return {
+          saved: localStorage.getItem(k),
+          notice: n ? n.firstChild.textContent : '',
+          noticeLang: n ? n.getAttribute('lang') : '',
+          closeLabel: b ? b.getAttribute('aria-label') : '',
+          h1: document.querySelector('h1').textContent, lang: document.documentElement.lang
+        };
+      }, LANG_KEY);
       const noticeOk = await until(() => page.evaluate(() => { const n = document.getElementById('langNotice'); return n && n.getBoundingClientRect().height > 0; }), 1000);
       // the choice carries: a live page opened next is in that language
       await page.goto(url(this.scenario, '常見問題.html'), { waitUntil: 'load' });
       const liveLang = await until(() => page.evaluate(c => document.documentElement.lang === c, code), 3000);
       // and coming back, the migrated page says so instead of looking broken
       await page.goto(url(this.scenario), { waitUntil: 'load' });
-      const onReturn = await page.evaluate(() => (document.getElementById('langNotice') || {}).textContent || '');
-      this.detail = 'saved ' + state.saved + ', notice "' + state.notice + '", page still ' + state.lang +
+      const onReturn = await page.evaluate(() => { const n = document.getElementById('langNotice'); return n ? n.firstChild.textContent : ''; });
+      this.detail = 'saved ' + state.saved + ', notice "' + state.notice + '" (lang ' + state.noticeLang +
+                    ', close label "' + state.closeLabel + '"), page still ' + state.lang +
                     ', 常見問題 in ' + code + ': ' + liveLang + ', notice on return: ' + Boolean(onReturn);
-      return state.saved === code && noticeOk && state.notice.indexOf(expected) === 0 &&
-             state.h1 === '產品系列' && state.lang === 'zh-Hant' && liveLang && onReturn.indexOf(expected) === 0;
+      return state.saved === code && noticeOk && state.notice === expected &&
+             state.noticeLang === code && state.closeLabel === site.CLOSE[code] &&
+             state.h1 === '產品系列' && state.lang === 'zh-Hant' && liveLang && onReturn === expected;
     } finally { await ctx.close(); }
   }
 };
@@ -450,13 +483,17 @@ async function runEffect(name, scenario, width) {
       const ctx = await context(1280); const page = await newPage(ctx);
       await page.goto(url('real'), { waitUntil: 'load' });
       const rows = [];
+      const M = site.MSG;
       for (const p of realData.products) {
         const said = await addViaModal(page, p.sku, 1);
-        const expect = p.sku in PRICE_HOLD ? '價格正在確認' : /^out/i.test(p.status || '') ? '缺貨' : p.clinicOnly ? '僅限診所' : '已將';
-        rows.push({ sku: p.sku, ok: Boolean(said && said.indexOf(expect) !== -1), expect });
+        const [label, words] = p.sku in PRICE_HOLD ? ['price hold', M.priceHold]
+          : /^out/i.test(p.status || '') ? ['out of stock', M.outOfStock]
+          : p.clinicOnly ? ['clinic only', M.clinicOnly] : ['added', '已將'];
+        rows.push({ sku: p.sku, label, ok: Boolean(said && said.text.indexOf(words) === 0) });
       }
-      check('every product is accepted or refused exactly as its data says',
-            rows.every(r => r.ok), rows.map(r => r.sku + ' ' + (r.expect === '已將' ? 'added' : r.expect) + (r.ok ? '' : ' MISMATCH')).join(', '));
+      check('every product is accepted or refused exactly as its data says, and no dialog ever opens',
+            rows.every(r => r.ok) && page._dialogs.length === 0,
+            rows.map(r => r.sku + ' ' + r.label + (r.ok ? '' : ' MISMATCH')).join(', ') + ', dialogs ' + page._dialogs.length);
       await ctx.close();
     }
 

@@ -24,8 +24,22 @@
   var desc = document.getElementById('modalDesc');
   var qty = document.getElementById('modalQty');
   var addBtn = document.getElementById('modalAddToCart');
+  var message = document.getElementById('modalMessage');
   var closeBtn = modal.querySelector('.close-modal');
   var lastFocus = null;
+
+  /* A refusal is shown INSIDE the modal, next to the button the visitor just
+     pressed, and the modal stays open - they read why, and can close it. It is a
+     role="alert" region, so a screen reader announces it. No alert(). */
+  function say(text) {
+    if (!message) return;
+    message.textContent = text || '';
+    message.hidden = !text;
+    message.style.cssText = text
+      ? 'margin:12px 0 0;padding:10px 12px;border-radius:6px;background:#fdf3e7;color:#6b3d00;' +
+        'border:1px solid #f0c98f;font-size:0.95rem;line-height:1.5'
+      : '';
+  }
 
   function text(card, sel) {
     var el = card.querySelector(sel);
@@ -61,6 +75,7 @@
     price.textContent = text(card, '.product-price');
     desc.textContent = text(card, '.product-desc');
     qty.value = 1;
+    say('');
     lastFocus = document.activeElement;
     modal.style.display = 'flex';
     addBtn.focus();
@@ -85,8 +100,10 @@
       console.error('[wonder-herb] quick view: assets/site.js is not loaded, cannot add to cart');
       return;
     }
-    window.WonderHerb.add(productFrom(card), qty.value);
+    var result = window.WonderHerb.add(productFrom(card), qty.value);
+    if (!result.ok) { say(result.message); return; }     // stay open: the reason is right here
     close();
+    window.WonderHerb.notify(result.message);
   });
 
   if (closeBtn) {

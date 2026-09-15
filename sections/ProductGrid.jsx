@@ -125,6 +125,8 @@ export default function ProductGrid({ source, data, quickViewLabel, detailLabel,
               <input type="number" id="modalQty" defaultValue={1} min={1} max={99} />
             </div>
           ) : <input type="hidden" id="modalQty" value="1" />}
+          {/* why an add was refused, shown inline by quick-view.js - never alert() */}
+          <p id="modalMessage" className="modal-message" role="alert" hidden></p>
           <button type="button" id="modalAddToCart" className="modal-add-to-cart"><i className="fas fa-cart-plus"></i>{' ' + addLabel}</button>
         </div>
       </div>

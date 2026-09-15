@@ -58,13 +58,20 @@
   var LANGS = ['zh', 'en', 'de', 'es', 'fr', 'ja', 'ru'];
   var HREFLANG = { zh: 'zh-Hant', en: 'en', de: 'de', es: 'es', fr: 'fr', ja: 'ja', ru: 'ru' };
 
-  /* The live pages' own refusal wording (產品介紹.html addToCart), so a visitor
-     hears the same thing on a migrated page. The price-hold line is new. */
+  /* The live pages' own wording (產品介紹.html addToCart), so a visitor hears the
+     same thing on a migrated page. Shown INLINE, never through alert().
+
+     priceHold was approved by the owner on 15 Sep 2026. It gives a reason and a
+     next step, and it does not tell a customer who can see a price on the card
+     that we are unsure of our own price. It also reads right for PT3, which is
+     sold through clinics. English equivalent, for the record: "This product
+     isn't available to order online. Message us on WhatsApp and we'll tell you
+     how to buy it." */
   var MSG = {
     added:      function (n, name) { return '已將 ' + n + ' 件 ' + name + ' 加入購物車'; },
     outOfStock: '此產品暫時缺貨，請聯絡我們查詢補貨時間。',
     clinicOnly: '此產品僅限診所購買，請諮詢您的醫生。',
-    priceHold:  '此產品價格正在確認中，暫時未能加入購物車。請透過 WhatsApp 查詢。',
+    priceHold:  '此產品暫未開放網上訂購，歡迎透過 WhatsApp 查詢購買方式。',
     unavailable:'此產品暫時未能加入購物車，請透過 WhatsApp 查詢。'
   };
 
@@ -120,8 +127,10 @@
     return { ok: true, id: CART_IDS[sku], price: price };
   }
 
-  /* Add to the shared cart. Returns the check result. A refusal is always
-     visible to the visitor AND logged, so it can never pass as "no errors". */
+  /* Add to the shared cart. Returns { ok, reason, message }: the CALLER shows
+     the message inline where the visitor is looking (the quick view shows a
+     refusal inside the modal). A refusal is also logged, so it can never pass as
+     "no errors". No alert(): a browser dialog reads as a broken page. */
   function add(p, quantity) {
     var verdict = check(p);
     if (!verdict.ok) {
@@ -129,7 +138,6 @@
         root.console.error('[wonder-herb] cart refused ' + (p && p.sku) + ': ' + verdict.reason +
           (verdict.reason === 'price-hold' ? ' (' + PRICE_HOLD[p.sku] + ')' : ''));
       }
-      root.alert(verdict.message);
       return verdict;
     }
     var q = Math.min(99, Math.max(1, parseInt(quantity, 10) || 1));
@@ -151,11 +159,10 @@
     var s = storage();
     if (s) {
       try { s.setItem(CART_KEY, JSON.stringify(cart)); }
-      catch (e) { root.alert(MSG.unavailable); return { ok: false, reason: 'storage' }; }
+      catch (e) { return { ok: false, reason: 'storage', message: MSG.unavailable }; }
     }
     paintBadges();
-    root.alert(MSG.added(q, p.name));
-    return verdict;
+    return { ok: true, id: verdict.id, price: verdict.price, message: MSG.added(q, p.name) };
   }
 
   /* ------------------------------------------------------------ phone menu */
@@ -191,15 +198,22 @@
      that silently does nothing would be worse than the Chinese page itself.
      Accepted regression, docs/FINDINGS.md finding 24. */
 
+  /* Owner-approved wording, 15 Sep 2026: say what the visitor IS looking at
+     (Chinese), not only what is missing. Every Month 1 migrated page is Chinese;
+     Phase 14 gives each page its alternates and this notice stops appearing.
+     The zh line is here for completeness: it never shows on a Chinese page. */
   var UNAVAILABLE = {
-    zh: '本頁暫未提供中文版本。',
-    en: 'This page is not yet available in English.',
-    de: 'Diese Seite ist noch nicht auf Deutsch verfügbar.',
-    es: 'Esta página aún no está disponible en español.',
-    fr: "Cette page n'est pas encore disponible en français.",
-    ja: 'このページはまだ日本語でご覧いただけません。',
-    ru: 'Эта страница пока недоступна на русском языке.'
+    zh: '本頁暫時只提供中文版本。',
+    en: 'Sorry, this page is only available in Chinese for now.',
+    de: 'Diese Seite ist derzeit leider nur auf Chinesisch verfügbar.',
+    es: 'Lo sentimos, por ahora esta página solo está disponible en chino.',
+    fr: "Désolé, cette page n'est pour l'instant disponible qu'en chinois.",
+    ja: '申し訳ありません。このページは現在、中国語でのみご覧いただけます。',
+    ru: 'К сожалению, эта страница пока доступна только на китайском языке.'
   };
+  /* The close button's screen-reader label, in the SAME language as the notice
+     it closes (an English "Close" on a Japanese notice helps nobody). */
+  var CLOSE = { zh: '關閉', en: 'Close', de: 'Schließen', es: 'Cerrar', fr: 'Fermer', ja: '閉じる', ru: 'Закрыть' };
 
   function pageLang() {
     var tag = (document.documentElement.getAttribute('lang') || '').toLowerCase();
@@ -217,32 +231,38 @@
     return null;
   }
 
-  function showLangNotice(code) {
-    var old = document.getElementById('langNotice');
+  /* A dismissible bar at the bottom of the screen, in one language: the text,
+     its lang attribute and its close label all agree. Used for the language
+     notice and for "added to cart". */
+  function notice(id, text, code) {
+    var old = document.getElementById(id);
     if (old) old.parentNode.removeChild(old);
     var box = document.createElement('div');
-    box.id = 'langNotice';
-    box.className = 'lang-notice';
+    box.id = id;
+    box.className = 'site-notice';
     box.setAttribute('role', 'status');
-    box.setAttribute('lang', HREFLANG[code]);
+    box.setAttribute('lang', HREFLANG[code] || HREFLANG.zh);
     /* Styled here, not in a sheet: assets/chrome.css is generated, and this is
        the only visual this file owns. Sits above the phone WhatsApp bar. */
     box.style.cssText = 'position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:1001;' +
       'max-width:calc(100% - 32px);box-sizing:border-box;display:flex;gap:12px;align-items:center;' +
       'background:#2f3b2f;color:#fff;padding:12px 16px;border-radius:8px;font-size:15px;line-height:1.4;' +
       'box-shadow:0 4px 18px rgba(0,0,0,.25)';
-    var text = document.createElement('span');
-    text.textContent = UNAVAILABLE[code];
+    var body = document.createElement('span');
+    body.textContent = text;
     var close = document.createElement('button');
     close.type = 'button';
     close.textContent = '×';
-    close.setAttribute('aria-label', 'Close');
+    close.setAttribute('aria-label', CLOSE[code] || CLOSE.zh);
     close.style.cssText = 'background:none;border:0;color:#fff;font-size:22px;line-height:1;cursor:pointer;padding:0 2px';
     close.addEventListener('click', function () { box.parentNode && box.parentNode.removeChild(box); });
-    box.appendChild(text);
+    box.appendChild(body);
     box.appendChild(close);
     document.body.appendChild(box);
+    return box;
   }
+
+  function showLangNotice(code) { notice('langNotice', UNAVAILABLE[code], code); }
 
   function chooseLanguage(code) {
     if (LANGS.indexOf(code) === -1) return;
@@ -297,7 +317,10 @@
   /* ---------------------------------------------------------------- export */
 
   var api = { CART_IDS: CART_IDS, PRICE_HOLD: PRICE_HOLD, CART_KEY: CART_KEY, LANG_KEY: LANG_KEY,
-              check: check, add: add, count: cartCount, paintBadges: paintBadges, chooseLanguage: chooseLanguage };
+              MSG: MSG, UNAVAILABLE: UNAVAILABLE, CLOSE: CLOSE,
+              check: check, add: add, count: cartCount, paintBadges: paintBadges, chooseLanguage: chooseLanguage,
+              /* "added to cart", in the page's own language */
+              notify: function (text) { return notice('cartNotice', text, pageLang() || 'zh'); } };
 
   if (typeof module === 'object' && module.exports) module.exports = api;   // test:behaviour reads the tables
   if (typeof document === 'undefined') return;
