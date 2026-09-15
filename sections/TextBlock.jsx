@@ -26,8 +26,8 @@
  * IME to get wrong.
  *
  * No separator is inserted between label and text on purpose: the product
- * pages put the colon INSIDE the <strong> ("超強抗氧化：" + " 比一般…") while
- * the FAQ puts it outside ("獨特提取技術" + "：在生產…"). The content carries
+ * pages put the colon INSIDE the <strong> ("標籤：" + " 內容…") while
+ * the FAQ puts it outside ("標籤" + "：內容…"). The content carries
  * its own punctuation and spacing, so both render exactly as they do today.
  */
 export function copyBody(item) {

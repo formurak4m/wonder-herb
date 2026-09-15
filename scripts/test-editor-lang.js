@@ -52,6 +52,9 @@ console.log('\n=== THE ROUND TRIP: load zh+en, edit en, save, does zh survive? =
 
 /* A tree with real bilingual content, plus the structural fields that must not
    be translated (variant, headingId, source, href, icon). */
+/* Fixture copy is deliberately neutral placeholder text. An earlier version used strings shaped like a
+   product efficacy claim - fixture text on a health products site must never read
+   like an efficacy claim. docs/FINDINGS.md finding 22b. */
 const TREE = {
   slug: 'products', path: '產品介紹.html',
   title: { zh: '產品介紹 | Wonder Herb', en: 'Products | Wonder Herb' },
@@ -60,7 +63,7 @@ const TREE = {
   sections: [
     { type: 'page-header', fields: {
         heading: { zh: '產品系列', en: 'Our Products' },
-        sub: { zh: '加拿大GMP藥廠', en: 'Canadian GMP facility' },
+        sub: { zh: '副標題文字', en: 'Subtitle text' },
         variant: 'centered',
         headingId: 'products-heading'
     } },
@@ -68,9 +71,9 @@ const TREE = {
         heading: { zh: '產品介紹', en: 'About' },
         variant: 'card',
         paragraphs: [
-          { label: { zh: '超強抗氧化：', en: 'Antioxidant: ' },
-            text:  { zh: '比一般高出60倍', en: '60x stronger' } },
-          { text: { zh: '每批雙重檢測。', en: 'Double tested.' }, emphasis: true }
+          { label: { zh: '標籤：', en: 'Label: ' },
+            text:  { zh: '第一段文字', en: 'First paragraph' } },
+          { text: { zh: '第二段文字。', en: 'Second paragraph.' }, emphasis: true }
         ]
     } }
   ]
@@ -95,7 +98,7 @@ check('loading in en shows the English values, not the Chinese',
 
 // 2. edit some English
 en.sections[0].props.heading = 'Product Range';
-en.sections[1].props.paragraphs[0].text = '60 times stronger';
+en.sections[1].props.paragraphs[0].text = 'First paragraph, edited';
 en.title = 'Product Range | Wonder Herb';
 
 // 3. save
@@ -109,8 +112,8 @@ check('AND THE CHINESE IN THE SAME FIELD SURVIVED',
       saved.sections[0].fields.heading.zh === '產品系列',
       saved.sections[0].fields.heading.zh);
 check('zh survived in a nested array item too',
-      saved.sections[1].fields.paragraphs[0].text.zh === '比一般高出60倍' &&
-      saved.sections[1].fields.paragraphs[0].text.en === '60 times stronger',
+      saved.sections[1].fields.paragraphs[0].text.zh === '第一段文字' &&
+      saved.sections[1].fields.paragraphs[0].text.en === 'First paragraph, edited',
       'zh=' + saved.sections[1].fields.paragraphs[0].text.zh +
       '  en=' + saved.sections[1].fields.paragraphs[0].text.en);
 check('zh survived in the page title and the meta description',

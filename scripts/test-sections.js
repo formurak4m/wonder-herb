@@ -336,19 +336,19 @@ check('text-block glass: the homepage classes',
 check('text-block glass: a <p> per paragraph',
       tbGlass.indexOf('<p>第一段</p><p>第二段</p>') !== -1, 'ok');
 const tbCard = render(components['text-block'],
-  { heading: '產品介紹', variant: 'card', paragraphs: [{ text: 'x' }], bullets: [{ text: '超強抗氧化' }] });
+  { heading: '產品介紹', variant: 'card', paragraphs: [{ text: 'x' }], bullets: [{ text: '項目內容' }] });
 check('text-block card: the product-page class',
       tbCard.indexOf('class="product-details-card"') !== -1, 'product-details-card');
 check('text-block card: bullets become a <ul>',
-      tbCard.indexOf('<ul><li>超強抗氧化</li></ul>') !== -1, 'ok');
+      tbCard.indexOf('<ul><li>項目內容</li></ul>') !== -1, 'ok');
 
 console.log('\n=== copy items: bold lead-in and emphasis (finding 14, option c) ===\n');
 
 const lead = render(components['text-block'], {
-  variant: 'card', paragraphs: [{ label: '超強抗氧化：', text: ' 比一般合成維生素E高出60倍' }]
+  variant: 'card', paragraphs: [{ label: '項目標題：', text: ' 項目內容' }]
 });
 check('a lead-in label renders as <strong>, with NO separator inserted',
-      lead.indexOf('<p><strong>超強抗氧化：</strong> 比一般合成維生素E高出60倍</p>') !== -1,
+      lead.indexOf('<p><strong>項目標題：</strong> 項目內容</p>') !== -1,
       'colon inside the label, space from the text');
 
 const outside = render(components['text-block'], {
@@ -519,10 +519,13 @@ const FIDELITY = {
     { label: 'card', page: '產品_T3.html', selector: '.product-details-card',
       allow: { em: INLINE_COPY.em, br: INLINE_COPY.br, span: INLINE_COPY.span },
       props: { heading: '產品介紹', sub: '副標題', variant: 'card',
-               // a bold lead-in and a whole-bold paragraph: both must emit <strong>
-               paragraphs: [{ label: 'Tocotrienols', text: ' 是維生素E家族中最具生物活性的成員。' },
+               // a bold lead-in and a whole-bold paragraph: both must emit <strong>.
+               // Neutral placeholder text on purpose: the fidelity check compares tags and
+               // classes only, and a test file must not reproduce product health claims
+               // (docs/FINDINGS.md finding 22).
+               paragraphs: [{ label: '標籤文字', text: ' 段落內容。' },
                             { text: '整段加粗', emphasis: true }],
-               bullets: [{ label: '超強抗氧化：', text: ' 比一般合成維生素E高出60倍抗氧化能力' }] } }
+               bullets: [{ label: '項目標題：', text: ' 項目內容' }] } }
   ],
 
   'product-grid': {
@@ -546,7 +549,7 @@ const FIDELITY = {
       source: 'products.json', sku: 'WH-T3-120',
       // its own data: the live panel shows three trust badges, the real row has two
       data: { products: [{ id: 3, title: 'T3 複合配方', sku: 'WH-T3-120', price: '1900.00',
-                           desc: '60倍高活性', badges: 'GMP認證, 60倍吸收力, 大學臨床研究' }] },
+                           desc: '簡短說明', badges: '徽章一, 徽章二, 徽章三' }] },
       quantityLabel: '數量：', addLabel: '加入購物車', addIcon: 'fas fa-cart-plus',
       detailLabel: '詳細介紹', detailIcon: 'fas fa-chevron-down',
       descIcon: 'fas fa-flask', unit: '/ 120粒軟膠囊', headingId: 'product-title',
