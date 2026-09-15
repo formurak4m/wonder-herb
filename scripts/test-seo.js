@@ -184,6 +184,23 @@ const ldNodes = doc => {
 };
 const typesOf = doc => ldNodes(doc).map(n => (n.bad ? 'BAD_JSON' : n['@type'])).sort();
 
+/* Every rating/review key anywhere inside JSON-LD, as "Type.key" paths. */
+const RATING_KEYS = ['aggregateRating', 'review', 'reviews', 'reviewRating', 'ratingValue', 'reviewCount', 'ratingCount'];
+function ratingKeys(nodes) {
+  const found = [];
+  const walk = (v, where) => {
+    if (Array.isArray(v)) { v.forEach((x, i) => walk(x, where)); return; }
+    if (!v || typeof v !== 'object') return;
+    if (v['@type'] === 'AggregateRating' || v['@type'] === 'Review') found.push(where + ' @type ' + v['@type']);
+    Object.keys(v).forEach(k => {
+      if (RATING_KEYS.indexOf(k) !== -1) found.push(where + '.' + k);
+      walk(v[k], where + '.' + k);
+    });
+  };
+  nodes.forEach(n => walk(n, n['@type'] || 'node'));
+  return found;
+}
+
 /* ------------------------------------------------------- intrinsic ------- */
 
 rendered.forEach((page, url) => {
@@ -248,7 +265,24 @@ rendered.forEach((page, url) => {
           nodes.length > 0 && nodes.every(n => n.bad || (typeof n['@type'] === 'string' && n['@type'])),
           nodes.length ? typesOf(doc).join(', ') : 'NO JSON-LD AT ALL');
   }
+
+  // 6. HARD RULE (BUILD_TASKS P13G-T2, docs/FINDINGS.md finding 26): no rating or
+  //    review data. data/ holds none, so any that appears was invented - on a
+  //    health products site, a trust signal a customer acts on. Not waivable.
+  const ratings = ratingKeys(nodes);
+  check(name + ': no aggregateRating / review / rating data in JSON-LD (never invented)',
+        ratings.length === 0, ratings.length ? 'FOUND: ' + ratings.slice(0, 6).join(', ') : 'none');
 });
+
+/* The gate for the hard rule must be able to fail: a page carrying the exact
+   shape found in the live pages' markup is caught. */
+console.log('\n=== negative control: the rating check catches invented ratings ===\n');
+{
+  const planted = ratingKeys([{ '@type': 'Product', offers: { price: '1.00' },
+    aggregateRating: { '@type': 'AggregateRating', ratingValue: '5', reviewCount: '1' },
+    review: { '@type': 'Review', reviewRating: { ratingValue: '5' } } }]);
+  check('a Product node with aggregateRating + review is flagged', planted.length >= 2, planted.join(', '));
+}
 
 /* ------------------------------------------------------ reciprocity ------ */
 console.log('\n=== hreflang reciprocity across language variants ===\n');
@@ -303,7 +337,12 @@ rendered.forEach((page, url) => {
      a loss - which is why the comparison is waived here rather than the node
      suppressed in head.js. Both sides are still PRINTED, so the difference
      stays on screen instead of disappearing. */
-  const got = typesOf(page.doc), want = typesOf(bdoc);
+  /* The baseline heads were captured from live pages that carried invented
+     Review / AggregateRating nodes (finding 26). Losing those is the point, not
+     a regression, so they are not part of what must be preserved - and check 6
+     above fails any page that still has them. */
+  const got = typesOf(page.doc);
+  const want = typesOf(bdoc).filter(t => t !== 'Review' && t !== 'AggregateRating');
   const bExempt = UTILITY_PAGES[String(page.tree.path || '')];
   if (bExempt) {
     console.log('        waived: JSON-LD @types match the baseline - ' + bExempt);

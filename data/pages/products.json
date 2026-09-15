@@ -62,25 +62,7 @@
           "price": "680.00",
           "priceCurrency": "HKD",
           "availability": "https://schema.org/InStock"
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "reviewCount": "328",
-          "bestRating": "5",
-          "worstRating": "1"
-        },
-        "review": [
-          {
-            "@type": "Review",
-            "author": "麥女士家屬",
-            "reviewBody": "化療期間配合使用雲芝+T3，副作用明顯減輕。",
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5"
-            }
-          }
-        ]
+        }
       },
       {
         "@type": "Product",
@@ -96,25 +78,7 @@
           "price": "3800.00",
           "priceCurrency": "HKD",
           "availability": "https://schema.org/InStock"
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "reviewCount": "328",
-          "bestRating": "5",
-          "worstRating": "1"
-        },
-        "review": [
-          {
-            "@type": "Review",
-            "author": "陳小姐",
-            "reviewBody": "術後持續服用PSP，追蹤兩年無復發，體力恢復良好。",
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5"
-            }
-          }
-        ]
+        }
       },
       {
         "@type": "Product",
@@ -130,25 +94,7 @@
           "price": "1900.00",
           "priceCurrency": "HKD",
           "availability": "https://schema.org/InStock"
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "reviewCount": "215",
-          "bestRating": "5",
-          "worstRating": "1"
-        },
-        "review": [
-          {
-            "@type": "Review",
-            "author": "陳先生",
-            "reviewBody": "T3配合PSP使用，化療副作用明顯減少。",
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5"
-            }
-          }
-        ]
+        }
       },
       {
         "@type": "Product",
@@ -164,25 +110,7 @@
           "price": "1880.00",
           "priceCurrency": "HKD",
           "availability": "https://schema.org/InStock"
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.7",
-          "reviewCount": "128",
-          "bestRating": "5",
-          "worstRating": "1"
-        },
-        "review": [
-          {
-            "@type": "Review",
-            "author": "乙肝帶菌者陳先生",
-            "reviewBody": "服用六個月病毒量明顯下降，肝功能恢復正常。",
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5"
-            }
-          }
-        ]
+        }
       },
       {
         "@type": "Product",
@@ -198,25 +126,7 @@
           "price": "520.00",
           "priceCurrency": "HKD",
           "availability": "https://schema.org/InStock"
-        },
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.6",
-          "reviewCount": "89",
-          "bestRating": "5",
-          "worstRating": "1"
-        },
-        "review": [
-          {
-            "@type": "Review",
-            "author": "學生陳同學",
-            "reviewBody": "服用兩個月後記憶力明顯改善。",
-            "reviewRating": {
-              "@type": "Rating",
-              "ratingValue": "5"
-            }
-          }
-        ]
+        }
       },
       {
         "@type": "Product",
