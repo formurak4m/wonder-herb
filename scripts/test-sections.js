@@ -16,6 +16,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { readOriginalPage } = require(path.join(__dirname, '..', 'renderer', 'source-page.js'));
 const { execFileSync } = require('child_process');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
@@ -643,7 +644,8 @@ Object.keys(FIDELITY).forEach(type => {
   const specs = [].concat(FIDELITY[type]);
   specs.forEach(spec => {
     const name = type + (spec.label ? ' (' + spec.label + ')' : '');
-    const src = fs.readFileSync(path.join(ROOT, spec.page), 'utf8');
+    // fidelity is measured against the ORIGINAL markup (legacy/ once the page is retired)
+    const src = readOriginalPage(spec.page);
 
     let block;
     if (spec.template) {

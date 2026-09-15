@@ -28,6 +28,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { readOriginalPage } = require(path.join(__dirname, '..', 'renderer', 'source-page.js'));
 
 const ROOT = path.join(__dirname, '..');
 const SOURCE_PAGE = '產品介紹.html';
@@ -84,7 +85,8 @@ function die(msg) {
 /* ------------------------------------------------------------------ read -- */
 
 function readPageCatalogue() {
-  const html = fs.readFileSync(path.join(ROOT, SOURCE_PAGE), 'utf8');
+  // the ORIGINAL page (legacy/ once retired), never the pre-rendered replacement
+  const html = readOriginalPage(SOURCE_PAGE);
   const m = html.match(/const productData = (\{[\s\S]*?\n    \});/);
   if (!m) die('could not find the productData array in ' + SOURCE_PAGE);
   let data;

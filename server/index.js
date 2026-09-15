@@ -747,13 +747,14 @@ app.put('/api/pages/:slug', asyncRoute(async (req, res) => {
    disk. This route accepts a tree from the network, so those two values are
    restricted to the actual page files in the repo root - otherwise a posted
    tree could ask for `../.env` and have it inlined into the response. */
-const PAGE_FILE_OK = /^[^/\\]+\.html$/;
+/* Still a bare page NAME only (no directories), so a posted tree cannot reach
+   outside the pages. It resolves through renderer/source-page.js: a retired
+   page's original lives in legacy/, and that is what the preview must read. */
+const { originalPagePath } = require('../renderer/source-page');
 function safeSourcePage(value) {
   const name = String(value === undefined || value === null ? '' : value).trim();
   if (!name) return '';
-  if (!PAGE_FILE_OK.test(name)) return '';
-  const full = path.join(__dirname, '..', name);
-  return fs.existsSync(full) ? name : '';
+  return originalPagePath(name) ? name : '';
 }
 
 app.post('/api/preview', asyncRoute(async (req, res) => {

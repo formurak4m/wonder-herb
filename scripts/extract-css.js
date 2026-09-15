@@ -42,6 +42,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { readOriginalPage } = require(path.join(__dirname, '..', 'renderer', 'source-page.js'));
 const csstree = require('css-tree');
 
 const ROOT = path.join(__dirname, '..');
@@ -149,7 +150,8 @@ function propsOf(decls) {
 function main() {
   const pages = fs.readdirSync(ROOT).filter(f => f.toLowerCase().endsWith('.html')).sort();
   const per = {};
-  pages.forEach(p => { per[p] = unitsOf(fs.readFileSync(path.join(ROOT, p), 'utf8')); });
+  // the ORIGINAL page: a migrated page's root file is renderer output with no inline CSS (legacy/ first)
+  pages.forEach(p => { per[p] = unitsOf(readOriginalPage(p)); });
 
   /* How many of the 18 pages carry this exact rule? */
   const seenOn = new Map();

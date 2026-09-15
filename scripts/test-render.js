@@ -273,6 +273,53 @@ check('no React dev attributes leak either',
       html.indexOf('data-reactroot') === -1 && html.indexOf('<!-- -->') === -1,
       'renderToStaticMarkup, not hydrate');
 
+/* ------------------------------------------- the public site (P9-T1) ----- */
+console.log('\n=== retired pages are served from the render; the rest are never touched ===\n');
+{
+  const { originalPagePath, readOriginalPage, isRetired } = require(path.join(ROOT, 'renderer', 'source-page.js'));
+  const NAME = 'zz-render-root-test.html';                  // a throwaway page, cleaned up below
+  const rootFile = path.join(ROOT, NAME);
+  const legacyFile = path.join(ROOT, 'legacy', NAME);
+  const treeFile = path.join(ROOT, 'renderer', '.build', 'zz-render-root-test.tree.json');
+  const legacyExisted = fs.existsSync(path.join(ROOT, 'legacy'));
+  const cli = () => execFileSync(process.execPath, [path.join(ROOT, 'renderer', 'render.js'), treeFile],
+                                 { cwd: ROOT, stdio: 'pipe' }).toString('utf8');
+  try {
+    fs.mkdirSync(path.dirname(treeFile), { recursive: true });
+    fs.writeFileSync(treeFile, JSON.stringify({ slug: 'zz-render-root-test', path: NAME,
+      title: { zh: '測試' }, sections: [{ type: 'page-header', fields: { heading: { zh: '測試' } } }] }));
+
+    // 1. NOT retired: an original sits at the root and must survive a render untouched
+    fs.writeFileSync(rootFile, '<!-- hand-coded original -->');
+    const out1 = cli();
+    check('a page NOT retired to legacy/ is never written over by the renderer',
+          fs.readFileSync(rootFile, 'utf8') === '<!-- hand-coded original -->' && out1.indexOf('site root') === -1,
+          'root file byte-identical');
+    check('and its original is read from the root', originalPagePath(NAME) === rootFile && !isRetired(NAME), 'root');
+
+    // 2. retired: the original moves to legacy/, the render takes the root
+    fs.mkdirSync(path.dirname(legacyFile), { recursive: true });
+    fs.renameSync(rootFile, legacyFile);
+    const out2 = cli();
+    const written = fs.existsSync(rootFile) ? fs.readFileSync(rootFile, 'utf8') : '';
+    check('once retired, the render is written to the page\'s own root path',
+          /^<!doctype html>/i.test(written) && written.indexOf('測試') !== -1 && /site root\s+zz-render-root-test\.html\s+written/.test(out2),
+          Math.round(written.length / 1024) + ' KB');
+    check('the original is now read from legacy/, never from the render at the root',
+          originalPagePath(NAME) === legacyFile && readOriginalPage(NAME) === '<!-- hand-coded original -->', 'legacy/' + NAME);
+    const mtime = fs.statSync(rootFile).mtimeMs;
+    const out3 = cli();
+    check('an unchanged render leaves the root file alone (git stays clean)',
+          fs.statSync(rootFile).mtimeMs === mtime && /site root\s+zz-render-root-test\.html\s+unchanged/.test(out3), 'unchanged');
+    check('a name with a directory in it is refused (the preview route\'s traversal guard)',
+          originalPagePath('../.env') === null && originalPagePath('legacy/' + NAME) === null, 'null');
+  } finally {
+    [rootFile, legacyFile, treeFile, path.join(ROOT, 'renderer', '.out', NAME)].forEach(f => { try { fs.unlinkSync(f); } catch (e) {} });
+    if (!legacyExisted) { try { fs.rmdirSync(path.join(ROOT, 'legacy')); } catch (e) {} }
+  }
+  check('the throwaway page left nothing behind', !fs.existsSync(rootFile) && !fs.existsSync(legacyFile), 'clean');
+}
+
 /* ------------------------------------------------------------- failure ----- */
 console.log('\n=== it fails loudly rather than silently ===\n');
 

@@ -13,10 +13,10 @@
  * full list and P5-T2's buildSite loops it - a loop, not a rewrite. Nothing
  * here assumes there is exactly one language.
  *
- * SCOPE OF P5-T1. This renders a page to a string, and its CLI writes a proof
- * page into renderer/.out/ (gitignored). It does NOT write over any of the 18
- * hand-coded pages - page migration is Phase 9 and the full-site build is
- * P5-T2.
+ * SCOPE. This renders a page to a string. Its CLI writes every tree into
+ * renderer/.out/ (gitignored) and, since P9-T1, writes a tree whose hand-coded
+ * original has been retired to legacy/ over that page's root file - the page
+ * GitHub Pages serves. It never writes over a page that has not been retired.
  *
  * --------------------------------------------------------------------------
  * TWO THINGS ABOUT THIS SITE THAT THE RENDERER HAS TO WORK AROUND
@@ -46,6 +46,7 @@ const { resolveField, LANGS, PRIMARY } = require('./i18n');
 const { buildHead, pageUrl, pagePath } = require('./head');
 const { baseTemplate } = require('./template');
 const { PRICE_HOLD } = require('../assets/site.js');
+const { readOriginalPage, isRetired } = require('./source-page');
 
 const ROOT = path.join(__dirname, '..');
 const BUNDLE = path.join(__dirname, '.build', 'sections.cjs');
@@ -153,7 +154,8 @@ function loadData(dir) {
    so the rendered document is actually styled. Returns raw CSS blocks. */
 function loadStyles(sourcePage) {
   if (!sourcePage) return [];
-  const html = fs.readFileSync(path.join(ROOT, sourcePage), 'utf8');
+  // the ORIGINAL page: once retired it is legacy/<name>, and the root file is our own output
+  const html = readOriginalPage(sourcePage);
   return (html.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) || [])
     .map(block => block.replace(/^<style[^>]*>/i, '').replace(/<\/style>$/i, ''));
 }
@@ -162,7 +164,10 @@ function loadStyles(sourcePage) {
    fixed nav wrapper above <main> and the <footer> below it. */
 function loadChrome(sourcePage) {
   if (!sourcePage) return {};
-  const html = fs.readFileSync(path.join(ROOT, sourcePage), 'utf8');
+  /* The ORIGINAL page (renderer/source-page.js). After P9-T1 retires a page,
+     the root file is the pre-rendered output: lifting chrome from it would
+     copy our own output back into itself on every render. */
+  const html = readOriginalPage(sourcePage);
   const header = html.match(/<div class="fixed-nav-wrapper">[\s\S]*?<\/div><!-- \/\.fixed-nav-wrapper -->/i);
   const footer = html.match(/<footer[\s\S]*?<\/footer>/i);
   /* The floating WhatsApp button sits OUTSIDE both, after <footer>, so lifting
@@ -182,10 +187,8 @@ function loadTree(file) {
  * applies to data/. An unchanged publish must leave the working tree clean, or
  * `git diff` stops being a useful description of what a publish did.
  *
- * Today the renderer only writes to gitignored renderer/.out/, so this changes
- * nothing visible. It matters from P5-T2 onward, when the full-site build
- * starts writing migrated pages to the repo root: by then the semantics are
- * already here rather than being remembered later.
+ * Since P9-T1 the renderer also writes retired pages to the repo root (see
+ * main), and this is what keeps an unchanged publish from dirtying git.
  */
 function writeIfChanged(file, content) {
   let before = null;
@@ -200,9 +203,10 @@ function writeIfChanged(file, content) {
 
    node renderer/render.js [tree.json ...]
 
-   Renders each tree for every language in scope into renderer/.out/. That
-   folder is gitignored and is NOT the public site: P5-T1 proves the renderer
-   works on one page, it does not migrate anything. */
+   Renders each tree for every language in scope into renderer/.out/
+   (gitignored, always), and - for a page whose original has been retired to
+   legacy/ - to the page's own path in the repo root, which is what GitHub
+   Pages serves. Pages not yet retired are never written over. */
 const OUT = path.join(__dirname, '.out');
 
 /* The published page trees. Until P9-T1 the default here was the P5-T1
@@ -256,6 +260,18 @@ function main(argv) {
       console.log('    ' + lang + '  ' + rel + '  ' +
                   Math.round(html.length / 1024) + ' KB  ' +
                   (changed ? 'written  ' : 'unchanged') + '  -> ' + pageUrl(tree, lang));
+      /* THE PUBLIC SITE (P9-T1). A page whose hand-coded original has been
+         retired to legacy/ is served from the pre-rendered file at its own URL,
+         so the render is written to the repo root as well - only if it changed,
+         so an unchanged publish leaves `git status` clean. A page that has NOT
+         been retired is never written over: the original stays the live page
+         until the migration is finished and it is moved to legacy/. */
+      if (isRetired(tree.path)) {
+        const live = path.join(ROOT, rel);
+        const liveChanged = writeIfChanged(live, html);
+        console.log('        -> site root  ' + rel + '  ' + (liveChanged ? 'written' : 'unchanged') +
+                    '   (original retired to legacy/' + tree.path + ')');
+      }
       /* Disputed prices are refused at the cart, never picked. Say so on every
          render, so a publish cannot look finished while a product is unsellable. */
       const held = Object.keys(PRICE_HOLD).filter(sku => html.indexOf('data-sku="' + sku + '"') !== -1);
@@ -266,7 +282,7 @@ function main(argv) {
     });
   });
 
-  console.log('\nWritten to renderer/.out/ (gitignored). The 18 live pages are untouched.');
+  console.log('\nWritten to renderer/.out/ (gitignored); retired pages also to the repo root. Pages not retired are untouched.');
 }
 
 if (require.main === module) {
