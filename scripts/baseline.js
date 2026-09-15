@@ -9,14 +9,37 @@
  * pages then fall back to ./data/*.json exactly as they do on GitHub Pages.
  *
  * baseline/ is gitignored. It is a local reference, never deployed.
+ *
+ * RE-CAPTURED AT P9-T1 (docs/FINDINGS.md finding 21). The first baseline was
+ * served from `localhost`, and every live page decides two things by HOSTNAME:
+ * whether to show the account icon (which wraps the 1280 nav from 164 to 190px)
+ * and whether to look for a local API. So it recorded a page production never
+ * serves. It now captures under a production-like hostname by default, and adds
+ * a scripts-OFF capture, which did not exist (every scripts-off comparison had
+ * been made against a scripts-on reference).
+ *
+ *   BASELINE_HOST   hostname to serve under       default wonder-herb.test
+ *                   (mapped to 127.0.0.1 inside Chromium; no hosts-file edit)
+ *   BASELINE_SITE   directory holding the pages   default the repo root
+ *                   (point it at a checkout of HEAD so the reference records
+ *                   COMMITTED content, not uncommitted working-tree changes)
+ *   BASELINE_OUT    where to write                default baseline/
+ *   BASELINE_MODES  on,off                        default both
+ *
+ * Outputs: screens/<page>.<w>.png (scripts on), screens-nojs/<page>.<w>.png
+ * (scripts off), head/<page>.html (scripts on, 1280), manifest.json.
  */
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const { execFileSync } = require('child_process');
 const { chromium } = require('playwright');
 
-const ROOT = path.join(__dirname, '..');
-const OUT = path.join(ROOT, 'baseline');
+const REPO = path.join(__dirname, '..');
+const ROOT = path.resolve(process.env.BASELINE_SITE || REPO);
+const OUT = path.resolve(process.env.BASELINE_OUT || path.join(REPO, 'baseline'));
+const HOST = process.env.BASELINE_HOST || 'wonder-herb.test';
+const MODES = (process.env.BASELINE_MODES || 'on,off').split(',').map(s => s.trim()).filter(Boolean);
 const PORT = 4177;
 const WIDTHS = [{ w: 1280, h: 900, tag: '1280' }, { w: 390, h: 844, tag: '390' }];
 
@@ -41,6 +64,12 @@ function serve() {
       if (full.indexOf(ROOT) !== 0) { res.writeHead(403).end('nope'); return; }
       fs.readFile(full, (err, buf) => {
         if (err) { res.writeHead(404).end('not found'); return; }
+        /* Scripts-off captures cannot use page.addStyleTag (it runs JS in the
+           page and hangs), so the freeze CSS is injected here instead, only for
+           requests from a scripts-off context. */
+        if (req.headers['x-baseline-freeze'] && path.extname(full).toLowerCase() === '.html') {
+          buf = Buffer.from(buf.toString('utf8').replace('</head>', '<style>' + FREEZE + '</style></head>'), 'utf8');
+        }
         res.writeHead(200, { 'Content-Type': MIME[path.extname(full).toLowerCase()] || 'application/octet-stream' });
         res.end(buf);
       });
@@ -113,102 +142,141 @@ const FREEZE = `*,*::before,*::after{animation-duration:0s!important;animation-d
 
 async function main() {
   const pages = fs.readdirSync(ROOT).filter(f => f.toLowerCase().endsWith('.html')).sort();
-  if (!pages.length) throw new Error('no .html pages found at the repo root');
+  if (!pages.length) throw new Error('no .html pages found in ' + ROOT);
 
-  fs.mkdirSync(path.join(OUT, 'screens'), { recursive: true });
-  fs.mkdirSync(path.join(OUT, 'head'), { recursive: true });
+  for (const m of MODES) {
+    if (m !== 'on' && m !== 'off') throw new Error('BASELINE_MODES must be on and/or off, got: ' + m);
+  }
+  if (MODES.includes('on')) {
+    fs.mkdirSync(path.join(OUT, 'screens'), { recursive: true });
+    fs.mkdirSync(path.join(OUT, 'head'), { recursive: true });
+  }
+  if (MODES.includes('off')) fs.mkdirSync(path.join(OUT, 'screens-nojs'), { recursive: true });
+
+  let commit = null;
+  try {
+    commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT }).toString().trim();
+    const dirty = execFileSync('git', ['status', '--porcelain', '--', '.'], { cwd: ROOT }).toString().trim();
+    if (dirty) commit += ' + uncommitted changes';
+  } catch (e) { /* not a git checkout */ }
 
   const server = await serve();
-  const browser = await chromium.launch();
+  const local = HOST === 'localhost' || HOST === '127.0.0.1';
+  const browser = await chromium.launch(local ? {} : { args: ['--host-resolver-rules=MAP ' + HOST + ' 127.0.0.1'] });
   const report = [];
   let thin = 0;
 
-  console.log('Recording baseline from a static server on :' + PORT + ' (no API, like production)\n');
+  console.log('Recording baseline from a static server (no API, like production)');
+  console.log('  host    ' + HOST + (local ? '   <-- LOCALHOST: pages will show localhost-only UI (finding 21)' : ''));
+  console.log('  site    ' + ROOT + (commit ? '   @ ' + commit : ''));
+  console.log('  modes   scripts ' + MODES.join(' + ') + '\n');
 
   for (const file of pages) {
     const slug = file.replace(/\.html$/i, '');
-    const url = 'http://localhost:' + PORT + '/' + encodeURIComponent(file);
+    const url = 'http://' + HOST + ':' + PORT + '/' + encodeURIComponent(file);
     const row = { page: file, text: {}, shots: [] };
 
-    for (const size of WIDTHS) {
-      const ctx = await browser.newContext({
-        viewport: { width: size.w, height: size.h },
-        deviceScaleFactor: 1,
-        isMobile: size.w < 500,
-        hasTouch: size.w < 500,
-        reducedMotion: 'reduce',
-      });
-      const page = await ctx.newPage();
-      await proxyExternal(page);
-      const failed = [];
-      page.on('requestfailed', r => {
-        // /api/ refusals are the point: production has no API and falls back to data/.
-        // A proxied host reports ERR_ABORTED because we replaced the request ourselves.
-        const aborted = /ERR_ABORTED/.test((r.failure() || {}).errorText || '');
-        if (/\/api\//.test(r.url())) return;
-        if (aborted && PROXY_HOSTS.test(r.url())) return;
-        failed.push(r.url());
-      });
-
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
-      await page.addStyleTag({ content: FREEZE });
-      const len = await waitForContent(page);
-      await revealAll(page);
-      await page.waitForTimeout(300);
-
-      const shot = path.join(OUT, 'screens', slug + '.' + size.tag + '.png');
-      // some pages are very tall; a full-page capture needs longer than the 30s default
-      await page.screenshot({ path: shot, fullPage: true, animations: 'disabled',
-                              caret: 'hide', timeout: 180000 });
-
-      const bytes = fs.statSync(shot).size;
-      row.text[size.tag] = len;
-      row.shots.push({ width: size.tag, bytes: bytes });
-      if (len < 200) thin++;
-
-      // the <head> as rendered, once, from the desktop pass
-      if (size.tag === '1280') {
-        const head = await page.evaluate(() => document.head.outerHTML);
-        fs.writeFileSync(path.join(OUT, 'head', slug + '.html'), head, 'utf8');
-        row.headBytes = Buffer.byteLength(head, 'utf8');
-        row.jsonLd = await page.evaluate(() =>
-          Array.from(document.querySelectorAll('script[type="application/ld+json"]')).length);
-        row.h1 = await page.evaluate(() => document.querySelectorAll('h1').length);
-        row.title = await page.title();
-        // an image that never decoded has naturalWidth 0; a broken baseline is worse than none
-        row.images = await page.evaluate(() => {
-          const imgs = Array.from(document.images);
-          return { total: imgs.length, broken: imgs.filter(i => !i.naturalWidth).length };
+    for (const mode of MODES) {
+      const js = mode === 'on';
+      for (const size of WIDTHS) {
+        const ctx = await browser.newContext({
+          viewport: { width: size.w, height: size.h },
+          deviceScaleFactor: 1,
+          isMobile: size.w < 500,
+          hasTouch: size.w < 500,
+          reducedMotion: 'reduce',
+          javaScriptEnabled: js,
+          extraHTTPHeaders: js ? {} : { 'x-baseline-freeze': '1' }
         });
-        row.webfonts = await page.evaluate(() =>
-          document.fonts && document.fonts.check ? document.fonts.check('16px Inter') : null);
+        const page = await ctx.newPage();
+        await proxyExternal(page);
+        const failed = [];
+        page.on('requestfailed', r => {
+          // /api/ refusals are the point: production has no API and falls back to data/.
+          // A proxied host reports ERR_ABORTED because we replaced the request ourselves.
+          const aborted = /ERR_ABORTED/.test((r.failure() || {}).errorText || '');
+          if (/\/api\//.test(r.url())) return;
+          if (aborted && PROXY_HOSTS.test(r.url())) return;
+          failed.push(r.url());
+        });
+
+        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
+        if (js) await page.addStyleTag({ content: FREEZE });     // unchanged from the first baseline
+        const len = await waitForContent(page);
+        if (js) await revealAll(page);   // scripts off: nothing reveals, and that is the honest state
+        await page.waitForTimeout(300);
+
+        const dir = js ? 'screens' : 'screens-nojs';
+        const shot = path.join(OUT, dir, slug + '.' + size.tag + '.png');
+        // some pages are very tall; a full-page capture needs longer than the 30s default
+        await page.screenshot({ path: shot, fullPage: true, animations: 'disabled',
+                                caret: 'hide', timeout: 180000 });
+
+        const key = size.tag + (js ? '' : '-nojs');
+        row.text[key] = len;
+        row.shots.push({ width: size.tag, scripts: mode, bytes: fs.statSync(shot).size });
+        if (js && len < 200) thin++;
+
+        // the <head> as rendered, once, from the desktop scripts-on pass
+        if (js && size.tag === '1280') {
+          const head = await page.evaluate(() => document.head.outerHTML);
+          fs.writeFileSync(path.join(OUT, 'head', slug + '.html'), head, 'utf8');
+          row.headBytes = Buffer.byteLength(head, 'utf8');
+          row.jsonLd = await page.evaluate(() =>
+            Array.from(document.querySelectorAll('script[type="application/ld+json"]')).length);
+          row.h1 = await page.evaluate(() => document.querySelectorAll('h1').length);
+          row.title = await page.title();
+          // an image that never decoded has naturalWidth 0; a broken baseline is worse than none
+          row.images = await page.evaluate(() => {
+            const imgs = Array.from(document.images);
+            return { total: imgs.length, broken: imgs.filter(i => !i.naturalWidth).length };
+          });
+          row.webfonts = await page.evaluate(() =>
+            document.fonts && document.fonts.check ? document.fonts.check('16px Inter') : null);
+          row.accountIcon = await page.evaluate(() => {
+            const a = document.getElementById('whAccountLink');
+            return a ? getComputedStyle(a).display !== 'none' : null;
+          });
+          row.navHeight = await page.evaluate(() => {
+            const n = document.querySelector('.fixed-nav-wrapper');
+            return n ? Math.round(n.getBoundingClientRect().height) : null;
+          });
+        }
+        if (failed.length) {
+          row.assetFails = (row.assetFails || 0) + failed.length;
+          row.assetFailUrls = Array.from(new Set((row.assetFailUrls || []).concat(
+            failed.map(u => u.replace('http://' + HOST + ':' + PORT, '')))));
+        }
+        row.height = row.height || {};
+        row.height[key] = await page.evaluate(() => document.body.scrollHeight);
+        await ctx.close();
       }
-      if (failed.length) {
-        row.assetFails = failed.length;
-        row.assetFailUrls = Array.from(new Set(failed.map(u => u.replace('http://localhost:' + PORT, ''))));
-      }
-      row.height = await page.evaluate(() => document.body.scrollHeight);
-      await ctx.close();
     }
 
     console.log('  ' + file.padEnd(26) +
-      'text ' + String(row.text['1280']).padStart(6) + '/' + String(row.text['390']).padStart(6) +
-      '  ld+json ' + row.jsonLd + '  h1 ' + row.h1 +
-      '  img ' + (row.images.total - row.images.broken) + '/' + row.images.total +
-      '  Inter ' + (row.webfonts ? 'y' : 'n') +
+      (row.text['1280'] !== undefined ? 'text ' + String(row.text['1280']).padStart(6) + '/' + String(row.text['390']).padStart(6) : '') +
+      (row.text['1280-nojs'] !== undefined ? '  no-js ' + String(row.text['1280-nojs']).padStart(6) : '') +
+      (row.jsonLd !== undefined ? '  ld+json ' + row.jsonLd + '  h1 ' + row.h1 +
+        '  img ' + (row.images.total - row.images.broken) + '/' + row.images.total +
+        '  Inter ' + (row.webfonts ? 'y' : 'n') + '  nav ' + row.navHeight +
+        '  acct-icon ' + (row.accountIcon === null ? '-' : row.accountIcon ? 'SHOWN' : 'hidden') : '') +
       (row.assetFails ? '  [' + row.assetFails + ' asset 404]' : '') +
-      (row.text['1280'] < 200 ? '  <-- THIN, CHECK THIS' : ''));
+      (row.text['1280'] !== undefined && row.text['1280'] < 200 ? '  <-- THIN, CHECK THIS' : ''));
     report.push(row);
   }
 
   await browser.close();
   server.close();
 
-  fs.writeFileSync(path.join(OUT, 'manifest.json'), JSON.stringify(report, null, 2) + '\n', 'utf8');
+  fs.writeFileSync(path.join(OUT, 'manifest.json'), JSON.stringify({
+    capturedAt: new Date().toISOString(), host: HOST, site: ROOT, commit: commit, modes: MODES,
+    note: 'Served statically with no API. See docs/FINDINGS.md finding 21 for why the host matters.',
+    pages: report
+  }, null, 2) + '\n', 'utf8');
 
-  const shots = fs.readdirSync(path.join(OUT, 'screens')).filter(f => f.endsWith('.png')).length;
-  const heads = fs.readdirSync(path.join(OUT, 'head')).filter(f => f.endsWith('.html')).length;
-  console.log('\n' + pages.length + ' page(s), ' + shots + ' screenshot(s), ' + heads + ' head snapshot(s)');
+  const count = d => fs.existsSync(path.join(OUT, d)) ? fs.readdirSync(path.join(OUT, d)).length : 0;
+  console.log('\n' + pages.length + ' page(s): ' + count('screens') + ' scripts-on shot(s), ' +
+              count('screens-nojs') + ' scripts-off shot(s), ' + count('head') + ' head snapshot(s)');
   if (thin) console.log('WARNING: ' + thin + ' capture(s) look nearly empty. The baseline is only useful if they are real.');
   return thin;
 }
