@@ -125,6 +125,9 @@ const EMAIL_ALLOW = [
   { files: /^(?!admin\/)[^/]+\.html$|^data\//,
     emails: ['info@wonder-herb.com'],
     why: 'the business\'s own public contact address, printed on the live pages' },
+  { files: /^legacy\/[^/]+\.html$/,
+    emails: ['info@wonder-herb.com'],
+    why: 'the same public contact address, in a retired original kept for reference (P9-T1)' },
   { files: /^聯絡我們\.html$/,
     emails: ['wonderherbusa@gmail.com', 'jc@smartgroupinc.org', 'enquiry@provital.com.au'],
     why: 'overseas distributor contacts published on the contact page by the business' },
@@ -190,6 +193,53 @@ check('no email address in any file except where it is allowed for that file',
 EMAIL_ALLOW.forEach(e => console.log('        allowed ' + e.emails.join(', ') + ' in ' + e.files.source + ' - ' + e.why));
 
 /* Prove the scan bites, on a throwaway string rather than by editing data/. */
+/* ------------------------------------------------ legacy/ is never public ---
+   P9-T1 retires a migrated page's hand-coded original to legacy/ for reference.
+   The deploy still uploads the whole repository (P8-T3's allow-list is not
+   applied), so legacy/ IS reachable by URL. Until that changes, a retired copy
+   must be unmistakably non-public: noindex on every file, robots.txt keeping
+   every crawler group out, and nothing that ships linking to it. Without this, a
+   duplicate of the page - older copy, older structured data - competes with
+   the real one in search results. */
+console.log('\n=== legacy/ is never public (retired originals, P9-T1) ===\n');
+
+function legacyProblems(listLegacy, readFile, rootPages) {
+  const problems = [];
+  listLegacy.forEach(f => {
+    if (!/<meta\s+name=["']robots["']\s+content=["'][^"']*noindex/i.test(readFile(f))) problems.push(f + ' has no robots noindex');
+  });
+  const robots = readFile('robots.txt') || '';
+  const groups = robots.split(/\r?\n(?=User-agent:)/i).filter(g => /^User-agent:/im.test(g));
+  groups.forEach(g => {
+    if (!/^Disallow:\s*\/legacy\/\s*$/im.test(g)) problems.push('robots.txt group "' + g.split(/\r?\n/)[0] + '" does not disallow /legacy/');
+  });
+  if (!groups.length) problems.push('robots.txt has no User-agent groups');
+  ['sitemap.xml', 'llms.txt'].concat(rootPages).forEach(f => {
+    const body = readFile(f) || '';
+    if (/(href=["']|\/)legacy\//i.test(body)) problems.push(f + ' links to legacy/');
+  });
+  return problems;
+}
+{
+  const legacyDir = path.join(ROOT, 'legacy');
+  const legacyFiles = fs.existsSync(legacyDir)
+    ? fs.readdirSync(legacyDir).filter(f => f.endsWith('.html')).map(f => 'legacy/' + f) : [];
+  const rootPages = fs.readdirSync(ROOT).filter(f => f.endsWith('.html'));
+  const readRepo = f => { try { return fs.readFileSync(path.join(ROOT, f), 'utf8'); } catch (e) { return null; } };
+  const problems = legacyProblems(legacyFiles, readRepo, rootPages);
+  check('every retired original carries noindex, every robots.txt group disallows /legacy/, nothing links to it',
+        problems.length === 0,
+        problems.length ? problems.join('; ') : legacyFiles.length + ' retired page(s): ' + legacyFiles.join(', '));
+
+  // negative control: the same checks on a copy with the guard missing
+  const fakeRead = f => f === 'legacy/x.html' ? '<head><meta charset="UTF-8"></head>'
+    : f === 'robots.txt' ? 'User-agent: *\nAllow: /\nDisallow: /legacy/\n\nUser-agent: GPTBot\nAllow: /\n'
+    : f === 'index.html' ? '<a href="legacy/x.html">old</a>' : '';
+  const caught = legacyProblems(['legacy/x.html'], fakeRead, ['index.html']);
+  check('negative control: a missing noindex, a crawler group without the rule, and a link to legacy/ are all caught',
+        caught.length === 3, caught.join('; '));
+}
+
 console.log('\n=== the scan bites ===\n');
 const sample = '{ "slug": "x", "updatedBy": "someone@example.org" }';
 check('a staff email in a published file would be caught',

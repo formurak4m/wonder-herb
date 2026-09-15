@@ -2,29 +2,39 @@ User-agent: *
 Allow: /
 Disallow: /購物車.html
 Disallow: /%E8%B3%BC%E7%89%A9%E8%BB%8A.html
+# retired hand-coded originals of migrated pages (P9-T1): reference copies, never public
+Disallow: /legacy/
 
 User-agent: GPTBot
 Allow: /
+Disallow: /legacy/
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /legacy/
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /legacy/
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /legacy/
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /legacy/
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /legacy/
 
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /legacy/
 
 User-agent: Bingbot
 Allow: /
+Disallow: /legacy/
 
 Sitemap: https://www.wonder-herb.com/sitemap.xml
