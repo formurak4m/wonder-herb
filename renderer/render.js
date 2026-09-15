@@ -45,6 +45,7 @@ const { renderToStaticMarkup } = require('react-dom/server');
 const { resolveField, LANGS, PRIMARY } = require('./i18n');
 const { buildHead, pageUrl, pagePath } = require('./head');
 const { baseTemplate } = require('./template');
+const { PRICE_HOLD } = require('../assets/site.js');
 
 const ROOT = path.join(__dirname, '..');
 const BUNDLE = path.join(__dirname, '.build', 'sections.cjs');
@@ -103,6 +104,7 @@ function resolveData(data, lang) {
 function renderPage(tree, lang, data, opts) {
   const o = opts || {};
   const l = lang || PRIMARY;
+  assertOneModalGrid(tree);
   const registry = o.registry || sectionRegistry();
   const body = renderBody(tree, l, resolveData(data, l), registry);
   const head = buildHead(tree, l, {
@@ -115,8 +117,21 @@ function renderPage(tree, lang, data, opts) {
     lang: l,
     bodyClass: tree.bodyClass,
     chrome: o.chrome,
-    main: tree.main
+    main: tree.main,
+    // the template derives the behaviour scripts from these (finding 23)
+    sectionTypes: (tree.sections || []).map(node => node.type)
   });
+}
+
+/* A page's quick view modal has fixed ids (#quickViewModal, #modalAddToCart),
+   so two product grids on one page would emit duplicate ids and the second
+   grid's buttons would drive the first one's modal. Refuse rather than ship it. */
+function assertOneModalGrid(tree) {
+  const grids = (tree.sections || []).filter(n => n.type === 'product-grid').length;
+  if (grids > 1) {
+    throw new Error('A page can hold one product-grid (its quick view uses fixed ids); ' +
+      (tree.path || tree.slug || 'this tree') + ' has ' + grids + '.');
+  }
 }
 
 /* ------------------------------------------------------------------ content */
@@ -150,7 +165,13 @@ function loadChrome(sourcePage) {
   const html = fs.readFileSync(path.join(ROOT, sourcePage), 'utf8');
   const header = html.match(/<div class="fixed-nav-wrapper">[\s\S]*?<\/div><!-- \/\.fixed-nav-wrapper -->/i);
   const footer = html.match(/<footer[\s\S]*?<\/footer>/i);
-  return { header: header ? header[0] : '', footer: footer ? footer[0] : '' };
+  /* The floating WhatsApp button sits OUTSIDE both, after <footer>, so lifting
+     only header + footer silently dropped it - a contact channel, most visible
+     on phones. Found at P9-T1 by the full visual diff. It is a plain wa.me link
+     with no script behind it, identical on all 18 pages. */
+  const floating = html.match(/<a[^>]*class="mobile-fixed-contact-btn"[\s\S]*?<\/a>/i);
+  return { header: header ? header[0] : '', footer: footer ? footer[0] : '',
+           floating: floating ? floating[0] : '' };
 }
 
 function loadTree(file) {
@@ -184,8 +205,25 @@ function writeIfChanged(file, content) {
    works on one page, it does not migrate anything. */
 const OUT = path.join(__dirname, '.out');
 
+/* The published page trees. Until P9-T1 the default here was the P5-T1
+   fixture in renderer/sample/, which meant `npm run publish` and `test:seo`
+   gated a hand-made sample while the tree the editor actually saves - the one
+   that ships - was never rendered or checked. That is how an editor demo
+   section sat in data/pages/products.json unnoticed. The fixture stays, but
+   only test:render uses it, by explicit path. */
+function publishedTrees() {
+  const dir = path.join(__dirname, '..', 'data', 'pages');
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir).filter(f => f.endsWith('.json')).sort()
+    .map(f => path.join(dir, f));
+}
+
 function main(argv) {
-  const files = argv.length ? argv : [path.join(__dirname, 'sample', 'products.json')];
+  const files = argv.length ? argv : publishedTrees();
+  if (!files.length) {
+    console.log('No page trees in data/pages/ - nothing to render.');
+    return;
+  }
   const data = loadData();
   const registry = sectionRegistry();
   fs.mkdirSync(OUT, { recursive: true });
@@ -207,12 +245,24 @@ function main(argv) {
 
     LANGS_IN_SCOPE.forEach(lang => {
       const html = renderPage(tree, lang, data, { styles, chrome, registry });
+      /* every behaviour script the page links must exist, or the page ships dead */
+      (html.match(/<script src="assets\/[^"]+"/g) || []).forEach(tag => {
+        const src = tag.replace(/^<script src="/, '').replace(/"$/, '');
+        if (!fs.existsSync(path.join(ROOT, src))) throw new Error(tree.path + ' links ' + src + ', which does not exist');
+      });
       const rel = pagePath(tree, lang).replace(/^\//, '');
       const dest = path.join(OUT, rel);
       const changed = writeIfChanged(dest, html);
       console.log('    ' + lang + '  ' + rel + '  ' +
                   Math.round(html.length / 1024) + ' KB  ' +
                   (changed ? 'written  ' : 'unchanged') + '  -> ' + pageUrl(tree, lang));
+      /* Disputed prices are refused at the cart, never picked. Say so on every
+         render, so a publish cannot look finished while a product is unsellable. */
+      const held = Object.keys(PRICE_HOLD).filter(sku => html.indexOf('data-sku="' + sku + '"') !== -1);
+      if (held.length) {
+        console.log('  ! PRICE HOLD: ' + held.join(', ') + ' cannot be added to the cart on ' + rel +
+                    ' until the client confirms the price (assets/site.js PRICE_HOLD).');
+      }
     });
   });
 
@@ -226,6 +276,6 @@ if (require.main === module) {
 
 module.exports = {
   renderSection, renderBody, renderPage,
-  loadData, loadStyles, loadChrome, loadTree, writeIfChanged, resolveData,
+  loadData, loadStyles, loadChrome, loadTree, writeIfChanged, resolveData, publishedTrees,
   LANGS_IN_SCOPE, LANGS, PRIMARY
 };

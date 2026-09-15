@@ -281,6 +281,12 @@
         },
         "detailLabel": {
           "zh": "詳細介紹"
+        },
+        "quantityLabel": {
+          "zh": "數量："
+        },
+        "addLabel": {
+          "zh": "加入購物車"
         }
       }
     }

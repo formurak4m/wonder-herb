@@ -119,6 +119,12 @@ check('a page with chrome links assets/chrome.css',
 check('and links it LAST, after the page sheet',
       sheets[sheets.length - 1] === 'assets/chrome.css',
       'anything after it would outrank the D1 rules');
+/* Chrome is more than nav + footer. The floating WhatsApp link sits after
+   <footer> on all 18 pages and was silently dropped until P9-T1's visual diff. */
+check('the floating WhatsApp contact button is carried with the chrome',
+      /<a href="https:\/\/wa\.me\/[^"]+" class="mobile-fixed-contact-btn"/.test(html) &&
+      html.indexOf('mobile-fixed-contact-btn') > html.indexOf('</footer>'),
+      'after </footer>, as on the live page');
 check('no runtime nav-offset script ships any more',
       html.indexOf('paddingTop') === -1,
       'the height is reserved by layout, not measured by JS');
@@ -143,6 +149,38 @@ try {
 } catch (err) { d1Order = err.message; }
 check('a stylesheet AFTER assets/chrome.css throws too',
       /must be the last stylesheet/.test(d1Order), d1Order || 'DID NOT THROW');
+
+/* ------------------------------------------------ behaviour, finding 23 ---- */
+console.log('\n=== behaviour scripts are derived from the tree, and cannot be skipped ===\n');
+
+const { baseTemplate } = require(path.join(ROOT, 'renderer', 'template.js'));
+const scriptSrcs = h => (h.match(/<script src="([^"]+)" defer><\/script>/g) || []).map(t => t.replace(/.*src="/, '').replace(/".*/, ''));
+check('a chrome page with a product-grid links site.js then quick-view.js, deferred, after the reveal script',
+      JSON.stringify(scriptSrcs(html)) === JSON.stringify(['assets/site.js', 'assets/behaviour/quick-view.js']) &&
+      html.indexOf('src="assets/site.js"') > html.indexOf('scroll reveal'),
+      scriptSrcs(html).join(', '));
+check('both files exist', scriptSrcs(html).every(s => fs.existsSync(path.join(ROOT, s))), 'on disk');
+check('a page with neither chrome nor a behaviour section loads no behaviour script',
+      scriptSrcs(renderPage({ slug: 'plain', path: 'plain.html', sections: [] }, PRIMARY, data, {})).length === 0, 'none');
+const draftGrid = renderPage({ slug: 'draft', path: 'draft.html',
+  sections: [{ type: 'product-grid', fields: { source: 'products.json', quickViewLabel: 'q', addLabel: 'a' } }] }, PRIMARY, data, {});
+check('a chrome-less draft with a product-grid (the editor preview) still gets site.js for the cart',
+      JSON.stringify(scriptSrcs(draftGrid)) === JSON.stringify(['assets/site.js', 'assets/behaviour/quick-view.js']),
+      scriptSrcs(draftGrid).join(', '));
+check('scripts-off rules ship with them: no quick view button, menu toggle or switcher without JavaScript',
+      /<noscript><style>[\s\S]*\.btn-quickview \{ display: none !important; \}[\s\S]*<\/noscript>/.test(html) &&
+      /<noscript><style>[\s\S]*\.menu-toggle, \.lang-selector, \.lang-selector-mobile \{ visibility: hidden !important; \}/.test(html),
+      'in <head>');
+let noTypes = '';
+try { baseTemplate({ head: '', body: '<p>x</p>', lang: PRIMARY }); } catch (err) { noTypes = err.message; }
+check('the template refuses to render a body it was not given section types for',
+      /needs sectionTypes/.test(noTypes), noTypes || 'DID NOT THROW');
+let twoGrids = '';
+try {
+  renderPage({ slug: 'two', path: 'two.html', sections: [{ type: 'product-grid', fields: {} }, { type: 'product-grid', fields: {} }] }, PRIMARY, data, {});
+} catch (err) { twoGrids = err.message; }
+check('two product grids on one page throw (the quick view modal ids would collide)',
+      /one product-grid/.test(twoGrids), twoGrids || 'DID NOT THROW');
 
 /* --------------------------------------------------------- (c) content ---- */
 console.log('\n=== (c) the content is IN the HTML, not fetched ===\n');

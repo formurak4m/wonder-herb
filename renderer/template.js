@@ -117,10 +117,61 @@ const NOSCRIPT_REVEAL =
   '    .reveal-on-scroll { opacity: 1 !important; transform: none !important; }\n' +
   '  </style></noscript>';
 
-function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main }) {
+/* BEHAVIOUR (P9-T1, docs/FINDINGS.md finding 23). A pre-rendered page passed
+ * SEO, fidelity and the visual diff while its cart, phone menu, quick view and
+ * language switcher were all dead - with zero errors, because nothing was bound.
+ *
+ * Behaviour lives in static files, not here and not in the sections:
+ *   - not in section components: that means React in the visitor's browser
+ *     (hydration), and the same code would run inside Puck's canvas;
+ *   - not inline in this template: copied into every page, uncacheable, and
+ *     untestable on its own.
+ *
+ * SITE_SCRIPT is shared by every page with chrome (cart store, badge, phone
+ * menu, language switcher). BEHAVIOURS maps a section type to the file that
+ * gives it life, loaded only when the tree contains that section.
+ *
+ * The guard, like CHROME_SHEET's: the scripts are DERIVED here from the section
+ * types, never listed by hand in a tree (a list is a second place to forget),
+ * and baseTemplate refuses to render a body without being told its section
+ * types - so a caller cannot skip the derivation and ship a dead page.
+ *
+ * `noscript` is each behaviour's scripts-off rule: a control that needs
+ * JavaScript is not shown without it. `visibility` rather than `display` where
+ * the control sits in the chrome, so the header keeps its height and the D1
+ * scripts-on/off heading position still matches. */
+const SITE_SCRIPT = {
+  src: 'assets/site.js',
+  noscript: '.menu-toggle, .lang-selector, .lang-selector-mobile { visibility: hidden !important; }'
+};
+const BEHAVIOURS = {
+  'product-grid': {
+    src: 'assets/behaviour/quick-view.js',
+    noscript: '.btn-quickview { display: none !important; }'
+  }
+};
+
+/* site.js whenever there is chrome OR any section behaviour (quick view adds to
+   the cart through it); it tolerates a page without the chrome's elements, so a
+   chrome-less preview draft still works. */
+function behavioursFor(sectionTypes, hasChrome) {
+  const own = Array.from(new Set(sectionTypes)).sort().filter(t => BEHAVIOURS[t]).map(t => BEHAVIOURS[t]);
+  return (hasChrome || own.length) ? [SITE_SCRIPT].concat(own) : [];
+}
+
+function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main, sectionTypes }) {
   const htmlLang = HTML_LANG[lang || PRIMARY] || lang || HTML_LANG[PRIMARY];
   const c = chrome || {};
   const content = main === false ? body : '<main>\n' + body + '\n</main>';
+
+  if (!Array.isArray(sectionTypes)) {
+    throw new Error('baseTemplate needs sectionTypes (the tree\'s section types) to derive the ' +
+      'behaviour scripts. Without them the page would publish with a dead cart, menu and quick view ' +
+      '(docs/FINDINGS.md finding 23).');
+  }
+  const behaviours = behavioursFor(sectionTypes, Boolean(c.header));
+  const noscriptCss = behaviours.map(b => '    ' + b.noscript).join('\n');
+  const behaviourTags = behaviours.map(b => '<script src="' + b.src + '" defer></script>').join('\n');
 
   /* D1 is only in force if the page actually links assets/chrome.css, and it
      must be the LAST stylesheet or the page sheet outranks it. Fail loudly:
@@ -149,18 +200,23 @@ function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main }) {
     '<head>\n' +
     head + '\n' +
     NOSCRIPT_REVEAL + '\n' +
+    (noscriptCss ? '  <noscript><style>\n    /* controls that need JavaScript: not shown without it */\n' +
+                   noscriptCss + '\n  </style></noscript>\n' : '') +
     '</head>\n' +
     '<body' + (bodyClass ? ' class="' + bodyClass + '"' : '') + '>\n' +
     (c.header ? c.header + '\n' : '') +
     content + '\n' +
     (c.footer ? c.footer + '\n' : '') +
+    (c.floating ? c.floating + '\n' : '') +
     '\n<!-- scroll reveal: see docs/FINDINGS.md finding 12. Load-bearing. -->\n' +
     '<script>\n' + REVEAL_SCRIPT + '\n</script>\n' +
+    (behaviourTags ? '<!-- behaviour: see docs/FINDINGS.md finding 23. Load-bearing. -->\n' + behaviourTags + '\n' : '') +
     (extra ? extra + '\n' : '') +
     '</body>\n' +
     '</html>\n';
 }
 
 module.exports = {
-  baseTemplate, REVEAL_SCRIPT, CHROME_SHEET, NOSCRIPT_REVEAL, HTML_LANG
+  baseTemplate, REVEAL_SCRIPT, CHROME_SHEET, NOSCRIPT_REVEAL, HTML_LANG,
+  SITE_SCRIPT, BEHAVIOURS, behavioursFor
 };

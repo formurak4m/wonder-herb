@@ -229,7 +229,33 @@ const bare = render(components['product-grid'], {
 check('a product with no image emits no broken <img>', bare.indexOf('<img') === -1, 'no img emitted');
 check('a product with no link emits no dead <a>', bare.indexOf('btn-detail') === -1, 'no link emitted');
 check('and it still renders its card', bare.indexOf('No photo') !== -1, 'card present');
-check('quick view button still renders', grid.indexOf('class="btn-quickview"') !== -1, 'present');
+/* Behaviour hooks (P9-T1, finding 23): identity is the SKU, and the quick view
+   button renders only when its modal does - never a button with nothing behind it. */
+check('quick view without its add label renders NO button and no modal (a dead button is worse)',
+      grid.indexOf('btn-quickview') === -1 && grid.indexOf('quickViewModal') === -1, 'neither emitted');
+const gridQV = render(components['product-grid'],
+  { source: 'products.json', data: ZH, quickViewLabel: '快速瀏覽', detailLabel: '詳細介紹',
+    quantityLabel: '數量：', addLabel: '加入購物車' });
+check('with it: one quick view button per product, each bound by SKU',
+      (gridQV.match(/<button type="button" class="btn-quickview" data-sku="WH-[A-Z0-9-]+"/g) || []).length === realProducts.length,
+      realProducts.length + ' buttons');
+check('and one hidden modal with the live ids', (gridQV.match(/id="quickViewModal"/g) || []).length === 1 &&
+      gridQV.indexOf('id="modalAddToCart"') !== -1 && gridQV.indexOf('id="modalQty"') !== -1, '#quickViewModal');
+check('every card carries data-sku, data-price and data-status',
+      (gridQV.match(/<article class="product-card" data-sku="[^"]+" data-price="[\d.]+" data-status="[^"]+"/g) || []).length === realProducts.length,
+      realProducts.length + ' cards');
+check('no card or button carries data-id (the database id is not the cart id: finding 23)',
+      gridQV.indexOf('data-id=') === -1, 'absent');
+check('no data-wh-* hook in published markup (non-negotiable 4)', gridQV.indexOf('data-wh-') === -1, 'absent');
+const clinic = render(components['product-grid'], {
+  source: 'products.json', quickViewLabel: 'q', addLabel: 'a',
+  data: { products: [{ id: 1, sku: 'WH-X', title: 'T', price: '0', clinicOnly: true },
+                     { id: 2, sku: 'WH-Y', title: 'U', price: '10.00' }] }
+});
+check('clinicOnly in the data becomes data-clinic-only; no price means no data-price',
+      /data-sku="WH-X" data-status|data-sku="WH-X" data-clinic-only=""/.test(clinic) &&
+      (clinic.match(/data-clinic-only/g) || []).length === 1 && clinic.indexOf('data-sku="WH-X" data-price') === -1,
+      'flag on WH-X only');
 const gridWithImg = render(components['product-grid'],
   { source: 'products.json', data: { products: [{ id: 9, title: 'T', price: '10.00', image: 'x.png', link: 'p.html' }] },
     detailLabel: '詳細介紹' });
@@ -503,12 +529,14 @@ const FIDELITY = {
     page: '產品介紹.html',
     // built by renderProducts(); the markup is a template literal, not static HTML
     template: /grid\.innerHTML = products\.map\(p => /,
+    // the button labels carry their icons; first match is the zh translation block
+    holes: [/quickview_btn:\s*"([^"]*)"/, /detail_btn:\s*"([^"]*)"/],
     props: {
       source: 'products.json',
       data: { products: [{ id: 1, title: '雲芝糖肽精華', price: '3800.00', desc: '說明',
                            image: 'https://example.com/a.png', link: '產品_A.html',
-                           ribbon: '只在指定中西醫診所出售' }] },
-      quickViewLabel: '快速瀏覽', detailLabel: '詳細介紹'
+                           ribbon: '只在指定中西醫診所出售', sku: 'WH-TEST-1' }] },
+      quickViewLabel: '快速瀏覽', detailLabel: '詳細介紹', quantityLabel: '數量：', addLabel: '加入購物車'
     }
   },
 
@@ -616,8 +644,20 @@ Object.keys(FIDELITY).forEach(type => {
 
     let block;
     if (spec.template) {
-      const tpl = extractTemplate(src, spec.template);
+      let tpl = extractTemplate(src, spec.template);
       if (!tpl) { check(name + ': found its template in ' + spec.page, false, 'NOT MATCHED'); return; }
+      /* A `${...}` hole becomes a placeholder, so markup that ARRIVES THROUGH a
+         hole is invisible to the fingerprint. That is exactly how product-grid
+         lost its button icons and still passed this check: the live labels are
+         "<i class='fas fa-eye'></i> 快速瀏覽", substituted in via
+         ${translations[currentLang].quickview_btn}. Found at P9-T1 by the
+         full visual diff, not by this test. `holes` names the strings that fill
+         a template's holes; their markup joins the expectation. */
+      for (const re of (spec.holes || [])) {
+        const hm = src.match(re);
+        if (!hm) { check(name + ': found hole source ' + re + ' in ' + spec.page, false, 'NOT MATCHED'); return; }
+        tpl += hm[1].replace(/\\'/g, "'");
+      }
       block = new JSDOM('<body><div id="w">' + tpl + '</div></body>')
         .window.document.getElementById('w');
     } else {
