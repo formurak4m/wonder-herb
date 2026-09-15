@@ -1,5 +1,10 @@
 node_modules/
 .env
+# Every variant too (.env.local, .env.production, a backup): only the exact name
+# `.env` was ignored, so any of these would have been committed with credentials
+# in it. The template is the one exception. docs/FINDINGS.md finding 22.
+.env.*
+!.env.example
 npm-debug.log*
 
 # The client's own workbooks: real customers, phone numbers and medical

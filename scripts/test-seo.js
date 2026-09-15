@@ -70,7 +70,9 @@ const { JSDOM } = require('jsdom');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'renderer', '.out');
-const SAMPLE = path.join(ROOT, 'renderer', 'sample');
+/* The trees that actually publish (data/pages/), the same list render.js
+   renders by default - NOT the renderer/sample/ fixture, which is what this gate
+   checked until P9-T1 while the real tree went unchecked. */
 const BASELINE = path.join(ROOT, 'baseline', 'head');
 
 /* The allow-list. Read the header before touching this. Keys are filenames as
@@ -100,10 +102,23 @@ if (!fs.existsSync(BASELINE)) {
       'Regenerate it with:  node scripts/baseline.js');
 }
 
-const trees = fs.readdirSync(SAMPLE).filter(f => f.endsWith('.json'))
-  .map(f => ({ file: path.join(SAMPLE, f), tree: JSON.parse(fs.readFileSync(path.join(SAMPLE, f), 'utf8')) }));
+const { publishedTrees } = require(path.join(ROOT, 'renderer', 'render.js'));
+const trees = publishedTrees()
+  .map(file => ({ file, tree: JSON.parse(fs.readFileSync(file, 'utf8')) }));
 
-if (!trees.length) die('SEO gate cannot run: no page trees in renderer/sample/.');
+if (!trees.length) die('SEO gate cannot run: no page trees in data/pages/.');
+
+/* A gate that validates a fixture instead of the artifact that ships is worse
+   than no gate (docs/FINDINGS.md finding 22b). Assert what we are gating. */
+console.log('\n=== the gate is checking what actually publishes ===\n');
+const PAGES_DIR = path.join(ROOT, 'data', 'pages') + path.sep;
+const onDisk = fs.readdirSync(path.join(ROOT, 'data', 'pages')).filter(f => f.endsWith('.json')).sort();
+check('every tree gated comes from data/pages/, none from a fixture',
+      trees.every(t => t.file.startsWith(PAGES_DIR)),
+      trees.map(t => path.relative(ROOT, t.file).replace(/\\/g, '/')).join(', '));
+check('every tree in data/pages/ is gated, none skipped',
+      onDisk.join(',') === trees.map(t => path.basename(t.file)).sort().join(','),
+      onDisk.length + ' on disk, ' + trees.length + ' gated');
 
 console.log('\n=== the utility-page exemption (docs/FINDINGS.md finding 3) ===\n');
 

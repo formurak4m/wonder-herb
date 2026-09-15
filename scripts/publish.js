@@ -49,7 +49,12 @@ const STAGES = [
   { name: 'render',         why: 'page trees + data -> static HTML',
     args: ['renderer/render.js'] },
   { name: 'test:seo',       why: 'THE GATE - blocks a page that loses SEO',
-    args: ['scripts/test-seo.js'] }
+    args: ['scripts/test-seo.js'] },
+  /* Runs AFTER export, on what export actually wrote. Until P9-T1 publish did
+     not run it at all, so a publish could write staff PII into data/ - which
+     deploys publicly - and still exit 0. docs/FINDINGS.md findings 16 and 22. */
+  { name: 'test:data',      why: 'THE GATE - blocks private data in data/',
+    args: ['scripts/test-published-data.js'] }
 ];
 
 const line = ch => ch.repeat(72);

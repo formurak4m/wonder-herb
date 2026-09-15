@@ -110,7 +110,7 @@ function writePages(trees) {
       return;
     }
     written.push(slug + '.json');
-    changed += writeIfChanged('pages/' + slug + '.json', JSON.stringify(tree, null, 2) + '\n');
+    changed += writeIfChanged('pages/' + slug + '.json', JSON.stringify(pageForSite(tree), null, 2) + '\n');
   });
 
   const orphans = fs.readdirSync(PAGES_DIR)
@@ -133,6 +133,19 @@ function writePages(trees) {
    Applied to every content list, not just products. */
 function forSite(doc) {
   const { updatedAt, ...rest } = doc;
+  return rest;
+}
+
+/* Page trees get the same strip PLUS `updatedBy`, which the PUT /api/pages
+   route stamps with the editor's email address. data/ deploys to a public URL
+   and this repo is public, so that is staff PII in a public file - the same
+   class as docs/FINDINGS.md finding 16, on a path the P7-T1a fix never covered
+   because page trees did not exist yet. Found at P9-T1, where the committed
+   data/pages/products.json carried the super-admin's address. The database
+   keeps both fields; only the published projection drops them. `_id` goes too:
+   it is MongoDB's, not the page's. */
+function pageForSite(tree) {
+  const { _id, updatedBy, ...rest } = forSite(tree);
   return rest;
 }
 
