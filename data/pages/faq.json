@@ -1,0 +1,152 @@
+{
+  "slug": "faq",
+  "path": "常見問題.html",
+  "title": {
+    "zh": "常見問題 | 康草堂 Wonder Herb - 雲芝糖肽精華專業解答"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂 Wonder Herb 雲芝糖肽精華常見問題：解答雲芝糖肽是什麼、功效、檢測方法、副作用以及與其他品牌的區別，為您提供專業清晰的資訊。"
+    },
+    "dateModified": "2026-06-02T10:30:00+08:00",
+    "ogTitle": {
+      "zh": "常見問題 | Wonder Herb - 雲芝糖肽精華"
+    },
+    "ogDescription": {
+      "zh": "康草堂 Wonder Herb 雲芝糖肽精華常見問題：解答雲芝糖肽是什麼、功效、檢測方法、副作用以及與其他品牌的區別。"
+    },
+    "ogType": "website",
+    "image": "https://lh3.googleusercontent.com/d/1mQafHatzw_gwbV_J9Y5AmwIAUS9r8SEi",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "常見問題"
+        },
+        "path": "常見問題.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "Product",
+        "name": "雲芝糖肽精華 PSP (標準裝)",
+        "description": "每瓶500粒，雲芝糖肽有效成分 >90%，多醣肽含量超國家標準1.8倍，強化免疫調節，適合長期輔助療程。GMP認證、雙重檢測。",
+        "sku": "WH-PSP-500",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "manufacturer": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock",
+          "price": "0",
+          "description": "Contact for pricing."
+        }
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css",
+      "assets/page-faq.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "常見問題.html"
+  },
+  "sections": [
+    {
+      "type": "page-header",
+      "fields": {
+        "heading": {
+          "zh": "常見問題"
+        },
+        "sub": {
+          "zh": "關於雲芝糖肽精華 PSP、T3 配方及康草堂產品的常見疑問，為您逐一解答"
+        },
+        "headingId": "faq-page-heading",
+        "variant": "centered"
+      }
+    },
+    {
+      "type": "faq-accordion",
+      "wrap": "container",
+      "fields": {
+        "source": "faq.json",
+        "defaultIcon": "fas fa-question-circle"
+      }
+    },
+    {
+      "type": "callout",
+      "wrap": "container",
+      "fields": {
+        "heading": {
+          "zh": "癌症治療期間是否可以食用雲芝？"
+        },
+        "icon": "fas fa-video",
+        "body": {
+          "zh": "專科醫生為你在他個人網頁講解作答，點擊下方按鈕觀看影片與詳細說明。"
+        },
+        "label": {
+          "zh": "微信文章：專科醫生解答"
+        },
+        "href": "https://mp.weixin.qq.com/s/V8IK7N3-czW3O5_Gh8bzyA",
+        "linkIcon": "fab fa-weixin",
+        "variant": "highlight"
+      }
+    },
+    {
+      "type": "callout",
+      "wrap": "container",
+      "fields": {
+        "heading": {
+          "zh": "大學研究實證"
+        },
+        "icon": "fas fa-university",
+        "body": {
+          "zh": "經大學研究證實，「康草堂雲芝糖肽精華 PSP + T3」的獨特配方，比單一服用雲芝糖肽精華PSP功效倍增。多項國際期刊論文支持雲芝糖肽在免疫調節、抗腫瘤及輔助治療方面的顯著功效。詳情請參考"
+        },
+        "label": {
+          "zh": "研究報告頁面"
+        },
+        "href": "研究報告.html",
+        "after": {
+          "zh": "。"
+        },
+        "variant": "note"
+      }
+    },
+    {
+      "type": "cta-band",
+      "wrap": "container",
+      "fields": {
+        "label": {
+          "zh": "探索產品系列"
+        },
+        "href": "產品介紹.html",
+        "variant": "button"
+      }
+    }
+  ]
+}

@@ -52,7 +52,8 @@ const SHARED_MIN = 15;
 /* Pages that render from a tree and therefore need a page sheet.
    Grows one entry at a time as pages migrate; keep it a hand-checked literal. */
 const MIGRATED = {
-  'products': '產品介紹.html'
+  'products': '產品介紹.html',
+  'faq': '常見問題.html'
 };
 
 /* D1, finding 15. These were meant to live at the end of site.css. They cannot:
