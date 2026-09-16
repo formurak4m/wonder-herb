@@ -1,0 +1,167 @@
+{
+  "slug": "brochure",
+  "path": "小册子.html",
+  "title": {
+    "zh": "小册子 | 康草堂 Wonder Herb - 雲芝糖肽精華產品指南"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂 Wonder Herb 產品小冊子，詳細介紹雲芝糖肽精華 PSP 及相關健康資訊。"
+    },
+    "dateModified": "2026-06-02T12:00:00+08:00",
+    "ogTitle": {
+      "zh": "小册子 | Wonder Herb - 雲芝糖肽精華"
+    },
+    "ogDescription": {
+      "zh": "康草堂 Wonder Herb 產品小冊子，詳細介紹雲芝糖肽精華 PSP 及相關健康資訊。"
+    },
+    "ogType": "website",
+    "image": "https://static.wixstatic.com/media/b3683f_b8275f690b4e42c797853a481b0296f7~mv2.jpg/v1/fill/w_800,h_620,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Wonder%20herb%20leaflet%20%20(%20new%20update)-1.jpg",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "小册子"
+        },
+        "path": "小册子.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "Product",
+        "name": "雲芝糖肽精華 PSP (標準裝)",
+        "description": "每瓶500粒，雲芝糖肽有效成分 >90%，多醣肽含量超國家標準1.8倍，強化免疫調節，適合長期輔助療程。GMP認證、雙重檢測。",
+        "sku": "WH-PSP-500",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "manufacturer": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock",
+          "price": "0",
+          "description": "Contact for pricing."
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "小册子包含哪些内容？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "小册子详细介绍了云芝糖肽精华PSP的产品特点、科学研究、有效成分检测报告以及典型病例，帮助消费者全面了解产品的辅助保健价值。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "如何获取更多产品信息？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "您可以下载或查看线上版小册子，或者通过WhatsApp (+85293318571) 直接联系康草堂专员，我们将为您提供详细的产品资料和个性化咨询。"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "Product",
+        "name": "雲芝糖肽精華 PSP 系列"
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css",
+      "assets/page-brochure.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "小册子.html"
+  },
+  "sections": [
+    {
+      "type": "page-header",
+      "fields": {
+        "heading": {
+          "zh": "產品小冊子"
+        },
+        "variant": "centered",
+        "sub": {
+          "zh": "詳細產品資訊 · 雲芝糖肽精華專業指南"
+        },
+        "headingId": "brochure-heading"
+      }
+    },
+    {
+      "type": "card-grid",
+      "wrap": {
+        "section": "brochure-section",
+        "label": "小册子图片浏览",
+        "container": true
+      },
+      "fields": {
+        "heading": {
+          "zh": "小册子页面展示"
+        },
+        "headingHidden": true,
+        "items": [
+          {
+            "title": {
+              "zh": "小冊子 · 封面及產品介紹"
+            },
+            "href": "https://drive.google.com/file/d/1Y9W3q17TLJgAT_vyKBKAnEXfsFZ4O91D/view?usp=sharing",
+            "image": "https://drive.google.com/thumbnail?id=1Y9W3q17TLJgAT_vyKBKAnEXfsFZ4O91D&sz=w1000",
+            "imageAlt": {
+              "zh": "Wonder Herb 小冊子第1頁，封面及產品介紹"
+            },
+            "aria": {
+              "zh": "打开小册子第1页大图：封面及产品介绍"
+            }
+          },
+          {
+            "title": {
+              "zh": "小冊子 · 科研及成份說明"
+            },
+            "href": "https://drive.google.com/file/d/1mgLPFYbJ9F7BW7DAoQ_2EIm6W_JxSN0b/view?usp=sharing",
+            "image": "https://drive.google.com/thumbnail?id=1mgLPFYbJ9F7BW7DAoQ_2EIm6W_JxSN0b&sz=w1000",
+            "imageAlt": {
+              "zh": "Wonder Herb 小冊子第2頁，科研及成份說明"
+            },
+            "aria": {
+              "zh": "打开小册子第2页大图：科研及成份说明"
+            }
+          }
+        ],
+        "hint": {
+          "zh": "點擊圖片放大"
+        },
+        "hintIcon": "fas fa-search-plus",
+        "noReferrer": true,
+        "variant": "brochure"
+      }
+    }
+  ]
+}

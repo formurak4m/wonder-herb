@@ -54,7 +54,8 @@ const SHARED_MIN = 15;
 const MIGRATED = {
   'products': '產品介紹.html',
   'faq': '常見問題.html',
-  'contact': '聯絡我們.html'
+  'contact': '聯絡我們.html',
+  'brochure': '小册子.html'
 };
 
 /* D1, finding 15. These were meant to live at the end of site.css. They cannot:
