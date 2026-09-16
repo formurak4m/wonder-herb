@@ -6,7 +6,7 @@ section library at P4-T2; 12–13 from actually looking at the rendered sections
 fidelity waivers at P4-T4; 15 from rendering a real page end to end at P5-T1; 16–17 from
 running the real publish pipeline for the first time at P7-T1; 18–19 from building the editor
 app at P8-T2; 20 from migrating the product data model at P9-T1; 21–23 from migrating the first real
-page (產品介紹) at P9-T1.
+page (產品介紹) at P9-T1; 27 from migrating 常見問題 at P9 (page two).
 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
@@ -42,6 +42,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 24 | **Migrated pages are Chinese only: a visitor who chose another language lands in Chinese** | Medium — accepted regression (owner) | Phase 14 (per-language URLs) |
 | 25 | **A write path deletes every field its caller was not shown**: rule "the store merges, never replaces"; bites today in the product form (`link`, `ribbon`, `priceNote`) and the Puck save (section `wrap`) | **HIGH — data loss** (finding 20 was one case) | Puck path fixed at P9-T1 (`mergeTree`); every write path in the API: P12-T3; blocks lifting PT3's price hold |
 | 26 | **Patient cases published as five-star product reviews, with invented ratings**: real case-study patients' identities attached to fabricated reviews, publicly served on the GitHub Pages copy 4 Jun – 15 Sep 2026 (not on the client's Wix site) | **CRITICAL — potentially legal / privacy (HK PDPO), needs legal advice** | Removed from `main` (`6503a01`, verified clean) and the branch; gated in `test:seo`. **Evidence preserved in history, do not rewrite.** Owner handles with the client |
+| 27 | **The admin's FAQ editor changed nothing a visitor could see**: no public page read `data/faq.json`; 常見問題 was hand-coded, and the two had drifted to different questions | Medium — an invisible feature the client believes they have | **Fixed by the P9 page-two migration** (`fc8c6e8`); name it in `ADMIN_GUIDE.md` |
 
 ---
 
@@ -1856,3 +1857,47 @@ on-page copy too.**
   held, not carried over.
 - Not established: whether the Wix site carries the same claims. Wix rate-limited the check (429),
   so it wasn't retried.
+---
+
+## 27 · The admin's FAQ editor changed nothing a visitor could see — FIXED by the page-two migration (P9)
+
+**What.** The admin has an FAQ screen. It writes to the `faq` collection, `export` writes
+`data/faq.json`, and the file is committed and deployed. Its own help text says:
+
+> edits question & answer accordions on the **FAQ Page** (`常見問題.html`) and JSON-LD schema for
+> Google Rich Snippets
+
+**None of that reached the site.** Until 15 Sep 2026 `常見問題.html` was hand-coded: its five
+questions, their answers and its `FAQPage` JSON-LD were literal markup in the page. **No public page
+read `data/faq.json` at all** — the only readers were the admin itself, the editor, the API and the
+renderer. A client could edit the FAQ, see it save, see it in the admin afterwards, and the website
+would never change.
+
+**How established.** Searched every tracked file for readers of `faq.json` / `type=faq`: admin,
+editor, renderer, server and scripts only, no public page. Confirmed by comparing content: the five
+questions in `data/faq.json` and the five on the page were **different questions**, and had drifted
+apart with nobody noticing — which is what an unused editing surface looks like.
+
+**Severity.** Medium, and worse than its severity suggests in client terms: not a broken feature but
+an **invisible** one. The client believes they can maintain their own FAQ. The failure mode is
+silent (a successful save), so it can persist indefinitely.
+
+**Not caused by the migration — fixed by it.** Since `fc8c6e8`, `常見問題.html` renders the
+`faq-accordion` section from `data/faq.json`, and its `FAQPage` JSON-LD is derived from the same
+data (`renderer/render.js faqPageNode`), so an admin edit reaches both the visible list and the
+schema at the next publish. `test:seo` fails any page whose `FAQPage` names questions its visible
+list does not.
+
+**The visitor-facing consequence, recorded:** the page now shows the five questions in
+`data/faq.json`, not the five that were hand-coded into it. No data was changed (owner: site content
+is not authoritative).
+
+### Still to do
+
+- **`ADMIN_GUIDE.md` (at cutover):** say that FAQ edits now reach the site, and that like stock they
+  go live at **publish**, not instantly. Worth naming to the client as a fix: the FAQ editor works
+  now, and did nothing before.
+- **Check the same class elsewhere before each page migrates.** `cases.json` and `homepage.json`
+  have admin screens too, and 典型病例 and `index.html` are still hand-coded — the same
+  "edits that reach nothing" shape until those pages migrate. Establish it per page, in the
+  migration, rather than assuming either way.
