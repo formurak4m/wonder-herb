@@ -541,7 +541,9 @@ const FIDELITY = {
                // (docs/FINDINGS.md finding 22).
                paragraphs: [{ label: '標籤文字', text: ' 段落內容。' },
                             { text: '整段加粗', emphasis: true }],
-               bullets: [{ label: '項目標題：', text: ' 項目內容' }] } }
+               bullets: [{ label: '項目標題：', text: ' 項目內容' }] } },
+    { label: 'intro', page: '研究報告.html', selector: '.research-intro',
+      props: { variant: 'intro', paragraphs: [{ text: '引言文字' }] } }
   ],
 
   'product-grid': {
@@ -622,10 +624,49 @@ const FIDELITY = {
     { label: 'highlight', page: '常見問題.html', selector: '.highlight-box',
       props: { heading: '標題', icon: 'fas fa-video', body: '說明文字', label: '連結文字',
                href: 'https://example.com/a', linkIcon: 'fab fa-weixin' } },
+    { label: 'info', page: '微信發表文章.html', selector: '.info-note',
+      props: { variant: 'info', body: '一行說明文字' } },
     { label: 'note', page: '常見問題.html', selector: '.faq-section .container > .faq-item',
       props: { variant: 'note', heading: '標題', icon: 'fas fa-university', body: '前文',
                label: '連結', href: 'a.html', after: '。' } }
   ],
+
+  'card-grid': [
+    { label: 'brochure', page: '小册子.html', selector: '.brochure-grid',
+      props: { variant: 'brochure', hint: '點擊圖片放大', hintIcon: 'fas fa-search-plus', noReferrer: true,
+               items: [{ title: '第一頁', href: 'https://example.com/a', image: 'https://example.com/a.png',
+                         imageAlt: '小冊子第1頁', aria: '打開小冊子第1頁' }] } },
+    { label: 'report', page: '有效成份檢測.html', selector: '.reports-grid',
+      props: { variant: 'report', linkLabel: '下載報告 (PDF)', linkIcon: 'fas fa-download',
+               items: [{ title: '檢測報告', text: '說明文字', href: 'https://example.com/a',
+                         image: 'https://example.com/a.jpg', imageAlt: '報告第1頁', aria: '打開報告' }] } },
+    { label: 'icon', page: '研究報告.html', selector: '.reports-grid',
+      /* Each live card picks its own glyph. The section renders whatever an
+         item's `icon` names, proven by the fa-university this fixture passes -
+         what it cannot do is drop the <i> (the contact-cards failure this
+         check exists for). The other five glyph classes are item content, so
+         they are waived rather than pinned into the fixture. */
+      allow: { 'fa-globe-asia': 'a per-item icon class', 'fa-stethoscope': 'a per-item icon class',
+               'fa-chart-line': 'a per-item icon class', 'fa-dna': 'a per-item icon class',
+               'fa-shield-alt': 'a per-item icon class' },
+      props: { variant: 'icon', linkLabel: '閱讀全文 →',
+               items: [{ title: '大學研究', text: '說明文字', href: 'https://example.com/a',
+                         icon: 'fas fa-university', aria: '閱讀全文' }] } },
+    { label: 'article', page: '微信發表文章.html', selector: '.articles-grid',
+      // the grid is filled by renderArticles(); the markup is a template literal
+      template: /const html = articlesData\.map\(\(article, index\) => \{[\s\S]*?return /,
+      props: { variant: 'article', linkLabel: 'Read More', linkIcon: 'fas fa-arrow-right',
+               items: [{ badge: '標籤', title: '標題', text: '摘要文字', href: 'https://example.com/a' }] } },
+    { label: 'link-list', page: '研究報告.html', selector: '.pdf-list',
+      props: { variant: 'link-list', heading: '詳細研究報告下載',
+               items: [{ title: '報告一 (PDF)', href: 'https://example.com/a.pdf', icon: 'fas fa-file-pdf', aria: '下載報告一' },
+                       { title: '報告二', href: 'https://example.com/b', icon: 'fas fa-file-alt' }] } }
+  ],
+
+  'map-embed': {
+    page: '聯絡我們.html', selector: '.map-placeholder',
+    props: { src: 'https://www.google.com/maps/embed?pb=x', title: '地圖',
+             caption: '香港九龍彌敦道', captionIcon: 'fas fa-map-pin' } },
 
   'faq-accordion': {
     page: '常見問題.html', selector: '.faq-list',

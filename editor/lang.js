@@ -58,7 +58,7 @@ export const STRUCTURAL = new Set([
   'variant', 'headingId', 'source', 'category', 'sku', 'unit',
   'href', 'primaryHref', 'secondaryHref', 'detailHref',
   'icon', 'primaryIcon', 'secondaryIcon', 'addIcon', 'detailIcon', 'descIcon',
-  'defaultIcon', 'badgeIcons', 'linkIcon',
+  'defaultIcon', 'badgeIcons', 'linkIcon', 'hintIcon', 'captionIcon', 'src',
   'videoUrl', 'image', 'images', 'src', 'flag', 'link', 'model',
   'id', 'type', 'showCarousel', 'emphasis', 'number'
 ]);

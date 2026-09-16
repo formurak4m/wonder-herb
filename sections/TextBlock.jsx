@@ -63,7 +63,8 @@ export const config = {
       type: 'select',
       options: [
         { label: 'Glass card (homepage)', value: 'glass' },
-        { label: 'Details card (product pages)', value: 'card' }
+        { label: 'Details card (product pages)', value: 'card' },
+        { label: 'Intro line above a grid', value: 'intro' }
       ]
     },
     headingId: { type: 'text' }
@@ -71,7 +72,7 @@ export const config = {
   defaultProps: {
     heading: '', sub: '', paragraphs: [], bullets: [], variant: 'glass', headingId: ''
   },
-  variants: ['glass', 'card']
+  variants: ['glass', 'card', 'intro']
 };
 
 export default function TextBlock({ heading, sub, paragraphs, bullets, variant = 'glass', headingId }) {
@@ -85,6 +86,14 @@ export default function TextBlock({ heading, sub, paragraphs, bullets, variant =
       {points.length ? <ul>{points.map((b, i) => <li key={i}>{copyBody(b)}</li>)}</ul> : null}
     </>
   );
+
+  /* intro - 研究報告.html:1 <div class="research-intro">: a lead-in line above
+     a grid, styled by that class. The live block holds plain text with no <p>
+     inside it, so the copy is emitted as text; a second paragraph would run
+     on, which is what the live styling does with it. */
+  if (variant === 'intro') {
+    return <div className="research-intro">{paras.map((p, i) => <span key={i}>{copyBody(p)}</span>)}</div>;
+  }
 
   if (variant === 'card') {
     return (

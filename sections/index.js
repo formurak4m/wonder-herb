@@ -25,6 +25,8 @@ import * as ContactCards from './ContactCards.jsx';
 import * as CtaBand from './CtaBand.jsx';
 import * as FaqAccordion from './FaqAccordion.jsx';
 import * as Callout from './Callout.jsx';
+import * as CardGrid from './CardGrid.jsx';
+import * as MapEmbed from './MapEmbed.jsx';
 
 export const registry = {
   'page-header': PageHeader,
@@ -37,7 +39,9 @@ export const registry = {
   'contact-cards': ContactCards,
   'cta-band': CtaBand,
   'faq-accordion': FaqAccordion,
-  'callout': Callout
+  'callout': Callout,
+  'card-grid': CardGrid,
+  'map-embed': MapEmbed
 };
 
 /* { type: Component } — the shape the renderer wants. */

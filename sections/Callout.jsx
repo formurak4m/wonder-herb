@@ -37,20 +37,27 @@ export const config = {
       type: 'select',
       options: [
         { label: 'Highlight box with button', value: 'highlight' },
-        { label: 'Tinted note with inline link', value: 'note' }
+        { label: 'Tinted note with inline link', value: 'note' },
+        { label: 'One-line info bar', value: 'info' }
       ]
     }
   },
   defaultProps: {
     heading: '', icon: '', body: '', label: '', href: '', linkIcon: '', after: '', variant: 'highlight'
   },
-  variants: ['highlight', 'note']
+  variants: ['highlight', 'note', 'info']
 };
 
 const icon = (cls, style) =>
   cls ? <i className={cls} style={style} aria-hidden="true"></i> : null;
 
 export default function Callout({ heading, icon: iconClass, body, label, href, linkIcon, after, variant = 'highlight' }) {
+  /* info - 微信發表文章.html:1 <div class="info-note">: one line of text in a
+     tinted bar, no heading and no link. */
+  if (variant === 'info') {
+    return <div className="info-note"><span>{body}</span></div>;
+  }
+
   if (variant === 'note') {
     return (
       <div className="faq-item" style={{ background: '#f1fffe' }}>
