@@ -1,0 +1,185 @@
+{
+  "slug": "testing",
+  "path": "有效成份檢測.html",
+  "title": {
+    "zh": "有效成份檢測 | 康草堂 Wonder Herb - 雲芝糖肽精華"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂 Wonder Herb - 每批產品雙重檢測，有效成份 >90%，雲芝糖肽含量遠超國家標準，純度最高，吸收最好。"
+    },
+    "dateModified": "2026-06-02T10:30:00+08:00",
+    "ogTitle": {
+      "zh": "有效成份檢測 | Wonder Herb - 雲芝糖肽精華"
+    },
+    "ogDescription": {
+      "zh": "康草堂 Wonder Herb - 每批產品雙重檢測，有效成份 >90%，雲芝糖肽含量遠超國家標準，純度最高，吸收最好。"
+    },
+    "ogType": "website",
+    "image": "https://static.wixstatic.com/media/b3683f_cd911bc0a80d4d749247bbab9df01465~mv2.jpg",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "有效成份檢測"
+        },
+        "path": "有效成份檢測.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "Product",
+        "name": "雲芝糖肽精華 PSP (標準裝)",
+        "description": "每瓶500粒，雲芝糖肽有效成分 >90%，多醣肽含量超國家標準1.8倍，強化免疫調節，適合長期輔助療程。GMP認證、雙重檢測。",
+        "sku": "WH-PSP-500",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "manufacturer": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock",
+          "price": "0",
+          "description": "Contact for pricing."
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "康草堂如何保證雲芝糖肽的有效成份含量？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "每一批次產品均由加拿大及香港的獨立實驗室進行雙重檢測，確保活性含量（多糖+蛋白肽）高於90%，遠超國家藥品標準要求的49.5%。我們公開檢測報告PDF，供客戶下載查證。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "為什麼有效成份含量對功效至關重要？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "雲芝糖肽的核心功效來自多糖肽複合體。若含量不足，無法有效調節免疫及輔助頑疾治療。康草堂的高純度產品確保吸收更好，臨床效果更顯著。"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
+      "assets/page-testing.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "有效成份檢測.html"
+  },
+  "sections": [
+    {
+      "type": "page-header",
+      "fields": {
+        "heading": {
+          "zh": "有效成份檢測"
+        },
+        "variant": "centered",
+        "sub": {
+          "zh": "加拿大及香港雙重實驗室檢測 · 有效成份 >90% · 遠超國家藥品標準"
+        },
+        "headingId": "testing-heading"
+      }
+    },
+    {
+      "type": "card-grid",
+      "wrap": {
+        "section": "reports-section",
+        "label": "检测报告列表",
+        "container": true
+      },
+      "fields": {
+        "heading": {
+          "zh": "检测报告PDF下载"
+        },
+        "headingHidden": true,
+        "items": [
+          {
+            "title": {
+              "zh": "香港實驗室檢測報告 (第1頁)"
+            },
+            "text": {
+              "zh": "有效成份含量驗證，符合國家標準。"
+            },
+            "href": "https://drive.google.com/file/d/1EZ38FqzvR0Xhl3b2d15i1M6tD2LgsEfU/view?usp=sharing",
+            "image": "https://static.wixstatic.com/media/b3683f_cd911bc0a80d4d749247bbab9df01465~mv2.jpg/v1/fill/w_366,h_513,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/Assay%20test%20(HK%20lab)%20-1.jpg",
+            "imageAlt": {
+              "zh": "香港實驗室檢測報告第1頁 - 有效成份含量驗證"
+            },
+            "aria": {
+              "zh": "打开香港实验室检测报告第1页PDF"
+            }
+          },
+          {
+            "title": {
+              "zh": "香港實驗室檢測報告 (第2頁)"
+            },
+            "text": {
+              "zh": "完整檢測數據，品質保證。"
+            },
+            "href": "https://drive.google.com/file/d/1EZ38FqzvR0Xhl3b2d15i1M6tD2LgsEfU/view?usp=sharing",
+            "image": "https://static.wixstatic.com/media/b3683f_b943d02b6c7d427fa420f0b4ef77a2a7~mv2.jpg/v1/fill/w_347,h_513,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/Assay%20test%20(HK%20lab)%20-2_edited.jpg",
+            "imageAlt": {
+              "zh": "香港實驗室檢測報告第2頁 - 完整檢測數據"
+            },
+            "aria": {
+              "zh": "打开香港实验室检测报告第2页PDF"
+            }
+          },
+          {
+            "title": {
+              "zh": "加拿大GMP廠檢測證書"
+            },
+            "text": {
+              "zh": "完整PDF報告下載"
+            },
+            "href": "https://drive.google.com/file/d/1JovlPvJ4sVoIJYd2yTAc6dbaY31uvJQ-/view?usp=sharing",
+            "image": "https://drive.google.com/thumbnail?id=1s-yd_CcgGyEivKt5-lEuuFTa1tu0dNj2&sz=w800",
+            "imageAlt": {
+              "zh": "加拿大GMP廠檢測證書"
+            },
+            "aria": {
+              "zh": "打开加拿大GMP厂检测证书PDF"
+            }
+          }
+        ],
+        "linkLabel": {
+          "zh": "下載報告 (PDF)"
+        },
+        "linkIcon": "fas fa-download",
+        "noReferrer": false,
+        "variant": "report"
+      }
+    }
+  ]
+}
