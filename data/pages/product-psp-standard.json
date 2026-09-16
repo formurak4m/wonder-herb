@@ -158,7 +158,10 @@
             "icon": "fas fa-university"
           }
         ],
-        "unit": "/ 500粒膠囊 (標準裝)"
+        "unit": "/ 500粒膠囊 (標準裝)",
+        "headingBadge": {
+          "zh": "Cov-1菌絲體提取"
+        }
       }
     },
     {

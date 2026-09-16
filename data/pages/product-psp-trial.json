@@ -164,7 +164,10 @@
             "icon": "fas fa-university"
           }
         ],
-        "unit": "/ 60粒膠囊 (試用裝)"
+        "unit": "/ 60粒膠囊 (試用裝)",
+        "headingBadge": {
+          "zh": "Cov-1菌絲體提取 | 初次體驗推薦"
+        }
       }
     },
     {

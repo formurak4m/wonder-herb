@@ -38,6 +38,7 @@ export const config = {
     unit: { type: 'text' },
     priceNote: { type: 'text' },
     headingId: { type: 'text' },
+    headingBadge: { type: 'text' },     // the smaller tagline inside the <h1>
     /* shown INSTEAD of the quantity selector and the add button when the data
        says this product cannot be bought online - see below */
     clinicNote: { type: 'text' },
@@ -49,7 +50,7 @@ export const config = {
   defaultProps: {
     source: 'products.json', sku: '', quantityLabel: '', addLabel: '', addIcon: '',
     detailLabel: '', detailHref: '#detailedInfo', detailIcon: '', descIcon: '',
-    badgeIcons: [], unit: '', priceNote: '', headingId: '',
+    badgeIcons: [], unit: '', priceNote: '', headingId: '', headingBadge: '',
     clinicNote: '', clinicIcon: '', clinicButtonLabel: '', clinicButtonIcon: '', clinicButtonAria: ''
   },
   // renders nothing at all until it has content: an empty panel would be worse
@@ -59,7 +60,7 @@ export const config = {
 
 export default function ProductDetail({
   source, data, sku, quantityLabel, addLabel, addIcon, detailLabel, detailHref, detailIcon,
-  descIcon, badgeIcons, unit, priceNote, headingId,
+  descIcon, badgeIcons, unit, priceNote, headingId, headingBadge,
   clinicNote, clinicIcon, clinicButtonLabel, clinicButtonIcon, clinicButtonAria
 }) {
   const key = String(source || 'products.json').replace(/\.json$/, '');
@@ -94,7 +95,16 @@ export default function ProductDetail({
   return (
     <div className="product-info" data-sku={p.sku || undefined} data-price={priceValue(p)}
          data-status={p.status || undefined} data-clinic-only={clinicOnly ? '' : undefined}>
-      <h1 className="product-title" id={id}>{p.title}</h1>
+      {/* The live heading is TWO spans: the product's name, then a smaller
+          maroon tagline ("Cov-1菌絲體提取 | 初次體驗推薦", "澳洲昆士蘭科大臨床實證").
+          It is page copy - data/products.json has no such field - so it lives
+          in the tree. Dropping it lost a visible line from every product page
+          and, at 390, changed how the heading wrapped. The style is the live
+          markup's own, identical on all six. */}
+      <h1 className="product-title" id={id}>
+        <span>{p.title}</span>
+        {headingBadge ? <> <span style={{ fontSize: '1rem', color: '#9b2e2e' }}>{headingBadge}</span></> : null}
+      </h1>
       <div className="product-price">
         {priceText(p, priceNote)}
         {unit ? <span style={{ fontSize: '1rem', fontWeight: 'normal' }}>{' ' + unit}</span> : null}
