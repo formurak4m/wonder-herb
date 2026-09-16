@@ -6,7 +6,7 @@ section library at P4-T2; 12–13 from actually looking at the rendered sections
 fidelity waivers at P4-T4; 15 from rendering a real page end to end at P5-T1; 16–17 from
 running the real publish pipeline for the first time at P7-T1; 18–19 from building the editor
 app at P8-T2; 20 from migrating the product data model at P9-T1; 21–23 from migrating the first real
-page (產品介紹) at P9-T1; 27 from migrating 常見問題 at P9 (page two).
+page (產品介紹) at P9-T1; 27 from migrating 常見問題 at P9 (page two); 28–29 from the P9 content-page batch.
 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
@@ -43,6 +43,8 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 25 | **A write path deletes every field its caller was not shown**: rule "the store merges, never replaces"; bites today in the product form (`link`, `ribbon`, `priceNote`) and the Puck save (section `wrap`) | **HIGH — data loss** (finding 20 was one case) | Puck path fixed at P9-T1 (`mergeTree`); every write path in the API: P12-T3; blocks lifting PT3's price hold |
 | 26 | **Patient cases published as five-star product reviews, with invented ratings**: real case-study patients' identities attached to fabricated reviews, publicly served on the GitHub Pages copy 4 Jun – 15 Sep 2026 (not on the client's Wix site) | **CRITICAL — potentially legal / privacy (HK PDPO), needs legal advice** | Removed from `main` (`6503a01`, verified clean) and the branch; gated in `test:seo`. **Evidence preserved in history, do not rewrite.** Owner handles with the client |
 | 27 | **The admin's FAQ editor changed nothing a visitor could see**: no public page read `data/faq.json`; 常見問題 was hand-coded, and the two had drifted to different questions | Medium — an invisible feature the client believes they have | **Fixed by the P9 page-two migration** (`fc8c6e8`); name it in `ADMIN_GUIDE.md` |
+| 28 | **Per-language images and links exist, but a tree cannot hold them**: 小册子 swaps the brochure scan per language; rendering the markup verbatim would have shown Chinese visitors the German brochure | Medium — caught by the visual diff, no gate saw it | zh carried now (Chinese-only, finding 24); model per-language assets at **Phase 14** |
+| 29 | **典型病例 ItemList says 15 items, lists 3, types them `Testimonial`** (not a schema.org type), naming real patients | Background (content not authoritative); owner + client | Carried verbatim at P9; fix or derive only if the owner asks |
 
 ---
 
@@ -1901,3 +1903,66 @@ is not authoritative).
   have admin screens too, and 典型病例 and `index.html` are still hand-coded — the same
   "edits that reach nothing" shape until those pages migrate. Establish it per page, in the
   migration, rather than assuming either way.
+
+---
+
+## 28 · Per-language IMAGES and LINKS exist, but a tree cannot hold them — Phase 14
+
+**What.** 小册子 swaps the brochure scan AND the link to it per language, on load:
+
+```
+translations.zh.brochure_page1_img   / _href     (the Chinese scan)
+translations.en / es / fr / ja / ru  .._img      (the English scan)
+(de falls through to the src hard-coded in the HTML)
+```
+
+The `src` written into the markup is **the German/English scan**, not the Chinese one. So
+pre-rendering the page's own markup verbatim would have published the German brochure to Chinese
+visitors — the page a Chinese reader sees today would have changed, silently, on a page whose whole
+purpose is to show them the brochure. Caught by the visual diff at P9 page two of the batch (the
+grid differed by 104k pixels), not by any gate: SEO, fidelity and the behaviour tests all passed.
+
+**Why it is a finding and not just a bug.** The tree holds `image` and `href` as **structural**
+fields (`editor/lang.js STRUCTURAL`), i.e. deliberately not per-language, because a URL is not
+copy. That is right for a product photo and wrong for a scan of a translated brochure. Today the
+migrated page carries the `zh` values and the other six languages' scans are simply not carried —
+the same accepted Chinese-only regression as finding 24, now covering **media and links**, not just
+text.
+
+**Where else it bites.** Checked during the batch: 有效成份檢測, 微信發表文章, 研究報告, 聯絡我們 and
+典型病例 swap only the flag icon, so 小册子 is the only page in the batch affected. The remaining
+pages (`index.html`, the six product pages, `product.html`) have not been checked yet — check each
+before migrating it, the same way.
+
+### Fix, Phase 14 (with per-language URLs)
+
+Phase 14 already has to give every page a per-language URL. The same task should decide how a
+**per-language asset** is modelled: either make `image` / `href` translatable for the sections that
+need it (a language map like every text field), or keep one asset per language variant of the page.
+Until then a migrated page is Chinese only, media included.
+
+---
+
+## 29 · 典型病例's ItemList JSON-LD contradicts its own page — background, carried as-is
+
+**What.** The hand-coded 典型病例 carries an `ItemList` whose `numberOfItems` is **15** while its
+`itemListElement` holds **3**, and whose entries are typed **`Testimonial`** — not a schema.org
+type, so a consumer sees an untyped blob. The three entries name real patients and attach treatment
+outcomes to them, in machine-readable form.
+
+**Status: carried verbatim into the page tree, not corrected, not derived.** Site content is not
+authoritative (owner, 15 Sep 2026) and the migration's job was to change nothing a visitor sees, so
+the node publishes exactly as it does today. Deriving it from `data/cases.json` — the FAQPage
+treatment — would have made the structured data *more* complete, which for patient identities is a
+decision for the owner and the client, not a migration step.
+
+**Related, not the same:** finding 26 is fabricated five-star *product reviews* carrying patient
+identities, and is a live legal/privacy matter. This is the cases page's own content, described
+badly. Both concern patient identities in structured data; both are the owner's to settle with the
+client.
+
+### If the owner wants it fixed
+
+- correct it (15 entries, a real type, or drop the node), or
+- derive it from `data/cases.json` so it cannot go stale — the rule `renderer/render.js faqPageNode`
+  already applies to FAQPage, and `test:seo` check 7 is the model for gating it.

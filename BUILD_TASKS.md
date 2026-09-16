@@ -448,6 +448,46 @@ the pre-rendered page, written by `renderer/render.js`. `test:all` is green: 14 
 - definition-of-done waivers: "heavy assets from R2" (Phase 10 dependency); "editable in Puck"
   passes after the `mergeTree` fix.
 
+#### The six content pages (the batch): DONE 16 Sep 2026, 07:40–09:01
+
+All six retired to `legacy/`, each its own commit. `test:all` green: 14 suites, **1,203 checks**.
+**81 minutes for six pages**, including the three new section types and one behaviour file.
+
+| page | commit | new work | done |
+|---|---|---|---|
+| 聯絡我們 | `4442997` | section wrappers in the renderer; multi-line contact details | 08:08 |
+| 小册子 | `057e879` | — (caught the per-language brochure scan, finding 28) | 08:19 |
+| 有效成份檢測 | `36a91d0` | — | 08:28 |
+| 微信發表文章 | `3b95641` | stylesheet-exists guard in the renderer | 08:36 |
+| 研究報告 | `a82ea26` | first use of the page-header video variant | 08:44 |
+| 典型病例 | `84fc473` | `case-list` section + `assets/behaviour/case-list.js` | 09:01 |
+
+**Sections built once, up front** (`7382cc7`, owner-approved before building): `card-grid` with five
+variants (brochure, report, icon, article, link-list), `map-embed`, plus `text-block/intro` and
+`callout/info`. `case-list` came later with its page. 14 section types now.
+
+**Three things the batch found that no gate had:**
+1. **The live pages' `<section>` wrappers carry padding** (`2f428e0`). Dropping them moved
+   everything below and left 聯絡我們 10px short. `wrap` now takes `{ section, label, container }`,
+   and adjacent nodes naming the same section share one wrapper, as the live markup does.
+2. **小册子 swaps its brochure image AND link per language** (finding 28). The `src` in the markup
+   is the German scan; pre-rendering it verbatim would have published that to Chinese visitors.
+   Nothing but the visual diff caught it.
+3. **A page could link a stylesheet that does not exist** (`3b95641`). 微信發表文章 rendered happily
+   against a `page-articles.css` nobody had generated and would have published unstyled at 969px
+   wide. The renderer now refuses it, as it already did for behaviour scripts.
+
+**Every page reconciled to the pixel.** At `lang="zh"` five of the six equal the control exactly,
+region for region. 研究報告 differs only inside the page-header band, where its background video
+plays a different frame per capture; every pixel outside that band is identical. 有效成份檢測 carries
+212 px of FontAwesome icon-edge antialiasing, whose only cause is D1 itself (`body{overflow-x:clip}`
+vs `hidden`), with identical geometry to three decimals.
+
+**Scripts off**, every migrated page now differs from its original for two deliberate reasons: the
+original needs JavaScript to clear its fixed nav (D1, finding 15), and our JS-only controls are
+hidden rather than left dead. On 典型病例 the difference is the point: the old page rendered **no
+cases at all** without JavaScript; ours renders all fifteen with their full text.
+
 #### Effort: actual for page one, and the revised Phase 9 estimate (15 Sep 2026, replaces the earlier estimate)
 
 **Actual, page one (from the commit timeline):** P9-T1 ran from Fri 11 Sep midday to Tue 15 Sep
@@ -479,6 +519,30 @@ so the main variable is now **engineering**: new section types and the interacti
   and whatever new section types these pages need beyond the core 10.
 - **Re-estimate after the first content page and the first product detail page.** Those two
   patterns cover 13 of the 17 pages.
+
+#### Re-estimate after the batch, 16 Sep 2026 — 9 pages left
+
+Eight content pages took **~1.75 hours of machine time in total**, against 3.5–4.5 days estimated.
+The estimate was wrong about what the work IS: with the sections built, a content page is a tree
+lifted from the original by script, a CSS line, a render and a reconcile. What costs real time is a
+**new section type**, a **behaviour file**, or a **difference the diff will not explain**.
+
+| pages | count | estimate | what actually drives it |
+|---|---|---|---|
+| Product detail pages (產品_T3, _PT3, _乙肝清, _憶活素, _雲芝糖肽精華_A / _B) | 6 | **½–1 day for the first, then ~30 min each: 1–1.5 days total** | `product-detail`, `gallery` and `related-products` already exist and are fidelity-mapped to these pages. The quantity/add-to-cart path is `site.js`, already proven on 產品介紹. Real risks: the **3D `<model-viewer>`** (no section for it, and the models are the 75MB `.glb` files Phase 10 moves), and per-language images (finding 28) |
+| `index.html` (homepage) | 1 | **½–1 day** | the most sections (hero, stats, glass card, featured cases, product grid), a background video, a 3D viewer, and the homepage-specific JS. `hero` and `text-block/glass` exist and are mapped |
+| `product.html` (generic `?sku=`) | 1 | **¼–½ day, or leave it** | it exists to render any SKU from a query string, which a pre-rendered page cannot do. Either keep it hand-coded (it is `noindex`) or drop it in favour of the six static detail pages. **Owner decision, not effort** |
+| `購物車.html` (cart/checkout) | 1 | **½–1 day, or leave it** | a transactional app page, `noindex`, no document subject (finding 3). Pre-rendering buys nothing for SEO; the case for migrating is editable chrome and copy, not crawlability |
+| `account.html` (sign-in) | 1 | **defer to Phase 11** | depends on the hosted API; same reasoning as the cart |
+
+**So: ~2–3 working days for the six product pages plus the homepage, and two of the remaining three
+are decisions rather than work.** The one-time costs left are the same two as before — the shared
+chrome partial and any new section type (a `model-viewer` section is the likely one).
+
+**What would make this slower:** a page that needs a new section type the owner must review first
+(that is the intended gate), a behaviour file (典型病例's took about half of that page's 17 minutes),
+or per-language media (finding 28) on the product pages, which must be checked per page before
+migrating, because only the visual diff catches it.
 
 #### 常見問題 (page two, first content page): DONE 15 Sep 2026, awaiting owner review
 
