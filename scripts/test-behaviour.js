@@ -594,6 +594,88 @@ const EFFECTS = {
   /* The homepage hero. The point of the check is that the behaviour DRIVES
      markup that is already there: the slides are counted first, and a page that
      only builds them in JavaScript would have none to count. */
+  /* FINDING 34, by effect. The live page fetched every model on load - about
+     72 MB - and appended `?v=` + Date.now() so the browser cache could never
+     be used. Neither is visible to any other check: the page looks and behaves
+     identically, it just costs a visitor 72 MB of mobile data on every visit.
+     So this counts the actual .glb REQUESTS the browser makes.
+
+     Asserted: on load, zero models are fetched (slide 1 is a photograph);
+     advancing to a 3D slide fetches exactly that one; advancing away and back
+     fetches nothing further (it is cached in the page, and would be cacheable
+     by the browser); and no model URL carries a query string, because a
+     content-addressed URL plus `immutable` is what replaces the buster.
+
+     The immutable HEADER itself cannot be asserted here - this harness serves
+     the files itself. `npm run check:media` asserts it against the real host. */
+  async modelsLoadLazily(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      /* three.js, GLTFLoader and OrbitControls come from cdnjs and unpkg, and
+         this harness blocks every host but its own - so without a stand-in the
+         loader would bail before fetching anything and this check would pass
+         while proving nothing (the vacuous-control trap the gallery check fell
+         into at P9). What is under test is OUR code's decision about WHEN to
+         fetch a model, not whether three.js can draw it, so the library is
+         stubbed with just enough surface for that path to run. */
+      await page.addInitScript(() => {
+        const noop = function () {};
+        function Obj() { this.position = { set: noop, sub: noop }; this.scale = { setScalar: noop };
+          this.add = noop; this.traverse = noop; }
+        const V = function () { return { x: 1, y: 1, z: 1, multiplyScalar: function () { return this; } }; };
+        window.THREE = {
+          Scene: Obj, Object3D: Obj, Group: Obj,
+          PerspectiveCamera: function () { this.position = { set: noop }; this.updateProjectionMatrix = noop; },
+          WebGLRenderer: function () {
+            this.domElement = document.createElement('canvas');
+            this.setSize = noop; this.setPixelRatio = noop; this.render = noop;
+          },
+          AmbientLight: Obj, DirectionalLight: function () { this.position = { set: noop }; },
+          PointLight: function () { this.position = { set: noop }; },
+          Box3: function () { this.setFromObject = function () { return this; };
+            this.getCenter = V; this.getSize = V; },
+          Vector3: V, Vector2: V,
+          OrbitControls: function () { this.update = noop; },
+          /* the only part that matters: parse() is called with the bytes the
+             page fetched, so a fetch that never happens is a check that fails */
+          GLTFLoader: function () {
+            this.parse = function (buffer, p, onLoad) { onLoad({ scene: new Obj() }); };
+          }
+        };
+      });
+      const asked = [];
+      page.on('request', r => { if (/\.glb(\?|$)/i.test(r.url())) asked.push(r.url()); });
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      await page.waitForTimeout(600);
+      const onLoad = asked.length;
+
+      /* walk forward until a 3D slide is active */
+      let steps = 0, modelSlide = false;
+      while (steps < 6 && !modelSlide) {
+        await page.click('#heroNext', { timeout: 2000 });
+        await page.waitForTimeout(400);
+        modelSlide = await page.evaluate(() => {
+          const s = document.querySelector('#heroSlides .carousel-slide.active');
+          return !!(s && s.querySelector('.carousel-3d-container'));
+        });
+        steps++;
+      }
+      if (!modelSlide) { this.detail = 'no 3D slide reachable'; return false; }
+      await page.waitForTimeout(900);
+      const afterFirst = asked.length;
+
+      const total = await page.evaluate(() =>
+        document.querySelectorAll('#heroSlides .carousel-3d-container').length);
+      const busted = asked.filter(u => u.indexOf('?') !== -1);
+
+      const ok = onLoad === 0 && afterFirst >= 1 && afterFirst < total && busted.length === 0;
+      this.detail = total + ' models on the page; fetched on load: ' + onLoad +
+                    ', after reaching one 3D slide: ' + afterFirst +
+                    '; cache-busted URLs: ' + busted.length;
+      return ok;
+    } finally { await ctx.close(); }
+  },
+
   async heroSlide(width) {
     const ctx = await context(width); const page = await newPage(ctx);
     try {
@@ -870,7 +952,8 @@ async function runEffect(name, scenario, width, page) {
           'galleryThumbs@1280': 'a thumbnail click switches the main image and moves `active`'
         } : {},
         p.keys.indexOf('hero') !== -1 ? {
-          'heroSlide@1280': 'the hero carousel advances the PRE-RENDERED slides, and the dots follow'
+          'heroSlide@1280': 'the hero carousel advances the PRE-RENDERED slides, and the dots follow',
+          'modelsLoadLazily@1280': 'a 3D model is fetched only when its slide is shown, once, and never with a cache-buster (finding 34)'
         } : {},
         p.keys.indexOf('product-carousel') !== -1 ? {
           'productRotate@1280': 'the arrows rotate the product carousel through all six products'

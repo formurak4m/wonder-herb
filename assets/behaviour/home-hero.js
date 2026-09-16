@@ -319,11 +319,28 @@
           return;
       }
       
-      document.querySelectorAll('.carousel-3d-container').forEach(container => {
+      /* LOADED WHEN THE SLIDE IS SHOWN, NOT ON PAGE LOAD (docs/FINDINGS.md
+         finding 34). The live page initialised EVERY .carousel-3d-container
+         here, so opening the homepage fetched all four models - about 72 MB -
+         whether or not the visitor ever reached a 3D slide. Each container is
+         now armed instead: it loads the first time its slide becomes active,
+         once, and a visitor who never advances past the first slide downloads
+         no models at all. Every slide still shows its product photograph
+         immediately, so nothing waits on this.
+
+         THE CACHE-BUSTER IS GONE, deliberately. The live page fetched
+         `modelSrc + '?v=' + Date.now()`, a unique URL per page load, so the
+         browser cache could never be used and a returning visitor paid the
+         full download again. Asset URLs are content-addressed now (the file's
+         own hash is in its name), which is what makes that safe: a changed
+         model is a changed URL, so the response can be cached immutably and
+         for ever. Do not reintroduce a query string here - it would silently
+         undo both halves. */
+      function initModel(container) {
           const modelSrc = container.getAttribute('data-model');
-          if (!modelSrc) return;
-          const modelSrcNoCache = modelSrc + '?v=' + Date.now();
-          
+          if (!modelSrc || container.dataset.modelLoading === '1') return;
+          container.dataset.modelLoading = '1';
+
           /* CHANGED FROM THE LIVE PAGE. It replaced the container's contents
              with "載入 3D 模型中..." here, and with "無法載入 3D 模型" if the
              load failed - so the product photograph the tree renders would be
@@ -399,7 +416,7 @@
           carousel3DInstances[modelSrc] = inst;
           
           const loader = new THREE.GLTFLoader();
-          fetch(modelSrcNoCache)
+          fetch(modelSrc)
               .then(function(res) { return res.arrayBuffer(); })
               .then(function(buffer) {
                   let glbJson = null, binaryChunk = null;
@@ -494,7 +511,23 @@
           if (carouselSlides) {
               slideObserver.observe(carouselSlides, { attributes: true, attributeFilter: ['class'], subtree: true });
           }
+      }
+
+      /* Arm every 3D slide: load its model the first time that slide is shown.
+         The initially-active slide loads at once (if it is a 3D one), which on
+         this page it is not - slide 1 is a photograph, so a visitor who does
+         not advance downloads nothing. */
+      const armed = [...document.querySelectorAll('.carousel-3d-container')];
+      const loadIfActive = () => armed.forEach(c => {
+          const slide = c.closest('.carousel-slide');
+          if (slide && slide.classList.contains('active')) initModel(c);
       });
+      const slides = document.getElementById('heroSlides');
+      if (slides) {
+          new MutationObserver(loadIfActive)
+              .observe(slides, { attributes: true, attributeFilter: ['class'], subtree: true });
+      }
+      loadIfActive();
   }
   /* ---- the hero particle canvas (index.html:4106-4253), verbatim ---- */
   function initHeroCanvas() {
