@@ -6,7 +6,7 @@ section library at P4-T2; 12–13 from actually looking at the rendered sections
 fidelity waivers at P4-T4; 15 from rendering a real page end to end at P5-T1; 16–17 from
 running the real publish pipeline for the first time at P7-T1; 18–19 from building the editor
 app at P8-T2; 20 from migrating the product data model at P9-T1; 21–23 from migrating the first real
-page (產品介紹) at P9-T1; 27 from migrating 常見問題 at P9 (page two); 28–29 from the P9 content-page batch; 30 from the P9 product-page batch.
+page (產品介紹) at P9-T1; 27 from migrating 常見問題 at P9 (page two); 28–29 from the P9 content-page batch; 30–31 from the P9 product-page batch.
 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
@@ -46,6 +46,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 28 | **Per-language images and links exist, but a tree cannot hold them**: 小册子 swaps the brochure scan per language; rendering the markup verbatim would have shown Chinese visitors the German brochure | Medium — caught by the visual diff, no gate saw it | zh carried now (Chinese-only, finding 24); model per-language assets at **Phase 14** |
 | 29 | **典型病例 ItemList says 15 items, lists 3, types them `Testimonial`** (not a schema.org type), naming real patients | Background (content not authoritative); owner + client | Carried verbatim at P9; fix or derive only if the owner asks |
 | 30 | **產品_雲芝糖肽精華_A publishes the wrong product's title**: its script overwrites the trial pack's correct `<title>` with the standard pack's | Medium — SEO, live today on 1 of 6 product pages | **Fixed by migrating the page** (no script to overwrite it); `test:seo` now compares against the page it replaces |
+| 31 | **PT3 is clinic-only on its page and sellable in the data**: no `clinicOnly` flag on WH-PT3-090, so the grid and the migrated panel both offer it at HK$2,480 | Medium — a visitor can buy what the page says is clinic-only | One data edit (`clinicOnly: true`) fixes panel, grid and cart at once — **owner + client**, like finding 9 |
 
 ---
 
@@ -2007,3 +2008,33 @@ lost in migration is still caught.
 
 - Nothing on this branch. Worth telling the client: the trial-pack page had the wrong title in
   search results and in the browser tab, and the migration corrects it.
+
+---
+
+## 31 · PT3 is clinic-only on its page and sellable in the data — the site now sells it
+
+**What.** `產品_PT3.html` states, in markup, that the product is not sold online: a clinic note and a
+disabled "無庫存 (診所專供)" button. `data/products.json` disagrees — `WH-PT3-090` is `"status": "In
+Stock"` at `HK$2,480` with **no `clinicOnly` flag**, and the cart's refusal rule
+(`assets/site.js`) keys on exactly that flag.
+
+**Consequence, live on this branch since page one:** the migrated 產品介紹 grid accepts PT3 into the
+cart, and since 16 Sep the migrated 產品_PT3 panel offers a quantity box and an add button. A visitor
+can buy, at HK$2,480, a product whose own page says it is only available through clinics.
+
+**Why it is this way, deliberately.** Site content is not authoritative (owner, 15 Sep 2026) and the
+panel derives availability from the data rather than carrying the page's markup (owner, 16 Sep
+2026) — otherwise the page would keep saying "clinic only" after the flag changed, which is the
+class of bug findings 19 and 23 came from. So the disagreement is now visible and in one place
+instead of hidden in two.
+
+**The fix is one data edit, and it is the owner's.** Setting `clinicOnly: true` on `WH-PT3-090`
+restores the page's position everywhere at once — the detail panel renders the clinic note and the
+disabled button, the grid shows its ribbon, and the cart refuses with the approved message. Nothing
+in code needs to change; `test:behaviour` already covers both states.
+
+### Not established
+
+- Which is right. The product's own title says 指定診所發售, and the clinic note has been on the page
+  since before this project; but the price and stock in the database look deliberate too. That is a
+  question for the client, like the disputed prices in finding 9.

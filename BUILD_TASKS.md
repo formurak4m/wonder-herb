@@ -488,6 +488,55 @@ original needs JavaScript to clear its fixed nav (D1, finding 15), and our JS-on
 hidden rather than left dead. On 典型病例 the difference is the point: the old page rendered **no
 cases at all** without JavaScript; ours renders all fifteen with their full text.
 
+#### The six product detail pages (the batch): DONE 16 Sep 2026, 09:45–12:14
+
+All six retired to `legacy/`, one commit each. `test:all` green: 15 suites, **1,439 checks**.
+**~2.5 hours for six pages**, of which ~35 minutes was the shared sections and behaviour, and
+**~60 minutes was 產品_T3 alone** — the first page, which paid for the other five.
+
+| page | commit | what it cost |
+|---|---|---|
+| 產品_T3 | `2ad4f76` | 61 min — five structural finds (below) |
+| 產品_PT3 | `931bdc3` | 11 min — the clinic-only one; `<br>` inside copy |
+| 產品_雲芝糖肽精華_A | `464e904` | 9 min — finding 30, the wrong title |
+| 產品_雲芝糖肽精華_B | `86f88eb` | 7 min — out of stock, refusal path |
+| 產品_乙肝清 | `4de1234` | 14 min — exposed the missing heading tagline |
+| 產品_憶活素 | `b3e5fab` | 12 min — citations that no crawler could see |
+
+**No 3D viewer was involved:** `model-viewer` and the `.glb` files are on `index.html` only.
+
+**New, owner-approved before building** (`971713c`): `card-grid`'s `badges` variant, the buy panel's
+data hooks and clinic-only path, and `assets/behaviour/product-detail.js`. Then, during the batch:
+`text-block`'s `group` variant (owner-approved), `assets/behaviour/gallery.js`, and `card-grid`'s
+`references` variant.
+
+**What the visual diff found that no other gate could:**
+1. `<main class="container">` — where the product pages' side padding and max width come from.
+2. The buy panel's badge row carries `style="margin:0; justify-content:flex-start"` (+38px without).
+3. Related-product icons carry `style="font-size:2rem; color:#2EADA5"` (~10px per card without).
+4. The short description's icon is teal.
+5. Document order inside the details card: two groups put their list first and a note after.
+6. **The heading's tagline** — every product `<h1>` is the name plus a smaller maroon line
+   ("澳洲昆士蘭科大臨床實證"). We were publishing only the name, so a visible line of copy was
+   missing from all six pages.
+7. A `<br>` inside a paragraph, which `textContent` joined into one line.
+
+**Two things the migration FIXES, both invisible before:**
+- **finding 30:** 產品_雲芝糖肽精華_A's script overwrote its own correct title with the standard
+  pack's. Pre-rendering publishes the right one; `test:seo` now compares against the page it
+  replaces rather than a baseline that recorded the bug.
+- **產品_憶活素's medical citations** were injected by script into an empty box, so no crawler saw
+  them. They are in the HTML now.
+
+**Recorded, not acted on: finding 31.** PT3's page says clinic-only; the data says In Stock at
+HK$2,480 with no `clinicOnly` flag, so the panel (like the grid, since page one) sells it. One data
+edit fixes panel, grid and cart together — the owner's call with the client.
+
+**Accepted differences, page by page:** the panel's trust badges come from `data/products.json`
+(two) where the pages list three; a handful of mid-sentence bold runs the copy model cannot express
+(finding 14); and on 產品_憶活素 the references box is 24px taller because ours emits a real `<h4>`
+where the live page's malformed injected HTML loses it.
+
 #### Phase 9 scope, closed 16 Sep 2026 (owner): 7 pages, then Phase 9 is done
 
 **In scope:** the 6 product detail pages, then `index.html` (reviewed on its own).
@@ -575,6 +624,22 @@ chrome partial and any new section type (a `model-viewer` section is the likely 
 (that is the intended gate), a behaviour file (典型病例's took about half of that page's 17 minutes),
 or per-language media (finding 28) on the product pages, which must be checked per page before
 migrating, because only the visual diff catches it.
+
+#### After the product batch, 16 Sep 2026 — index.html is the last page
+
+The six product pages took **~2.5 hours**, against 1–1.5 days estimated. The estimate was right
+about the shape (one page pays for the rest: 產品_T3 took 61 minutes, the other five averaged 11)
+and wrong about the 3D viewer, which is not on those pages at all.
+
+**`index.html`: ½–1 day still stands, and it is the least predictable page left.**
+- It has the **only** `<model-viewer>` and the `.glb` models, so it is where a 3D viewer section is
+  decided (and those models are the 75MB Phase 10 moves).
+- It has the background video (Wix-hosted, finding 1), the most sections, and its own homepage JS.
+- `hero` and `text-block/glass` exist and are fidelity-mapped to it; `product-grid`, `card-grid` and
+  `case-list` are all built now, and the homepage reuses several of them.
+- Expect the same per-page checks to matter most there: per-language assets (finding 28), the
+  <section> wrappers, and inline styles the live markup carries.
+
 
 #### 常見問題 (page two, first content page): DONE 15 Sep 2026, awaiting owner review
 
