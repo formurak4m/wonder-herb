@@ -27,6 +27,7 @@ import * as FaqAccordion from './FaqAccordion.jsx';
 import * as Callout from './Callout.jsx';
 import * as CardGrid from './CardGrid.jsx';
 import * as MapEmbed from './MapEmbed.jsx';
+import * as CaseList from './CaseList.jsx';
 
 export const registry = {
   'page-header': PageHeader,
@@ -41,7 +42,8 @@ export const registry = {
   'faq-accordion': FaqAccordion,
   'callout': Callout,
   'card-grid': CardGrid,
-  'map-embed': MapEmbed
+  'map-embed': MapEmbed,
+  'case-list': CaseList
 };
 
 /* { type: Component } — the shape the renderer wants. */

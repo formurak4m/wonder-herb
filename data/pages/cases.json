@@ -1,0 +1,286 @@
+{
+  "slug": "cases",
+  "path": "典型病例.html",
+  "title": {
+    "zh": "典型病例 | 康草堂 Wonder Herb - 雲芝糖肽精華真實見證"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂雲芝糖肽真實病例分享，見證雲芝糖肽精華PSP如何幫助患者提升免疫力，改善生活品質。"
+    },
+    "dateModified": "2026-06-02T10:30:00+08:00",
+    "ogTitle": {
+      "zh": "典型病例 | Wonder Herb - 雲芝糖肽精華"
+    },
+    "ogDescription": {
+      "zh": "康草堂雲芝糖肽真實病例分享，見證雲芝糖肽精華PSP如何幫助患者提升免疫力，改善生活品質。"
+    },
+    "ogType": "website",
+    "image": "https://lh3.googleusercontent.com/d/1mQafHatzw_gwbV_J9Y5AmwIAUS9r8SEi",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "典型病例"
+        },
+        "path": "典型病例.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "Product",
+        "@id": "https://www.wonder-herb.com/典型病例.html#main-product",
+        "name": "康草堂雲芝糖肽精華 PSP + T3",
+        "description": "大學研究證實複合配方功效倍增，有效成份>90%，加拿大GMP藥廠生產。",
+        "brand": {
+          "@type": "Brand",
+          "name": "Wonder Herb"
+        },
+        "manufacturer": {
+          "@type": "Organization",
+          "name": "Wonder Herb Health Products Ltd"
+        },
+        "sku": "WH-PSP-T3-COMBO",
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "HKD",
+          "price": "0",
+          "availability": "https://schema.org/InStock"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "這些典型病例都是真實的嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "所有病例均來自康草堂多年的臨床記錄與患者反饋，部分個案經醫生跟進並獲得正面回響。為保護隱私，姓名經過處理，但具體病情與恢復過程均為真實。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "雲芝糖肽精華 PSP 適合哪些患者使用？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "根據病例記錄，PSP對多種惡性腫瘤（如肺、大腸、胰臟、前列腺等）患者的輔助支持有明顯幫助，尤其在接受化療、電療期間可減輕不適。具體服用建議諮詢醫師。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "PSP 與 T3 一起服用能帶來什麼好處？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "大學研究證實，PSP結合T3（三烯生育醇）可以產生協同效應，提升免疫調節能力，比單一服用PSP效果倍增，多例患者反映身體耐力與生活品質均有改善。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "病例中提到的改善是否具有普遍性？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "每例患者的反應因個人體質、疾病階段而異，但超過20年來累積的大量案例顯示，規律服用康草堂雲芝糖肽的患者多數出現正向變化。所有病例均為真實記錄，非保證療效。"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "ItemList",
+        "name": "康草堂雲芝糖肽真實病例見證",
+        "description": "涵蓋多種惡性腫瘤患者在服用雲芝糖肽精華後的真實改善情況",
+        "numberOfItems": 15,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": "Testimonial",
+              "name": "麥女士（77歲）- 肛門惡性腫瘤",
+              "text": "2025年體檢發現肛門惡性腫瘤已擴散淋巴，療程首日服用雲芝+T3，僅輕微不適，醫生讚賞耐受度。"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@type": "Testimonial",
+              "name": "陳小姐（55歲）- 腹膜惡性腫瘤",
+              "text": "手術後持續服用雲芝及T3，CT追蹤2年均正常。"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@type": "Testimonial",
+              "name": "Peter Hall（74歲）- 前列腺惡性腫瘤",
+              "text": "PSP服用後PSA下降，第二次活檢正常；減量後PSA回升，加回PSP+T3後再次受控。"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css",
+      "assets/page-cases.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "典型病例.html"
+  },
+  "sections": [
+    {
+      "type": "page-header",
+      "fields": {
+        "heading": {
+          "zh": "典型病例"
+        },
+        "variant": "centered",
+        "sub": {
+          "zh": "真實康復見證 · 雲芝糖肽精華幫助無數患者重拾健康"
+        }
+      }
+    },
+    {
+      "type": "case-list",
+      "wrap": {
+        "section": "cases-section",
+        "label": "病例列表",
+        "container": true
+      },
+      "fields": {
+        "source": "cases.json",
+        "searchPlaceholder": {
+          "zh": "搜尋病例 (病名/內容)..."
+        },
+        "searchLabel": {
+          "zh": "病例搜索"
+        },
+        "resetLabel": {
+          "zh": "清除所有篩選"
+        },
+        "resetIcon": "fas fa-eraser",
+        "resultPrefix": {
+          "zh": "共 "
+        },
+        "resultSuffix": {
+          "zh": " 個病例"
+        },
+        "filterLabel": {
+          "zh": "快速篩選病症："
+        },
+        "filterIcon": "fas fa-tags",
+        "allLabel": {
+          "zh": "全部病例"
+        },
+        "allIcon": "fas fa-list-ul",
+        "moreLabel": {
+          "zh": "閱讀更多"
+        },
+        "lessLabel": {
+          "zh": "收合"
+        },
+        "moreIcon": "fas fa-chevron-down",
+        "emptyText": {
+          "zh": "沒有找到相關病例"
+        },
+        "defaultIcon": "fa-solid fa-virus",
+        "diseaseIcons": [
+          {
+            "match": {
+              "zh": "肛門惡性腫瘤"
+            },
+            "icon": "fa-solid fa-circle-dot"
+          },
+          {
+            "match": {
+              "zh": "腹膜惡性腫瘤"
+            },
+            "icon": "fa-solid fa-bacteria"
+          },
+          {
+            "match": {
+              "zh": "前列腺惡性腫瘤"
+            },
+            "icon": "fa-solid fa-mars"
+          },
+          {
+            "match": {
+              "zh": "肺惡性腫瘤"
+            },
+            "icon": "fa-solid fa-lungs"
+          },
+          {
+            "match": {
+              "zh": "咽喉惡性腫瘤"
+            },
+            "icon": "fa-solid fa-teeth"
+          },
+          {
+            "match": {
+              "zh": "大腸惡性腫瘤"
+            },
+            "icon": "fa-solid fa-bacterium"
+          },
+          {
+            "match": {
+              "zh": "胰臟惡性腫瘤"
+            },
+            "icon": "fa-solid fa-syringe"
+          },
+          {
+            "match": {
+              "zh": "淋巴惡性腫瘤"
+            },
+            "icon": "fa-solid fa-virus"
+          },
+          {
+            "match": {
+              "zh": "腎惡性腫瘤"
+            },
+            "icon": "fa-solid fa-pills"
+          },
+          {
+            "match": {
+              "zh": "睪丸惡性腫瘤"
+            },
+            "icon": "fa-solid fa-dna"
+          },
+          {
+            "match": {
+              "zh": "口水腺惡性腫瘤"
+            },
+            "icon": "fa-solid fa-tint"
+          },
+          {
+            "match": {
+              "zh": "結腸惡性腫瘤"
+            },
+            "icon": "fa-solid fa-prescription-bottle"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -148,6 +148,15 @@ const BEHAVIOURS = {
   'product-grid': {
     src: 'assets/behaviour/quick-view.js',
     noscript: '.btn-quickview { display: none !important; }'
+  },
+  /* The filter panel needs JavaScript, so it is not shown without it - but the
+     cases are all in the HTML, so instead of leaving summaries nobody can
+     expand, every case's full text is shown and the read-more buttons go. The
+     old page rendered NO cases at all without JavaScript. */
+  'case-list': {
+    src: 'assets/behaviour/case-list.js',
+    noscript: '.filter-panel, .read-more-btn { display: none !important; }\n    ' +
+              '.case-full { display: block !important; }'
   }
 };
 

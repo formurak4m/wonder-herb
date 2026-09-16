@@ -213,6 +213,9 @@ const OTHER_PAGES = render.publishedTrees().map(render.loadTree).filter(t => t.p
   const key = 'p-' + t.slug;
   SCENARIOS[key] = { html: page, page: t.path };
   SCENARIOS[key + '-no-site'] = { html: page, page: t.path, block: ['assets/site.js'] };
+  /* every per-section behaviour file this page links, for its own control */
+  SCENARIOS[key + '-no-behaviour'] = { html: page, page: t.path,
+    block: (page.match(/assets\/behaviour\/[^"]+/g) || []) };
   SCENARIOS[key + '-nojs'] = { page: t.path,
     html: stripScripts(page).replace(/<noscript>([\s\S]*?)<\/noscript>/gi, '$1') };
   SCENARIOS[key + '-nojs-unguarded'] = { page: t.path,
@@ -441,6 +444,72 @@ const EFFECTS = {
     } finally { await ctx.close(); }
   },
 
+  /* 典型病例's case list: the cards, chips and count are all pre-rendered, so
+     these prove the behaviour only FILTERS what is already in the HTML. */
+  async caseFilter(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      const before = await page.evaluate(() => ({
+        cards: document.querySelectorAll('.case-card').length,
+        shown: [...document.querySelectorAll('.case-card')].filter(c => !c.hidden).length,
+        count: document.getElementById('caseCount').textContent
+      }));
+      const disease = await page.evaluate(() => document.querySelectorAll('.filter-chip')[1].getAttribute('data-disease'));
+      await page.click('.filter-chip[data-disease="' + disease + '"]', { timeout: 2000 });
+      const after = await until(async () => {
+        const s = await page.evaluate(d => ({
+          shown: [...document.querySelectorAll('.case-card')].filter(c => !c.hidden).length,
+          all: document.querySelectorAll('.case-card[data-disease="' + d + '"]').length,
+          count: document.getElementById('caseCount').textContent,
+          pressed: document.querySelector('.filter-chip[data-disease="' + d + '"]').getAttribute('aria-pressed')
+        }), disease);
+        return s.shown === s.all && s.shown < before.cards && s.count.indexOf(String(s.shown)) !== -1 && s.pressed === 'true';
+      }, 2000);
+      await page.click('#caseReset', { timeout: 2000 });
+      const back = await until(() => page.evaluate(n =>
+        [...document.querySelectorAll('.case-card')].filter(c => !c.hidden).length === n, before.cards), 2000);
+      this.detail = before.cards + ' cards, filtered to "' + disease + '", count "' + before.count + '" -> reset';
+      return before.cards === 15 && before.shown === 15 && after && back;
+    } finally { await ctx.close(); }
+  },
+
+  async caseSearch(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      const term = await page.evaluate(() => document.querySelector('.case-title').textContent.trim().slice(0, 3));
+      await page.fill('#caseSearch', term);
+      const narrowed = await until(() => page.evaluate(() =>
+        [...document.querySelectorAll('.case-card')].filter(c => !c.hidden).length < 15), 2000);
+      await page.fill('#caseSearch', 'zzzzz-no-such-case');
+      const none = await until(() => page.evaluate(() =>
+        [...document.querySelectorAll('.case-card')].filter(c => !c.hidden).length === 0 &&
+        !!document.querySelector('.cases-empty')), 2000);
+      this.detail = 'searched "' + term + '", then a term that matches nothing';
+      return narrowed && none;
+    } finally { await ctx.close(); }
+  },
+
+  async caseReadMore(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      const shut = await page.evaluate(() => {
+        const f = document.querySelector('.case-full');
+        return { visible: getComputedStyle(f).display !== 'none', label: document.querySelector('.read-more-text').textContent };
+      });
+      await page.click('.read-more-btn', { timeout: 2000 });
+      const open = await until(() => page.evaluate(() => {
+        const f = document.querySelector('.case-full'), b = document.querySelector('.read-more-btn');
+        return getComputedStyle(f).display !== 'none' && b.getAttribute('aria-expanded') === 'true' &&
+               document.querySelector('.read-more-text').textContent !== b.getAttribute('data-more');
+      }), 2000);
+      this.detail = 'full text hidden at rest: ' + !shut.visible + ', expands on click: ' + open;
+      return !shut.visible && open;
+    } finally { await ctx.close(); }
+  },
+
   /* The next two need no product grid: any page with the site chrome. */
   async badgeFromStoredCart(width) {
     const ctx = await context(width); const page = await newPage(ctx);
@@ -536,6 +605,11 @@ async function runEffect(name, scenario, width, page) {
         languageSwitch: 'language switch is not dead: saves the choice, says this page is Chinese only, a live page follows it'
       };
       for (const name of Object.keys(EFFECTS)) {
+        /* LABEL is the list of effects that apply to THIS page. Effects for a
+           section 產品介紹 does not have (the case list's filter, search and
+           read more) belong to PART 5, which runs them on the page whose tree
+           has that section. */
+        if (!(name in LABEL)) continue;
         if (name === 'menuOpens' && width !== 390) continue;
         const r = await runEffect(name, 'fixture', width);
         check(LABEL[name], r.ok, r.detail);
@@ -647,6 +721,27 @@ async function runEffect(name, scenario, width, page) {
         check('  negative control: without the scripts-off rules the dead controls ARE found', u.dead.length > 0,
               u.dead.length + ' visible');
       }
+      /* per-section behaviour this page has, and its own negative control */
+      const EXTRA = p.sections.indexOf('case-list') !== -1 ? {
+        'caseFilter@1280': 'a diagnosis chip filters the pre-rendered cards, the count follows, reset restores all 15',
+        'caseSearch@1280': 'search narrows the same cards, and a term matching nothing says so',
+        'caseReadMore@390': 'a case\'s full text is hidden at rest and expands on click'
+      } : {};
+      for (const [k, label] of Object.entries(EXTRA)) {
+        const [name, w] = k.split('@');
+        const r = await runEffect(name, p.key, Number(w), ctxPage);
+        check(label, r.ok, r.detail);
+      }
+      if (Object.keys(EXTRA).length) {
+        const still = [];
+        for (const k of Object.keys(EXTRA)) {
+          const [name, w] = k.split('@');
+          if ((await runEffect(name, p.key + '-no-behaviour', Number(w), ctxPage)).ok) still.push(k);
+        }
+        check('negative control: without its behaviour file every one of those fails', still.length === 0,
+              still.length ? 'STILL PASSING: ' + still.join(', ') : Object.keys(EXTRA).length + ' of ' + Object.keys(EXTRA).length + ' fail');
+      }
+
       const failed = [];
       for (const k of Object.keys(SHARED)) {
         const [name, w] = k.split('@');

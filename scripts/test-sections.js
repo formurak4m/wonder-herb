@@ -495,6 +495,11 @@ function scan(s, i) {
  * where the live block shows three badges and the data has two, the entry
  * passes its own data. This test is about structure, not copy.
  * ------------------------------------------------------------------------ */
+/* A hole in a template literal: the scanner replaces the interpolated value
+   with an X, so inside a class attribute it reads as a class called X. It is
+   not markup, and nothing a section can emit. */
+const HOLE = 'an interpolated hole in the live template, not a class name';
+
 const INLINE_COPY = {
   strong: 'inline emphasis inside body copy. Fields are plain text with a constrained ' +
           'formatter (CLAUDE.md conventions); raw HTML from an editor is deliberately not supported',
@@ -660,6 +665,38 @@ const FIDELITY = {
       props: { variant: 'link-list', heading: '詳細研究報告下載',
                items: [{ title: '報告一 (PDF)', href: 'https://example.com/a.pdf', icon: 'fas fa-file-pdf', aria: '下載報告一' },
                        { title: '報告二', href: 'https://example.com/b', icon: 'fas fa-file-alt' }] } }
+  ],
+
+  /* Both of 典型病例's blocks are built by that page's own script, so the
+     expectation comes out of the template literals, as product-grid's does. */
+  'case-list': [
+    { label: 'cards', page: '典型病例.html',
+      template: /const html = casesArray\.map\(\(c, idx\) => \{[\s\S]*?return /,
+      allow: { X: HOLE },
+      props: {
+        source: 'cases.json', moreLabel: '閱讀更多', lessLabel: '收合', moreIcon: 'fas fa-chevron-down',
+        defaultIcon: 'fa-solid fa-virus',
+        data: { cases: [{ title: '甲女士（60歲）', subtitle: '示例診斷', summary: '摘要文字',
+                          content: '<p>內文段落</p>' }] }
+      } },
+    { label: 'filter chip', page: '典型病例.html',
+      template: /chipsHtml \+= (?=`<button data-disease)/,
+      allow: { X: HOLE },
+      props: {
+        source: 'cases.json', allLabel: '全部病例', defaultIcon: 'fa-solid fa-virus',
+        data: { cases: [{ title: 'x', subtitle: '示例診斷', summary: 'y', content: 'z' }] }
+      } },
+    { label: 'filter panel', page: '典型病例.html',
+      template: /let chipsHtml = /,
+      allow: { X: HOLE },
+      props: {
+        source: 'cases.json', searchPlaceholder: '搜尋', searchLabel: '病例搜索',
+        resetLabel: '清除所有篩選', resetIcon: 'fas fa-eraser',
+        resultPrefix: '共 ', resultSuffix: ' 個病例', filterLabel: '按病症篩選',
+        filterIcon: 'fas fa-tags', allLabel: '全部病例', allIcon: 'fas fa-list-ul',
+        defaultIcon: 'fa-solid fa-virus',
+        data: { cases: [{ title: 'x', subtitle: '示例診斷', summary: 'y', content: 'z' }] }
+      } }
   ],
 
   'map-embed': {
