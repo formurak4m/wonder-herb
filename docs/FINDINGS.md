@@ -6,7 +6,7 @@ section library at P4-T2; 12–13 from actually looking at the rendered sections
 fidelity waivers at P4-T4; 15 from rendering a real page end to end at P5-T1; 16–17 from
 running the real publish pipeline for the first time at P7-T1; 18–19 from building the editor
 app at P8-T2; 20 from migrating the product data model at P9-T1; 21–23 from migrating the first real
-page (產品介紹) at P9-T1; 27 from migrating 常見問題 at P9 (page two); 28–29 from the P9 content-page batch.
+page (產品介紹) at P9-T1; 27 from migrating 常見問題 at P9 (page two); 28–29 from the P9 content-page batch; 30 from the P9 product-page batch.
 8–10 September 2026.
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
@@ -45,6 +45,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 27 | **The admin's FAQ editor changed nothing a visitor could see**: no public page read `data/faq.json`; 常見問題 was hand-coded, and the two had drifted to different questions | Medium — an invisible feature the client believes they have | **Fixed by the P9 page-two migration** (`fc8c6e8`); name it in `ADMIN_GUIDE.md` |
 | 28 | **Per-language images and links exist, but a tree cannot hold them**: 小册子 swaps the brochure scan per language; rendering the markup verbatim would have shown Chinese visitors the German brochure | Medium — caught by the visual diff, no gate saw it | zh carried now (Chinese-only, finding 24); model per-language assets at **Phase 14** |
 | 29 | **典型病例 ItemList says 15 items, lists 3, types them `Testimonial`** (not a schema.org type), naming real patients | Background (content not authoritative); owner + client | Carried verbatim at P9; fix or derive only if the owner asks |
+| 30 | **產品_雲芝糖肽精華_A publishes the wrong product's title**: its script overwrites the trial pack's correct `<title>` with the standard pack's | Medium — SEO, live today on 1 of 6 product pages | **Fixed by migrating the page** (no script to overwrite it); `test:seo` now compares against the page it replaces |
 
 ---
 
@@ -1966,3 +1967,43 @@ client.
 - correct it (15 entries, a real type, or drop the node), or
 - derive it from `data/cases.json` so it cannot go stale — the rule `renderer/render.js faqPageNode`
   already applies to FAQPage, and `test:seo` check 7 is the model for gating it.
+
+---
+
+## 30 · 產品_雲芝糖肽精華_A publishes the WRONG product's title, from its own script — fixed by migrating it
+
+**What.** The trial-pack page's static `<title>` is right:
+
+```
+雲芝糖肽精華 (PSP) 試用裝 | Wonder Herb – 天然雲芝糖肽專家
+```
+
+and its own script then overwrites it with the STANDARD pack's:
+
+```
+document.title = ({ zh: '雲芝糖肽精華 (PSP) 標準裝 | Wonder Herb – 天然雲芝糖肽專家', … })
+```
+
+So every visitor sees 標準裝 in the tab, and any crawler that executes JavaScript indexes the trial
+pack's page under the standard pack's title — two pages competing for one title, on the page that
+sells the cheaper product. A copy-paste bug: checked all six product pages, the other five set the
+same title their markup already has.
+
+**How established.** Compared each page's static `<title>` with the string its script assigns. Also
+visible in `baseline/head/產品_雲芝糖肽精華_A.html`, which was captured with scripts on and therefore
+records 標準裝, while the page's own file says 試用裝.
+
+**Fixed by the migration, not by an edit.** A pre-rendered page has no script to overwrite anything:
+it publishes the `<title>` in its tree, which was lifted from the page's own markup — the correct
+one. Nothing was changed by hand.
+
+**The gate had to learn the difference.** `test:seo` compared the rendered title against the
+baseline, so the correct title failed against a baseline recording the bug. The check now compares
+against the page it replaces and accepts either the baseline's title or the ORIGINAL page's own
+`<title>`, **printing the disagreement when there is one**. Matching neither still fails, so a title
+lost in migration is still caught.
+
+### Still to do
+
+- Nothing on this branch. Worth telling the client: the trial-pack page had the wrong title in
+  search results and in the browser tab, and the migration corrects it.

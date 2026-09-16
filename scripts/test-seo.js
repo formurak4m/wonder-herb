@@ -85,6 +85,7 @@ const UTILITY_PAGES = {
 };
 
 const { pagePath, SITE, HREFLANG } = require(path.join(ROOT, 'renderer', 'head.js'));
+const { readOriginalPage, isRetired } = require(path.join(ROOT, 'renderer', 'source-page.js'));
 const { LANGS_IN_SCOPE, PRIMARY } = require(path.join(ROOT, 'renderer', 'render.js'));
 
 let fail = 0;
@@ -389,9 +390,26 @@ rendered.forEach((page, url) => {
             : '\n        baseline: ' + want.join(', ') + '\n        rendered: ' + got.join(', '));
   }
 
+  /* TWO SOURCES FOR A TITLE, and they can disagree. The baseline was captured
+     with scripts ON, so it records whatever the live page's own JavaScript
+     finally set. 產品_雲芝糖肽精華_A sets document.title to the STANDARD pack's
+     title on the TRIAL pack's page (its static <title> says 試用裝, its script
+     says 標準裝) - a copy-paste bug on the live site, five of the six product
+     pages agree with themselves. A pre-rendered page has no script to correct
+     it either way, so the page's own <title> is the source of truth, and this
+     check accepts either, naming the disagreement when there is one. Matching
+     NEITHER still fails, so a title lost in migration is still caught. */
   const bTitle = ((bdoc.querySelector('title') || {}).textContent || '').trim();
-  check(page.rel + ': <title> matches the baseline',
-        ((page.doc.querySelector('title') || {}).textContent || '').trim() === bTitle, bTitle);
+  const oTitle = isRetired(page.rel)
+    ? (((new JSDOM(readOriginalPage(page.rel)).window.document.querySelector('title')) || {}).textContent || '').trim()
+    : bTitle;
+  const rTitle = ((page.doc.querySelector('title') || {}).textContent || '').trim();
+  check(page.rel + ': <title> matches the page it replaces',
+        rTitle === bTitle || rTitle === oTitle,
+        rTitle === bTitle ? bTitle
+          : 'the page\'s own <title> "' + rTitle + '"\n' +
+            '        NOTE: the baseline (scripts on) recorded "' + bTitle + '" - the live page\'s ' +
+            'script overwrites its own title');
   check(page.rel + ': meta description matches the baseline',
         attr(page.doc, 'meta[name="description"]', 'content') ===
         attr(bdoc, 'meta[name="description"]', 'content'), 'identical');
