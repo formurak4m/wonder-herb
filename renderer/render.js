@@ -339,9 +339,13 @@ function main(argv) {
 
     LANGS_IN_SCOPE.forEach(lang => {
       const html = renderPage(tree, lang, data, { styles, chrome, registry });
-      /* every behaviour script the page links must exist, or the page ships dead */
-      (html.match(/<script src="assets\/[^"]+"/g) || []).forEach(tag => {
-        const src = tag.replace(/^<script src="/, '').replace(/"$/, '');
+      /* Every LOCAL asset the page links must exist, or the page ships dead or
+         unstyled. The script half was here from P9-T1; the stylesheet half was
+         added when 微信發表文章 rendered happily against an assets/page-articles.css
+         that had never been generated - it published at 969px wide with no page
+         CSS at all, and only the visual diff noticed. */
+      (html.match(/<(?:script src|link rel="stylesheet" href)="assets\/[^"]+"/g) || []).forEach(tag => {
+        const src = tag.replace(/^<(?:script src|link rel="stylesheet" href)="/, '').replace(/"$/, '');
         if (!fs.existsSync(path.join(ROOT, src))) throw new Error(tree.path + ' links ' + src + ', which does not exist');
       });
       const rel = pagePath(tree, lang).replace(/^\//, '');

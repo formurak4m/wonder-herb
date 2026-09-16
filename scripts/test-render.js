@@ -389,6 +389,21 @@ check('a faq-accordion tree that also carries a FAQPage is refused', /also carri
         !faqNode(renderPage({ slug: 'n', path: 'n.html', sections: [] }, PRIMARY, faqData, {})), 'none');
 }
 
+/* The CLI refuses a page that links a local asset which does not exist. The
+   script half caught a dead behaviour file at P9-T1; the stylesheet half was
+   added when a page rendered happily against a page-<slug>.css nobody had
+   generated and published unstyled at 969px wide. */
+{
+  const cliSrc = fs.readFileSync(path.join(ROOT, 'renderer', 'render.js'), 'utf8');
+  const guard = (cliSrc.match(/\(html\.match\((\/[^\n]*?\/g)\)[^\n]*\n/) || [])[1];
+  check('the CLI checks BOTH linked scripts and linked stylesheets exist',
+        !!guard && /script src/.test(guard) && /link rel="stylesheet" href/.test(guard), guard || 'NOT FOUND');
+  const re = new RegExp(guard.slice(1, -2), 'g');
+  const page = '<link rel="stylesheet" href="assets/page-nope.css"><script src="assets/site.js"></script>';
+  check('...and that pattern finds a missing stylesheet as well as a script',
+        (page.match(re) || []).length === 2, (page.match(re) || []).join(' | '));
+}
+
 check('a tree with no sections still renders a valid document',
       /^<!doctype html>/i.test(renderPage({ slug: 'empty', path: 'empty.html', sections: [] }, PRIMARY, data, {})));
 
