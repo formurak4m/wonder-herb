@@ -1,0 +1,556 @@
+{
+  "slug": "product-memo",
+  "path": "產品_憶活素.html",
+  "mainClass": "container",
+  "title": {
+    "zh": "憶活素 MemoProve | Wonder Herb – 天然腦部保健・提升記憶力與專注力"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂憶活素 MemoProve，奧地利 EVER PHARMA 研發配方，含天然蛋白腖 Peptone，有助修復腦細胞、增強記憶力及專注力，經歐洲嚴格測試，安全有效。"
+    },
+    "dateModified": "2026-06-02T10:30:00+08:00",
+    "ogTitle": {
+      "zh": "憶活素 MemoProve | Wonder Herb – 天然腦部保健・提升記憶力與專注力"
+    },
+    "ogDescription": {
+      "zh": "康草堂憶活素 MemoProve，奧地利 EVER PHARMA 研發配方，有助修復腦細胞、增強記憶力及專注力。"
+    },
+    "ogType": "product",
+    "image": "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "產品介紹"
+        },
+        "path": "產品介紹.html"
+      },
+      {
+        "name": {
+          "zh": "憶活素 MemoProve"
+        },
+        "path": "產品_憶活素.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "Product",
+        "name": "憶活素 MemoProve",
+        "image": "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg",
+        "description": "康草堂憶活素 MemoProve，奧地利 EVER PHARMA 研發配方，有助修復腦細胞，增強記憶力及專注力。",
+        "sku": "WH-MEMO-60",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "520.00",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "憶活素 MemoProve 的主要成分是什麼？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "主要成分為奧地利 EVER PHARMA 研發的專利天然蛋白腖（Peptone），能幫助修復腦細胞，提升記憶力與專注力。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "憶活素適合哪些人服用？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "適合記憶力減退、經常健忘、需要高度專注的學生與專業人士、銀髮族以及希望維持腦部健康的人士。孕婦及服用抗凝血藥物者請先諮詢醫生。"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
+      "assets/page-product-memo.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "產品_憶活素.html"
+  },
+  "sections": [
+    {
+      "type": "gallery",
+      "wrap": {
+        "tag": "div",
+        "section": "product-grid",
+        "container": false
+      },
+      "fields": {
+        "images": [
+          {
+            "src": "https://static.wixstatic.com/media/b3683f_71a3aaf0f54147018f40440ab43e91cf~mv2.jpg",
+            "alt": {
+              "zh": "憶活素正面"
+            }
+          },
+          {
+            "src": "https://lh3.googleusercontent.com/d/1DqnWVDZa45TvoRKRguh-IT4i_sfYbQhn",
+            "alt": {
+              "zh": "憶活素產品實拍"
+            }
+          }
+        ],
+        "mainAlt": {
+          "zh": "憶活素 MemoProve 正面圖"
+        }
+      }
+    },
+    {
+      "type": "product-detail",
+      "wrap": {
+        "tag": "div",
+        "section": "product-grid",
+        "container": false
+      },
+      "fields": {
+        "source": "products.json",
+        "sku": "WH-MB-060",
+        "quantityLabel": {
+          "zh": "數量："
+        },
+        "addLabel": {
+          "zh": "加入購物車"
+        },
+        "addIcon": "fas fa-cart-plus",
+        "detailLabel": {
+          "zh": "詳細介紹"
+        },
+        "detailHref": "#detailedInfo",
+        "detailIcon": "fas fa-chevron-down",
+        "descIcon": "fas fa-brain",
+        "badgeIcons": [
+          {
+            "icon": "fas fa-certificate"
+          },
+          {
+            "icon": "fas fa-flask"
+          },
+          {
+            "icon": "fas fa-leaf"
+          }
+        ],
+        "unit": "/ 30粒膠囊",
+        "headingBadge": {
+          "zh": "奧地利 EVER PHARMA 研發配方"
+        }
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "產品介紹"
+        },
+        "paragraphs": [
+          {
+            "label": {
+              "zh": "憶活素 MemoProve"
+            },
+            "text": {
+              "zh": "是由奧地利 EVER PHARMA 自家研究和開發的專利配方（蛋白腖 Peptone）。它能幫助修復及收復大腦中的細胞，顯著增強認知表現、記憶力及專注力。"
+            }
+          },
+          {
+            "text": {
+              "zh": "市面上許多腦部保健品缺乏臨床數據，甚至產地模糊不清。康草堂引進的憶活素採用高品質成分，於歐洲經過嚴格測試，確保安全有效，是您守護大腦健康的首選。"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "產品功效及特性"
+        },
+        "bullets": [
+          {
+            "label": {
+              "zh": "修復腦細胞："
+            },
+            "text": {
+              "zh": "幫助修復受損的神經細胞，延緩腦部老化"
+            }
+          },
+          {
+            "label": {
+              "zh": "增強記憶力："
+            },
+            "text": {
+              "zh": "改善短期及長期記憶，提升學習能力"
+            }
+          },
+          {
+            "label": {
+              "zh": "提升專注力："
+            },
+            "text": {
+              "zh": "增加集中力，減少分心，提高工作效率"
+            }
+          },
+          {
+            "label": {
+              "zh": "天然腦細胞重生化合物："
+            },
+            "text": {
+              "zh": "源自天然蛋白腖，安全無依賴性"
+            }
+          },
+          {
+            "label": {
+              "zh": "科學實證："
+            },
+            "text": {
+              "zh": "功效獲得科學研究和臨床數據支持"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacedHeading": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "適合服用的對象"
+        },
+        "bullets": [
+          {
+            "text": {
+              "zh": "記憶力減退、經常健忘的人士"
+            }
+          },
+          {
+            "text": {
+              "zh": "需要高度專注的學生、專業人士"
+            }
+          },
+          {
+            "text": {
+              "zh": "中老年人群，希望維持腦部年輕狀態"
+            }
+          },
+          {
+            "text": {
+              "zh": "工作壓力大、腦疲勞者"
+            }
+          },
+          {
+            "text": {
+              "zh": "保健養生、提升認知功能人士"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "注意 孕婦、哺乳期婦女及服用抗凝血藥物者，請先諮詢醫生。"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacerAfter": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "科研實證"
+        },
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "奧地利 EVER PHARMA 與多家歐洲研究機構合作，通過雙盲、安慰劑對照臨床試驗證實：連續服用憶活素 12 週後，受試者的記憶力評分提升 35%，專注力測試成績提高 42%，且無任何不良反應。"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "card-grid",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "醫學文獻參考美國國家醫學圖書館 PubMed：https://pubmed.ncbi.nlm.nih.gov/16258593/瑞士 MDPI 多學科數位出版機構：https://www.mdpi.com/2076-3425/14/10/986"
+        },
+        "items": [
+          {
+            "icon": "fas fa-external-link-alt",
+            "title": {
+              "zh": "美國國家醫學圖書館 PubMed："
+            },
+            "href": "https://pubmed.ncbi.nlm.nih.gov/16258593/",
+            "text": {
+              "zh": "https://pubmed.ncbi.nlm.nih.gov/16258593/"
+            }
+          },
+          {
+            "icon": "fas fa-external-link-alt",
+            "title": {
+              "zh": "瑞士 MDPI 多學科數位出版機構："
+            },
+            "href": "https://www.mdpi.com/2076-3425/14/10/986",
+            "text": {
+              "zh": "https://www.mdpi.com/2076-3425/14/10/986"
+            }
+          }
+        ],
+        "variant": "references"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "variant": "group",
+        "spacerAfter": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "包裝規格"
+        },
+        "paragraphs": [
+          {
+            "text": [
+              {
+                "zh": "每瓶 30 粒膠囊 (標準裝，約 1 個月用量)"
+              },
+              {
+                "zh": "植物性膠囊，素食者適用"
+              }
+            ]
+          }
+        ],
+        "variant": "group",
+        "spacerAfter": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "建議用量"
+        },
+        "bullets": [
+          {
+            "label": {
+              "zh": "一般保健："
+            },
+            "text": {
+              "zh": "每日 1 粒，餐後服用"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "※ 詳情請咨詢醫生或專業醫護人員。可與康草堂其他產品（如雲芝糖肽）同時使用，無不良交互作用。"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "card-grid",
+      "fields": {
+        "items": [
+          {
+            "icon": "fas fa-file-alt",
+            "title": {
+              "zh": "歐洲嚴謹製程"
+            },
+            "text": {
+              "zh": "奧地利原廠監製"
+            }
+          },
+          {
+            "icon": "fas fa-certificate",
+            "title": {
+              "zh": "GMP 認證藥廠"
+            },
+            "text": {
+              "zh": "符合歐盟標準"
+            }
+          },
+          {
+            "icon": "fas fa-chart-line",
+            "title": {
+              "zh": "臨床實證"
+            },
+            "text": {
+              "zh": "雙盲試驗有效提升記憶力"
+            }
+          },
+          {
+            "icon": "fas fa-microscope",
+            "title": {
+              "zh": "無西藥成份"
+            },
+            "text": {
+              "zh": "純天然腦部營養配方"
+            }
+          }
+        ],
+        "variant": "badges"
+      }
+    },
+    {
+      "type": "related-products",
+      "fields": {
+        "heading": {
+          "zh": "你可能也感興趣"
+        },
+        "source": "products.json",
+        "items": [
+          {
+            "sku": "WH-PSP-500",
+            "href": "產品_雲芝糖肽精華_B.html",
+            "icon": "fas fa-seedling",
+            "label": {
+              "zh": "雲芝糖肽精華 (PSP)"
+            },
+            "desc": {
+              "zh": "提升免疫力 · 減輕化療副作用"
+            }
+          },
+          {
+            "sku": "WH-T3-120",
+            "href": "產品_T3.html",
+            "icon": "fas fa-flask",
+            "label": {
+              "zh": "T3 三烯生育醇"
+            },
+            "desc": {
+              "zh": "60倍高活性抗氧化·頑疾輔助"
+            }
+          },
+          {
+            "sku": "WH-HB-180",
+            "href": "產品_乙肝清.html",
+            "icon": "fas fa-heartbeat",
+            "label": {
+              "zh": "乙肝清"
+            },
+            "desc": {
+              "zh": "天然草本護肝配方，強化肝臟代謝"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

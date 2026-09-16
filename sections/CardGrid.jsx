@@ -78,7 +78,8 @@ export const config = {
         { label: 'Reports with images', value: 'report' },
         { label: 'Cards with icons', value: 'icon' },
         { label: 'Articles', value: 'article' },
-        { label: 'List of file links', value: 'link-list' }
+        { label: 'List of file links', value: 'link-list' },
+        { label: 'Reference box (citations)', value: 'references' }
       ]
     }
   },
@@ -86,7 +87,7 @@ export const config = {
     heading: '', headingHidden: false, items: [], linkLabel: '', linkIcon: '',
     hint: '', hintIcon: '', noReferrer: false, variant: 'brochure'
   },
-  variants: ['badges', 'brochure', 'report', 'icon', 'article', 'link-list']
+  variants: ['badges', 'brochure', 'report', 'icon', 'article', 'link-list', 'references']
 };
 
 const WRAPPER = {
@@ -106,6 +107,31 @@ export default function CardGrid({ heading, headingHidden, items, linkLabel, lin
   const title = heading
     ? <h2 className={headingHidden ? 'sr-only' : undefined}>{heading}</h2>
     : null;
+
+  /* references - 產品_憶活素.html's 醫學文獻參考 box, inside the details card.
+     The live page keeps this content in its translations map and injects it
+     with innerHTML on load (and the string it injects is malformed - it opens
+     with stray closing tags), so a crawler never sees the citations at all.
+     Here they are in the HTML. The box, list and link styling is the live
+     markup's own; each item is a source name and its URL. */
+  if (variant === 'references') {
+    return (
+      <div id="researchReferencesBox" style={{ marginTop: '20px', padding: '16px',
+           backgroundColor: '#f8f5f0', borderRadius: '12px', borderLeft: '4px solid #2EADA5' }}>
+        {heading ? <h4>{heading}</h4> : null}
+        <ul style={{ listStyle: 'none', paddingLeft: 0, lineHeight: 1.8 }}>
+          {list.map((it, i) => (
+            <li key={i}>
+              {it.icon ? <i className={it.icon} style={{ color: '#2EADA5', marginRight: '8px' }} aria-hidden="true"></i> : null}
+              {it.title}
+              <a href={it.href || '#'} {...NEW_TAB}
+                 style={{ color: '#9b2e2e', textDecoration: 'none', wordBreak: 'break-all' }}>{it.text || it.href}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
 
   if (variant === 'link-list') {
     return (
