@@ -19,21 +19,21 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 1 | Homepage background video hosted on the client's Wix CDN | High — breaks at cutover | Phase 10. Since P9 the URL is a tree field (`cta-band/video-band`, `videoUrl`), so the swap is a data edit, not a code change |
 | 2 | Product photos hotlinked from Google Drive, and rate-limited | High | Phase 10 |
 | 3 | `購物車.html` has no `<h1>`; it and `account.html` have no JSON-LD | Resolved — allow-list | Closed at P6-T1a |
-| 4 | All 18 pages overflow horizontally on a 390px viewport | Low | Phase 9 / 13 |
+| 4 | All 18 pages overflow horizontally on a 390px viewport | Low | **Phase 13** (re-owned 16 Sep 2026; Phase 9 did NOT fix it — measured after migration, live and pre-rendered pages both lay out 410px wide in a 390px viewport, so it is unchanged, not a regression) |
 | 5 | `<img src="">` placeholder fires a spurious request | Cosmetic | Phase 13 |
 | 6 | Pages deploys the whole repo, so editor source and build output ship publicly | Medium | Phase 8 |
 | 7 | `/api/inventory.csv` drops the reorder point for untracked products | Medium | Phase 12 |
-| 8 | `products.json` has no `image` or `link` — **hard blocker for Phase 9** | **High** | Phase 9 (blocking) |
+| 8 | `products.json` has no `image` or `link` — **hard blocker for Phase 9** | **High** | **FIXED at P9-T1** (`deee63b`): both fields exist and every migrated page renders photos and detail links from them. What remains is not this finding — the VALUES are Google Drive hotlinks, which is **finding 2, Phase 10** |
 | 9 | The data and the live site disagree on two product prices | Background (owner, 15 Sep 2026: site content not authoritative) | Closed for the build: `data/products.json` prices are used; a change is a data edit |
 | 10 | `faq-accordion` is a static list, not an accordion | Client decision | Client, if ever |
 | 11 | No text+image block exists; the P4-T2 section list was wrong | Resolved | Closed at P4-T2 |
 | 12 | Pre-rendered pages publish **visually blank** without the reveal script | **High — passes green, looks broken** | Phase 5 (P5-T1 template) |
 | 13 | Sections silently dropped markup from their source blocks | Resolved | Closed at P4-T4 |
 | 14 | Body copy uses **bold, lists and links**; plain-text fields drop them | Decided — option (c) | P4-T5 |
-| 15 | Chrome's layout depends on JS, and there is no shared stylesheet | **High — D1 required, not optional** | P5-T1 / Phase 9 |
+| 15 | Chrome's layout depends on JS, and there is no shared stylesheet | **High — D1 required, not optional** | **FIXED at P9** — D1 (sticky nav + `overflow-x: clip` in `assets/chrome.css`, asserted by `test:behaviour`) and D2 (one sheet per page, `chrome.css` linked last, guarded in `template.js`). The shared-sheet half is closed by measurement: only 22-26 rules per page are safely shareable |
 | 16 | **`export` published staff emails and an internal audit trail to a public URL** | **HIGH — security** | Fixed at P7-T1a |
 | 17 | `export` wrote `updatedAt` bookkeeping into public site data; one real stock change was unpublished | Medium — fixed | P7-T1a; stock change committed 15 Sep 2026 (`e567a69`), data/ matches the database |
-| 18 | `renderer/i18n.js` is CommonJS, so the editor cannot import it; Vite shim is a stopgap | Medium | Phase 9 |
+| 18 | `renderer/i18n.js` is CommonJS, so the editor cannot import it; Vite shim is a stopgap | Medium | **Phase 11** (re-owned 16 Sep 2026: it was owned by Phase 9, which closed without doing it. It never blocked a page — it belongs with P11-T2, when the editor becomes client-facing and its build has to stand on its own) |
 | 19 | Product data has no per-language `title`/`desc` — same root cause as finding 8 | Medium — **client decision** | Phase 14 (decide at 9) |
 | 20 | **A plain-string write silently deleted a language map** (admin product form) | **HIGH — data loss** | Guarded at P9-T1; form at P12-T3 |
 | 21 | **The visual baseline records a localhost-only page**, not what production serves | **High — the migration gate's reference is wrong** | Re-captured 15 Sep 2026; font stack held |
@@ -49,6 +49,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 31 | **PT3 is clinic-only on its page and sellable in the data**: no `clinicOnly` flag on WH-PT3-090, so the grid and the migrated panel both offer it at HK$2,480 | Medium — a visitor can buy what the page says is clinic-only | One data edit (`clinicOnly: true`) fixes panel, grid and cart at once — **owner + client**, like finding 9 |
 | 32 | **The homepage hero, product carousel and featured cases were built entirely in JavaScript**: with scripts off the live page shows 0 slides, 0 product cards, 0 case cards and 768 characters of text | High — the largest crawler-visibility gap on the site | **Fixed by migrating index.html** (P9, 16 Sep 2026): 6 slides, 3 product cards, 3 case cards, 1,331 characters |
 | 33 | **index.html defines an SVG filter (`#glass-distortion`) that five of its CSS rules apply, and it sits outside every block the chrome lift copied**: dropping it costs the carousel and every glass card their frosted look, and the element is `position:absolute; width:0; height:0`, so no gate can see it go | Medium — silent visual loss, found by hand at P9 | **Fixed**: `loadChrome` lifts it. The live page declares it TWICE, which is a duplicate element id — one is lifted |
+| 34 | **Every homepage visit downloads all four 3D models (~72 MB) and cannot cache them**: the loader initialises every `.carousel-3d-container` on load rather than when its slide is shown, and appends `?v=` + `Date.now()` to each URL, so the browser cache is defeated on every visit and a repeat visitor pays the full 72 MB again | **High — bandwidth and mobile data; pre-existing on the live page, not caused by migrating** | **Phase 10**: it is the move that sets cache headers, and the cache-buster defeats them. Fix with the move: drop the buster (immutable, content-addressed URLs) and initialise a model when its slide becomes active |
 
 ---
 
@@ -314,7 +315,7 @@ regressions get in.
 
 ---
 
-## 8 · `products.json` has no `image` or `link` — HARD BLOCKER for Phase 9
+## 8 · `products.json` has no `image` or `link` — FIXED at P9-T1 (the Drive URLs it now holds are finding 2)
 
 **What.** The product grid on the live site shows a photo and a "詳細介紹" link per card. Neither
 field exists in `data/products.json`. Its keys are exactly:
@@ -981,7 +982,7 @@ into the database that is known to be false.
 
 ---
 
-## 18 · `renderer/i18n.js` is CommonJS, so the editor cannot import it — owner Phase 9
+## 18 · `renderer/i18n.js` is CommonJS, so the editor cannot import it — owner Phase 11 (re-owned; Phase 9 closed without it)
 
 **What.** `renderer/i18n.js` ends in `module.exports = { resolveField, isLangMap, LANGS, PRIMARY }`.
 Plain Node loads it happily — the renderer, `scripts/export.js` and the test suite all do. The

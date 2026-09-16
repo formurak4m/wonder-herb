@@ -403,6 +403,11 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 - **Gotcha:** selection/instrumentation attributes Puck adds are for the canvas only. The renderer output must be clean (already true, since the renderer calls the components directly, not through Puck).
 
 ### P8-T3 · Publish an allow-list of directories, not the whole repo
+> **SCHEDULED WITH PHASE 10** (owner, 16 Sep 2026). Phase 10 moves exactly the assets this
+> allow-list governs, so the two are done together rather than in sequence: today the deploy
+> publishes 337 KB of page CSS, 72 MB of `.glb`, and all of `editor/`, `renderer/`, `sections/`
+> and `server/` on every push to `main`. The isolated-review rule below still stands - the
+> workflow diff is shown on its own and applied only after the owner has seen it.
 - **Goal:** close **findings 6 and 16 together** — they are one root cause: *the deploy is the entire repository, so anything written into the working tree is published by default.* Finding 6 is build artefacts (editor source, bundles) shipping publicly; finding 16 was an internal audit trail with staff emails one commit away from a public URL. Fixing them one at a time leaves the mechanism intact and the next leak unblocked.
 - **Files:** `.github/workflows/static.yml`. **This is the only file in the project that can change the live deploy, so it gets its own isolated review — show the diff and stop before applying it.** Do not fold this into another task's commit.
 - **Steps:**
@@ -662,6 +667,35 @@ and wrong about the 3D viewer, which is not on those pages at all.
 - Expect the same per-page checks to matter most there: per-language assets (finding 28), the
   <section> wrappers, and inline styles the live markup carries.
 
+
+#### The estimating basis, from Phase 9 (owner, 16 Sep 2026) — use this for anything similar
+
+Phase 9 migrated **15 pages in ~3.5 working days** against 10–14 days estimated. Two numbers came
+out of it, and they are the basis for estimating comparable work from here on.
+
+**1. A page whose sections already exist costs 7–17 minutes**, end to end: build the tree, run the
+visual diff at 1280 and 390 scripts-on and scripts-off, run the gates, reconcile every difference,
+retire the original, commit. Measured: the six content pages averaged 13.5 minutes, and the five
+product pages after the first averaged 11.
+
+**2. The cost is the FIRST PAGE OF EACH KIND, not the page.** Every large number in Phase 9 is a
+first:
+
+| page | cost | why it was expensive |
+|---|---|---|
+| 產品介紹 | ~2.5 working days | the first page at all: catalogue data model, D1, D2, baseline re-capture, the behaviour framework, findings 22 and 26 |
+| 常見問題 | 25 min | the first content page |
+| 產品_T3 | 61 min | the first product page; the other five averaged 11 min |
+| index.html | ~3 hours | the only one of its kind: a new section, four variants, three behaviour files, ~1,400 lines of lifted JS |
+
+So estimate by **kinds, not by pages**: count how many genuinely new shapes a phase contains, price
+those in hours or days, and price everything that rhymes with an existing shape in minutes. An
+estimate that multiplies a per-page figure by a page count will be wrong in both directions — far
+too high for the repeats, and too low for the first of each kind.
+
+**A corollary worth stating**: roughly 1.5 of 產品介紹's 2.5 days was one-time infrastructure that
+no later page repeated. When the first item of a kind is expensive, ask how much of it is
+infrastructure the rest will inherit — that part is not a per-item cost at all.
 
 #### index.html (the last page in Phase 9): DONE 16 Sep 2026, awaiting owner review
 

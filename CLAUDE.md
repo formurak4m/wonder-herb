@@ -83,7 +83,7 @@ Other issues:
 - **Site content is NOT authoritative (owner, 15 Sep 2026):** the client will replace all of it. Content disputes are not blockers, and nothing further is to be investigated, escalated or changed on them unless the owner asks. **Don't change site data unless the owner explicitly asks.** Prices come from `data/products.json` (no price hold); PSP-500's out-of-stock state is committed.
 - Currency is HKD.
 
-Known issues are logged in `docs/FINDINGS.md` (33 findings so far), each with the phase that owns its fix. The index table at the top shows which are fixed. **Do not fix a finding out of its phase** unless the owner says so.
+Known issues are logged in `docs/FINDINGS.md` (34 findings so far), each with the phase that owns its fix. The index table at the top shows which are fixed. **Do not fix a finding out of its phase** unless the owner says so.
 
 ## The two changes we are adding (in order of value)
 
