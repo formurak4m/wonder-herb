@@ -55,7 +55,7 @@ export const config = {
 };
 
 /* The number the cart is charged, or nothing: never a formatted string. */
-function priceValue(product) {
+export function priceValue(product) {
   const n = parseFloat(product && product.price);
   return isFinite(n) && n > 0 ? String(n) : undefined;
 }

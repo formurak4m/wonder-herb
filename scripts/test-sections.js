@@ -498,6 +498,7 @@ function scan(s, i) {
 /* A hole in a template literal: the scanner replaces the interpolated value
    with an X, so inside a class attribute it reads as a class called X. It is
    not markup, and nothing a section can emit. */
+const PER_ITEM_ICON = 'a per-item icon class, chosen by the item; the fixture passes one and the <i> itself is proven';
 const HOLE = 'an interpolated hole in the live template, not a class name';
 
 const INLINE_COPY = {
@@ -566,8 +567,8 @@ const FIDELITY = {
     }
   },
 
-  'product-detail': {
-    page: '產品_T3.html', selector: '.product-info',
+  'product-detail': [
+   { label: 'for sale', page: '產品_T3.html', selector: '.product-info',
     props: {
       source: 'products.json', sku: 'WH-T3-120',
       // its own data: the live panel shows three trust badges, the real row has two
@@ -578,8 +579,22 @@ const FIDELITY = {
       descIcon: 'fas fa-flask', unit: '/ 120粒軟膠囊', headingId: 'product-title',
       badgeIcons: [{ icon: 'fas fa-certificate' }, { icon: 'fas fa-chart-line' },
                    { icon: 'fas fa-university' }]
-    }
-  },
+    } },
+   /* 產品_PT3 is clinic-only: the live panel shows a note and a DISABLED button
+      instead of the quantity selector. Ours decides that from the data flag. */
+   { label: 'clinic only', page: '產品_PT3.html', selector: '.product-info',
+     allow: { 'fa-microscope': PER_ITEM_ICON },
+     props: {
+       source: 'products.json', sku: 'WH-PT3-090',
+       data: { products: [{ sku: 'WH-PT3-090', title: 'PT3', price: '2480.00', desc: '說明', clinicOnly: true, badges: '徽章一, 徽章二' }] },
+       quantityLabel: '數量：', addLabel: '加入購物車', addIcon: 'fas fa-cart-plus',
+       detailLabel: '詳細介紹', detailIcon: 'fas fa-chevron-down', descIcon: 'fas fa-flask',
+       clinicNote: '只在指定中西醫診所出售', clinicIcon: 'fas fa-hospital-user',
+       clinicButtonLabel: '無庫存 (診所專供)', clinicButtonIcon: 'fas fa-ban',
+       clinicButtonAria: '无库存，该产品仅在诊所供应',
+       badgeIcons: [{ icon: 'fas fa-certificate' }, { icon: 'fas fa-chart-line' }]
+     } }
+  ],
 
   gallery: {
     page: '產品_T3.html', selector: '.product-gallery',
@@ -636,6 +651,10 @@ const FIDELITY = {
   ],
 
   'card-grid': [
+    { label: 'badges', page: '產品_T3.html', selector: 'main > .trust-badges',
+      allow: { 'fa-certificate': PER_ITEM_ICON, 'fa-chart-line': PER_ITEM_ICON, 'fa-microscope': PER_ITEM_ICON },
+      props: { variant: 'badges',
+               items: [{ icon: 'fas fa-file-alt', title: '標題', text: '說明文字' }] } },
     { label: 'brochure', page: '小册子.html', selector: '.brochure-grid',
       props: { variant: 'brochure', hint: '點擊圖片放大', hintIcon: 'fas fa-search-plus', noReferrer: true,
                items: [{ title: '第一頁', href: 'https://example.com/a', image: 'https://example.com/a.png',

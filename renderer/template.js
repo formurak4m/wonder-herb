@@ -149,6 +149,15 @@ const BEHAVIOURS = {
     src: 'assets/behaviour/quick-view.js',
     noscript: '.btn-quickview { display: none !important; }'
   },
+  /* The buy panel's quantity box and add button need JavaScript; the price,
+     the description and the detail link do not, so only the two controls go.
+     The quantity selector is hidden rather than display:none'd away, so the
+     panel keeps its height and the D1 scripts-on/off check still matches. */
+  'product-detail': {
+    src: 'assets/behaviour/product-detail.js',
+    noscript: '#addToCartBtn { display: none !important; }\n    ' +
+              '.quantity-selector { visibility: hidden !important; }'
+  },
   /* The filter panel needs JavaScript, so it is not shown without it - but the
      cases are all in the HTML, so instead of leaving summaries nobody can
      expand, every case's full text is shown and the read-more buttons go. The

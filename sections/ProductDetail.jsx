@@ -20,7 +20,7 @@
  * panel, so a mistyped sku fails visibly in review instead of silently
  * publishing an empty price.
  */
-import { priceText } from './ProductGrid.jsx';
+import { priceText, priceValue } from './ProductGrid.jsx';
 
 export const config = {
   label: 'Product detail',
@@ -37,12 +37,20 @@ export const config = {
     badgeIcons: { type: 'array', arrayFields: { icon: { type: 'text' } } },
     unit: { type: 'text' },
     priceNote: { type: 'text' },
-    headingId: { type: 'text' }
+    headingId: { type: 'text' },
+    /* shown INSTEAD of the quantity selector and the add button when the data
+       says this product cannot be bought online - see below */
+    clinicNote: { type: 'text' },
+    clinicIcon: { type: 'text' },           // live: "fas fa-hospital-user"
+    clinicButtonLabel: { type: 'text' },
+    clinicButtonIcon: { type: 'text' },  // live: "fas fa-ban"
+    clinicButtonAria: { type: 'text' }
   },
   defaultProps: {
     source: 'products.json', sku: '', quantityLabel: '', addLabel: '', addIcon: '',
     detailLabel: '', detailHref: '#detailedInfo', detailIcon: '', descIcon: '',
-    badgeIcons: [], unit: '', priceNote: '', headingId: ''
+    badgeIcons: [], unit: '', priceNote: '', headingId: '',
+    clinicNote: '', clinicIcon: '', clinicButtonLabel: '', clinicButtonIcon: '', clinicButtonAria: ''
   },
   // renders nothing at all until it has content: an empty panel would be worse
   emptyWithoutContent: true,
@@ -51,7 +59,8 @@ export const config = {
 
 export default function ProductDetail({
   source, data, sku, quantityLabel, addLabel, addIcon, detailLabel, detailHref, detailIcon,
-  descIcon, badgeIcons, unit, priceNote, headingId
+  descIcon, badgeIcons, unit, priceNote, headingId,
+  clinicNote, clinicIcon, clinicButtonLabel, clinicButtonIcon, clinicButtonAria
 }) {
   const key = String(source || 'products.json').replace(/\.json$/, '');
   const items = (data && Array.isArray(data[key])) ? data[key] : [];
@@ -61,8 +70,30 @@ export default function ProductDetail({
   const id = headingId ? headingId : undefined;
   const badges = String(p.badges || '').split(',').map(b => b.trim()).filter(Boolean);
 
+  /* WHETHER IT CAN BE BOUGHT COMES FROM THE DATA, not from the tree (owner,
+     16 Sep 2026). 產品_PT3 hard-codes a disabled "無庫存 (診所專供)" button and a
+     clinic note into its markup; carrying that as fields would keep saying so
+     after the flag changed - the class of bug findings 19 and 23 came from.
+     The product grid already decides this way, and the cart refuses on the
+     same two values, so the panel and the cart cannot disagree. The WORDING is
+     still the client's, in the tree. */
+  const clinicOnly = Boolean(p.clinicOnly);
+
+  /* CLINIC-ONLY is a panel state; OUT OF STOCK is not.
+     產品_PT3 shows a clinic note and a disabled button because that product is
+     never sold online - a permanent fact about the product, which the live
+     page states too, so the panel states it.
+     Stock is different: it changes, it goes live only at publish (an accepted
+     decision), and the live pages show no stock cue at all (finding 23, cue
+     waived by the owner). So an out-of-stock product keeps its normal button
+     and the CART refuses the click with the approved message, exactly as the
+     product grid's quick view already does. The panel and the cart read the
+     same two data fields, so they cannot disagree. */
+  const sellable = !clinicOnly;
+
   return (
-    <div className="product-info">
+    <div className="product-info" data-sku={p.sku || undefined} data-price={priceValue(p)}
+         data-status={p.status || undefined} data-clinic-only={clinicOnly ? '' : undefined}>
       <h1 className="product-title" id={id}>{p.title}</h1>
       <div className="product-price">
         {priceText(p, priceNote)}
@@ -74,19 +105,30 @@ export default function ProductDetail({
           {p.desc}
         </div>
       ) : null}
-      {quantityLabel ? (
+      {sellable && quantityLabel ? (
         <div className="quantity-selector">
           <label htmlFor="quantity">{quantityLabel}</label>
           <input type="number" id="quantity" className="quantity-input"
                  defaultValue={1} min={1} max={50} />
         </div>
       ) : null}
+      {!sellable && clinicOnly && clinicNote ? (
+        <div className="clinic-note">
+          {clinicIcon ? <i className={clinicIcon} aria-hidden="true"></i> : null} {clinicNote}
+        </div>
+      ) : null}
       {addLabel || detailLabel ? (
         <div className="action-buttons">
-          {addLabel ? (
+          {addLabel && sellable ? (
             <button id="addToCartBtn" className="btn-primary" data-sku={p.sku}>
               {addIcon ? <i className={addIcon} aria-hidden="true"></i> : null}
               {addLabel}
+            </button>
+          ) : null}
+          {addLabel && !sellable && clinicButtonLabel ? (
+            <button className="btn-primary" disabled aria-label={clinicButtonAria || undefined}>
+              {clinicButtonIcon ? <i className={clinicButtonIcon} aria-hidden="true"></i> : null}
+              {clinicButtonLabel}
             </button>
           ) : null}
           {detailLabel ? (

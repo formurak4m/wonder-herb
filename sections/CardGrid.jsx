@@ -5,6 +5,8 @@
  * approved four variants over the usual two or three, because they are one
  * thing: a grid of linked cards):
  *
+ *   badges     產品_T3.html:1     <div class="trust-badges">: icon, <h4>, a line
+ *                                  of copy. Four per product page, no links.
  *   brochure   小册子.html:1       <a class="brochure-card">: image, title,
  *                                  "click to enlarge" hint. Wrapper
  *                                  .brochure-grid, no role.
@@ -71,6 +73,7 @@ export const config = {
     variant: {
       type: 'select',
       options: [
+        { label: 'Trust badges', value: 'badges' },
         { label: 'Brochure pages', value: 'brochure' },
         { label: 'Reports with images', value: 'report' },
         { label: 'Cards with icons', value: 'icon' },
@@ -83,10 +86,11 @@ export const config = {
     heading: '', headingHidden: false, items: [], linkLabel: '', linkIcon: '',
     hint: '', hintIcon: '', noReferrer: false, variant: 'brochure'
   },
-  variants: ['brochure', 'report', 'icon', 'article', 'link-list']
+  variants: ['badges', 'brochure', 'report', 'icon', 'article', 'link-list']
 };
 
 const WRAPPER = {
+  badges: { cls: 'trust-badges', role: undefined },
   brochure: { cls: 'brochure-grid', role: undefined },
   report: { cls: 'reports-grid', role: 'list' },
   icon: { cls: 'reports-grid', role: 'list' },
@@ -121,6 +125,19 @@ export default function CardGrid({ heading, headingHidden, items, linkLabel, lin
 
   const w = WRAPPER[variant] || WRAPPER.brochure;
   const card = (it, i) => {
+    /* badges - 產品_T3.html:1 <div class="trust-badges"> BELOW the details card
+       (four items): icon, an <h4> and a line of copy. Not to be confused with
+       the small icon+label row INSIDE the buy panel, which product-detail
+       renders from the product's own `badges` field. These have no links. */
+    if (variant === 'badges') {
+      return (
+        <div className="badge-item" key={i}>
+          {icon(it.icon)}
+          <h4>{it.title}</h4>
+          {it.text ? <p>{it.text}</p> : null}
+        </div>
+      );
+    }
     if (variant === 'brochure') {
       return (
         <a key={i} href={it.href || '#'} target="_blank" className="brochure-card" aria-label={it.aria || undefined}>
