@@ -222,7 +222,13 @@ const OTHER_PAGES = render.publishedTrees().map(render.loadTree).filter(t => t.p
     html: stripScripts(page).replace(/<noscript><style>\s*\/\* controls that need JavaScript[\s\S]*?<\/noscript>/i, '')
                             .replace(/<noscript>([\s\S]*?)<\/noscript>/gi, '$1') };
   const h1 = (page.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) || [])[1] || '';
-  return { key, file: t.path, h1: h1.replace(/<[^>]+>/g, '').trim(), sections: t.sections.map(n => n.type) };
+  /* a gallery with ONE image has nothing to switch, so its check would pass
+     without the behaviour file too - the negative control caught exactly that
+     on 產品_T3. Only pages with more than one image run it. */
+  const galleryNode = t.sections.find(n => n.type === 'gallery');
+  const images = galleryNode ? (galleryNode.fields.images || []).length : 0;
+  return { key, file: t.path, h1: h1.replace(/<[^>]+>/g, '').trim(),
+           sections: t.sections.map(n => n.type), images };
 });
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -510,6 +516,74 @@ const EFFECTS = {
     } finally { await ctx.close(); }
   },
 
+  /* A product DETAIL page's buy panel: no grid, no modal - the panel itself
+     carries the hooks, and assets/behaviour/product-detail.js binds them. */
+  async detailAddToCart(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      const panel = await page.evaluate(() => {
+        const p = document.querySelector('.product-info[data-sku]');
+        return p && { sku: p.getAttribute('data-sku'), price: p.getAttribute('data-price'),
+                      status: p.getAttribute('data-status'),
+                      clinicOnly: p.hasAttribute('data-clinic-only'),
+                      name: p.querySelector('.product-title').textContent.trim(),
+                      hasButton: !!document.getElementById('addToCartBtn') };
+      });
+      if (!panel) return false;
+      this.detail = panel.sku + ' @ ' + panel.price + ', ' + (panel.status || 'no status') +
+                    (panel.clinicOnly ? ', clinic-only' : '');
+
+      /* clinic-only: the panel must NOT offer a button, and the note is shown */
+      if (panel.clinicOnly) {
+        const noted = await page.evaluate(() => !!document.querySelector('.clinic-note') &&
+                                                !!document.querySelector('.action-buttons button[disabled]'));
+        this.detail += ', clinic note + disabled button: ' + noted;
+        return !panel.hasButton && noted && (await cart(page)).length === 0;
+      }
+
+      await page.fill('#quantity', '2');
+      await page.click('#addToCartBtn', { timeout: 2000 });
+      const outOfStock = /^out/i.test(panel.status || '');
+      if (outOfStock) {
+        /* stock is refused by the CART, in a live region beside the button */
+        const said = await until(() => page.evaluate(w => {
+          const m = document.getElementById('addMessage');
+          return !!m && m.textContent === w;
+        }, site.MSG.outOfStock), 2000);
+        this.detail += ', refused inline: ' + said;
+        return said && (await cart(page)).length === 0 && page._dialogs.length === 0;
+      }
+      const items = await until(async () => (await cart(page)).length === 1, 2000);
+      const it = (await cart(page))[0] || {};
+      const badge = await badges(page);
+      this.detail += ', cart: ' + JSON.stringify(it.product || {}) + ' x' + it.quantity + ', badges ' + badge.join('/');
+      return items && it.product.sku === panel.sku && it.quantity === 2 &&
+             String(it.product.price) === String(parseFloat(panel.price)) &&
+             it.product.name === panel.name &&
+             badge.every(x => x === '2') && page._dialogs.length === 0;
+    } finally { await ctx.close(); }
+  },
+
+  async galleryThumbs(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      const n = await page.evaluate(() => document.querySelectorAll('.thumbnail[data-img]').length);
+      if (n < 2) { this.detail = 'one image only, nothing to switch'; return true; }
+      const before = await page.evaluate(() => document.getElementById('mainProductImage').getAttribute('src'));
+      await page.click('.thumbnail:not(.active)', { timeout: 2000 });
+      const switched = await until(() => page.evaluate(b => {
+        const main = document.getElementById('mainProductImage');
+        const active = document.querySelectorAll('.thumbnail.active');
+        return main.getAttribute('src') !== b && active.length === 1 &&
+               active[0].getAttribute('data-img') === main.getAttribute('src');
+      }, before), 2000);
+      this.detail = n + ' thumbnails, main image follows the click: ' + switched;
+      return switched;
+    } finally { await ctx.close(); }
+  },
+
   /* The next two need no product grid: any page with the site chrome. */
   async badgeFromStoredCart(width) {
     const ctx = await context(width); const page = await newPage(ctx);
@@ -722,11 +796,19 @@ async function runEffect(name, scenario, width, page) {
               u.dead.length + ' visible');
       }
       /* per-section behaviour this page has, and its own negative control */
-      const EXTRA = p.sections.indexOf('case-list') !== -1 ? {
-        'caseFilter@1280': 'a diagnosis chip filters the pre-rendered cards, the count follows, reset restores all 15',
-        'caseSearch@1280': 'search narrows the same cards, and a term matching nothing says so',
-        'caseReadMore@390': 'a case\'s full text is hidden at rest and expands on click'
-      } : {};
+      const EXTRA = Object.assign({},
+        p.sections.indexOf('case-list') !== -1 ? {
+          'caseFilter@1280': 'a diagnosis chip filters the pre-rendered cards, the count follows, reset restores all 15',
+          'caseSearch@1280': 'search narrows the same cards, and a term matching nothing says so',
+          'caseReadMore@390': 'a case\'s full text is hidden at rest and expands on click'
+        } : {},
+        p.sections.indexOf('product-detail') !== -1 ? {
+          'detailAddToCart@1280': 'the buy panel adds by SKU at the data price (or refuses, or offers no button at all - whichever the data says)',
+          'detailAddToCart@390': 'the same on a phone'
+        } : {},
+        p.images > 1 ? {
+          'galleryThumbs@1280': 'a thumbnail click switches the main image and moves `active`'
+        } : {});
       for (const [k, label] of Object.entries(EXTRA)) {
         const [name, w] = k.split('@');
         const r = await runEffect(name, p.key, Number(w), ctxPage);

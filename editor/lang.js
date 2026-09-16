@@ -55,7 +55,7 @@ const isLangMap = i18n.isLangMap;
 /* Keys that are never content, whatever they look like. Derived from the real
    field names across all eleven sections - see each section's config. */
 export const STRUCTURAL = new Set([
-  'variant', 'headingId', 'source', 'category', 'sku', 'unit',
+  'variant', 'headingId', 'blockId', 'source', 'category', 'sku', 'unit',
   'href', 'primaryHref', 'secondaryHref', 'detailHref',
   'icon', 'primaryIcon', 'secondaryIcon', 'addIcon', 'detailIcon', 'descIcon',
   'defaultIcon', 'badgeIcons', 'linkIcon', 'hintIcon', 'captionIcon', 'src',

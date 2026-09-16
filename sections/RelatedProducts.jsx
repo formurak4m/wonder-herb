@@ -59,7 +59,10 @@ export default function RelatedProducts({ heading, source, data, items, headingI
           const price = p.sku ? priceText(p, '') : '';
           return (
             <a href={item.href || '#'} className="related-card" key={i} aria-label={name}>
-              {item.icon ? <i className={item.icon} aria-hidden="true"></i> : null}
+              {/* the size and teal are the live markup's own, identical on all
+                  six product pages; without them the icon renders at body size
+                  and every related card is ~10px shorter (產品_T3 visual diff) */}
+              {item.icon ? <i className={item.icon} style={{ fontSize: '2rem', color: '#2EADA5' }} aria-hidden="true"></i> : null}
               <h3>{name}</h3>
               {desc ? <p>{desc}</p> : null}
               {price ? <span style={{ color: '#9b2e2e', fontWeight: 'bold' }}>{price}</span> : null}

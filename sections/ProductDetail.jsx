@@ -101,8 +101,9 @@ export default function ProductDetail({
       </div>
       {p.desc ? (
         <div className="product-short-desc">
-          {descIcon ? <i className={descIcon} aria-hidden="true"></i> : null}
-          {p.desc}
+          {/* the teal is the live markup's own, identical on all six pages */}
+          {descIcon ? <i className={descIcon} style={{ color: '#2EADA5' }} aria-hidden="true"></i> : null}
+          {' '}{p.desc}
         </div>
       ) : null}
       {sellable && quantityLabel ? (
@@ -140,7 +141,13 @@ export default function ProductDetail({
         </div>
       ) : null}
       {badges.length ? (
-        <div className="trust-badges">
+        /* The inline style is the live markup's own, on all six product pages:
+           .trust-badges is a page-level block with 40px margins, and inside the
+           buy panel those margins are cancelled and the row is left-aligned.
+           Dropping it grew the panel by 38px and moved everything below it -
+           caught by the 產品_T3 visual diff, not by fidelity, which compares
+           tags and classes rather than style. */
+        <div className="trust-badges" style={{ margin: 0, justifyContent: 'flex-start' }}>
           {badges.map((b, i) => {
             const ic = (Array.isArray(badgeIcons) ? badgeIcons : [])[i];
             const cls = ic && typeof ic === 'object' ? ic.icon : ic;

@@ -1,0 +1,517 @@
+{
+  "slug": "product-t3",
+  "path": "產品_T3.html",
+  "mainClass": "container",
+  "title": {
+    "zh": "T3 三烯生育醇 | Wonder Herb – 天然抗氧化·頑疾輔助專家"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂 T3 三烯生育醇，澳洲昆士蘭科技大學臨床研究證實，具有抗頑疾及抑制頑疾幹細胞的作用。天然維生素E高活性60倍吸收，守護心血管，提升免疫，適合保健及輔助療程。"
+    },
+    "dateModified": "2026-06-02T10:30:00+08:00",
+    "ogTitle": {
+      "zh": "T3 三烯生育醇 | Wonder Herb – 天然抗氧化·頑疾輔助專家"
+    },
+    "ogDescription": {
+      "zh": "康草堂 T3 三烯生育醇，澳洲昆士蘭科技大學臨床研究證實，抗頑疾、抑制頑疾幹細胞。60倍吸收力，守護心血管。"
+    },
+    "ogType": "product",
+    "image": "https://lh3.googleusercontent.com/d/1NNv7Wxa-i8YbBEgfV7qVz5AgKpsog8Kb",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "產品介紹"
+        },
+        "path": "產品介紹.html"
+      },
+      {
+        "name": {
+          "zh": "T3 三烯生育醇"
+        },
+        "path": "產品_T3.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "Product",
+        "name": "T3 三烯生育醇 (Tocotrienols)",
+        "image": "https://lh3.googleusercontent.com/d/1NNv7Wxa-i8YbBEgfV7qVz5AgKpsog8Kb",
+        "description": "康草堂 T3 三烯生育醇，澳洲昆士蘭科技大學臨床研究證實，具有抗頑疾及抑制頑疾幹細胞的作用。",
+        "sku": "WH-T3-120",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "1900.00",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "T3 三烯生育醇與普通維生素E有什麼不同？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "T3（三烯生育醇）是維生素E家族中活性最高的形式，其抗氧化能力是普通合成維生素E的60倍，且能更快被人體細胞吸收。它還能抑制頑疾幹細胞，這是普通維生素E不具備的功效。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "T3 應該如何服用？可以與雲芝糖肽一起使用嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "保健用途建議每日1粒，頑症輔助期間每日3次每次1粒。經大學研究證實，T3與雲芝糖肽PSP共同使用可產生協同效應，效果倍增，但具體用法請諮詢醫生。"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css",
+      "assets/page-product-t3.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "產品_T3.html"
+  },
+  "sections": [
+    {
+      "type": "gallery",
+      "wrap": {
+        "tag": "div",
+        "section": "product-grid",
+        "container": false
+      },
+      "fields": {
+        "images": [
+          {
+            "src": "https://lh3.googleusercontent.com/d/1NNv7Wxa-i8YbBEgfV7qVz5AgKpsog8Kb",
+            "alt": {
+              "zh": "T3 产品正面"
+            }
+          }
+        ],
+        "mainAlt": {
+          "zh": "T3 三烯生育醇软胶囊正面图"
+        }
+      }
+    },
+    {
+      "type": "product-detail",
+      "wrap": {
+        "tag": "div",
+        "section": "product-grid",
+        "container": false
+      },
+      "fields": {
+        "source": "products.json",
+        "sku": "WH-T3-120",
+        "quantityLabel": {
+          "zh": "數量："
+        },
+        "addLabel": {
+          "zh": "加入購物車"
+        },
+        "addIcon": "fas fa-cart-plus",
+        "detailLabel": {
+          "zh": "詳細介紹"
+        },
+        "detailHref": "#detailedInfo",
+        "detailIcon": "fas fa-chevron-down",
+        "descIcon": "fas fa-flask",
+        "badgeIcons": [
+          {
+            "icon": "fas fa-certificate"
+          },
+          {
+            "icon": "fas fa-chart-line"
+          },
+          {
+            "icon": "fas fa-university"
+          }
+        ],
+        "unit": "/ 120粒軟膠囊"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "產品介紹"
+        },
+        "paragraphs": [
+          {
+            "label": {
+              "zh": "Tocotrienols (三烯生育醇，簡稱T3)"
+            },
+            "text": {
+              "zh": " 是維生素E家族中最具生物活性的成員。由澳洲昆士蘭科技大學前列腺頑疾研究中心進行臨床研究證實，T3具有抗頑疾及抑制頑疾幹細胞的作用。其獨特的化學結構使人體細胞攝取效率高達普通維生素E的70倍，並能快速被人體器官吸收利用。"
+            }
+          },
+          {
+            "text": {
+              "zh": "康草堂T3採用高純度天然提取物，不含常見的Alpha-Tocopherol干擾，確保最大化的抗氧化及免疫調節效益。"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "產品功效及特性"
+        },
+        "bullets": [
+          {
+            "label": {
+              "zh": "超強抗氧化："
+            },
+            "text": {
+              "zh": " 比一般合成維生素E高出60倍抗氧化能力，保護細胞免受自由基傷害"
+            }
+          },
+          {
+            "label": {
+              "zh": "抑制頑疾進展："
+            },
+            "text": {
+              "zh": " 有助抑制腫瘤生長，減慢異常細胞擴散和轉移"
+            }
+          },
+          {
+            "label": {
+              "zh": "心血管健康："
+            },
+            "text": {
+              "zh": " 降低膽固醇，維護心血管及促進代謝健康與脂肪平衡"
+            }
+          },
+          {
+            "label": {
+              "zh": "動脈硬化防護："
+            },
+            "text": {
+              "zh": " 對預防動脈硬化有顯著功效"
+            }
+          },
+          {
+            "label": {
+              "zh": "造血幹細胞保護："
+            },
+            "text": {
+              "zh": " 有效保護造血幹細胞，防止胃腸道和血管損傷"
+            }
+          },
+          {
+            "label": {
+              "zh": "神經抗炎："
+            },
+            "text": {
+              "zh": " 具消炎及神經保護作用，有助維持腦部健康"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacedHeading": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "適合對象"
+        },
+        "bullets": [
+          {
+            "text": {
+              "zh": "頑症患者及康復期人士 (輔助療程)"
+            }
+          },
+          {
+            "text": {
+              "zh": "有頑症家族遺傳史的人仕"
+            }
+          },
+          {
+            "text": {
+              "zh": "免疫力低下、易疲勞或慢性發炎體質"
+            }
+          },
+          {
+            "text": {
+              "zh": "關注心血管健康、高膽固醇人士"
+            }
+          },
+          {
+            "text": {
+              "zh": "保健養生、延緩衰老之人士"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "注意 孕婦、哺乳期婦女及服用抗凝血藥物者，請先諮詢醫生。"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacerAfter": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "科研實證"
+        },
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "根據澳洲昆士蘭科技大學發表於國際期刊的研究，T3能夠選擇性誘導頑疾細胞凋亡，同時保護正常細胞。動物實驗顯示，補充T3可顯著降低腫瘤負荷，並改善發炎指標。康草堂T3嚴格遵循高純度標準，確保每一粒軟膠囊均達到研究級活性。"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacerAfter": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "包裝規格"
+        },
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "每瓶 120 粒軟膠囊 (標準裝，約1-2個月用量)"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacerAfter": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "建議用量"
+        },
+        "bullets": [
+          {
+            "label": {
+              "zh": "保健用途："
+            },
+            "text": {
+              "zh": " 每日 1 粒，隨餐服用"
+            }
+          },
+          {
+            "label": {
+              "zh": "頑症輔助 (化療/電療/標靶期間)："
+            },
+            "text": {
+              "zh": " 每日 3 次，每次 1 粒 (共3粒)"
+            }
+          },
+          {
+            "label": {
+              "zh": "術後恢復 / 免疫加強："
+            },
+            "text": {
+              "zh": " 每日 2 粒"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "※ 詳情請咨詢醫生或專業醫護人員，可與雲芝糖肽PSP同時使用，效果倍增。"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "card-grid",
+      "fields": {
+        "items": [
+          {
+            "icon": "fas fa-file-alt",
+            "title": {
+              "zh": "純度檢測"
+            },
+            "text": {
+              "zh": "澳洲 + 香港雙重認證"
+            }
+          },
+          {
+            "icon": "fas fa-certificate",
+            "title": {
+              "zh": "GMP 認證藥廠"
+            },
+            "text": {
+              "zh": "加拿大衛生部監管"
+            }
+          },
+          {
+            "icon": "fas fa-chart-line",
+            "title": {
+              "zh": "10,000+ 用戶回饋"
+            },
+            "text": {
+              "zh": "顯著提升生活品質"
+            }
+          },
+          {
+            "icon": "fas fa-microscope",
+            "title": {
+              "zh": "大學臨床研究"
+            },
+            "text": {
+              "zh": "昆士蘭科技大學證實"
+            }
+          }
+        ],
+        "variant": "badges"
+      }
+    },
+    {
+      "type": "related-products",
+      "fields": {
+        "heading": {
+          "zh": "你可能也感興趣"
+        },
+        "source": "products.json",
+        "items": [
+          {
+            "sku": "WH-PSP-500",
+            "href": "產品_雲芝糖肽精華_B.html",
+            "icon": "fas fa-seedling",
+            "label": {
+              "zh": "雲芝糖肽精華 (PSP)"
+            },
+            "desc": {
+              "zh": "提升免疫力 · 減輕化療副作用"
+            }
+          },
+          {
+            "sku": "WH-HB-180",
+            "href": "產品_乙肝清.html",
+            "icon": "fas fa-heartbeat",
+            "label": {
+              "zh": "乙肝清"
+            },
+            "desc": {
+              "zh": "天然草本護肝配方，強化肝臟代謝"
+            }
+          },
+          {
+            "sku": "WH-PSP-060",
+            "href": "產品_雲芝糖肽精華_A.html",
+            "icon": "fas fa-box",
+            "label": {
+              "zh": "雲芝糖肽精華 (試用裝)"
+            },
+            "desc": {
+              "zh": "初次體驗，快速有感"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

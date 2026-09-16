@@ -71,7 +71,15 @@ function renderSection(node, lang, data, registry) {
   const Comp = sections[node.type];
   if (!Comp) throw new Error('Unknown section type: ' + node.type);
   const props = resolveField(node.fields || {}, lang);
-  const html = renderToStaticMarkup(React.createElement(Comp, Object.assign({}, props, { data, lang })));
+  /* React 19 hoists a <link rel="preload" as="image"> for an eager <img>. With
+     no document to hoist into, renderToStaticMarkup leaves it INSIDE the
+     section's markup - a stray <link> in <main> that the hand-coded pages do
+     not have (only the gallery's main image triggers it; everything else is
+     loading="lazy"). It is invisible, but published output should match the
+     page it replaces, so it is dropped here rather than explained on every
+     product page's visual diff. */
+  const html = renderToStaticMarkup(React.createElement(Comp, Object.assign({}, props, { data, lang })))
+    .replace(/<link rel="preload"[^>]*>/g, '');
   // the live pages wrap most inner-page blocks in <div class="container">;
   // a node says so rather than every component hard-coding it
   return wrapOf(node).container ? '<div class="container">' + html + '</div>' : html;
@@ -103,7 +111,11 @@ function wrapOf(node) {
   const w = node.wrap;
   if (!w) return {};
   if (typeof w === 'string') return { container: w === 'container' };
-  return { section: w.section, label: w.label, container: w.container !== false };
+  /* `tag` because not every live wrapper is a <section>: the product pages put
+     the gallery and the buy panel inside <div class="product-grid">, which is
+     layout, not a landmark. Default stays 'section'. */
+  return { tag: w.tag || 'section', section: w.section, label: w.label, id: w.id,
+           container: w.container !== false };
 }
 
 /* '' is a real section class: 聯絡我們's CTA sits in a bare <section class="">,
@@ -111,7 +123,7 @@ function wrapOf(node) {
    `section` means "no section". */
 const wrapKey = node => {
   const w = wrapOf(node);
-  return w.section === undefined ? '' : JSON.stringify([w.section, w.label || '', w.container]);
+  return w.section === undefined ? '' : JSON.stringify([w.tag, w.section, w.label || '', w.id || '', w.container]);
 };
 
 function renderBody(tree, lang, data, registry) {
@@ -127,9 +139,9 @@ function renderBody(tree, lang, data, registry) {
     const inner = run.map(n =>
       renderSection(Object.assign({}, n, { wrap: undefined }), lang, data, registry)).join('\n');
     const body = w.container ? '<div class="container">' + inner + '</div>' : inner;
-    out.push('<section class="' + w.section + '"' +
+    out.push('<' + w.tag + (w.id ? ' id="' + w.id + '"' : '') + ' class="' + w.section + '"' +
              (w.label ? ' aria-label="' + w.label.replace(/"/g, '&quot;') + '"' : '') + '>' +
-             body + '</section>');
+             body + '</' + w.tag + '>');
   }
   return out.join('\n');
 }
@@ -172,6 +184,7 @@ function renderPage(tree, lang, data, opts) {
     bodyClass: tree.bodyClass,
     chrome: o.chrome,
     main: tree.main,
+    mainClass: tree.mainClass,
     // the template derives the behaviour scripts from these (finding 23)
     sectionTypes: (tree.sections || []).map(node => node.type)
   });

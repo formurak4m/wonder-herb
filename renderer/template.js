@@ -149,6 +149,14 @@ const BEHAVIOURS = {
     src: 'assets/behaviour/quick-view.js',
     noscript: '.btn-quickview { display: none !important; }'
   },
+  /* The thumbnails switch the main image. Nothing here is a control (they are
+     images in a list, as on the live pages), so there is no scripts-off rule:
+     with JavaScript off they still show the other angles, exactly as the
+     hand-coded pages do. */
+  'gallery': {
+    src: 'assets/behaviour/gallery.js',
+    noscript: '/* gallery: thumbnails are images, not controls - nothing to hide */'
+  },
   /* The buy panel's quantity box and add button need JavaScript; the price,
      the description and the detail link do not, so only the two controls go.
      The quantity selector is hidden rather than display:none'd away, so the
@@ -177,10 +185,16 @@ function behavioursFor(sectionTypes, hasChrome) {
   return (hasChrome || own.length) ? [SITE_SCRIPT].concat(own) : [];
 }
 
-function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main, sectionTypes }) {
+function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main, mainClass, sectionTypes }) {
   const htmlLang = HTML_LANG[lang || PRIMARY] || lang || HTML_LANG[PRIMARY];
   const c = chrome || {};
-  const content = main === false ? body : '<main>\n' + body + '\n</main>';
+  /* The six product pages open <main class="container">, which is where their
+     24px side padding and 1280px max width come from; the content pages use a
+     bare <main>. Dropping the class let the product blocks run the full width
+     of the viewport - caught by the 產品_T3 visual diff, and invisible to every
+     other gate. */
+  const mainTag = '<main' + (mainClass ? ' class="' + mainClass + '"' : '') + '>';
+  const content = main === false ? body : mainTag + '\n' + body + '\n</main>';
 
   if (!Array.isArray(sectionTypes)) {
     throw new Error('baseTemplate needs sectionTypes (the tree\'s section types) to derive the ' +
