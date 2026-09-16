@@ -1,0 +1,610 @@
+{
+  "slug": "index",
+  "path": "index.html",
+  "title": {
+    "zh": "康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂 Wonder Herb - 超過20年經驗，雲芝糖肽精華有效成份 >90%，加拿大GMP藥廠生產，大學證實複合配方功效倍增。"
+    },
+    "dateModified": "2026-06-08",
+    "ogTitle": {
+      "zh": "康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選"
+    },
+    "ogDescription": {
+      "zh": "超過20年經驗，雲芝糖肽精華有效成份 >90%，加拿大GMP藥廠生產，大學證實複合配方功效倍增。"
+    },
+    "ogType": "website",
+    "image": "https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png",
+    "breadcrumb": [],
+    "jsonld": [
+      {
+        "@type": "WebSite",
+        "@id": "https://www.wonder-herb.com/#website",
+        "url": "https://www.wonder-herb.com/",
+        "name": "康草堂 Wonder Herb",
+        "inLanguage": "zh-Hant",
+        "publisher": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        }
+      },
+      {
+        "@type": "Product",
+        "@id": "https://www.wonder-herb.com/#product-psp-standard",
+        "name": "雲芝糖肽精華 PSP (標準裝)",
+        "alternateName": "Yunzhi PSP Essence Standard Pack",
+        "description": "500粒裝雲芝糖肽精華，多醣肽有效成份含量高達90%以上，遠超國家標準49.5%，適合長期免疫調節輔助療程。",
+        "sku": "WH-PSP-500",
+        "image": "https://lh3.googleusercontent.com/d/1j4nnDKPYyQ7naWRboMd3fPS8pvrlEtDq",
+        "brand": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "manufacturer": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "countryOfOrigin": "CA",
+        "offers": {
+          "@type": "Offer",
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition",
+          "priceCurrency": "HKD",
+          "price": "3800.00",
+          "priceValidUntil": "2026-12-31",
+          "seller": {
+            "@id": "https://www.wonder-herb.com/#organization"
+          },
+          "url": "https://www.wonder-herb.com/產品_雲芝糖肽精華_B.html"
+        },
+        "category": "Health Supplement > Immune Support"
+      },
+      {
+        "@type": "Product",
+        "@id": "https://www.wonder-herb.com/#product-psp-t3",
+        "name": "PSP + T3 複合配方",
+        "alternateName": "Yunzhi PSP + T3 Synergistic Formula",
+        "description": "大學研究證實PSP與T3三烯生育醇複合配方功效倍增，頑疾輔助首選。",
+        "sku": "WH-PSP-T3",
+        "image": "https://lh3.googleusercontent.com/d/1NNv7Wxa-i8YbBEgfV7qVz5AgKpsog8Kb",
+        "brand": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "manufacturer": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "countryOfOrigin": "CA",
+        "offers": {
+          "@type": "Offer",
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition",
+          "priceCurrency": "HKD",
+          "price": "1900.00",
+          "priceValidUntil": "2026-12-31",
+          "seller": {
+            "@id": "https://www.wonder-herb.com/#organization"
+          },
+          "url": "https://www.wonder-herb.com/產品_T3.html"
+        },
+        "category": "Health Supplement > Immune Support > Synergistic Formula"
+      },
+      {
+        "@type": "Product",
+        "@id": "https://www.wonder-herb.com/#product-psp-trial",
+        "name": "雲芝糖肽精華 PSP (試用裝)",
+        "alternateName": "Yunzhi PSP Essence Trial Pack",
+        "description": "60粒試用裝，多醣肽含量超國家標準1.8倍，初次體驗佳。",
+        "sku": "WH-PSP-060",
+        "image": "https://lh3.googleusercontent.com/d/1IXyoFL7qF2rpB5C-o6C3c1RVRBqoUMMk",
+        "brand": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "manufacturer": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "countryOfOrigin": "CA",
+        "offers": {
+          "@type": "Offer",
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition",
+          "priceCurrency": "HKD",
+          "price": "680.00",
+          "priceValidUntil": "2026-12-31",
+          "seller": {
+            "@id": "https://www.wonder-herb.com/#organization"
+          },
+          "url": "https://www.wonder-herb.com/產品_雲芝糖肽精華_A.html"
+        },
+        "category": "Health Supplement > Immune Support"
+      },
+      {
+        "@type": "Product",
+        "@id": "https://www.wonder-herb.com/#product-hepa",
+        "name": "乙肝清",
+        "alternateName": "Hep BQ capsules Herbal Liver Support",
+        "description": "天然草本護肝配方，抑制HBV，減輕肝纖維化。",
+        "sku": "WH-HEPA-001",
+        "image": "https://lh3.googleusercontent.com/d/1JshjDnhbCCCsQNUZOD3XnPz6Haw9Q_eE",
+        "brand": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "manufacturer": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "countryOfOrigin": "CA",
+        "offers": {
+          "@type": "Offer",
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition",
+          "priceCurrency": "HKD",
+          "price": "1880.00",
+          "priceValidUntil": "2026-12-31",
+          "seller": {
+            "@id": "https://www.wonder-herb.com/#organization"
+          },
+          "url": "https://www.wonder-herb.com/產品_乙肝清.html"
+        },
+        "category": "Health Supplement > Liver Support"
+      },
+      {
+        "@type": "Product",
+        "@id": "https://www.wonder-herb.com/#product-memo",
+        "name": "憶活素 MemoProve",
+        "alternateName": "MemoProve Brain Health",
+        "description": "奧地利研發配方，修復腦細胞，提升記憶力與專注力。",
+        "sku": "WH-MEMO-001",
+        "image": "https://lh3.googleusercontent.com/d/1DqnWVDZa45TvoRKRguh-IT4i_sfYbQhn",
+        "brand": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "manufacturer": {
+          "@id": "https://www.wonder-herb.com/#organization"
+        },
+        "countryOfOrigin": "AT",
+        "offers": {
+          "@type": "Offer",
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition",
+          "priceCurrency": "HKD",
+          "price": "520.00",
+          "priceValidUntil": "2026-12-31",
+          "seller": {
+            "@id": "https://www.wonder-herb.com/#organization"
+          },
+          "url": "https://www.wonder-herb.com/產品_憶活素.html"
+        },
+        "category": "Health Supplement > Brain Health"
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://www.wonder-herb.com/#faq",
+        "name": "雲芝糖肽精華 PSP 常見問題",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "什麼是雲芝糖肽 PSP？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "雲芝糖肽（PSP）是從雲芝菌絲體中提取的活性成分複合物，主要包含多醣（polysaccharides）和蛋白肽（protein peptides）。康草堂的雲芝糖肽精華有效成份含量高達90%以上，遠超國家藥品標準要求的49.5%，是目前純度最高的雲芝提取物之一。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "雲芝糖肽 PSP 的主要功效是什麼？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "雲芝糖肽PSP主要功效包括：調節免疫系統功能、提升NK細胞及T細胞活性、減輕常規治療（如化療、放療）引起的不適、改善患者食慾與體重、提升整體生活品質。經大學研究證實，康草堂PSP+T3複合配方比單一PSP功效倍增。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "康草堂雲芝糖肽的有效成份含量是多少？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "根據國家藥品標準，雲芝糖肽的含量不得低於49.5%（多醣≥38%，蛋白肽≥11.5%）。康草堂產品的有效成份含量高達90%以上，純度最高，吸收最好。每批次產品均經加拿大及香港雙重實驗室檢測。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "PSP+T3 複合配方有什麼優勢？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "經大學研究證實，康草堂雲芝糖肽精華PSP與T3（三烯生育醇Tocotrienols）的獨特複合配方，比單一服用PSP功效倍增。T3是維生素E家族中抗氧化活性最強的成分，能與PSP產生協同效應，增強免疫調節和細胞保護功能。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "康草堂產品是否經過檢測認證？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "是的，康草堂所有產品均由加拿大GMP藥廠按加拿大優良生產規範（GMP）指引生產，加拿大衛生部監管。每批次產品均經過加拿大及香港雙重檢測，確保活性含量水平符合標準。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "如何服用雲芝糖肽精華？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "一般建議每日服用2-3次，每次2-4粒，飯前或飯後服用均可。具體劑量因個人健康狀況而異，建議諮詢醫生意見或聯絡康草堂專員獲取個人化服用建議。WhatsApp諮詢專線：+852 9331 8571。"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css",
+      "assets/page-index.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "index.html"
+  },
+  "mainId": "main-content",
+  "sections": [
+    {
+      "type": "hero",
+      "fields": {
+        "badge": {
+          "zh": "臨床驗證 · 加拿大GMP藥廠"
+        },
+        "heading": {
+          "zh": "雲芝糖肽精華 PSP"
+        },
+        "headingAccent": {
+          "zh": "+T3"
+        },
+        "headingLine2": {
+          "zh": "天然輔助方案"
+        },
+        "body": {
+          "zh": "超過20年經驗，大學研究證實獨特配方功效倍增。每批產品雙重檢測，有效成份 >90% — 遠超國家標準。"
+        },
+        "stats": [
+          {
+            "number": {
+              "zh": "90%+"
+            },
+            "label": {
+              "zh": "有效成份含量"
+            }
+          },
+          {
+            "number": {
+              "zh": "20+ Yrs"
+            },
+            "label": {
+              "zh": "臨床經驗"
+            }
+          },
+          {
+            "number": {
+              "zh": "GMP"
+            },
+            "label": {
+              "zh": "加拿大認證藥廠"
+            }
+          }
+        ],
+        "headingId": "hero-heading",
+        "slides": [
+          {
+            "type": "image",
+            "src": "https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png",
+            "alt": {
+              "zh": "康草堂 Wonder Herb 品牌形象"
+            }
+          },
+          {
+            "type": "model",
+            "src": "bottle_HEP.glb",
+            "alt": {
+              "zh": "乙肝清 草本護肝"
+            },
+            "poster": "https://lh3.googleusercontent.com/d/1JshjDnhbCCCsQNUZOD3XnPz6Haw9Q_eE",
+            "posterAlt": {
+              "zh": "乙肝清"
+            }
+          },
+          {
+            "type": "image",
+            "src": "https://lh3.googleusercontent.com/d/1DqnWVDZa45TvoRKRguh-IT4i_sfYbQhn",
+            "alt": {
+              "zh": "憶活素 MemoProve 腦部保健"
+            }
+          },
+          {
+            "type": "model",
+            "src": "bottle_PEPTIDES.glb",
+            "alt": {
+              "zh": "雲芝糖肽精華 PSP 3D 模型"
+            },
+            "poster": "https://lh3.googleusercontent.com/d/1j4nnDKPYyQ7naWRboMd3fPS8pvrlEtDq",
+            "posterAlt": {
+              "zh": "雲芝糖肽精華 (PSP) – 標準裝"
+            }
+          },
+          {
+            "type": "model",
+            "src": "bottle_PT3.glb",
+            "alt": {
+              "zh": "PT3 3D 模型"
+            },
+            "poster": "https://lh3.googleusercontent.com/d/1zKGlugAcxcelvZXRiYFjOR5ZVdrUQOPG",
+            "posterAlt": {
+              "zh": "PT3 (指定診所發售)"
+            }
+          },
+          {
+            "type": "model",
+            "src": "bottle_YUNZHI.glb",
+            "alt": {
+              "zh": "雲芝精華 3D 模型"
+            },
+            "poster": "https://lh3.googleusercontent.com/d/1NNv7Wxa-i8YbBEgfV7qVz5AgKpsog8Kb",
+            "posterAlt": {
+              "zh": "T3 配方"
+            }
+          }
+        ],
+        "carouselLabel": {
+          "zh": "產品形象輪播展示"
+        },
+        "slideLabel": {
+          "zh": "圖片"
+        },
+        "dotLabel": {
+          "zh": "切換至圖片"
+        },
+        "dotsLabel": {
+          "zh": "輪播導航點"
+        },
+        "prevLabel": {
+          "zh": "上一張圖片"
+        },
+        "nextLabel": {
+          "zh": "下一張圖片"
+        },
+        "primaryLabel": {
+          "zh": "立即查詢 · 康復方案"
+        },
+        "primaryHref": "https://wa.me/85293318571/",
+        "primaryIcon": "fab fa-whatsapp",
+        "secondaryLabel": {
+          "zh": "了解產品系列"
+        },
+        "secondaryHref": "#products"
+      }
+    },
+    {
+      "type": "text-block",
+      "fields": {
+        "heading": {
+          "zh": "康草堂 · 以人為本的中草藥科研"
+        },
+        "sub": {
+          "zh": "結合中西醫學理論，為頑疾患者提供高活性、純天然輔助方案"
+        },
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "康草堂 (Wonder Herb Health Products Ltd) 是以人為本的中草藥製品公司，沿用中草藥附以西藥治療效益的前題，結合中西藥平衡理論，採用品質上乘且活性含量極高的中草藥，每一批次都經過加拿大及香港雙重檢測，確保活性含量水平，協助慢性頑疾患者改善健康。"
+            }
+          },
+          {
+            "text": {
+              "zh": "累積二十餘年經驗，協助各類頑疾患者舒緩療程不適，提升免疫力。"
+            }
+          },
+          {
+            "text": {
+              "zh": "康草堂的產品包括「雲芝糖肽精華 PSP」，T3，PT3 及乙肝清 。產品多樣性能切合不同人仕的需要。獨特配方有助提升常規治療效益。"
+            }
+          },
+          {
+            "text": {
+              "zh": "經大學研究證實，「康草堂雲芝糖肽精華 PSP + T3」的獨特配方，比單一服用雲芝糖肽精華PSP功效倍增。"
+            }
+          },
+          {
+            "text": {
+              "zh": "為確保產品的質量，康草堂的產品均由加拿大GMP藥厰按加拿大優良的生產規範(GMP)指引下生產。"
+            }
+          }
+        ],
+        "headingId": "company-heading",
+        "variant": "glass"
+      }
+    },
+    {
+      "type": "product-carousel",
+      "wrap": {
+        "tag": "section",
+        "section": "product-carousel-section",
+        "id": "products",
+        "labelledby": "products-heading",
+        "container": true
+      },
+      "fields": {
+        "source": "products.json",
+        "heading": {
+          "zh": "皇牌產品系列"
+        },
+        "headingId": "products-heading",
+        "detailLabel": {
+          "zh": "瞭解更多"
+        },
+        "detailIcon": "fas fa-arrow-right",
+        "prevLabel": {
+          "zh": "上一個產品"
+        },
+        "nextLabel": {
+          "zh": "下一個產品"
+        },
+        "groupLabel": {
+          "zh": "產品輪播展示"
+        },
+        "sideLimit": 70
+      }
+    },
+    {
+      "type": "callout",
+      "wrap": "container",
+      "fields": {
+        "prefix": {
+          "zh": "根據國家藥品標準，雲芝糖肽的含量不得低於49.5%（多醣≥38%，蛋白肽≥11.5%），"
+        },
+        "body": {
+          "zh": "康草堂產品的「有效成份」含量高達90%以上 —— 純度最高，吸收最好。"
+        },
+        "variant": "quality"
+      }
+    },
+    {
+      "type": "card-grid",
+      "wrap": {
+        "tag": "section",
+        "section": null,
+        "labelledby": "trust-heading",
+        "container": true
+      },
+      "fields": {
+        "heading": {
+          "zh": "品質信任標章"
+        },
+        "headingId": "trust-heading",
+        "headingHidden": true,
+        "itemTag": "h3",
+        "reveal": true,
+        "items": [
+          {
+            "icon": "fas fa-university",
+            "title": {
+              "zh": "大學臨床研究"
+            },
+            "text": {
+              "zh": "香港/加拿大學術驗證"
+            }
+          },
+          {
+            "icon": "fas fa-file-alt",
+            "title": {
+              "zh": "雙重含量檢測"
+            },
+            "text": {
+              "zh": "加拿大 + 香港實驗室"
+            }
+          },
+          {
+            "icon": "fas fa-certificate",
+            "title": {
+              "zh": "GMP 認證藥廠"
+            },
+            "text": {
+              "zh": "加拿大衛生部監管"
+            }
+          },
+          {
+            "icon": "fas fa-chart-line",
+            "title": {
+              "zh": "20,000+ 患者信賴"
+            },
+            "text": {
+              "zh": "真實病例改善回饋"
+            }
+          }
+        ],
+        "variant": "badges"
+      }
+    },
+    {
+      "type": "case-list",
+      "wrap": {
+        "tag": "section",
+        "section": null,
+        "labelledby": "cases-heading",
+        "container": true
+      },
+      "fields": {
+        "source": "cases.json",
+        "heading": {
+          "zh": "真實康復故事精選"
+        },
+        "headingId": "cases-heading",
+        "sub": {
+          "zh": "見證雲芝糖肽精華 PSP 如何幫助患者提升免疫力，改善生活品質"
+        },
+        "limit": 3,
+        "excerptLimit": 110,
+        "linkLabel": {
+          "zh": "閱讀完整故事 →"
+        },
+        "linkHref": "典型病例.html",
+        "moreLinkLabel": {
+          "zh": "查看更多典型病例 →"
+        },
+        "moreHref": "典型病例.html",
+        "gridId": "featuredCasesGrid",
+        "variant": "highlights"
+      }
+    },
+    {
+      "type": "cta-band",
+      "wrap": {
+        "tag": "section",
+        "section": "case-studies-section reveal-on-scroll",
+        "labelledby": "study-heading",
+        "container": false
+      },
+      "fields": {
+        "videoUrl": "https://video.wixstatic.com/video/11062b_d578b9d4ffba48c68d086ec29fe9e6f0/1080p/mp4/file.mp4",
+        "videoType": "video/mp4",
+        "heading": {
+          "zh": "真實康復見證 & 典型病例"
+        },
+        "headingId": "study-heading",
+        "body": {
+          "zh": "數百份典型病例與微信文章，展現雲芝糖肽如何幫助患者提升生活品質。立即參考成功經驗，為您或家人尋求最佳輔助方案。"
+        },
+        "buttons": [
+          {
+            "label": {
+              "zh": "瀏覽典型病例"
+            },
+            "href": "典型病例.html",
+            "style": "primary"
+          },
+          {
+            "label": {
+              "zh": "下載小冊子"
+            },
+            "href": "小册子.html",
+            "style": "outline"
+          },
+          {
+            "label": {
+              "zh": "微信發表文章"
+            },
+            "href": "微信發表文章.html",
+            "icon": "fab fa-weixin",
+            "style": "outline"
+          }
+        ],
+        "variant": "video-band"
+      }
+    }
+  ]
+}

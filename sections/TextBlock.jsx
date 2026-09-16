@@ -146,12 +146,26 @@ export default function TextBlock({ heading, sub, paragraphs, bullets, variant =
     );
   }
 
+  /* glass - the homepage's company card. Its paragraphs are styled INLINE on
+     the live page (font-size:1.05rem; line-height:1.6; margin-bottom:1.2rem,
+     and no bottom margin on the last one) and there is no `.company-glass-card
+     p` rule anywhere in the page CSS to replace them - so rendering plain <p>
+     made the whole block shorter and moved everything under it. The styling is
+     the variant's, like the inline styles the callout and card-grid variants
+     carry: the client picks a shape, never types CSS. */
+  const GLASS_P = { fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '1.2rem' };
+  const GLASS_P_LAST = { fontSize: '1.05rem', lineHeight: 1.6 };
   return (
     <section aria-labelledby={id}>
       <div className="container">
         {heading ? <h2 id={id} className="section-title reveal-on-scroll">{heading}</h2> : null}
         {sub ? <div className="section-sub reveal-on-scroll reveal-delay-1">{sub}</div> : null}
-        <div className="company-glass-card reveal-on-scroll reveal-delay-2">{body}</div>
+        <div className="company-glass-card reveal-on-scroll reveal-delay-2">
+          {paras.map((p, i) => (
+            <p key={i} style={i === paras.length - 1 ? GLASS_P_LAST : GLASS_P}>{copyBody(p)}</p>
+          ))}
+          {points.length ? <ul>{points.map((b, i) => <li key={i}>{copyBody(b)}</li>)}</ul> : null}
+        </div>
       </div>
     </section>
   );

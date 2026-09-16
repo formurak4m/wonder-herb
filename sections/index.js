@@ -18,6 +18,7 @@ import * as PageHeader from './PageHeader.jsx';
 import * as Hero from './Hero.jsx';
 import * as TextBlock from './TextBlock.jsx';
 import * as ProductGrid from './ProductGrid.jsx';
+import * as ProductCarousel from './ProductCarousel.jsx';
 import * as ProductDetail from './ProductDetail.jsx';
 import * as Gallery from './Gallery.jsx';
 import * as RelatedProducts from './RelatedProducts.jsx';
@@ -34,6 +35,7 @@ export const registry = {
   'hero': Hero,
   'text-block': TextBlock,
   'product-grid': ProductGrid,
+  'product-carousel': ProductCarousel,
   'product-detail': ProductDetail,
   'gallery': Gallery,
   'related-products': RelatedProducts,

@@ -60,8 +60,17 @@ export const STRUCTURAL = new Set([
   'icon', 'primaryIcon', 'secondaryIcon', 'addIcon', 'detailIcon', 'descIcon',
   'defaultIcon', 'badgeIcons', 'linkIcon', 'hintIcon', 'captionIcon', 'src',
   'videoUrl', 'image', 'images', 'src', 'flag', 'link', 'model',
-  'id', 'type', 'showCarousel', 'emphasis', 'number'
+  'id', 'type', 'showCarousel', 'emphasis',
+  'poster'   // a model slide's fallback photograph: a URL, like `src` and `image`
 ]);
+
+/* `number` was on this list and came off at P9 (index.html). The only field
+   actually named `number` is a hero stat, and those read "90%+", "20+ Yrs",
+   "GMP" - display copy that Phase 14 has to translate, not a quantity. Treating
+   it as structural collapsed {zh: "20+ Yrs"} to a bare string on the first
+   editor save, which the round-trip check caught. Fields that really are
+   numeric (limit, excerptLimit, sideLimit) are excluded by their field TYPE
+   just above, so nothing depended on the name. */
 
 const isPlainObject = v =>
   v !== null && typeof v === 'object' && !Array.isArray(v);

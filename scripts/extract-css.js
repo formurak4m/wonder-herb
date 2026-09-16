@@ -65,7 +65,8 @@ const MIGRATED = {
   'product-psp-trial': '產品_雲芝糖肽精華_A.html',
   'product-psp-standard': '產品_雲芝糖肽精華_B.html',
   'product-hepb': '產品_乙肝清.html',
-  'product-memo': '產品_憶活素.html'
+  'product-memo': '產品_憶活素.html',
+  'index': 'index.html'
 };
 
 /* D1, finding 15. These were meant to live at the end of site.css. They cannot:

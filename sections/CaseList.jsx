@@ -50,6 +50,24 @@ export const config = {
     diseaseIcons: {
       type: 'array',
       arrayFields: { match: { type: 'text' }, icon: { type: 'text' } }
+    },
+    /* highlights only */
+    heading: { type: 'text' },
+    headingId: { type: 'text' },
+    sub: { type: 'textarea' },
+    moreLinkLabel: { type: 'text' },   // "查看更多典型病例 →", the link under the grid
+    moreHref: { type: 'text' },
+    limit: { type: 'number' },
+    excerptLimit: { type: 'number' },
+    linkLabel: { type: 'text' },
+    linkHref: { type: 'text' },
+    gridId: { type: 'text' },
+    variant: {
+      type: 'select',
+      options: [
+        { label: 'Full list with filters', value: 'default' },
+        { label: 'Highlights (homepage)', value: 'highlights' }
+      ]
     }
   },
   defaultProps: {
@@ -57,18 +75,71 @@ export const config = {
     resetIcon: 'fas fa-eraser', resultPrefix: '', resultSuffix: '', filterLabel: '',
     filterIcon: 'fas fa-tags', allLabel: '', allIcon: 'fas fa-list-ul',
     moreLabel: '', lessLabel: '', moreIcon: 'fas fa-chevron-down', emptyText: '',
-    defaultIcon: 'fa-solid fa-virus', diseaseIcons: []
+    defaultIcon: 'fa-solid fa-virus', diseaseIcons: [],
+    heading: '', headingId: '', sub: '', moreHref: '典型病例.html',
+    limit: 3, excerptLimit: 110, linkLabel: '', linkHref: '典型病例.html',
+    moreLinkLabel: '', gridId: 'featuredCasesGrid', variant: 'default'
   },
-  variants: ['default']
+  variants: ['default', 'highlights']
 };
+
+/* The homepage's excerpt rule, kept exactly: take the case's content as plain
+   text, cut at 110 characters, and append an ellipsis only when the text
+   reached that length (index.html:3541 - `substring(0,110)`, then
+   `plain.length >= 110`). The live page strips the tags by assigning the HTML
+   to a throwaway element and reading textContent; there is no DOM here, so the
+   tags come off with a regex and the entities the data actually contains are
+   decoded. Same input, same output. */
+const plainText = html => String(html || '')
+  .replace(/<[^>]*>/g, '')
+  .replace(/&nbsp;/g, ' ')
+  .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+  .replace(/&#39;/g, "'").replace(/&amp;/g, '&');
 
 export default function CaseList({
   source, data, searchPlaceholder, searchLabel, resetLabel, resetIcon,
   resultPrefix, resultSuffix, filterLabel, filterIcon, allLabel, allIcon,
-  moreLabel, lessLabel, moreIcon, emptyText, defaultIcon, diseaseIcons
+  moreLabel, lessLabel, moreIcon, emptyText, defaultIcon, diseaseIcons,
+  heading, headingId, sub, moreLinkLabel, moreHref,
+  limit, excerptLimit, linkLabel, linkHref, gridId, variant = 'default'
 }) {
   const key = String(source || 'cases.json').replace(/\.json$/, '');
   const cases = (data && Array.isArray(data[key])) ? data[key] : [];
+
+  /* highlights - index.html:3087, the 真實康復故事精選 block. The first few
+     cases as mini cards linking to the full page. The live page builds these
+     from its own inline three-case array, not from data/cases.json; this
+     renders the data file, which is the list the admin edits, so the excerpts
+     differ from the live page's (recorded, not reconciled - the content rule). */
+  if (variant === 'highlights') {
+    const n = Number(limit) || 3;
+    const cut = Number(excerptLimit) || 110;
+    return (
+      <>
+      {heading ? <h2 id={headingId || undefined} className="section-title reveal-on-scroll">{heading}</h2> : null}
+      {sub ? <div className="section-sub reveal-on-scroll reveal-delay-1">{sub}</div> : null}
+      <div id={gridId || undefined} className="featured-cases-grid">
+        {cases.slice(0, n).map((c, i) => {
+          const plain = plainText(c.content).substring(0, cut);
+          return (
+            <div className={'mini-case-card reveal-on-scroll reveal-delay-' + (i + 1)} key={i}>
+              <h3 className="mini-case-title">{c.title}</h3>
+              <div className="mini-case-subtitle">{c.subtitle}</div>
+              <div className="mini-case-excerpt">{plain.length >= cut ? plain + '…' : plain}</div>
+              {linkLabel ? <a href={linkHref || '#'} className="read-more-link">{linkLabel}</a> : null}
+            </div>
+          );
+        })}
+      </div>
+      {moreLinkLabel ? (
+        /* the live block's own inline centring; it has no class of its own */
+        <div style={{ textAlign: 'center', marginTop: '20px' }} className="reveal-on-scroll reveal-delay-2">
+          <a href={moreHref || '#'} className="btn-secondary">{moreLinkLabel}</a>
+        </div>
+      ) : null}
+      </>
+    );
+  }
   const icons = Array.isArray(diseaseIcons) ? diseaseIcons : [];
   const iconFor = c => c.icon ||
     (icons.find(m => m && m.match === c.subtitle) || {}).icon || defaultIcon;

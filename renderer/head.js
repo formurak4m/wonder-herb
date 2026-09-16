@@ -72,10 +72,23 @@ const esc = s => String(s === undefined || s === null ? '' : s)
    so adding languages later is a loop and not a rewrite. */
 function pagePath(tree, lang) {
   const file = String(tree.path || ((tree.slug || '') + '.html')).replace(/^\/+/, '');
-  return (lang === PRIMARY ? '/' : '/' + lang + '/') + file;
+  /* The home page is the bare directory, not /index.html. Its live canonical,
+     hreflang and og:url all say "https://www.wonder-herb.com/", and two URLs
+     for one page is exactly what a canonical exists to prevent - so the file
+     name is dropped here rather than in every caller. */
+  const rel = file === 'index.html' ? '' : file;
+  return (lang === PRIMARY ? '/' : '/' + lang + '/') + rel;
 }
 function pageUrl(tree, lang) {
   return SITE.origin + pagePath(tree, lang);
+}
+
+/* The FILE that serves that path, relative to the site root. The two differ
+   only for the home page, whose canonical is the bare directory while the file
+   is still index.html - so the rule lives here, once, rather than in the
+   renderer's CLI and the SEO gate separately. */
+function pageFile(tree, lang) {
+  return pagePath(tree, lang).replace(/^\//, '').replace(/(^|\/)$/, '$1index.html');
 }
 
 function organizationNode() {
@@ -192,4 +205,4 @@ function buildHead(tree, lang, opts) {
   return out.join('\n');
 }
 
-module.exports = { buildHead, pageUrl, pagePath, SITE, HREFLANG, OG_LOCALE };
+module.exports = { buildHead, pageUrl, pagePath, pageFile, SITE, HREFLANG, OG_LOCALE };

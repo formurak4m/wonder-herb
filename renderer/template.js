@@ -170,6 +170,36 @@ const BEHAVIOURS = {
      cases are all in the HTML, so instead of leaving summaries nobody can
      expand, every case's full text is shown and the read-more buttons go. The
      old page rendered NO cases at all without JavaScript. */
+  /* The homepage hero. `deps` are the three libraries the 3D slides need,
+     loaded before the behaviour file and in this order (OrbitControls and
+     GLTFLoader attach themselves to THREE). They are the same URLs and the
+     same pinned versions the live homepage uses; Phase 10 is where the models
+     and this loading story get revisited.
+     The carousel's slides and dots are pre-rendered, so scripts off costs a
+     visitor only the rotation - the first slide and its image are there. What
+     goes is what needs JavaScript: the arrows and the dots, which are tabs
+     that cannot change tab without it. */
+  'hero': {
+    src: 'assets/behaviour/home-hero.js',
+    deps: [
+      'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
+      'https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js',
+      'https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js'
+    ],
+    noscript: '.carousel-btn, .carousel-dots { display: none !important; }'
+  },
+  /* The three product cards are in the HTML; only the rotation needs
+     JavaScript, so only the two arrows go. */
+  'product-carousel': {
+    src: 'assets/behaviour/product-carousel.js',
+    noscript: '.product-nav-btn { display: none !important; }'
+  },
+  /* Nothing here is a control: the <video> plays on its own and the rest is
+     hover physics. Nothing to hide. */
+  'cta-band/video-band': {
+    src: 'assets/behaviour/video-band.js',
+    noscript: '/* video band: the video is markup and plays without JavaScript */'
+  },
   'case-list': {
     src: 'assets/behaviour/case-list.js',
     noscript: '.filter-panel, .read-more-btn { display: none !important; }\n    ' +
@@ -180,12 +210,18 @@ const BEHAVIOURS = {
 /* site.js whenever there is chrome OR any section behaviour (quick view adds to
    the cart through it); it tolerates a page without the chrome's elements, so a
    chrome-less preview draft still works. */
+/* A key is the section type, or "type/variant" where the behaviour belongs to
+   one variant only. cta-band is the case that forced this: its video-band
+   variant (the homepage's background-video block) needs a behaviour file, and
+   its banner and button variants - on 聯絡我們 and 常見問題 - must not start
+   fetching it. Lookup is EXACT, so a variant a behaviour was not registered
+   for gets none, rather than silently inheriting its type's. */
 function behavioursFor(sectionTypes, hasChrome) {
   const own = Array.from(new Set(sectionTypes)).sort().filter(t => BEHAVIOURS[t]).map(t => BEHAVIOURS[t]);
   return (hasChrome || own.length) ? [SITE_SCRIPT].concat(own) : [];
 }
 
-function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main, mainClass, sectionTypes }) {
+function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main, mainClass, mainId, sectionTypes }) {
   const htmlLang = HTML_LANG[lang || PRIMARY] || lang || HTML_LANG[PRIMARY];
   const c = chrome || {};
   /* The six product pages open <main class="container">, which is where their
@@ -193,7 +229,8 @@ function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main, main
      bare <main>. Dropping the class let the product blocks run the full width
      of the viewport - caught by the 產品_T3 visual diff, and invisible to every
      other gate. */
-  const mainTag = '<main' + (mainClass ? ' class="' + mainClass + '"' : '') + '>';
+  const mainTag = '<main' + (mainId ? ' id="' + mainId + '"' : '') +
+                  (mainClass ? ' class="' + mainClass + '"' : '') + '>';
   const content = main === false ? body : mainTag + '\n' + body + '\n</main>';
 
   if (!Array.isArray(sectionTypes)) {
@@ -203,7 +240,12 @@ function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main, main
   }
   const behaviours = behavioursFor(sectionTypes, Boolean(c.header));
   const noscriptCss = behaviours.map(b => '    ' + b.noscript).join('\n');
-  const behaviourTags = behaviours.map(b => '<script src="' + b.src + '" defer></script>').join('\n');
+  /* A behaviour's `deps` (third-party libraries it cannot run without) go
+     first and in order. `defer` throughout, so they execute in document order
+     after parsing and a dependency is never evaluated after the file that
+     needs it. */
+  const behaviourTags = behaviours.flatMap(b =>
+    (b.deps || []).concat([b.src]).map(src => '<script src="' + src + '" defer></script>')).join('\n');
 
   /* D1 is only in force if the page actually links assets/chrome.css, and it
      must be the LAST stylesheet or the page sheet outranks it. Fail loudly:
@@ -236,6 +278,9 @@ function baseTemplate({ head, body, lang, bodyClass, chrome, scripts, main, main
                    noscriptCss + '\n  </style></noscript>\n' : '') +
     '</head>\n' +
     '<body' + (bodyClass ? ' class="' + bodyClass + '"' : '') + '>\n' +
+    /* the page's SVG filter defs, before the chrome and exactly where the live
+       page puts them: CSS elsewhere references them by id */
+    (c.filters ? c.filters + '\n' : '') +
     (c.header ? c.header + '\n' : '') +
     content + '\n' +
     (c.footer ? c.footer + '\n' : '') +

@@ -16,7 +16,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 
 | # | Finding | Severity | Fixed in |
 |---|---|---|---|
-| 1 | Homepage background video hosted on the client's Wix CDN | High — breaks at cutover | Phase 10 |
+| 1 | Homepage background video hosted on the client's Wix CDN | High — breaks at cutover | Phase 10. Since P9 the URL is a tree field (`cta-band/video-band`, `videoUrl`), so the swap is a data edit, not a code change |
 | 2 | Product photos hotlinked from Google Drive, and rate-limited | High | Phase 10 |
 | 3 | `購物車.html` has no `<h1>`; it and `account.html` have no JSON-LD | Resolved — allow-list | Closed at P6-T1a |
 | 4 | All 18 pages overflow horizontally on a 390px viewport | Low | Phase 9 / 13 |
@@ -46,6 +46,8 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 28 | **Per-language images and links exist, but a tree cannot hold them**: 小册子 swaps the brochure scan per language; rendering the markup verbatim would have shown Chinese visitors the German brochure | Medium — caught by the visual diff, no gate saw it | zh carried now (Chinese-only, finding 24); model per-language assets at **Phase 14** |
 | 29 | **典型病例 ItemList says 15 items, lists 3, types them `Testimonial`** (not a schema.org type), naming real patients | Background (content not authoritative); owner + client | Carried verbatim at P9; fix or derive only if the owner asks |
 | 30 | **產品_雲芝糖肽精華_A publishes the wrong product's title**: its script overwrites the trial pack's correct `<title>` with the standard pack's | Medium — SEO, live today on 1 of 6 product pages | **Fixed by migrating the page** (no script to overwrite it); `test:seo` now compares against the page it replaces; on the client list as a fix (docs/CLIENT-QUESTIONS.md §6) |
+| 32 | **The homepage hero, product carousel and featured cases were built entirely in JavaScript**: with scripts off the live page shows 0 slides, 0 product cards, 0 case cards and 768 characters of text | High — the largest crawler-visibility gap on the site | **Fixed by migrating index.html** (P9, 16 Sep 2026): 6 slides, 3 product cards, 3 case cards, 1,331 characters |
+| 33 | **index.html defines an SVG filter (`#glass-distortion`) that five of its CSS rules apply, and it sits outside every block the chrome lift copied**: dropping it costs the carousel and every glass card their frosted look, and the element is `position:absolute; width:0; height:0`, so no gate can see it go | Medium — silent visual loss, found by hand at P9 | **Fixed**: `loadChrome` lifts it. The live page declares it TWICE, which is a duplicate element id — one is lifted |
 | 31 | **PT3 is clinic-only on its page and sellable in the data**: no `clinicOnly` flag on WH-PT3-090, so the grid and the migrated panel both offer it at HK$2,480 | Medium — a visitor can buy what the page says is clinic-only | One data edit (`clinicOnly: true`) fixes panel, grid and cart at once — **owner + client**, like finding 9 |
 
 ---

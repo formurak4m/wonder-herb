@@ -43,7 +43,7 @@ const path = require('path');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 const { resolveField, LANGS, PRIMARY } = require('./i18n');
-const { buildHead, pageUrl, pagePath, HREFLANG } = require('./head');
+const { buildHead, pageUrl, pageFile, HREFLANG } = require('./head');
 const { baseTemplate } = require('./template');
 const { PRICE_HOLD } = require('../assets/site.js');
 const { readOriginalPage, isRetired } = require('./source-page');
@@ -114,16 +114,22 @@ function wrapOf(node) {
   /* `tag` because not every live wrapper is a <section>: the product pages put
      the gallery and the buy panel inside <div class="product-grid">, which is
      layout, not a landmark. Default stays 'section'. */
-  return { tag: w.tag || 'section', section: w.section, label: w.label, id: w.id,
-           container: w.container !== false };
+  return { tag: w.tag || 'section', section: w.section, label: w.label,
+           labelledby: w.labelledby, id: w.id, container: w.container !== false };
 }
 
 /* '' is a real section class: 聯絡我們's CTA sits in a bare <section class="">,
    so an empty string still means "wrap these in a section", and only an absent
-   `section` means "no section". */
+   `section` means "no section".
+   null is the third case, from index.html: four of its six sections carry NO
+   class attribute at all, only an aria-labelledby. `"section": null` means
+   "wrap these, and emit no class attribute" - distinct from "" (emit class="")
+   and from undefined (do not wrap). */
 const wrapKey = node => {
   const w = wrapOf(node);
-  return w.section === undefined ? '' : JSON.stringify([w.tag, w.section, w.label || '', w.id || '', w.container]);
+  return w.section === undefined
+    ? ''
+    : JSON.stringify([w.tag, w.section, w.label || '', w.labelledby || '', w.id || '', w.container]);
 };
 
 function renderBody(tree, lang, data, registry) {
@@ -139,8 +145,11 @@ function renderBody(tree, lang, data, registry) {
     const inner = run.map(n =>
       renderSection(Object.assign({}, n, { wrap: undefined }), lang, data, registry)).join('\n');
     const body = w.container ? '<div class="container">' + inner + '</div>' : inner;
-    out.push('<' + w.tag + (w.id ? ' id="' + w.id + '"' : '') + ' class="' + w.section + '"' +
-             (w.label ? ' aria-label="' + w.label.replace(/"/g, '&quot;') + '"' : '') + '>' +
+    const q = s => String(s).replace(/"/g, '&quot;');
+    out.push('<' + w.tag + (w.id ? ' id="' + w.id + '"' : '') +
+             (w.section === null ? '' : ' class="' + w.section + '"') +
+             (w.label ? ' aria-label="' + q(w.label) + '"' : '') +
+             (w.labelledby ? ' aria-labelledby="' + q(w.labelledby) + '"' : '') + '>' +
              body + '</' + w.tag + '>');
   }
   return out.join('\n');
@@ -185,8 +194,11 @@ function renderPage(tree, lang, data, opts) {
     chrome: o.chrome,
     main: tree.main,
     mainClass: tree.mainClass,
+    mainId: tree.mainId,
     // the template derives the behaviour scripts from these (finding 23)
-    sectionTypes: (tree.sections || []).map(node => node.type)
+    // "type" or "type/variant" - a behaviour may belong to one variant only
+    sectionTypes: (tree.sections || []).map(node =>
+      node.type + (node.fields && node.fields.variant ? '/' + node.fields.variant : ''))
   });
 }
 
@@ -278,8 +290,18 @@ function loadChrome(sourcePage) {
      on phones. Found at P9-T1 by the full visual diff. It is a plain wa.me link
      with no script behind it, identical on all 18 pages. */
   const floating = html.match(/<a[^>]*class="mobile-fixed-contact-btn"[\s\S]*?<\/a>/i);
+  /* The homepage defines an SVG filter (#glass-distortion) before the nav, and
+     FIVE rules in its stylesheet apply it - the carousel, the glass cards and
+     the case-studies card all lose their frosted look without it. It sits
+     outside the nav wrapper, so lifting header + footer dropped it silently;
+     the element is `position:absolute; width:0; height:0`, so it costs no
+     layout and no other gate could see it go. Only index.html has one.
+     The live page has the SAME block TWICE, which means a duplicate element id
+     - invalid, and the second is dead weight. One is lifted. */
+  const filters = html.match(/<svg[^>]*class="svg-filters"[\s\S]*?<\/svg>/i);
   return { header: header ? header[0] : '', footer: footer ? footer[0] : '',
-           floating: floating ? floating[0] : '' };
+           floating: floating ? floating[0] : '',
+           filters: filters ? filters[0] : '' };
 }
 
 function loadTree(file) {
@@ -361,7 +383,7 @@ function main(argv) {
         const src = tag.replace(/^<(?:script src|link rel="stylesheet" href)="/, '').replace(/"$/, '');
         if (!fs.existsSync(path.join(ROOT, src))) throw new Error(tree.path + ' links ' + src + ', which does not exist');
       });
-      const rel = pagePath(tree, lang).replace(/^\//, '');
+      const rel = pageFile(tree, lang);
       const dest = path.join(OUT, rel);
       const changed = writeIfChanged(dest, html);
       console.log('    ' + lang + '  ' + rel + '  ' +

@@ -663,6 +663,127 @@ and wrong about the 3D viewer, which is not on those pages at all.
   <section> wrappers, and inline styles the live markup carries.
 
 
+#### index.html (the last page in Phase 9): DONE 16 Sep 2026, awaiting owner review
+
+**Retired.** `legacy/index.html` (git rename, noindex); `/index.html` is rendered from
+`data/pages/index.json`. `test:all` is green: **15 suites, 1,496 passing checks**.
+
+**There is no `<model-viewer>` on this site.** The plan assumed one. The homepage loads **three.js
+r128 from cdnjs plus OrbitControls and GLTFLoader from unpkg** (index.html:2969-2971) and hand-rolls
+a scene, camera, WebGL renderer, lights, a `ResizeObserver` and an auto-rotating orbit control per
+model. There is no vendor element and so no built-in poster attribute: the degradation had to be
+designed. The 3D is also not a section of its own - the four `.glb` models are **slides in the hero
+carousel**, alongside two photographs.
+
+**What the page actually was.** Four of its blocks were EMPTY in the HTML and built by JavaScript on
+load: the hero carousel, the product carousel and the featured cases among them. Measured, scripts
+off, live against migrated:
+
+| | live | migrated |
+|---|---|---|
+| hero slides | **0** | 6 |
+| product cards | **0** | 3 |
+| featured case cards | **0** | 3 |
+| characters of text in `<main>` | 768 | **1,331** |
+
+That is the single biggest pre-rendering win in the phase, and it is most of the scripts-off visual
+difference (34-37%): our page is ~850px taller because it has content where the live one has empty
+boxes.
+
+**A 3D slide degrades to a photograph.** Each model slide renders the container the loader looks for
+with a real `<img>` inside it, taken from the product the model shows - and NOT guessed:
+`data/products.json` already carries a `model` field naming each product's `.glb`, so the poster is
+that product's own `image`. (`bottle_PEPTIDES.glb` belongs to two packs; the first, the standard
+pack, is used.) The loader's first act is `container.innerHTML = ''`, so where WebGL works nothing
+changes; where it does not the visitor keeps a photograph instead of a blank box or a permanent
+"載入 3D 模型中...". The lifted loader had to be corrected on three lines: it replaced the container
+with that loading sentence immediately, and with "無法載入 3D 模型" on failure, which would have
+destroyed the poster before the 19MB download even started.
+
+**Phase 10 is a data edit, not a code change**, for both heavy-media problems:
+- the four `.glb` URLs are per-slide tree fields, reaching the DOM as `data-model`; the behaviour
+  file names no file. Today they are string literals inside a 5,055-line HTML file.
+- the Wix-hosted background video (finding 1, dies at cutover) is a `videoUrl` field on the
+  `cta-band/video-band` variant. Nothing here solves finding 1; it refuses to make it worse.
+
+**One new section, and four new variants** (all markup lifted from the live page):
+- **`product-carousel`** (15th type): the 皇牌產品系列 triple layout, data-backed from
+  `products.json`. The three visible cards are pre-rendered; the six the arrows rotate through are
+  emitted once as an inert `<script type="application/json">` island, so rotation works without
+  reinstating a client-side `fetch`.
+- `hero` grew `slides` (pre-rendered slides and dots), `case-list` grew `highlights`, `cta-band`
+  grew `video-band`, and `callout` grew `quality` - the `.quality-highlight` block, which the first
+  pass missed entirely and the section-by-section structural comparison caught.
+- Three behaviour files: `home-hero.js` (the carousel, its hover physics, the particle canvas and
+  the WebGL, lifted verbatim), `product-carousel.js`, `video-band.js`.
+
+**Renderer changes the page forced:**
+- `wrap` gained `labelledby` and `section: null` - four of index's six sections carry **no class at
+  all**, only an `aria-labelledby`.
+- `mainId`, for `<main id="main-content">`.
+- **`pageFile` vs `pagePath`**: the home page's canonical is the bare directory (`/`), but the file
+  is still `index.html`. One function, used by the renderer and the SEO gate, rather than the rule
+  copied into both.
+- **`loadChrome` now lifts `<svg class="svg-filters">`**. Only index has one, it defines
+  `#glass-distortion`, and **five** rules in its stylesheet apply that filter - the carousel and
+  every glass card lose their frosted look without it. It is `position:absolute; width:0; height:0`,
+  so it costs no layout and **no gate could have seen it go**; found by comparing the live body's
+  children against ours. (The live page has the same block twice, which is a duplicate element id.)
+- A behaviour may now be registered per `type/variant`, so `cta-band/video-band` loads its file and
+  the banner and button variants on 聯絡我們 and 常見問題 do not.
+
+**Two test defects this page exposed, both fixed:**
+- `test:behaviour` picked effects by bare section type, so the case **filter** ran against index,
+  whose `case-list` is the highlights variant and has no filter panel: three red checks for a page
+  behaving correctly. It now selects by `type/variant`, the same key the template uses.
+- `editor/lang.js` listed `number` as a structural key. The only field named `number` is a hero
+  stat - "90%+", "20+ Yrs", "GMP" - which is display copy Phase 14 must translate, so an editor save
+  collapsed `{zh: "20+ Yrs"}` to a bare string. Caught by the round-trip check. Genuinely numeric
+  fields are excluded by field TYPE, so nothing depended on the name.
+
+**One fidelity loss the diff caught**, the same class as the product batch's `<h1>` tagline: the
+company card's paragraphs are styled INLINE on the live page (`font-size:1.05rem; line-height:1.6;
+margin-bottom:1.2rem`, and no bottom margin on the last) and there is no `.company-glass-card p`
+rule anywhere in the page CSS to stand in. Rendering bare `<p>` made the card shorter and moved the
+rest of the homepage up. The styling now belongs to the variant, and the hand-written assertion that
+pinned the bare `<p>` was corrected to assert the live styling instead.
+
+**The visual diff, reconciled at both widths.** A reconcile variant - the same tree, rendered in
+memory with the products in the live page's ORDER and with its own titles and descriptions, and the
+three featured cases from its inline array instead of `data/cases.json` - collapses the difference
+to the control's own number, at the **identical page height**:
+
+| | 1280 | 390 |
+|---|---|---|
+| CONTROL (live page today vs baseline) | 0.74% | 1.04% |
+| migrated, scripts on | 10.93% | 14.72% |
+| **migrated VARIANT** | **1.15%**, height 3931 = baseline | **1.04%**, height 5794 = baseline |
+
+So the layout is exact and the whole residual is the DATA disagreement, which is not ours to
+resolve: the homepage's product order and copy come from `data/products.json` (the catalogue the
+admin owns) rather than the page's third inline copy of it, and the case excerpts come from
+`data/cases.json` rather than the page's inline three-case array. Same rule as 常見問題: render from
+the data, record the difference, change neither.
+
+Accepted, in the variant's residual and in the control alike: the `section-title` font effect
+(finding 21b) and the hero region, which is nondeterministic - the control alone, comparing the live
+page against a baseline of itself, moved between 14k and 35k pixels in that region across runs,
+because the carousel auto-advances and a 3D frame is never identical.
+
+Also worth stating: a probe that blocks external hosts shows the nav 2px taller on our page, because
+the live page's script rewrites the flag `alt` to empty and a broken image with alt text ignores its
+CSS box. With the flag CDN reachable - which is what `page-diff` does, and what a visitor gets - the
+nav measures 164 on both at 1280 and 139 at 390.
+
+**Not ported, deliberately:** `buildHeroCarousel()` (the markup it built is pre-rendered),
+`updateHeroCarouselAlt()` (alt text is in the HTML; Chinese-only until Phase 14, finding 24),
+`syncFixedNavOffset()` (superseded by D1), and `bindBackToTop()`, which was already dead code - the
+live page has no `#backToTop` element for it to bind.
+
+**Phase 9 is complete**: 15 of 18 pages pre-rendered; the other three are out of scope by the
+owner's decision recorded above.
+
+
 #### 常見問題 (page two, first content page): DONE 15 Sep 2026, awaiting owner review
 
 **Retired** (`fc8c6e8`). `legacy/常見問題.html` (git rename, noindex), and `/常見問題.html` is rendered

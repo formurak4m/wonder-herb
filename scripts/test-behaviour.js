@@ -228,7 +228,14 @@ const OTHER_PAGES = render.publishedTrees().map(render.loadTree).filter(t => t.p
   const galleryNode = t.sections.find(n => n.type === 'gallery');
   const images = galleryNode ? (galleryNode.fields.images || []).length : 0;
   return { key, file: t.path, h1: h1.replace(/<[^>]+>/g, '').trim(),
-           sections: t.sections.map(n => n.type), images };
+           sections: t.sections.map(n => n.type),
+           /* "type" or "type/variant" - the SAME key renderer/template.js uses
+              to pick a behaviour file. Selecting effects by bare type ran the
+              case filter against index.html, whose case-list is the highlights
+              variant and has no filter panel at all: three red checks for a
+              page that is behaving correctly. A variant is a different block. */
+           keys: t.sections.map(n => n.type + (n.fields && n.fields.variant ? '/' + n.fields.variant : '')),
+           images };
 });
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -584,6 +591,59 @@ const EFFECTS = {
     } finally { await ctx.close(); }
   },
 
+  /* The homepage hero. The point of the check is that the behaviour DRIVES
+     markup that is already there: the slides are counted first, and a page that
+     only builds them in JavaScript would have none to count. */
+  async heroSlide(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      const n = await page.evaluate(() => document.querySelectorAll('#heroSlides .carousel-slide').length);
+      if (n < 2) { this.detail = 'fewer than two slides in the HTML'; return false; }
+      const first = await page.evaluate(() =>
+        [...document.querySelectorAll('#heroSlides .carousel-slide')].findIndex(s => s.classList.contains('active')));
+      await page.click('#heroNext', { timeout: 2000 });
+      const moved = await until(() => page.evaluate(f => {
+        const slides = [...document.querySelectorAll('#heroSlides .carousel-slide')];
+        const dots = [...document.querySelectorAll('#heroDots .dot')];
+        const at = slides.findIndex(s => s.classList.contains('active'));
+        return at !== f && at !== -1 && dots.length === slides.length &&
+               dots[at].classList.contains('active') &&
+               dots[at].getAttribute('aria-selected') === 'true' &&
+               slides.filter(s => s.classList.contains('active')).length === 1;
+      }, first), 2000);
+      this.detail = n + ' slides in the HTML, active moved from ' + first + ': ' + moved;
+      return moved;
+    } finally { await ctx.close(); }
+  },
+
+  /* The product carousel. Same shape: the three cards must be in the HTML
+     first, and the arrow must change which product is featured. */
+  async productRotate(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      const before = await page.evaluate(() => {
+        const h = document.querySelector('#featuredCard h3');
+        const l = document.querySelector('#featuredCard .btn-detail-main');
+        return { title: h ? h.textContent.trim() : '', href: l ? l.getAttribute('href') : '' };
+      });
+      if (!before.title) { this.detail = 'no featured product in the HTML'; return false; }
+      await page.click('#productNextManual', { timeout: 2000 });
+      const rotated = await until(() => page.evaluate(b => {
+        const h = document.querySelector('#featuredCard h3');
+        const l = document.querySelector('#featuredCard .btn-detail-main');
+        const left = document.querySelector('#leftSideCard h4');
+        return !!h && h.textContent.trim() !== b.title &&
+               !!l && l.getAttribute('href') !== b.href &&
+               /* the old featured product becomes the left neighbour */
+               !!left && left.textContent.trim() === b.title;
+      }, before), 2000);
+      this.detail = 'featured was "' + before.title + '", rotates: ' + rotated;
+      return rotated;
+    } finally { await ctx.close(); }
+  },
+
   /* The next two need no product grid: any page with the site chrome. */
   async badgeFromStoredCart(width) {
     const ctx = await context(width); const page = await newPage(ctx);
@@ -797,17 +857,23 @@ async function runEffect(name, scenario, width, page) {
       }
       /* per-section behaviour this page has, and its own negative control */
       const EXTRA = Object.assign({},
-        p.sections.indexOf('case-list') !== -1 ? {
+        p.keys.indexOf('case-list') !== -1 ? {
           'caseFilter@1280': 'a diagnosis chip filters the pre-rendered cards, the count follows, reset restores all 15',
           'caseSearch@1280': 'search narrows the same cards, and a term matching nothing says so',
           'caseReadMore@390': 'a case\'s full text is hidden at rest and expands on click'
         } : {},
-        p.sections.indexOf('product-detail') !== -1 ? {
+        p.keys.indexOf('product-detail') !== -1 ? {
           'detailAddToCart@1280': 'the buy panel adds by SKU at the data price (or refuses, or offers no button at all - whichever the data says)',
           'detailAddToCart@390': 'the same on a phone'
         } : {},
         p.images > 1 ? {
           'galleryThumbs@1280': 'a thumbnail click switches the main image and moves `active`'
+        } : {},
+        p.keys.indexOf('hero') !== -1 ? {
+          'heroSlide@1280': 'the hero carousel advances the PRE-RENDERED slides, and the dots follow'
+        } : {},
+        p.keys.indexOf('product-carousel') !== -1 ? {
+          'productRotate@1280': 'the arrows rotate the product carousel through all six products'
         } : {});
       for (const [k, label] of Object.entries(EXTRA)) {
         const [name, w] = k.split('@');

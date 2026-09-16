@@ -1,6 +1,6 @@
 /* Callout - one boxed aside with a heading, a line of copy and a link.
- * Two real shapes on the live site, so two real variants, both from
- * 常見問題.html (P9, page two):
+ * Four real shapes on the live site, so four real variants. The first two are
+ * from 常見問題.html (P9, page two):
  *
  *   highlight - <div class="highlight-box">: an h3 with an icon, a <p>, and
  *               the link as a button (<a class="expert-link">, icon before and
@@ -33,29 +33,47 @@ export const config = {
     href: { type: 'text' },
     linkIcon: { type: 'text' },    // highlight only; live: "fab fa-weixin"
     after: { type: 'text' },       // note only: text after the inline link
+    prefix: { type: 'textarea' },  // quality only: the lead-in span
     variant: {
       type: 'select',
       options: [
         { label: 'Highlight box with button', value: 'highlight' },
         { label: 'Tinted note with inline link', value: 'note' },
-        { label: 'One-line info bar', value: 'info' }
+        { label: 'One-line info bar', value: 'info' },
+        { label: 'Quality statement (homepage)', value: 'quality' }
       ]
     }
   },
   defaultProps: {
-    heading: '', icon: '', body: '', label: '', href: '', linkIcon: '', after: '', variant: 'highlight'
+    heading: '', icon: '', body: '', label: '', href: '', linkIcon: '', after: '',
+    prefix: '', variant: 'highlight'
   },
-  variants: ['highlight', 'note', 'info']
+  variants: ['highlight', 'note', 'info', 'quality']
 };
 
 const icon = (cls, style) =>
   cls ? <i className={cls} style={style} aria-hidden="true"></i> : null;
 
-export default function Callout({ heading, icon: iconClass, body, label, href, linkIcon, after, variant = 'highlight' }) {
+export default function Callout({ heading, icon: iconClass, body, label, href, linkIcon, after,
+                                  prefix, variant = 'highlight' }) {
   /* info - 微信發表文章.html:1 <div class="info-note">: one line of text in a
      tinted bar, no heading and no link. */
   if (variant === 'info') {
     return <div className="info-note"><span>{body}</span></div>;
+  }
+
+  /* quality - index.html:3082 <div class="quality-highlight">: one paragraph in
+     two spans, a plain lead-in and the sentence the styling emphasises. The
+     split is what the class styles, so it is two fields rather than one. */
+  if (variant === 'quality') {
+    return (
+      <div className="quality-highlight reveal-on-scroll">
+        <p>
+          {prefix ? <span className="quality-prefix-line">{prefix}</span> : null}
+          <span>{body}</span>
+        </p>
+      </div>
+    );
   }
 
   if (variant === 'note') {

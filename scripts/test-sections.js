@@ -334,8 +334,16 @@ const tbGlass = render(components['text-block'],
 check('text-block glass: the homepage classes',
       tbGlass.indexOf('class="section-title reveal-on-scroll"') !== -1
       && tbGlass.indexOf('class="company-glass-card reveal-on-scroll reveal-delay-2"') !== -1, 'ok');
-check('text-block glass: a <p> per paragraph',
-      tbGlass.indexOf('<p>第一段</p><p>第二段</p>') !== -1, 'ok');
+/* A <p> per paragraph, carrying the live page's OWN inline styling. The live
+   company card styles its paragraphs inline and there is no
+   `.company-glass-card p` rule anywhere in the page CSS to stand in for it, so
+   rendering bare <p> made the block shorter and moved the rest of the homepage
+   up - caught by the P9 visual diff. The last paragraph has no bottom margin,
+   exactly as on the live page. */
+check('text-block glass: a <p> per paragraph, styled as the live page styles them',
+      tbGlass.indexOf('<p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem">第一段</p>') !== -1 &&
+      tbGlass.indexOf('<p style="font-size:1.05rem;line-height:1.6">第二段</p>') !== -1 &&
+      tbGlass.indexOf('margin-bottom:1.2rem">第二段') === -1, 'ok, and no bottom margin on the last');
 const tbCard = render(components['text-block'],
   { heading: '產品介紹', variant: 'card', paragraphs: [{ text: 'x' }], bullets: [{ text: '項目內容' }] });
 check('text-block card: the product-page class',
@@ -500,6 +508,11 @@ function scan(s, i) {
    not markup, and nothing a section can emit. */
 const PER_ITEM_ICON = 'a per-item icon class, chosen by the item; the fixture passes one and the <i> itself is proven';
 const HOLE = 'an interpolated hole in the live template, not a class name';
+/* The live <section> around a block belongs to the TREE (`wrap`), not to the
+   component - that is the whole point of wrap, so that adjacent nodes can share
+   one section. A section class is therefore waived here and checked by
+   test:render, which renders through the tree. */
+const WRAPPED_BY_TREE = 'the live <section> wrapper, which the tree owns (wrap), not the component';
 
 const INLINE_COPY = {
   strong: 'inline emphasis inside body copy. Fields are plain text with a constrained ' +
@@ -521,18 +534,43 @@ const FIDELITY = {
                variant: 'video', videoUrl: 'https://cdn.example.com/hero.mp4' } }
   ],
 
-  hero: {
-    page: 'index.html', selector: '.hero',
-    props: {
-      badge: '臨床驗證 · 加拿大GMP藥廠', heading: '雲芝糖肽精華 PSP', headingAccent: '+T3',
-      headingLine2: '天然輔助方案', body: '超過20年經驗', headingId: 'hero-heading',
-      stats: [{ number: '90%+', label: '有效成份含量' }],
-      primaryLabel: '立即查詢', primaryHref: 'https://wa.me/85293318571/',
-      primaryIcon: 'fab fa-whatsapp',
-      secondaryLabel: '了解產品系列', secondaryHref: '#products',
-      showCarousel: true
-    }
-  },
+  hero: [
+    { page: 'index.html', selector: '.hero',
+      props: {
+        badge: '臨床驗證 · 加拿大GMP藥廠', heading: '雲芝糖肽精華 PSP', headingAccent: '+T3',
+        headingLine2: '天然輔助方案', body: '超過20年經驗', headingId: 'hero-heading',
+        stats: [{ number: '90%+', label: '有效成份含量' }],
+        primaryLabel: '立即查詢', primaryHref: 'https://wa.me/85293318571/',
+        primaryIcon: 'fab fa-whatsapp',
+        secondaryLabel: '了解產品系列', secondaryHref: '#products',
+        showCarousel: true
+      } },
+    /* The slides are pre-rendered now; the live page BUILDS them in
+       buildHeroCarousel(), so the expectation is that function's two
+       templates - one per branch, a 3D slide and a photograph.
+       The DOTS are not mapped: the live page builds each dot with
+       createElement and setAttribute rather than a template, so there is no
+       markup to read. They are covered by the visual diff and by
+       test:behaviour instead. */
+    { label: 'carousel 3D slide', page: 'index.html',
+      template: /if \(img\.type === '3d'\) \{\s*slide\.innerHTML = /,
+      allow: { X: HOLE },
+      props: {
+        slideLabel: '圖片', dotLabel: '切換至圖片', dotsLabel: '輪播導航點',
+        carouselLabel: '產品形象輪播展示', prevLabel: '上一張圖片', nextLabel: '下一張圖片',
+        slides: [
+          { type: 'model', src: 'bottle.glb', alt: '模型', poster: 'https://x/a.png', posterAlt: '照片' },
+          { type: 'image', src: 'https://x/b.png', alt: '照片' }
+        ]
+      } },
+    { label: 'carousel photo slide', page: 'index.html',
+      template: /\} else \{\s*slide\.innerHTML = /,
+      allow: { X: HOLE },
+      props: {
+        slideLabel: '圖片', dotLabel: '切換至圖片',
+        slides: [{ type: 'image', src: 'https://x/b.png', alt: '照片' }]
+      } }
+  ],
 
   'text-block': [
     { label: 'glass', page: 'index.html', selector: '.company-glass-card',
@@ -636,7 +674,18 @@ const FIDELITY = {
       props: { heading: '需要專業諮詢？', body: '我們的健康顧問團隊', label: '立即 WhatsApp 諮詢',
                href: 'https://wa.me/85293318571/', icon: 'fab fa-whatsapp' } },
     { label: 'button', page: '常見問題.html', selector: '.cta-button',
-      props: { variant: 'button', label: '探索產品系列', href: '產品介紹.html' } }
+      props: { variant: 'button', label: '探索產品系列', href: '產品介紹.html' } },
+    /* the homepage's band: the live <section> holds the video, the overlay and
+       the glass card, so one selector covers all three */
+    { label: 'video-band', page: 'index.html', selector: '.case-studies-section',
+      allow: { 'fa-weixin': PER_ITEM_ICON, fab: PER_ITEM_ICON,
+               section: WRAPPED_BY_TREE, 'case-studies-section': WRAPPED_BY_TREE,
+               'reveal-on-scroll': WRAPPED_BY_TREE },
+      props: { variant: 'video-band', heading: '標題', headingId: 'study-heading', body: '說明文字',
+               videoUrl: 'https://cdn.example.com/bg.mp4', videoType: 'video/mp4',
+               buttons: [{ label: '甲', href: 'a.html', style: 'primary' },
+                         { label: '乙', href: 'b.html', style: 'outline' },
+                         { label: '丙', href: 'c.html', style: 'outline', icon: 'fab fa-weixin' }] } }
   ],
 
   callout: [
@@ -647,7 +696,9 @@ const FIDELITY = {
       props: { variant: 'info', body: '一行說明文字' } },
     { label: 'note', page: '常見問題.html', selector: '.faq-section .container > .faq-item',
       props: { variant: 'note', heading: '標題', icon: 'fas fa-university', body: '前文',
-               label: '連結', href: 'a.html', after: '。' } }
+               label: '連結', href: 'a.html', after: '。' } },
+    { label: 'quality', page: 'index.html', selector: '.quality-highlight',
+      props: { variant: 'quality', prefix: '前置說明文字，', body: '重點說明文字。' } }
   ],
 
   'card-grid': [
@@ -705,6 +756,17 @@ const FIDELITY = {
         source: 'cases.json', allLabel: '全部病例', defaultIcon: 'fa-solid fa-virus',
         data: { cases: [{ title: 'x', subtitle: '示例診斷', summary: 'y', content: 'z' }] }
       } },
+    /* the homepage's three mini cards, built by renderFeaturedCases() */
+    { label: 'highlights', page: 'index.html',
+      template: /grid\.innerHTML = caseDataList\.slice\(0, 3\)\.map\(\(c, i\) => \{[\s\S]*?return /,
+      allow: { X: HOLE,
+               'reveal-delay-X': 'the live class is reveal-delay-${i+1}, a hole; the section emits the real index' },
+      props: {
+        source: 'cases.json', variant: 'highlights', heading: '真實康復故事精選',
+        headingId: 'cases-heading', sub: '副標題', linkLabel: '閱讀完整故事 →',
+        linkHref: '典型病例.html', moreLinkLabel: '查看更多典型病例 →', moreHref: '典型病例.html',
+        data: { cases: [{ title: 'x', subtitle: '示例診斷', summary: 'y', content: '<p>z</p>' }] }
+      } },
     { label: 'filter panel', page: '典型病例.html',
       template: /let chipsHtml = /,
       allow: { X: HOLE },
@@ -715,6 +777,26 @@ const FIDELITY = {
         filterIcon: 'fas fa-tags', allLabel: '全部病例', allIcon: 'fas fa-list-ul',
         defaultIcon: 'fa-solid fa-virus',
         data: { cases: [{ title: 'x', subtitle: '示例診斷', summary: 'y', content: 'z' }] }
+      } }
+  ],
+
+  /* The homepage's triple carousel. Its static shell is in the HTML, but the
+     three cards are built by renderProductTriple() - so the shell and the
+     featured card's template are both mapped. The two side cards' template is
+     the same shape minus the link, so it is covered by the featured one. */
+  'product-carousel': [
+    { label: 'shell', page: 'index.html', selector: '#tripleProductLayout',
+      props: { source: 'products.json', prevLabel: '上一個產品', nextLabel: '下一個產品',
+               groupLabel: '產品輪播展示', data: { products: [] } } },
+    { label: 'featured card', page: 'index.html',
+      template: /m\.innerHTML = /,
+      allow: { X: HOLE },
+      props: {
+        source: 'products.json', detailLabel: '瞭解更多', detailIcon: 'fas fa-arrow-right',
+        data: { products: [
+          { sku: 'A', title: '甲', desc: '甲的說明', image: 'https://x/a.png', link: 'a.html' },
+          { sku: 'B', title: '乙', desc: '乙的說明', image: 'https://x/b.png', link: 'b.html' }
+        ] }
       } }
   ],
 

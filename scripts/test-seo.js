@@ -84,7 +84,7 @@ const UTILITY_PAGES = {
   'account.html': 'account: signed-in UI, no document subject, no honest schema type'
 };
 
-const { pagePath, SITE, HREFLANG } = require(path.join(ROOT, 'renderer', 'head.js'));
+const { pagePath, pageFile, SITE, HREFLANG } = require(path.join(ROOT, 'renderer', 'head.js'));
 const { readOriginalPage, isRetired } = require(path.join(ROOT, 'renderer', 'source-page.js'));
 const { LANGS_IN_SCOPE, PRIMARY } = require(path.join(ROOT, 'renderer', 'render.js'));
 
@@ -151,7 +151,7 @@ execFileSync(process.execPath, [path.join(ROOT, 'renderer', 'render.js')].concat
 
 check('renderer/render.js produced output for every tree',
       trees.every(t => LANGS_IN_SCOPE.every(l =>
-        fs.existsSync(path.join(OUT, pagePath(t.tree, l).replace(/^\//, ''))))),
+        fs.existsSync(path.join(OUT, pageFile(t.tree, l))))),
       trees.length + ' tree(s) x ' + LANGS_IN_SCOPE.length + ' language(s)');
 
 /* Every rendered variant, keyed by its canonical URL so reciprocity can look
@@ -159,7 +159,7 @@ check('renderer/render.js produced output for every tree',
 const rendered = new Map();
 trees.forEach(({ tree }) => {
   LANGS_IN_SCOPE.forEach(lang => {
-    const rel = pagePath(tree, lang).replace(/^\//, '');
+    const rel = pageFile(tree, lang);
     const file = path.join(OUT, rel);
     if (!fs.existsSync(file)) return;
     const html = fs.readFileSync(file, 'utf8');

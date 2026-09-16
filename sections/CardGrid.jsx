@@ -47,8 +47,19 @@ export const config = {
   label: 'Card grid',
   fields: {
     heading: { type: 'text' },
+    headingId: { type: 'text' },
     headingHidden: { type: 'radio', options: [
       { label: 'Visible', value: false }, { label: 'Screen readers only', value: true }
+    ] },
+    /* badges: the product pages' four cards use <h4> and no reveal animation;
+       the homepage's use <h3> and fade in one after another. Same block, same
+       classes, two real spellings of it - so both are fields rather than a
+       second variant. */
+    itemTag: { type: 'select', options: [
+      { label: 'h4 (product pages)', value: 'h4' }, { label: 'h3 (homepage)', value: 'h3' }
+    ] },
+    reveal: { type: 'radio', options: [
+      { label: 'No animation', value: false }, { label: 'Fade in one by one', value: true }
     ] },
     items: {
       type: 'array',
@@ -84,7 +95,8 @@ export const config = {
     }
   },
   defaultProps: {
-    heading: '', headingHidden: false, items: [], linkLabel: '', linkIcon: '',
+    heading: '', headingId: '', headingHidden: false, itemTag: 'h4', reveal: false,
+    items: [], linkLabel: '', linkIcon: '',
     hint: '', hintIcon: '', noReferrer: false, variant: 'brochure'
   },
   variants: ['badges', 'brochure', 'report', 'icon', 'article', 'link-list', 'references']
@@ -101,11 +113,12 @@ const WRAPPER = {
 const icon = cls => cls ? <i className={cls} aria-hidden="true"></i> : null;
 const NEW_TAB = { target: '_blank', rel: 'noopener noreferrer' };
 
-export default function CardGrid({ heading, headingHidden, items, linkLabel, linkIcon,
+export default function CardGrid({ heading, headingId, headingHidden, itemTag, reveal,
+                                   items, linkLabel, linkIcon,
                                    hint, hintIcon, noReferrer, variant = 'brochure' }) {
   const list = Array.isArray(items) ? items : [];
   const title = heading
-    ? <h2 className={headingHidden ? 'sr-only' : undefined}>{heading}</h2>
+    ? <h2 id={headingId || undefined} className={headingHidden ? 'sr-only' : undefined}>{heading}</h2>
     : null;
 
   /* references - 產品_憶活素.html's 醫學文獻參考 box, inside the details card.
@@ -156,10 +169,11 @@ export default function CardGrid({ heading, headingHidden, items, linkLabel, lin
        the small icon+label row INSIDE the buy panel, which product-detail
        renders from the product's own `badges` field. These have no links. */
     if (variant === 'badges') {
+      const H = itemTag === 'h3' ? 'h3' : 'h4';
       return (
-        <div className="badge-item" key={i}>
+        <div className={'badge-item' + (reveal ? ' reveal-on-scroll reveal-delay-' + (i + 1) : '')} key={i}>
           {icon(it.icon)}
-          <h4>{it.title}</h4>
+          <H>{it.title}</H>
           {it.text ? <p>{it.text}</p> : null}
         </div>
       );
