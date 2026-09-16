@@ -210,6 +210,28 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 > `video` (`研究報告.html`, which has a background `<video>` in the header). `aria-labelledby`
 > is optional because `典型病例.html` omits it.
 
+> ### What a fidelity map CANNOT tell you: whether the copy is complete
+>
+> A fidelity map, and every structural gate built on one, compares **tags, classes, attributes and
+> order**. None of them looks at the text inside an element. So a section can carry the right tag
+> with the right class in the right place and be **missing a line of copy**, and the fidelity map,
+> `test:render`, `test:sections` and `test:seo` all stay green. Structural correctness is not
+> content completeness, and a green fidelity run is **not** evidence that the copy is all there.
+>
+> **The visual diff is the only gate that sees missing text.** Treat it that way: never accept a
+> page on structural checks alone, and never explain away a diff region that is smaller than you
+> expected without reading what text is in it.
+>
+> This is not hypothetical. At the P9 product batch every product `<h1>` on the live site is two
+> spans — the product name and a smaller maroon tagline under it. The extractor took the first span
+> only, so **all six pages published without the tagline**: a visible line of the client's copy,
+> gone. SEO passed (an `<h1>` was present and matched), fidelity passed (`h1.product-title > span`
+> existed), behaviour passed. Only the pixel diff showed it.
+>
+> Same class as finding 28 (per-language assets): a defect the structural gates are **built** not to
+> see, caught by the one gate that renders. Both are why the visual diff at 1280 and 390, scripts on
+> and off, is a definition-of-done item and not a formality.
+
 - **Contract:** each file default-exports a React component and named-exports a `config`:
   ```jsx
   // sections/PageHeader.jsx — abridged; see the file for the shipped version
@@ -976,6 +998,11 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
 
 ## Appendix A — Definition of done for any migrated page
 - Renders from its tree; visually matches baseline within tolerance at 1280px and 390px.
+- **Text completeness is the visual diff's job, and only the visual diff's.** Structural checks
+  (fidelity maps, `test:render`, `test:sections`, `test:seo`) compare tags, classes and order and
+  never read the text inside an element, so a line of copy can go missing from a structurally
+  perfect element with every one of them green — it did, on all six product pages (see the box
+  under P4-T1). A green structural run is not proof the copy is complete.
 - Pre-rendered: content is in the HTML, not fetched client-side.
 - **Per-language assets lifted as the zh value** (finding 28): any `src`/`href` the old page swaps by language goes into the tree explicitly; `npm run test:lang-assets` proves it, with negative controls. Do not rely on the visual diff to notice.
 - **The live `<section>` wrappers reproduced** (`wrap: { section, label, container }`): their classes carry padding, and adjacent nodes in one live section share one wrapper.

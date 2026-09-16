@@ -245,6 +245,12 @@ Month 2: all 18 pages, all 7 languages, full ~22 sections, add-page-from-templat
 
 - Renders from the tree, visually matches the current page within tolerance, at 1280 and 390, **scripts on and scripts off**, against the production-hostname baseline. Every difference is either explained or fixed.
 - Pre-rendered: content is in the HTML, not fetched client-side.
+- **Only the visual diff can tell you the copy is complete.** Fidelity maps and the structural
+  suites compare tags, classes, attributes and order; none of them reads the text inside an
+  element. A structurally perfect element with a missing line of copy passes all of them — that is
+  exactly how all six product pages shipped without the `<h1>` tagline (BUILD_TASKS, the box under
+  P4-T1). Never accept a page on structural gates alone, and never wave through a diff region
+  without reading what text is in it. Same class of blind spot as finding 28.
 - **Per-language assets checked explicitly, before the diff.** Any `src` or `href` the old page SWAPS by language (its `translations` / `productData` maps, or any runtime `.src =`) must be lifted into the tree as the **zh** value — never the URL hard-coded in the markup, which may be another language's. `npm run test:lang-assets` holds this for every retired page, with negative controls; run it, and read its per-page list, rather than hoping the visual diff shows it (finding 28: 小册子 would have published the German brochure to Chinese visitors, past SEO, fidelity and behaviour).
 - SEO check passes: JSON-LD valid, hreflang reciprocal, canonical correct, meta present, heading order preserved.
 - **Interactive behaviour ported and verified by effect** (BUILD_TASKS Appendix A, `docs/FINDINGS.md` finding 23). Everything the old page did for a visitor (cart, phone menu, quick view, language switch, refusals) either works, or is recorded as an accepted regression with its user impact stated. `npm run test:behaviour` asserts outcomes, such as the menu opening or the cart holding the right SKU at the right price, **with a negative control** proving the checks fail when the behaviour files are missing. "No errors" is not verification: 產品介紹 passed SEO, fidelity and the visual diff with every control dead and zero errors.
