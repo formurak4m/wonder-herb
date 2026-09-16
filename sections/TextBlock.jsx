@@ -30,11 +30,22 @@
  * the FAQ puts it outside ("標籤" + "：內容…"). The content carries
  * its own punctuation and spacing, so both render exactly as they do today.
  */
+/* `text` may also be an ARRAY of lines, rendered with <br> between them. The
+   live copy uses a line break inside a paragraph where two statements belong
+   together but on separate lines (產品_PT3's 包裝規格: "每瓶 300 粒膠囊" then
+   "大學科研配方…"). Dropping the break silently joined them into one line and
+   made that paragraph half as tall - caught by the visual diff. Lines are a
+   field, not markup the client types, exactly like the bold lead-in. */
+function lines(text) {
+  if (!Array.isArray(text)) return text;
+  return text.flatMap((line, i) => i === 0 ? [line] : [<br key={'br' + i} />, line]);
+}
+
 export function copyBody(item) {
   const o = (item && typeof item === 'object') ? item : { text: item };
-  if (o.label) return <><strong>{o.label}</strong>{o.text}</>;
-  if (o.emphasis) return <strong>{o.text}</strong>;
-  return o.text;
+  if (o.label) return <><strong>{o.label}</strong>{lines(o.text)}</>;
+  if (o.emphasis) return <strong>{lines(o.text)}</strong>;
+  return lines(o.text);
 }
 
 export const config = {

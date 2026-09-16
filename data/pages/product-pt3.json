@@ -1,0 +1,414 @@
+{
+  "slug": "product-pt3",
+  "path": "產品_PT3.html",
+  "mainClass": "container",
+  "title": {
+    "zh": "PT3 (雲芝糖肽PSP結合T3) | 大學科研配方 | Wonder Herb"
+  },
+  "seo": {
+    "description": {
+      "zh": "PT3由澳洲昆士蘭科技大學及香港大學研發，雲芝糖肽PSP結合T3，有效抑制頑疾腫瘤增長、加速凋謝，比單獨服用PSP高出數倍功效。"
+    },
+    "dateModified": "2026-06-02T10:30:00+08:00",
+    "ogTitle": {
+      "zh": "PT3 (雲芝糖肽PSP結合T3) | 大學科研配方 | Wonder Herb"
+    },
+    "ogDescription": {
+      "zh": "PT3由澳洲昆士蘭科技大學及香港大學研發，雲芝糖肽PSP結合T3，有效抑制頑疾腫瘤增長、加速凋謝，比單獨服用PSP高出數倍功效。"
+    },
+    "ogType": "product",
+    "image": "https://lh3.googleusercontent.com/d/1zKGlugAcxcelvZXRiYFjOR5ZVdrUQOPG",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "產品介紹"
+        },
+        "path": "產品介紹.html"
+      },
+      {
+        "name": {
+          "zh": "PT3"
+        },
+        "path": "產品_PT3.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "Product",
+        "name": "PT3 (雲芝糖肽PSP結合T3)",
+        "description": "PT3由澳洲昆士蘭科技大學及香港大學研發，雲芝糖肽PSP結合T3，有效抑制頑疾腫瘤增長、加速凋謝，比單獨服用PSP高出數倍功效。",
+        "image": "https://lh3.googleusercontent.com/d/1zKGlugAcxcelvZXRiYFjOR5ZVdrUQOPG",
+        "sku": "WH-PT3-300",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStoreOnly",
+          "itemCondition": "https://schema.org/NewCondition"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "PT3 與普通雲芝糖肽有什麼區別？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "PT3 是雲芝糖肽PSP與三烯生育醇T3的獨特複合配方，經澳洲昆士蘭科技大學及香港大學研究證實，比單獨服用PSP功效高出數倍，能更有效抑制頑疾腫瘤增長並加速凋謝。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "PT3 應該如何服用？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "PT3 為醫生處方輔助產品，建議用量需諮詢醫生或專業醫護人員，根據個人狀況制定合適方案。該產品僅在指定中西醫診所出售。"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css",
+      "assets/page-product-pt3.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "產品_PT3.html"
+  },
+  "sections": [
+    {
+      "type": "gallery",
+      "wrap": {
+        "tag": "div",
+        "section": "product-grid",
+        "container": false
+      },
+      "fields": {
+        "images": [
+          {
+            "src": "https://lh3.googleusercontent.com/d/1zKGlugAcxcelvZXRiYFjOR5ZVdrUQOPG",
+            "alt": {
+              "zh": "PT3 縮略圖"
+            }
+          }
+        ],
+        "mainAlt": {
+          "zh": "PT3 雲芝糖肽PSP結合T3 產品正面圖"
+        }
+      }
+    },
+    {
+      "type": "product-detail",
+      "wrap": {
+        "tag": "div",
+        "section": "product-grid",
+        "container": false
+      },
+      "fields": {
+        "source": "products.json",
+        "sku": "WH-PT3-090",
+        "quantityLabel": {
+          "zh": "數量："
+        },
+        "addLabel": {
+          "zh": "加入購物車"
+        },
+        "addIcon": "fas fa-cart-plus",
+        "detailLabel": {
+          "zh": "詳細介紹"
+        },
+        "detailHref": "#detailedInfo",
+        "detailIcon": "fas fa-chevron-down",
+        "descIcon": "fas fa-flask",
+        "badgeIcons": [
+          {
+            "icon": "fas fa-certificate"
+          },
+          {
+            "icon": "fas fa-microscope"
+          },
+          {
+            "icon": "fas fa-chart-line"
+          }
+        ],
+        "unit": "/ 300粒膠囊",
+        "clinicNote": {
+          "zh": "只在指定中西醫診所出售"
+        },
+        "clinicIcon": "fas fa-hospital-user",
+        "clinicButtonLabel": {
+          "zh": "無庫存 (診所專供)"
+        },
+        "clinicButtonIcon": "fas fa-ban",
+        "clinicButtonAria": {
+          "zh": "无库存，该产品仅在诊所供应"
+        }
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "產品介紹"
+        },
+        "paragraphs": [
+          {
+            "label": {
+              "zh": "PT3 (雲芝糖肽PSP結合T3)"
+            },
+            "text": {
+              "zh": "由澳洲昆士蘭科技大學前列腺癌研究中心及香港大學聯合研發。對抑制頑疾腫瘤增長、加速頑疾腫瘤凋謝、加快消滅異細胞速度特別顯著，同時能夠達到增強和調節人體免疫系統的功能，並具舒緩身體不適的作用。"
+            }
+          },
+          {
+            "text": {
+              "zh": "研究結果顯示，PT3中的 Polysaccharide (雲芝多糖) + Protein (蛋白肽) 的活性含量 (= 有效成份) 比單獨服用PSP高出數倍療效。此項科研成果於2014年正式對外公佈，同時在國際權威的醫學期刊及有關的網上發表及刊載。根據報告中的科研成果顯示，PT3能有效減低異細胞發展，並能對頑疾幹細胞起到抑制作用。"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "產品功效"
+        },
+        "bullets": [
+          {
+            "text": {
+              "zh": "PT3含有極高的抗氧化成分，有助頑症病人及抵抗力低的人仕高效提升免疫力"
+            }
+          },
+          {
+            "text": {
+              "zh": "比單獨服用雲芝糖肽PSP高出數倍功效"
+            }
+          },
+          {
+            "text": {
+              "zh": "配合傳統治療 (化療、電療、標靶、免疫治療) 及於手術前後服用"
+            }
+          },
+          {
+            "text": {
+              "zh": "減低療程不適，例如疲勞、胃口不佳、痛楚、失眠、噁心、嘔吐等"
+            }
+          },
+          {
+            "text": {
+              "zh": "減低復發風險"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacedHeading": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "包裝規格"
+        },
+        "paragraphs": [
+          {
+            "text": [
+              {
+                "zh": "每瓶 300 粒膠囊"
+              },
+              {
+                "zh": "大學科研配方，只於指定中西醫診所提供"
+              }
+            ]
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "注意事項"
+        },
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "重要 曾接受器官移植的人仕不宜服用"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacerAfter": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "建議用量"
+        },
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "請咨詢醫生或專業醫護人員，根據個人狀況制定合適方案。"
+            }
+          },
+          {
+            "text": {
+              "zh": "※ PT3 為醫生處方輔助產品，不設網上直接購買，敬請見諒。"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "card-grid",
+      "fields": {
+        "items": [
+          {
+            "icon": "fas fa-university",
+            "title": {
+              "zh": "昆士蘭科技大學"
+            },
+            "text": {
+              "zh": "前列腺癌研究中心"
+            }
+          },
+          {
+            "icon": "fas fa-graduation-cap",
+            "title": {
+              "zh": "香港大學"
+            },
+            "text": {
+              "zh": "聯合科研成果"
+            }
+          },
+          {
+            "icon": "fas fa-chart-line",
+            "title": {
+              "zh": "2014國際期刊發表"
+            },
+            "text": {
+              "zh": "Plos One等權威刊載"
+            }
+          },
+          {
+            "icon": "fas fa-flask",
+            "title": {
+              "zh": "有效成份倍增效應"
+            },
+            "text": {
+              "zh": "PSP + T3 協同作用"
+            }
+          }
+        ],
+        "variant": "badges"
+      }
+    },
+    {
+      "type": "related-products",
+      "fields": {
+        "heading": {
+          "zh": "你可能也感興趣"
+        },
+        "source": "products.json",
+        "items": [
+          {
+            "sku": "WH-PSP-060",
+            "href": "產品_雲芝糖肽精華_A.html",
+            "icon": "fas fa-capsules",
+            "label": {
+              "zh": "雲芝糖肽精華 (試用裝)"
+            },
+            "desc": {
+              "zh": "60粒／90%+有效成份，提升免疫力首選"
+            }
+          },
+          {
+            "sku": "WH-PSP-500",
+            "href": "產品_雲芝糖肽精華_B.html",
+            "icon": "fas fa-boxes",
+            "label": {
+              "zh": "雲芝糖肽精華 (標準裝)"
+            },
+            "desc": {
+              "zh": "500粒／長期輔助療程，強化免疫調節"
+            }
+          },
+          {
+            "sku": "WH-T3-120",
+            "href": "產品_T3.html",
+            "icon": "fas fa-leaf",
+            "label": {
+              "zh": "T3 三烯生育醇"
+            },
+            "desc": {
+              "zh": "心血管守護，抗頑疾幹細胞"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
