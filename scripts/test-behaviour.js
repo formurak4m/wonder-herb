@@ -48,10 +48,23 @@ const { CART_IDS, PRICE_HOLD, CART_KEY, LANG_KEY } = site;
 const { originalPagePath, isRetired } = require(path.join(ROOT, 'renderer', 'source-page.js'));
 
 /* A page still hand-coded, with its own client-side language switch - the
-   "a live page follows the choice" half of languageSwitch. It used to be
-   常見問題, until that page migrated too; pick one that has not. */
-const LIVE_PAGE = ['聯絡我們.html', '典型病例.html', '研究報告.html', '有效成份檢測.html', '小册子.html', '微信發表文章.html']
-  .find(p => !isRetired(p));
+   "a live page follows the choice" half of languageSwitch. It cannot be a page
+   this batch has migrated: a pre-rendered page is Chinese only by design
+   (finding 24), so it would never follow the choice and the check would fail
+   for the wrong reason. So the probe is found, not named: a root page with no
+   tree in data/pages/ and nothing in legacy/. It was 常見問題 until that page
+   migrated, and 聯絡我們 until this one did. */
+const LIVE_PAGE = (() => {
+  const migrated = new Set(fs.readdirSync(path.join(ROOT, 'data', 'pages'))
+    .filter(f => f.endsWith('.json'))
+    .map(f => JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'pages', f), 'utf8')).path));
+  const page = fs.readdirSync(ROOT).filter(f => f.endsWith('.html'))
+    .filter(f => !migrated.has(f) && !isRetired(f))
+    .filter(f => /const translations/.test(fs.readFileSync(path.join(ROOT, f), 'utf8')))
+    .sort()[0];
+  if (!page) throw new Error('no hand-coded page left to prove the language choice carries');
+  return page;
+})();
 function livePage(name) {
   const f = originalPagePath(name);
   return f ? fs.readFileSync(f, 'utf8') : null;

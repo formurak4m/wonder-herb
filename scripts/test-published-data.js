@@ -47,6 +47,15 @@ const check = (label, cond, extra) => {
    partner contacts on 聯絡我們 when that page migrates to data. */
 const PUBLIC_EMAILS = ['info@wonder-herb.com'];
 
+/* The decision that comment anticipated, taken 16 Sep 2026 when 聯絡我們
+   migrated: the three overseas distributor addresses the contact page has
+   always published are allowed in that page's tree, and ONLY there. Any other
+   address in that file, and these addresses in any other file under data/,
+   still fail. Keyed by path so it cannot widen into a domain rule. */
+const DATA_EMAIL_ALLOW = {
+  'pages/contact.json': ['wonderherbusa@gmail.com', 'jc@smartgroupinc.org', 'enquiry@provital.com.au']
+};
+
 /* Collections that exist in MongoDB and must never be exported. customers and
    invoices carry real names, phone numbers and medical remarks (CLAUDE.md);
    movements and activity are the audit trail (finding 16); users and sessions
@@ -83,7 +92,10 @@ files.forEach(f => {
   const text = fs.readFileSync(f, 'utf8');
   let m;
   while ((m = EMAIL.exec(text))) {
-    if (!PUBLIC_EMAILS.includes(m[0].toLowerCase())) leakedEmails.push(rel(f) + ': ' + m[0]);
+    const where = rel(f).replace(/^data\//, '');
+    const allowed = PUBLIC_EMAILS.includes(m[0].toLowerCase()) ||
+                    (DATA_EMAIL_ALLOW[where] || []).includes(m[0].toLowerCase());
+    if (!allowed) leakedEmails.push(rel(f) + ': ' + m[0]);
   }
   PRIVATE_KEYS.forEach(k => {
     if (new RegExp('"' + k + '"\\s*:').test(text)) leakedKeys.push(rel(f) + ': "' + k + '"');
@@ -128,7 +140,12 @@ const EMAIL_ALLOW = [
   { files: /^legacy\/[^/]+\.html$/,
     emails: ['info@wonder-herb.com'],
     why: 'the same public contact address, in a retired original kept for reference (P9-T1)' },
-  { files: /^聯絡我們\.html$/,
+  /* The same three addresses, in the three places the contact page now lives:
+     its retired original, its page tree, and (until it is retired) the root
+     page itself. Migrating a page moves its published copy into data/, so the
+     allowance follows the content rather than being widened - anything else in
+     data/pages/ still fails. */
+  { files: /^(聯絡我們\.html|legacy\/聯絡我們\.html|data\/pages\/contact\.json)$/,
     emails: ['wonderherbusa@gmail.com', 'jc@smartgroupinc.org', 'enquiry@provital.com.au'],
     why: 'overseas distributor contacts published on the contact page by the business' },
   { files: /^admin\/index\.html$/,
@@ -244,6 +261,18 @@ console.log('\n=== the scan bites ===\n');
 const sample = '{ "slug": "x", "updatedBy": "someone@example.org" }';
 check('a staff email in a published file would be caught',
       !PUBLIC_EMAILS.includes(sample.match(EMAIL_ONE)[0].toLowerCase()));
+/* The per-file allowance (DATA_EMAIL_ALLOW) must not become a blanket one. */
+{
+  const allowedFor = (file, addr) => PUBLIC_EMAILS.includes(addr) ||
+    (DATA_EMAIL_ALLOW[file] || []).includes(addr);
+  check('the distributor addresses are allowed in the contact tree',
+        allowedFor('pages/contact.json', 'jc@smartgroupinc.org'), 'allowed there');
+  check('...and nowhere else under data/',
+        !allowedFor('products.json', 'jc@smartgroupinc.org') &&
+        !allowedFor('pages/faq.json', 'jc@smartgroupinc.org'), 'caught in products.json and faq.json');
+  check('...and no OTHER address is allowed in the contact tree',
+        !allowedFor('pages/contact.json', 'owner@wonder-herb.com'), 'caught');
+}
 check('a staff address on the COMPANY domain is caught too',
       !PUBLIC_EMAILS.includes('owner@wonder-herb.com'),
       'owner@wonder-herb.com is not allowed just because of its domain');

@@ -53,7 +53,8 @@ const SHARED_MIN = 15;
    Grows one entry at a time as pages migrate; keep it a hand-checked literal. */
 const MIGRATED = {
   'products': '產品介紹.html',
-  'faq': '常見問題.html'
+  'faq': '常見問題.html',
+  'contact': '聯絡我們.html'
 };
 
 /* D1, finding 15. These were meant to live at the end of site.css. They cannot:

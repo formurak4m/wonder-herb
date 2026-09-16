@@ -596,13 +596,12 @@ const FIDELITY = {
 
   'contact-cards': {
     page: '聯絡我們.html', selector: '.contact-grid',
-    allow: { br: INLINE_COPY.br },
     props: {
       cards: [
         { flag: 'https://flagcdn.com/hk.svg', flagAlt: 'Hong Kong Flag', title: '亞洲總部',
           company: '康草堂有限公司',
           details: [
-            { icon: 'fas fa-map-marker-alt', text: '香港九龍彌敦道301-309号', href: 'https://maps.app.goo.gl/x' },
+            { icon: 'fas fa-map-marker-alt', text: ['香港九龍彌敦道301-309号', '(佐敦地鐵A出口)'], href: 'https://maps.app.goo.gl/x', newTab: true },
             { icon: 'fas fa-phone-alt', text: '+852 2757 3112' },
             { icon: 'fab fa-whatsapp', text: '+852 9331 8571', href: 'https://wa.me/85293318571/' },
             { icon: 'fab fa-envelope', text: 'info@wonder-herb.com', href: 'mailto:info@wonder-herb.com' },

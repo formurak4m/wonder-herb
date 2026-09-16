@@ -33,8 +33,11 @@ export const config = {
           type: 'array',
           arrayFields: {
             icon: { type: 'text' },   // e.g. "fas fa-map-marker-alt", "fab fa-whatsapp"
-            text: { type: 'text' },
-            href: { type: 'text' }
+            text: { type: 'text' },   // a string, or an array of lines (<br> between them)
+            href: { type: 'text' },
+            newTab: { type: 'radio', options: [
+              { label: 'Same tab', value: false }, { label: 'New tab', value: true }
+            ] }
           }
         }
       }
@@ -43,6 +46,16 @@ export const config = {
   defaultProps: { cards: [] },
   variants: ['default']
 };
+
+/* A detail's text may be several lines: the HQ address is written over two,
+   with a <br> between the street and the station exit, and rendering it as one
+   run would change the card's height. Lines are a field (an array), not markup
+   the client types - the same structural answer as copyBody's bold lead-in
+   (finding 14). A plain string stays one line. */
+function detailText(text) {
+  const lines = Array.isArray(text) ? text : [text];
+  return lines.flatMap((line, i) => i === 0 ? [line] : [<br key={'br' + i} />, line]);
+}
 
 export default function ContactCards({ cards }) {
   const list = Array.isArray(cards) ? cards : [];
@@ -61,7 +74,7 @@ export default function ContactCards({ cards }) {
           {(Array.isArray(c.details) ? c.details : []).map((d, j) => (
             <div className="contact-detail" key={j}>
               {d.icon ? <i className={d.icon} aria-hidden="true"></i> : null}
-              <span>{d.href ? <a href={d.href}>{d.text}</a> : d.text}</span>
+              <span>{d.href ? <a href={d.href} target={d.newTab ? '_blank' : undefined}>{detailText(d.text)}</a> : detailText(d.text)}</span>
             </div>
           ))}
         </article>

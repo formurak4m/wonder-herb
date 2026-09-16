@@ -1,0 +1,335 @@
+{
+  "slug": "contact",
+  "path": "聯絡我們.html",
+  "title": {
+    "zh": "聯絡我們 | Wonder Herb - 雲芝糖肽精華"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂 Wonder Herb 聯絡資訊：亞洲總部、中國辦事處、加拿大、澳洲及美國分銷商聯絡方式。專業雲芝糖肽產品諮詢。"
+    },
+    "dateModified": "2026-06-02T10:30:00+08:00",
+    "ogTitle": {
+      "zh": "聯絡我們 | Wonder Herb - 雲芝糖肽精華"
+    },
+    "ogDescription": {
+      "zh": "康草堂 Wonder Herb 聯絡資訊：亞洲總部、中國辦事處、加拿大、澳洲及美國分銷商聯絡方式。"
+    },
+    "ogType": "website",
+    "image": "https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "聯絡我們"
+        },
+        "path": "聯絡我們.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "Product",
+        "name": "雲芝糖肽精華 PSP (標準裝)",
+        "description": "每瓶500粒，有效成分>90%，超國家標準1.8倍，強化免疫調節。",
+        "sku": "WH-PSP-500",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock",
+          "price": "3800.00"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "如何聯繫康草堂亞洲總部？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "亞洲總部位於香港九龍彌敦道301-309號嘉賓商業大廈8樓803室，電話+852 2757 3112，WhatsApp +852 9331 8571，或發送郵件至 info@wonder-herb.com。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "中國大陸有銷售點嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "中國辦事處位於廣東省廣州市荔灣區流花路73號，聯繫電話 +86 138 0295 5088。"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css",
+      "assets/page-contact.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "聯絡我們.html"
+  },
+  "sections": [
+    {
+      "type": "page-header",
+      "fields": {
+        "heading": {
+          "zh": "聯絡我們"
+        },
+        "variant": "centered",
+        "sub": {
+          "zh": "康草堂 Wonder Herb 亞洲總部及全球分銷據點，歡迎諮詢"
+        },
+        "headingId": "contact-heading"
+      }
+    },
+    {
+      "type": "contact-cards",
+      "wrap": {
+        "section": "contact-section",
+        "label": "联系信息",
+        "container": true
+      },
+      "fields": {
+        "cards": [
+          {
+            "title": {
+              "zh": "亞洲總部"
+            },
+            "flag": "https://flagcdn.com/hk.svg",
+            "flagAlt": {
+              "zh": "Hong Kong Flag"
+            },
+            "company": {
+              "zh": "康草堂有限公司"
+            },
+            "details": [
+              {
+                "icon": "fas fa-map-marker-alt",
+                "text": [
+                  {
+                    "zh": "香港九龍彌敦道301-309号 嘉賓商業大厦8樓803室"
+                  },
+                  {
+                    "zh": "(佐敦地鐵A出口)"
+                  }
+                ],
+                "href": "https://maps.app.goo.gl/V3tFgJC9dk49HKPD7",
+                "newTab": true
+              },
+              {
+                "icon": "fas fa-phone-alt",
+                "text": {
+                  "zh": "+852 2757 3112"
+                }
+              },
+              {
+                "icon": "fab fa-whatsapp",
+                "text": {
+                  "zh": "+852 9331 8571 (WhatsApp)"
+                },
+                "href": "https://wa.me/85293318571/"
+              },
+              {
+                "icon": "fas fa-envelope",
+                "text": {
+                  "zh": "info@wonder-herb.com"
+                },
+                "href": "mailto:info@wonder-herb.com"
+              }
+            ]
+          },
+          {
+            "title": {
+              "zh": "中國辦事處"
+            },
+            "flag": "https://flagcdn.com/cn.svg",
+            "flagAlt": {
+              "zh": "China Flag"
+            },
+            "details": [
+              {
+                "icon": "fas fa-map-marker-alt",
+                "text": {
+                  "zh": "廣東省廣州市荔灣區流花路73號流花君庭東座3樓"
+                }
+              },
+              {
+                "icon": "fas fa-phone-alt",
+                "text": {
+                  "zh": "+86 138 0295 5088"
+                }
+              }
+            ]
+          },
+          {
+            "title": {
+              "zh": "加拿大分銷商"
+            },
+            "flag": "https://flagcdn.com/ca.svg",
+            "flagAlt": {
+              "zh": "Canada Flag"
+            },
+            "company": {
+              "zh": "Smartmed Services Group Inc"
+            },
+            "details": [
+              {
+                "icon": "fas fa-user",
+                "text": {
+                  "zh": "聯絡：陳小姐"
+                }
+              },
+              {
+                "icon": "fab fa-whatsapp",
+                "text": {
+                  "zh": "+1 778 636 4068 (WhatsApp)"
+                },
+                "href": "https://wa.me/17786364068"
+              },
+              {
+                "icon": "fas fa-envelope",
+                "text": {
+                  "zh": "jc@smartgroupinc.org"
+                },
+                "href": "mailto:jc@smartgroupinc.org"
+              }
+            ]
+          },
+          {
+            "title": {
+              "zh": "澳洲分銷商"
+            },
+            "flag": "https://flagcdn.com/au.svg",
+            "flagAlt": {
+              "zh": "Australia Flag"
+            },
+            "company": {
+              "zh": "Provital Pty Ltd"
+            },
+            "details": [
+              {
+                "icon": "fas fa-user",
+                "text": {
+                  "zh": "聯絡：袁先生"
+                }
+              },
+              {
+                "icon": "fab fa-whatsapp",
+                "text": {
+                  "zh": "+61 416 775 229 (WhatsApp)"
+                },
+                "href": "https://wa.me/61416775229"
+              },
+              {
+                "icon": "fas fa-envelope",
+                "text": {
+                  "zh": "enquiry@provital.com.au"
+                },
+                "href": "mailto:enquiry@provital.com.au"
+              }
+            ]
+          },
+          {
+            "title": {
+              "zh": "美國分銷商"
+            },
+            "flag": "https://flagcdn.com/us.svg",
+            "flagAlt": {
+              "zh": "USA Flag"
+            },
+            "company": {
+              "zh": "Echo Glen Healthful Solutions"
+            },
+            "details": [
+              {
+                "icon": "fas fa-phone-alt",
+                "text": {
+                  "zh": "+1 503 647-5003"
+                }
+              },
+              {
+                "icon": "fab fa-whatsapp",
+                "text": {
+                  "zh": "+1 971 219-5798 (WhatsApp)"
+                },
+                "href": "https://wa.me/19712195798"
+              },
+              {
+                "icon": "fas fa-envelope",
+                "text": {
+                  "zh": "wonderherbUSA@gmail.com"
+                },
+                "href": "mailto:wonderherbUSA@gmail.com"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "map-embed",
+      "wrap": {
+        "section": "contact-section",
+        "label": "联系信息",
+        "container": true
+      },
+      "fields": {
+        "src": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3689.895749292572!2d114.17026231539206!3d22.30823648530525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x340400e6a87287ef%3A0xe19c61742ffc09ba!2s303%20Nathan%20Rd%2C%20Jordan%2C%20Hong%20Kong!5e0!3m2!1sen!2shk!4v1645698820308!5m2!1sen!2shk",
+        "title": {
+          "zh": "香港九龙弥敦道303号地图"
+        },
+        "caption": {
+          "zh": "亞洲總部：香港九龍彌敦道301-309号 嘉賓商業大厦8樓803室 (佐敦地鐵A出口)"
+        },
+        "captionIcon": "fas fa-map-pin",
+        "allowFullscreen": true
+      }
+    },
+    {
+      "type": "cta-band",
+      "wrap": {
+        "section": "",
+        "container": true
+      },
+      "fields": {
+        "heading": {
+          "zh": "需要專業諮詢？"
+        },
+        "body": {
+          "zh": "我們的健康顧問團隊隨時為您解答關於雲芝糖肽精華及癌症輔助方案的疑問。"
+        },
+        "label": {
+          "zh": "立即 WhatsApp 諮詢"
+        },
+        "href": "https://wa.me/85293318571/",
+        "icon": "fab fa-whatsapp",
+        "variant": "banner"
+      }
+    }
+  ]
+}
