@@ -1,0 +1,507 @@
+{
+  "slug": "product-hepb",
+  "path": "產品_乙肝清.html",
+  "mainClass": "container",
+  "title": {
+    "zh": "乙肝清 | 康草堂 Wonder Herb – 天然草本護肝·抑制HBV病毒"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂乙肝清，全草本配方，無西藥副作用。有助抑制HBV病毒、減輕肝細胞炎症及肝纖維化，減低肝硬化風險，每日2次每次5粒，守護肝臟健康。"
+    },
+    "dateModified": "2026-06-02T10:30:00+08:00",
+    "ogTitle": {
+      "zh": "乙肝清 | Wonder Herb – 天然草本護肝·抑制HBV病毒"
+    },
+    "ogDescription": {
+      "zh": "康草堂乙肝清，全草本配方，無西藥副作用。有助抑制HBV病毒、減輕肝細胞炎症及肝纖維化，減低肝硬化風險。"
+    },
+    "ogType": "product",
+    "image": "https://lh3.googleusercontent.com/d/1JshjDnhbCCCsQNUZOD3XnPz6Haw9Q_eE",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "產品介紹"
+        },
+        "path": "產品介紹.html"
+      },
+      {
+        "name": {
+          "zh": "乙肝清"
+        },
+        "path": "產品_乙肝清.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "Product",
+        "name": "Hep BQ capsules",
+        "image": "https://lh3.googleusercontent.com/d/1JshjDnhbCCCsQNUZOD3XnPz6Haw9Q_eE",
+        "description": "康草堂乙肝清，全草本配方，無西藥副作用。有助抑制HBV病毒、減輕肝細胞炎症及肝纖維化，減低肝硬化風險。",
+        "sku": "WH-YGQ-300",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "1880.00",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock",
+          "itemCondition": "https://schema.org/NewCondition"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "乙肝清適合哪些人使用？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "乙肝清適合乙型肝炎帶菌者、慢性乙肝患者、肝功能異常或肝纖維化傾向人士。全草本配方無西藥副作用，也適合希望天然護肝的保健人群。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "乙肝清需要服用多久才能見效？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "一般建議服用四至六個月，多數用家反映病毒量明顯下降，肝功能改善。具體療程請諮詢醫生。"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css",
+      "assets/page-product-hepb.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "產品_乙肝清.html"
+  },
+  "sections": [
+    {
+      "type": "gallery",
+      "wrap": {
+        "tag": "div",
+        "section": "product-grid",
+        "container": false
+      },
+      "fields": {
+        "images": [
+          {
+            "src": "https://lh3.googleusercontent.com/d/1JshjDnhbCCCsQNUZOD3XnPz6Haw9Q_eE",
+            "alt": {
+              "zh": "乙肝清 正面"
+            }
+          }
+        ],
+        "mainAlt": {
+          "zh": "Hep BQ capsules 产品正面图"
+        }
+      }
+    },
+    {
+      "type": "product-detail",
+      "wrap": {
+        "tag": "div",
+        "section": "product-grid",
+        "container": false
+      },
+      "fields": {
+        "source": "products.json",
+        "sku": "WH-HB-180",
+        "quantityLabel": {
+          "zh": "數量："
+        },
+        "addLabel": {
+          "zh": "加入購物車"
+        },
+        "addIcon": "fas fa-cart-plus",
+        "detailLabel": {
+          "zh": "詳細介紹"
+        },
+        "detailHref": "#detailedInfo",
+        "detailIcon": "fas fa-chevron-down",
+        "descIcon": "fas fa-leaf",
+        "badgeIcons": [
+          {
+            "icon": "fas fa-certificate"
+          },
+          {
+            "icon": "fas fa-seedling"
+          },
+          {
+            "icon": "fas fa-flask"
+          }
+        ],
+        "unit": "/ 300粒膠囊 (約1-2個月療程)",
+        "headingBadge": {
+          "zh": "全草本配方·抑制HBV病毒"
+        }
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "產品介紹"
+        },
+        "paragraphs": [
+          {
+            "label": {
+              "zh": "「乙肝清」"
+            },
+            "text": {
+              "zh": "屬全草本配方，絕無西藥成份和副作用。一般服用四至六個月便可大大減低病毒量或完全解決乙肝的問題。由康草堂科研團隊依據傳統中醫理論，結合現代萃取技術精製而成，專注於乙型肝炎患者的輔助調理及肝臟保護。"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "產品功效及特性"
+        },
+        "bullets": [
+          {
+            "label": {
+              "zh": "抑制HBV病毒："
+            },
+            "text": {
+              "zh": "有助抑制乙型肝炎病毒複製，降低病毒活性"
+            }
+          },
+          {
+            "label": {
+              "zh": "抗肝纖維化："
+            },
+            "text": {
+              "zh": "減輕肝細胞炎症，防止肝纖維化進展"
+            }
+          },
+          {
+            "label": {
+              "zh": "預防肝硬化："
+            },
+            "text": {
+              "zh": "有助減低和防止肝硬化及其併發症（腹水、靜脈曲張等）的風險"
+            }
+          },
+          {
+            "label": {
+              "zh": "延緩疾病發展："
+            },
+            "text": {
+              "zh": "有助延緩慢性肝病的進程，保護剩餘肝功能"
+            }
+          },
+          {
+            "label": {
+              "zh": "零西藥副作用："
+            },
+            "text": {
+              "zh": "全天然草本，無抗病毒藥物的常見不良反應（如腎損傷、胃腸不適）"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacedHeading": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "適合對象"
+        },
+        "bullets": [
+          {
+            "text": {
+              "zh": "乙型肝炎帶菌者及慢性乙肝患者"
+            }
+          },
+          {
+            "text": {
+              "zh": "肝功能異常、肝酶偏高人士"
+            }
+          },
+          {
+            "text": {
+              "zh": "有肝纖維化或早期肝硬化傾向的人仕"
+            }
+          },
+          {
+            "text": {
+              "zh": "長期飲酒或脂肪肝患者（輔助護肝）"
+            }
+          },
+          {
+            "text": {
+              "zh": "希望透過天然方式提升肝臟解毒能力的人士"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "注意 曾接受器官移植的人仕不宜服用。孕婦、哺乳期婦女及嚴重肝腎功能不全者，請先諮詢醫生。"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacerAfter": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "科研及傳統智慧"
+        },
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "乙肝清結合多種護肝草本精華，包括丹參、雲芝提取物、五味子等。根據現代藥理研究，這些成分具有抗病毒、抗炎及修復肝細胞的作用。配合康草堂高標準提取工藝，確保每批產品均達到穩定活性成分含量。"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacerAfter": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "包裝規格"
+        },
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "每瓶 300 粒膠囊 (標準裝，約1-2個月用量，視乎用量)"
+            }
+          }
+        ],
+        "variant": "group",
+        "spacerAfter": true
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "heading": {
+          "zh": "建議用量"
+        },
+        "bullets": [
+          {
+            "label": {
+              "zh": "一般保健／輔助調理："
+            },
+            "text": {
+              "zh": "每日2次，每次5粒 (共10粒)"
+            }
+          },
+          {
+            "label": {
+              "zh": "急性發作期／病毒量高："
+            },
+            "text": {
+              "zh": "每日3次，每次5粒 (需醫生建議)"
+            }
+          },
+          {
+            "label": {
+              "zh": "兒童（12歲以上）："
+            },
+            "text": {
+              "zh": "每日2次，每次3粒"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "tag": "div",
+        "section": "product-details-card",
+        "id": "detailedInfo",
+        "container": false
+      },
+      "fields": {
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "※ 建議餐後半小時服用，以溫水送服。詳情請咨詢醫生或專業醫護人員。"
+            }
+          }
+        ],
+        "variant": "group"
+      }
+    },
+    {
+      "type": "card-grid",
+      "fields": {
+        "items": [
+          {
+            "icon": "fas fa-file-alt",
+            "title": {
+              "zh": "重金屬檢測合格"
+            },
+            "text": {
+              "zh": "香港ISO實驗室認證"
+            }
+          },
+          {
+            "icon": "fas fa-certificate",
+            "title": {
+              "zh": "GMP 認證藥廠"
+            },
+            "text": {
+              "zh": "加拿大衛生部監管"
+            }
+          },
+          {
+            "icon": "fas fa-chart-line",
+            "title": {
+              "zh": "超過5,000+乙肝用家"
+            },
+            "text": {
+              "zh": "病毒量顯著下降案例"
+            }
+          },
+          {
+            "icon": "fas fa-microscope",
+            "title": {
+              "zh": "大學研究引用"
+            },
+            "text": {
+              "zh": "成分獲國際期刊認可"
+            }
+          }
+        ],
+        "variant": "badges"
+      }
+    },
+    {
+      "type": "related-products",
+      "fields": {
+        "heading": {
+          "zh": "你可能也感興趣"
+        },
+        "source": "products.json",
+        "items": [
+          {
+            "sku": "WH-PSP-500",
+            "href": "產品_雲芝糖肽精華_B.html",
+            "icon": "fas fa-seedling",
+            "label": {
+              "zh": "雲芝糖肽精華 (PSP)"
+            },
+            "desc": {
+              "zh": "提升免疫力 · 減輕化療副作用"
+            }
+          },
+          {
+            "sku": "WH-T3-120",
+            "href": "產品_T3.html",
+            "icon": "fas fa-flask",
+            "label": {
+              "zh": "T3 三烯生育醇"
+            },
+            "desc": {
+              "zh": "60倍高活性抗氧化·抑制頑疾幹細胞"
+            }
+          },
+          {
+            "sku": "WH-PSP-060",
+            "href": "產品_雲芝糖肽精華_A.html",
+            "icon": "fas fa-box",
+            "label": {
+              "zh": "雲芝糖肽精華 (試用裝)"
+            },
+            "desc": {
+              "zh": "初次體驗，快速有感"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
