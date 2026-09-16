@@ -328,6 +328,43 @@ try { renderPage({ sections: [{ type: 'no-such-section', fields: {} }] }, PRIMAR
 catch (err) { threw = err.message; }
 check('an unknown section type throws', /Unknown section type: no-such-section/.test(threw), threw || 'DID NOT THROW');
 
+/* Section wrappers (P9 batch, found on 聯絡我們): the live pages' blocks sit
+   inside <section class="…"> whose class carries padding, and adjacent blocks
+   share ONE section. */
+console.log('\n=== section wrappers, and runs of nodes that share one ===\n');
+{
+  const { renderBody } = require(path.join(ROOT, 'renderer', 'render.js'));
+  const btn = label => ({ type: 'cta-band', fields: { variant: 'button', label, href: '#' } });
+  const wrapped = (label, wrap) => Object.assign(btn(label), { wrap });
+  const sections = require(path.join(ROOT, 'renderer', '.build', 'sections.cjs')).default;
+  const body = tree => renderBody(tree, PRIMARY, {}, sections);
+
+  const one = body({ sections: [wrapped('a', { section: 's', label: '標籤' })] });
+  check('a node with a section wrap gets <section class> + container',
+        one === '<section class="s" aria-label="標籤"><div class="container">' +
+                '<div class="cta-button"><a href="#" class="btn-primary">a</a></div></div></section>', one);
+
+  const run = body({ sections: [wrapped('a', { section: 's' }), wrapped('b', { section: 's' }), wrapped('c', { section: 't' })] });
+  check('adjacent nodes naming the same section share one wrapper, so its padding applies once',
+        (run.match(/<section class="s"/g) || []).length === 1 &&
+        (run.match(/<div class="container">/g) || []).length === 2 &&
+        run.indexOf('<section class="t"') !== -1,
+        '2 sections, 2 containers, both buttons inside the first');
+
+  const split = body({ sections: [wrapped('a', { section: 's' }), btn('mid'), wrapped('b', { section: 's' })] });
+  check('a node between them splits the run into two sections (the editor can move one out)',
+        (split.match(/<section class="s"/g) || []).length === 2, 'two runs');
+
+  check('an empty section class is still a section (聯絡我們 wraps its CTA in <section class="">)',
+        body({ sections: [wrapped('a', { section: '' })] }).indexOf('<section class="">') === 0, 'emitted');
+  check('container: false puts the blocks straight into the section',
+        body({ sections: [wrapped('a', { section: 's', container: false })] }).indexOf('container') === -1, 'no container');
+  check('no wrap at all is still bare markup, and "container" still means a container',
+        body({ sections: [btn('a')] }).indexOf('<section') === -1 &&
+        body({ sections: [wrapped('a', 'container')] }) === '<div class="container"><div class="cta-button"><a href="#" class="btn-primary">a</a></div></div>',
+        'unchanged');
+}
+
 /* FAQPage is derived from the faq-accordion's data (renderer/render.js
    faqPageNode). A tree that also carries one would ship two, one stale. */
 const faqData = { faq: [{ id: 1, cat: 'A', q: '問一', a: '答一' }, { id: 2, cat: 'B', q: '問二', a: [{ label: '標', text: '文' }] }] };

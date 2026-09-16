@@ -74,13 +74,64 @@ function renderSection(node, lang, data, registry) {
   const html = renderToStaticMarkup(React.createElement(Comp, Object.assign({}, props, { data, lang })));
   // the live pages wrap most inner-page blocks in <div class="container">;
   // a node says so rather than every component hard-coding it
-  return node.wrap === 'container' ? '<div class="container">' + html + '</div>' : html;
+  return wrapOf(node).container ? '<div class="container">' + html + '</div>' : html;
 }
 
+/* A node's wrapper, in one shape whichever way the tree writes it:
+ *
+ *   "wrap": "container"                                 -> <div class="container">
+ *   "wrap": { "section": "contact-section",             -> <section class="...">
+ *             "container": true, "label": "…" }            <div class="container">
+ *
+ * WHY SECTIONS MATTER (found on 聯絡我們, P9 batch). The live pages put their
+ * blocks inside <section class="contact-section"> / .faq-section /
+ * .reports-section, and those classes carry PADDING - 5px top and bottom on
+ * 聯絡我們. Rendering the blocks without the section drops that padding, which
+ * moves everything below it and shows up as a whole-page pixel difference that
+ * has nothing to do with content. 常見問題 got away with it only because
+ * .faq-section happens to set padding 0.
+ *
+ * CONSECUTIVE NODES THAT NAME THE SAME SECTION SHARE ONE. The live page has
+ * one <section> around its grid, map and caption, and one .container inside
+ * it. Three separate sections would apply the padding three times, so
+ * renderBody groups a run of adjacent nodes with the same wrapper and emits it
+ * once. The tree stays flat (no nesting for Puck to model): each node carries
+ * its own wrap, and moving a node out of the run in the editor simply moves it
+ * out of that section.
+ */
+function wrapOf(node) {
+  const w = node.wrap;
+  if (!w) return {};
+  if (typeof w === 'string') return { container: w === 'container' };
+  return { section: w.section, label: w.label, container: w.container !== false };
+}
+
+/* '' is a real section class: 聯絡我們's CTA sits in a bare <section class="">,
+   so an empty string still means "wrap these in a section", and only an absent
+   `section` means "no section". */
+const wrapKey = node => {
+  const w = wrapOf(node);
+  return w.section === undefined ? '' : JSON.stringify([w.section, w.label || '', w.container]);
+};
+
 function renderBody(tree, lang, data, registry) {
-  return (tree.sections || [])
-    .map(node => renderSection(node, lang, data, registry))
-    .join('\n');
+  const nodes = tree.sections || [];
+  const out = [];
+  for (let i = 0; i < nodes.length;) {
+    const key = wrapKey(nodes[i]);
+    if (!key) { out.push(renderSection(nodes[i], lang, data, registry)); i++; continue; }
+    /* a run of adjacent nodes inside the same live <section> */
+    const run = [];
+    while (i < nodes.length && wrapKey(nodes[i]) === key) { run.push(nodes[i]); i++; }
+    const w = wrapOf(run[0]);
+    const inner = run.map(n =>
+      renderSection(Object.assign({}, n, { wrap: undefined }), lang, data, registry)).join('\n');
+    const body = w.container ? '<div class="container">' + inner + '</div>' : inner;
+    out.push('<section class="' + w.section + '"' +
+             (w.label ? ' aria-label="' + w.label.replace(/"/g, '&quot;') + '"' : '') + '>' +
+             body + '</section>');
+  }
+  return out.join('\n');
 }
 
 /* Content data, resolved for one language.

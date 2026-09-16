@@ -91,7 +91,11 @@
     },
     {
       "type": "faq-accordion",
-      "wrap": "container",
+      "wrap": {
+        "section": "faq-section",
+        "label": "常见问题列表",
+        "container": true
+      },
       "fields": {
         "source": "faq.json",
         "defaultIcon": "fas fa-question-circle"
@@ -99,7 +103,11 @@
     },
     {
       "type": "callout",
-      "wrap": "container",
+      "wrap": {
+        "section": "faq-section",
+        "label": "常见问题列表",
+        "container": true
+      },
       "fields": {
         "heading": {
           "zh": "癌症治療期間是否可以食用雲芝？"
@@ -118,7 +126,11 @@
     },
     {
       "type": "callout",
-      "wrap": "container",
+      "wrap": {
+        "section": "faq-section",
+        "label": "常见问题列表",
+        "container": true
+      },
       "fields": {
         "heading": {
           "zh": "大學研究實證"
@@ -139,7 +151,11 @@
     },
     {
       "type": "cta-band",
-      "wrap": "container",
+      "wrap": {
+        "section": "faq-section",
+        "label": "常见问题列表",
+        "container": true
+      },
       "fields": {
         "label": {
           "zh": "探索產品系列"
