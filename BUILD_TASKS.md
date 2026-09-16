@@ -488,6 +488,38 @@ original needs JavaScript to clear its fixed nav (D1, finding 15), and our JS-on
 hidden rather than left dead. On 典型病例 the difference is the point: the old page rendered **no
 cases at all** without JavaScript; ours renders all fifteen with their full text.
 
+#### Phase 9 scope, closed 16 Sep 2026 (owner): 7 pages, then Phase 9 is done
+
+**In scope:** the 6 product detail pages, then `index.html` (reviewed on its own).
+
+**Out of scope, staying hand-coded, revisit at Phase 11 or later — reasons on the record:**
+
+| page | why it is not migrating |
+|---|---|
+| `product.html` | it renders an **arbitrary SKU from a query string**, which a pre-rendered static page cannot do. It is `noindex`, and the six static detail pages cover the catalogue |
+| `購物車.html` | **transactional and `noindex`**: pre-rendering buys no SEO (finding 3 already exempts it from having a document subject) |
+| `account.html` | **depends on the hosted API**, which is Phase 11 |
+
+This gives Phase 9 a defined end: when 索引 (`index.html`) is retired, every page that benefits from
+pre-rendering is pre-rendered, and the three above are a deliberate, recorded exception rather than
+an unfinished list.
+
+#### The per-page process (P9), in order
+
+1. **Read the original** and map its blocks to sections. A block with no section is a **new section
+   type: stop and show the owner the design before building it.**
+2. **Check per-language assets FIRST** (finding 28, not optional): every `src` / `href` the page
+   swaps by language goes into the tree as the **zh** value. `npm run test:lang-assets` proves it
+   afterwards, but the lift happens here — the markup's own URL may be another language's.
+3. **Check the `<section>` wrappers**: `main > section` in the original, reproduced by each node's
+   `wrap`. Their classes carry padding.
+4. Build the tree (lift copy and SEO with jsdom, never retype), add the page to `extract-css.js`,
+   render.
+5. `test:seo`, then the **visual diff**: at `lang="zh"` the page should equal the control. **Any
+   difference that cannot be explained is a hard stop**, not a tolerance.
+6. Retire the original to `legacy/`, sync the tree into MongoDB, `npm run export` must report
+   `data/` unchanged, `test:all` green, commit that page on its own.
+
 #### Effort: actual for page one, and the revised Phase 9 estimate (15 Sep 2026, replaces the earlier estimate)
 
 **Actual, page one (from the commit timeline):** P9-T1 ran from Fri 11 Sep midday to Tue 15 Sep
@@ -872,6 +904,7 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
   2. **No rating or review data anywhere in the deployed tree**, pre-rendered or hand-coded. `npm run test:seo` covers rendered pages. Also check that `git grep -n -e aggregateRating -e reviewCount -e ratingValue -e '"Review"' -- '*.html' 'data/'` returns nothing.
   3. **No `noindex` anywhere** in what deploys: `git grep -n -i noindex -- '*.html'`, except the ones that deliberately carry it: `account.html`, `購物車.html`, `product.html`, `admin/index.html`, `editor/index.html`, and every retired original under `legacy/` (which must also stay out of the deploy). A stray one de-indexes the client's real site. That risk is why the Pages copy was taken down rather than noindexed.
   4. **No patient case material presented as a review or rating** in what deploys. (Health-claim review applies to the client's replacement content, not the current copy: owner, 15 Sep 2026.)
+  5. **典型病例's ItemList must not ship as it stands** (docs/FINDINGS.md finding 29). It says `numberOfItems` 15 while listing 3, types its entries `Testimonial` (not a schema.org type), and names real patients. It is carried verbatim today because site content is not authoritative and this is the owner's call with the client - but it is structured data about identifiable patients, so it is a cutover gate, not a nicety. Check: `node -e "…"` on the deployed tree, or simply read the ItemList in `data/pages/cases.json`. Fix, drop, or derive it from `data/cases.json` (the FAQPage treatment, `renderer/render.js faqPageNode`, with a `test:seo` check as the model) - then this gate can be automated like the other four.
 - **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed, the `wixstatic` grep is clean, and the four finding-26 checks above are clean. Then, and only then, switch Wix off.
 
 ---
@@ -879,6 +912,8 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
 ## Appendix A — Definition of done for any migrated page
 - Renders from its tree; visually matches baseline within tolerance at 1280px and 390px.
 - Pre-rendered: content is in the HTML, not fetched client-side.
+- **Per-language assets lifted as the zh value** (finding 28): any `src`/`href` the old page swaps by language goes into the tree explicitly; `npm run test:lang-assets` proves it, with negative controls. Do not rely on the visual diff to notice.
+- **The live `<section>` wrappers reproduced** (`wrap: { section, label, container }`): their classes carry padding, and adjacent nodes in one live section share one wrapper.
 - `npm run test:seo` passes (h1, title, description, canonical, hreflang reciprocity, valid JSON-LD, matches baseline schema types).
 - Editable in Puck; all in-scope language fields present or falling back to zh.
 - No editor-only attributes in the output.
@@ -904,6 +939,7 @@ npm run render        # render page trees -> pre-rendered static HTML
 npm run test:seo      # SEO assertion gate (blocks bad publish)
 npm run publish       # export + sections:build + render + test:seo + test:data
 npm run test:behaviour# migrated pages' cart/menu/quick view/language, by effect, with negative controls
+npm run test:lang-assets # a migrated page carries the zh asset, never another language's (finding 28)
 npm run editor:dev    # Puck editor app (Vite)
 npm run test:all      # existing full test suite
 # deploy: commit to main -> GitHub Actions -> GitHub Pages

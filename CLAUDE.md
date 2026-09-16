@@ -25,7 +25,7 @@ while the public site stays fast static HTML on GitHub Pages.
 - **Not done:**
   - **P5-T2**: `buildSite`, so the renderer writes only to gitignored `renderer/.out/` and nothing pre-rendered is deployed yet.
   - **P8-T3**: the deploy allow-list, registered but not applied. The deploy is still the whole repo.
-- **Phase 9: 8 of 18 pages DONE (16 Sep 2026); every content page is migrated.** Their originals are retired to `legacy/`, which carries noindex and is disallowed in robots.txt. Every visual diff against the 15 Sep baseline is reconciled to the pixel. Left: 6 product detail pages, index.html, product.html, 購物車.html, account.html. Per-page cost, what each one found and the re-estimate are under P9-T1 in `BUILD_TASKS.md`. Pages whose original is in `legacy/` are written to the root by `npm run render`; never hand-edit them.
+- **Phase 9: 8 of 18 pages DONE (16 Sep 2026); every content page is migrated.** Their originals are retired to `legacy/`, which carries noindex and is disallowed in robots.txt. Every visual diff against the 15 Sep baseline is reconciled to the pixel. Left in Phase 9: the 6 product detail pages and index.html. **product.html, 購物車.html and account.html are OUT of Phase 9 scope** (owner, 16 Sep 2026) and stay hand-coded — see P9-T1 in BUILD_TASKS for the reasons. Per-page cost, what each one found and the re-estimate are under P9-T1 in `BUILD_TASKS.md`. Pages whose original is in `legacy/` are written to the root by `npm run render`; never hand-edit them.
 
 Work happens on `rebuild/editor` (off `geo`), pushed to origin. `main` is untouched, and **nothing from this branch is live**. Never push to or touch `main`. The owner commits.
 Hosting is deliberately deferred to Phase 11: everything runs locally until then. Do not connect or authorise the Vercel connector before Phase 11.
@@ -58,8 +58,8 @@ Already built:
   - Set `BASELINE_SITE` to a checkout of HEAD so the reference records committed content. The old localhost set is archived in `baseline/_previous-localhost-2026-09-08/`.
   - **Known remaining gap:** scripts-on captures use the CJK fallback font for `lang="zh"`, because the live language script overwrites `zh-Hant` (finding 21b, font stack undecided).
   - Re-run it if the live pages change before migration.
-- **Test suite**: `npm run test:all` = 14 suites, 1,203 passing checks, green (16 Sep 2026).
-  - Suites: i18n, sections, render, seo, published-data, behaviour, editor config, editor language, API, auth, sales, UI + Mongo, UI auth, UI sweep.
+- **Test suite**: `npm run test:all` = 15 suites, 1,219 passing checks, green (16 Sep 2026).
+  - Suites: i18n, sections, render, seo, published-data, language assets, behaviour, editor config, editor language, API, auth, sales, UI + Mongo, UI auth, UI sweep.
   - `jsdom`, `playwright`, `vite`, `esbuild` and `@puckeditor/core` are devDependencies. Nothing new ships to the public site.
   - The Mongo-backed suites use `wonderherb_test`. **Never run two suites against one Mongo at once**: it fakes auth regressions.
 
@@ -158,9 +158,10 @@ npm run render           # page trees -> renderer/.out/ (gitignored; P5-T2 write
 npm run editor:dev       # Puck editor (Vite);  editor:build for a production bundle
 npm run admin:create     # create an admin account
 npm run import:sales     # import the sales spreadsheet
-npm run test:all         # all 14 suites
+npm run test:all         # all 15 suites
 npm run test:seo         # SEO gate on every tree in data/pages/
 npm run test:data        # no private data/emails in data/ or any tracked file
+npm run test:lang-assets # a migrated page carries the zh asset, never another language's (finding 28)
 npm run test:behaviour   # migrated pages' cart/menu/quick view/language, by effect, with negative controls (every tree in data/pages/)
 npm run test:render | test:sections | test:i18n | test:editor | test:editor:lang
 npm run test:api | test:auth | test:sales | test:ui | test:ui:auth | test:sweep
@@ -243,6 +244,7 @@ Month 2: all 18 pages, all 7 languages, full ~22 sections, add-page-from-templat
 
 - Renders from the tree, visually matches the current page within tolerance, at 1280 and 390, **scripts on and scripts off**, against the production-hostname baseline. Every difference is either explained or fixed.
 - Pre-rendered: content is in the HTML, not fetched client-side.
+- **Per-language assets checked explicitly, before the diff.** Any `src` or `href` the old page SWAPS by language (its `translations` / `productData` maps, or any runtime `.src =`) must be lifted into the tree as the **zh** value — never the URL hard-coded in the markup, which may be another language's. `npm run test:lang-assets` holds this for every retired page, with negative controls; run it, and read its per-page list, rather than hoping the visual diff shows it (finding 28: 小册子 would have published the German brochure to Chinese visitors, past SEO, fidelity and behaviour).
 - SEO check passes: JSON-LD valid, hreflang reciprocal, canonical correct, meta present, heading order preserved.
 - **Interactive behaviour ported and verified by effect** (BUILD_TASKS Appendix A, `docs/FINDINGS.md` finding 23). Everything the old page did for a visitor (cart, phone menu, quick view, language switch, refusals) either works, or is recorded as an accepted regression with its user impact stated. `npm run test:behaviour` asserts outcomes, such as the menu opening or the cart holding the right SKU at the right price, **with a negative control** proving the checks fail when the behaviour files are missing. "No errors" is not verification: 產品介紹 passed SEO, fidelity and the visual diff with every control dead and zero errors.
   - Behaviour lives in static files (`assets/site.js` shared, `assets/behaviour/<section>.js` per section), derived by `renderer/template.js` from the tree's section types. It never lives in section components (no hydration) or in inline scripts.
@@ -251,4 +253,5 @@ Month 2: all 18 pages, all 7 languages, full ~22 sections, add-page-from-templat
 - Editable in Puck; all target-language fields present or falling back to `zh`.
 - Published output contains no editor-only attributes.
 - Heavy assets referenced from R2/CDN, not the repo.
+- **The live `<section>` wrappers are reproduced** (`wrap: { section, label, container }`). Those classes carry padding: dropping one moves everything below it. Check the original's `main > section` list against the rendered page.
 - Old hand-coded HTML retired only after the above pass (moved to `legacy/`, not deleted).
