@@ -1,0 +1,271 @@
+{
+  "slug": "research",
+  "path": "研究報告.html",
+  "title": {
+    "zh": "研究報告 | Wonder Herb - 雲芝糖肽精華"
+  },
+  "seo": {
+    "description": {
+      "zh": "康草堂 Wonder Herb - 大學研究報告、臨床實證，展示雲芝糖肽精華 PSP 的抗腫瘤及免疫調節功效。"
+    },
+    "dateModified": "2026-06-02T10:30:00+08:00",
+    "ogTitle": {
+      "zh": "研究報告 | Wonder Herb - 雲芝糖肽精華"
+    },
+    "ogDescription": {
+      "zh": "大學研究報告、臨床實證，展示雲芝糖肽精華 PSP 的抗腫瘤及免疫調節功效。"
+    },
+    "ogType": "website",
+    "image": "https://lh3.googleusercontent.com/d/1mQafHatzw_gwbV_J9Y5AmwIAUS9r8SEi",
+    "breadcrumb": [
+      {
+        "name": {
+          "zh": "首頁"
+        },
+        "path": ""
+      },
+      {
+        "name": {
+          "zh": "研究報告"
+        },
+        "path": "研究報告.html"
+      }
+    ],
+    "jsonld": [
+      {
+        "@type": "Product",
+        "name": "雲芝糖肽精華 PSP (標準裝)",
+        "description": "每瓶500粒，雲芝糖肽有效成分 >90%，多醣肽含量超國家標準1.8倍，強化免疫調節，適合長期輔助療程。GMP認證、雙重檢測。",
+        "image": "https://lh3.googleusercontent.com/d/1j4nnDKPYyQ7naWRboMd3fPS8pvrlEtDq",
+        "sku": "WH-PSP-500",
+        "brand": {
+          "@type": "Brand",
+          "name": "康草堂 Wonder Herb"
+        },
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "HKD",
+          "availability": "https://schema.org/InStock",
+          "price": "3800.00"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "inLanguage": "zh-Hant",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "這些研究報告是否來自獨立第三方？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "是的，所列研究均由香港、澳洲等知名大學的獨立團隊完成，並發表於國際權威期刊如Plos One、PubMed等，確保客觀公正。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "雲芝糖肽的抗腫瘤效果有科學依據嗎？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "多項臨床前及臨床研究證實，康草堂雲芝糖肽PSP能調節免疫、抑制腫瘤生長，並可輔助化療減輕副作用。相關論文可在本頁面鏈接中查閱。"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "assets": {
+    "preconnect": [
+      {
+        "href": "https://fonts.googleapis.com"
+      },
+      {
+        "href": "https://fonts.gstatic.com",
+        "crossorigin": true
+      },
+      {
+        "href": "https://cdnjs.cloudflare.com"
+      }
+    ],
+    "stylesheets": [
+      "https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap",
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css",
+      "assets/page-research.css",
+      "assets/chrome.css"
+    ],
+    "chromeFrom": "研究報告.html"
+  },
+  "sections": [
+    {
+      "type": "page-header",
+      "fields": {
+        "heading": {
+          "zh": "研究報告"
+        },
+        "variant": "video",
+        "sub": {
+          "zh": "國際權威期刊及大學研究實證 · 康草堂雲芝糖肽精華的科學依據"
+        },
+        "headingId": "research-heading",
+        "videoUrl": "https://video.wixstatic.com/video/11062b_d578b9d4ffba48c68d086ec29fe9e6f0/1080p/mp4/file.mp4"
+      }
+    },
+    {
+      "type": "text-block",
+      "wrap": {
+        "section": "research-section",
+        "label": "研究内容",
+        "container": true
+      },
+      "fields": {
+        "variant": "intro",
+        "paragraphs": [
+          {
+            "text": {
+              "zh": "康草堂與多所大學合作，以下研究均採用「康草堂雲芝糖肽 PSP」或複合配方進行臨床驗證，結果顯示其在免疫調節、抗腫瘤及輔助治療方面具有顯著功效。"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "card-grid",
+      "wrap": {
+        "section": "research-section",
+        "label": "研究内容",
+        "container": true
+      },
+      "fields": {
+        "items": [
+          {
+            "title": {
+              "zh": "香港著名大學研究"
+            },
+            "text": {
+              "zh": "採用「康草堂雲芝糖肽 PSP」進行的研究證明能有效抑制腫瘤生長，調節免疫系統。"
+            },
+            "href": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0019804",
+            "icon": "fas fa-university",
+            "aria": {
+              "zh": "閱讀香港著名大學研究關於雲芝糖肽抗腫瘤功效的全文"
+            }
+          },
+          {
+            "title": {
+              "zh": "澳洲著名大學研究"
+            },
+            "text": {
+              "zh": "獨立驗證康草堂雲芝糖肽 PSP 的抗腫瘤活性，為天然輔助療法提供堅實科學基礎。"
+            },
+            "href": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0019804",
+            "icon": "fas fa-globe-asia",
+            "aria": {
+              "zh": "閱讀澳洲著名大學驗證雲芝糖肽抗腫瘤活性的研究全文"
+            }
+          },
+          {
+            "title": {
+              "zh": "胃部腫瘤臨床研究"
+            },
+            "text": {
+              "zh": "研究證實雲芝糖肽對胃部腫瘤患者具有輔助治療效果，提升生活品質。"
+            },
+            "href": "https://pubmed.ncbi.nlm.nih.gov/7910230/",
+            "icon": "fas fa-stethoscope",
+            "aria": {
+              "zh": "閱讀胃部腫瘤臨床研究：雲芝糖肽輔助治療效果"
+            }
+          },
+          {
+            "title": {
+              "zh": "結腸腫瘤術後生存期"
+            },
+            "text": {
+              "zh": "雲芝糖肽能延長結腸腫瘤病人術後的生存期，並降低復發風險。"
+            },
+            "href": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11038516/",
+            "icon": "fas fa-chart-line",
+            "aria": {
+              "zh": "閱讀結腸腫瘤術後生存期研究：雲芝糖肽延長生存期"
+            }
+          },
+          {
+            "title": {
+              "zh": "誘導結直腸腫瘤細胞凋亡"
+            },
+            "text": {
+              "zh": "通過調節 EGFR 和 PD-L1 的表達，雲芝糖肽誘導結直腸腫瘤細胞凋亡。"
+            },
+            "href": "https://pubmed.ncbi.nlm.nih.gov/36942063/",
+            "icon": "fas fa-dna",
+            "aria": {
+              "zh": "閱讀誘導結直腸腫瘤細胞凋亡的研究：調節EGFR和PD-L1"
+            }
+          },
+          {
+            "title": {
+              "zh": "免疫調節與抗腫瘤功能"
+            },
+            "text": {
+              "zh": "雲芝糖肽（PSP）具備顯著的免疫調節和抗腫瘤功能，適合輔助治療。"
+            },
+            "href": "https://pubmed.ncbi.nlm.nih.gov/25614677/",
+            "icon": "fas fa-shield-alt",
+            "aria": {
+              "zh": "閱讀免疫調節與抗腫瘤功能的研究：雲芝糖肽PSP功效"
+            }
+          }
+        ],
+        "linkLabel": {
+          "zh": "閱讀全文 →"
+        },
+        "variant": "icon"
+      }
+    },
+    {
+      "type": "card-grid",
+      "wrap": {
+        "section": "research-section",
+        "label": "研究内容",
+        "container": true
+      },
+      "fields": {
+        "heading": {
+          "zh": "詳細研究報告下載"
+        },
+        "items": [
+          {
+            "title": {
+              "zh": "研究證明複合配方「康草堂雲芝糖肽 PSP + T3」的功效倍增 (PDF)"
+            },
+            "href": "https://www.wonder-herb.com/_files/ugd/b3683f_5ce3d5e304d54d13bfd3390f8f6f676f.pdf",
+            "icon": "fas fa-file-pdf",
+            "aria": {
+              "zh": "下載研究報告：康草堂雲芝糖肽 PSP + T3 功效倍增 (PDF)"
+            }
+          },
+          {
+            "title": {
+              "zh": "瀋陽醫科大學對「乙肝清」進行的研究實證 (PDF)"
+            },
+            "href": "https://www.wonder-herb.com/_files/ugd/b3683f_3993ef273f2e40f099fc273347403ea5.pdf",
+            "icon": "fas fa-file-pdf",
+            "aria": {
+              "zh": "下載瀋陽醫科大學對乙肝清的研究報告 (PDF)"
+            }
+          },
+          {
+            "title": {
+              "zh": "雲芝糖肽配合化療能加強療效及恢復環磷酰胺引起的免疫抑制"
+            },
+            "href": "https://pubmed.ncbi.nlm.nih.gov/9166995/",
+            "icon": "fas fa-file-alt",
+            "aria": {
+              "zh": "閱讀雲芝糖肽配合化療加強療效的研究"
+            }
+          }
+        ],
+        "variant": "link-list"
+      }
+    }
+  ]
+}
