@@ -100,7 +100,8 @@
       "assets/page-product-hepb.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "產品_乙肝清.html"
+    "chromeFrom": "產品_乙肝清.html",
+    "navActive": "產品介紹.html"
   },
   "sections": [
     {

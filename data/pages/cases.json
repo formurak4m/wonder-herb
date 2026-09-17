@@ -147,7 +147,8 @@
       "assets/page-cases.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "典型病例.html"
+    "chromeFrom": "典型病例.html",
+    "navActive": "典型病例.html"
   },
   "sections": [
     {

@@ -140,6 +140,12 @@ const EMAIL_ALLOW = [
   { files: /^legacy\/[^/]+\.html$/,
     emails: ['info@wonder-herb.com'],
     why: 'the same public contact address, in a retired original kept for reference (P9-T1)' },
+  /* The shared chrome partial is the footer that used to be copied into all 18
+     pages, so it carries the same public address those pages already print.
+     Scoped to the partial directory, not widened to renderer/ generally. */
+  { files: /^renderer\/chrome\/[\w-]+\.html$/,
+    emails: ['info@wonder-herb.com'],
+    why: 'the shared site chrome (P10), holding the public contact address every page prints' },
   /* The same three addresses, in the three places the contact page now lives:
      its retired original, its page tree, and (until it is retired) the root
      page itself. Migrating a page moves its published copy into data/, so the

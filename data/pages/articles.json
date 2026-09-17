@@ -95,7 +95,8 @@
       "assets/page-articles.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "微信發表文章.html"
+    "chromeFrom": "微信發表文章.html",
+    "navActive": "微信發表文章.html"
   },
   "sections": [
     {

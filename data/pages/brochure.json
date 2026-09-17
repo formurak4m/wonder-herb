@@ -99,7 +99,8 @@
       "assets/page-brochure.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "小册子.html"
+    "chromeFrom": "小册子.html",
+    "navActive": "小册子.html"
   },
   "sections": [
     {

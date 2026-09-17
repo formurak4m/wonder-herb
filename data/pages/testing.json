@@ -95,7 +95,8 @@
       "assets/page-testing.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "有效成份檢測.html"
+    "chromeFrom": "有效成份檢測.html",
+    "navActive": "有效成份檢測.html"
   },
   "sections": [
     {

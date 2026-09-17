@@ -16,7 +16,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 
 | # | Finding | Severity | Fixed in |
 |---|---|---|---|
-| 1 | Homepage background video hosted on the client's Wix CDN | High — breaks at cutover | Phase 10. Since P9 the URL is a tree field (`cta-band/video-band`, `videoUrl`), so the swap is a data edit, not a code change |
+| 1 | **Wix-hosted media dies at cutover**: the background video (used on BOTH index and 研究報告), nine images, and — found at Phase 10 — **two research PDFs served from `www.wonder-herb.com/_files/ugd/`, which is a Wix path on the client's own domain, not a file in this repo** | High — breaks at cutover | Phase 10. Every one of them is a tree field, so each swap is a data edit, not a code change. The PDFs were missed by the first inventory because they look like internal links; `test:media` catches that class now by requiring every media host to be declared |
 | 2 | Product photos hotlinked from Google Drive, and rate-limited | High | Phase 10 |
 | 3 | `購物車.html` has no `<h1>`; it and `account.html` have no JSON-LD | Resolved — allow-list | Closed at P6-T1a |
 | 4 | All 18 pages overflow horizontally on a 390px viewport | Low | **Phase 13** (re-owned 16 Sep 2026; Phase 9 did NOT fix it — measured after migration, live and pre-rendered pages both lay out 410px wide in a 390px viewport, so it is unchanged, not a regression) |
@@ -43,7 +43,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 25 | **A write path deletes every field its caller was not shown**: rule "the store merges, never replaces"; bites today in the product form (`link`, `ribbon`, `priceNote`) and the Puck save (section `wrap`) | **HIGH — data loss** (finding 20 was one case) | Puck path fixed at P9-T1 (`mergeTree`); every write path in the API: P12-T3; blocks lifting PT3's price hold |
 | 26 | **Patient cases published as five-star product reviews, with invented ratings**: real case-study patients' identities attached to fabricated reviews, publicly served on the GitHub Pages copy 4 Jun – 15 Sep 2026 (not on the client's Wix site) | **CRITICAL — potentially legal / privacy (HK PDPO), needs legal advice** | Removed from `main` (`6503a01`, verified clean) and the branch; gated in `test:seo`. **Evidence preserved in history, do not rewrite.** Owner handles with the client |
 | 27 | **The admin's FAQ editor changed nothing a visitor could see**: no public page read `data/faq.json`; 常見問題 was hand-coded, and the two had drifted to different questions | Medium — an invisible feature the client believes they have | **Fixed by the P9 page-two migration** (`fc8c6e8`); name it in `ADMIN_GUIDE.md` |
-| 28 | **Per-language images and links exist, but a tree cannot hold them**: 小册子 swaps the brochure scan per language; rendering the markup verbatim would have shown Chinese visitors the German brochure | Medium — caught by the visual diff, no gate saw it | zh carried now (Chinese-only, finding 24); model per-language assets at **Phase 14** |
+| 28 | **Per-language images, links AND documents exist, but a tree cannot hold them**: 小册子 swaps the brochure scan per language; rendering the markup verbatim would have shown Chinese visitors the German brochure. The brochure PDFs are language-suffixed too (`…_ch.pdf`, found at Phase 10) | Medium — caught by the visual diff, no gate saw it | zh carried now (Chinese-only, finding 24); model per-language assets at **Phase 14**, covering documents as well as images |
 | 29 | **典型病例 ItemList says 15 items, lists 3, types them `Testimonial`** (not a schema.org type), naming real patients | Background (content not authoritative); owner + client | Carried verbatim at P9; fix or derive only if the owner asks |
 | 30 | **產品_雲芝糖肽精華_A publishes the wrong product's title**: its script overwrites the trial pack's correct `<title>` with the standard pack's | Medium — SEO, live today on 1 of 6 product pages | **Fixed by migrating the page** (no script to overwrite it); `test:seo` now compares against the page it replaces; on the client list as a fix (docs/CLIENT-QUESTIONS.md §6) |
 | 31 | **PT3 is clinic-only on its page and sellable in the data**: no `clinicOnly` flag on WH-PT3-090, so the grid and the migrated panel both offer it at HK$2,480 | Medium — a visitor can buy what the page says is clinic-only | One data edit (`clinicOnly: true`) fixes panel, grid and cart at once — **owner + client**, like finding 9 |
@@ -1935,9 +1935,19 @@ the same accepted Chinese-only regression as finding 24, now covering **media an
 text.
 
 **Where else it bites.** Checked during the batch: 有效成份檢測, 微信發表文章, 研究報告, 聯絡我們 and
-典型病例 swap only the flag icon, so 小册子 is the only page in the batch affected. The remaining
-pages (`index.html`, the six product pages, `product.html`) have not been checked yet — check each
-before migrating it, the same way.
+典型病例 swap only the flag icon, so 小册子 is the only page in the batch affected. `index.html` and
+the six product pages were checked the same way as they migrated and carry no per-language asset;
+`product.html` is out of Phase 9 scope and unchecked.
+
+**The brochure DOCUMENTS are per-language too — same class, found at Phase 10 (17 Sep 2026).**
+Downloading the four Drive documents for the media move returned their real filenames, and the two
+brochure PDFs are language-suffixed (`…_ch.pdf`). So it is not only the *scan* of the brochure that
+is per-language: the **PDF a visitor downloads** is as well, and the tree holds one `href` for it,
+the `zh` one. This is the same single-field-for-a-per-language-asset problem as the images above,
+not a separate issue, and it is fixed by the same Phase 14 work — the per-language URL model has to
+cover documents, not just images. Recorded here rather than as a new finding so the fix stays one
+piece of work. Phase 10 re-hosts whichever file each field currently points at and changes nothing
+about which language that is.
 
 ### Fix, Phase 14 (with per-language URLs)
 

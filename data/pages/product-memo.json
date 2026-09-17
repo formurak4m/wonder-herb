@@ -100,7 +100,8 @@
       "assets/page-product-memo.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "產品_憶活素.html"
+    "chromeFrom": "產品_憶活素.html",
+    "navActive": "產品介紹.html"
   },
   "sections": [
     {

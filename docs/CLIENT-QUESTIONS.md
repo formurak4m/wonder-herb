@@ -104,16 +104,16 @@ so the website still shows it as available. Please confirm whether it should go 
 
 ---
 
-## 6. Two faults on your current site that the move fixes — no answer needed
+## 6. Three faults on your current site that the move fixes — no answer needed
 
 These are not questions. They are problems your live site has today that you would be unlikely to
-find yourselves, and both are already fixed on the new pages. We are telling you so you know what
-the move bought you.
+find yourselves, and all three are fixed on the new pages. We are telling you so you know what the
+move bought you.
 
 | What is wrong today | What visitors and Google see | Status |
 |---|---|---|
 | **The wrong product name in the browser tab on one product page.** On 雲芝糖肽精華 PSP (試用裝 60粒), the page's own script overwrites the correct title with the **standard pack's** title a moment after the page opens. | The browser tab, the bookmark, the name shared in a chat or social post, and the title Google can index all name the wrong pack. The page body is correct, so nothing looks wrong on screen. | **Fixed.** The new page publishes the correct title into the file, so there is no script left to overwrite it. |
-| **Your homepage sends about 72 MB to every visitor, on every visit.** The page loads all four 3D bottle models the moment it opens — whether or not the visitor ever scrolls to one — and adds a marker to each address that stops the browser from re-using what it already downloaded. | On a phone, roughly 72 MB of mobile data each time someone opens your home page, and a slow first view. A returning visitor pays it again in full, because the page is written in a way that deliberately prevents caching. | **Being fixed now.** Each model will load only when its slide is actually shown, and the files will be cached by the browser after the first time. A visitor who does not reach a 3D slide downloads none of them. |
+| **Your homepage sends about 72 MB to every visitor, on every visit.** The page loads all four 3D bottle models the moment it opens — whether or not the visitor ever scrolls to one — and adds a marker to each address that stops the browser from re-using what it already downloaded. | On a phone, roughly 72 MB of mobile data each time someone opens your home page, and a slow first view. A returning visitor pays it again in full, because the page is written in a way that deliberately prevents caching. | **Fixed.** A model now loads only when its slide is actually shown, and a visitor who never reaches a 3D slide downloads none of them at all. The marker that prevented caching is gone, so a returning visitor re-uses what they already have instead of downloading it again. |
 | **The medical citations on 憶活素 MemoProve are invisible to search engines.** The 醫學文獻參考 references are written into an empty box by a script when the page opens, so they exist only in the visitor's browser. | A visitor with JavaScript sees them. Google, Bing and the AI assistants that read your pages see an empty box — so the strongest evidence on that page counts for nothing in search. | **Fixed.** The citations are now written into the page itself, where crawlers read them. |
 
 ---
@@ -127,4 +127,4 @@ the move bought you.
 | 3 | Product descriptions — six products | No |
 | 4 | Missing photo on the PSP trial pack page | No |
 | 5 | PSP standard pack stock status | No |
-| 6 | Two faults the move fixes — for information, no answer needed | No |
+| 6 | Three faults the move fixes — for information, no answer needed | No |

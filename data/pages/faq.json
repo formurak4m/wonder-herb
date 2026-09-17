@@ -73,7 +73,8 @@
       "assets/page-faq.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "常見問題.html"
+    "chromeFrom": "常見問題.html",
+    "navActive": "常見問題.html"
   },
   "sections": [
     {

@@ -251,7 +251,9 @@
       "assets/page-index.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "index.html"
+    "chromeFrom": "index.html",
+    "svgFilters": true,
+    "navActive": "index.html"
   },
   "mainId": "main-content",
   "sections": [

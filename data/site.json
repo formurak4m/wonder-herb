@@ -1,0 +1,32 @@
+{
+  "chrome": {
+    "logo": "https://lh3.googleusercontent.com/d/1mQafHatzw_gwbV_J9Y5AmwIAUS9r8SEi",
+    "flags": {
+      "zh": "https://flagcdn.com/w20/hk.png",
+      "en": "https://flagcdn.com/w20/gb.png",
+      "de": "https://flagcdn.com/w20/de.png",
+      "es": "https://flagcdn.com/w20/es.png",
+      "fr": "https://flagcdn.com/w20/fr.png",
+      "ja": "https://flagcdn.com/w20/jp.png",
+      "ru": "https://flagcdn.com/w20/ru.png"
+    }
+  },
+  "media": {
+    "base": "",
+    "hosts": {
+      "lh3.googleusercontent.com": "Google Drive product photos, hotlinked and rate-limited (finding 2) - Phase 10 moves them",
+      "drive.google.com": "brochure and lab-report scans and documents on the client's Drive (finding 2) - Phase 10 moves them",
+      "static.wixstatic.com": "images still on the client's Wix CDN, which dies at cutover (finding 1) - Phase 10 moves them",
+      "video.wixstatic.com": "the background video on the client's Wix CDN (finding 1) - Phase 10 moves it",
+      "flagcdn.com": "language-switcher flag icons in the shared chrome",
+      "www.wonder-herb.com": "two research PDFs under /_files/ugd/ - that is a WIX path on the client's own domain, not this repo (the files are not in it). They die at cutover exactly like the video (finding 1) - Phase 10 moves them"
+    },
+    "retiredHosts": [
+      "lh3.googleusercontent.com",
+      "drive.google.com",
+      "static.wixstatic.com",
+      "video.wixstatic.com",
+      "www.wonder-herb.com"
+    ]
+  }
+}

@@ -100,7 +100,8 @@
       "assets/page-product-psp-standard.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "產品_雲芝糖肽精華_B.html"
+    "chromeFrom": "產品_雲芝糖肽精華_B.html",
+    "navActive": "產品介紹.html"
   },
   "sections": [
     {

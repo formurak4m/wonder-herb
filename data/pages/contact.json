@@ -91,7 +91,8 @@
       "assets/page-contact.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "聯絡我們.html"
+    "chromeFrom": "聯絡我們.html",
+    "navActive": "聯絡我們.html"
   },
   "sections": [
     {

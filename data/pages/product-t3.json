@@ -100,7 +100,8 @@
       "assets/page-product-t3.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "產品_T3.html"
+    "chromeFrom": "產品_T3.html",
+    "navActive": "產品介紹.html"
   },
   "sections": [
     {

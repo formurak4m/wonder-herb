@@ -92,7 +92,8 @@
       "assets/page-research.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "研究報告.html"
+    "chromeFrom": "研究報告.html",
+    "navActive": "研究報告.html"
   },
   "sections": [
     {

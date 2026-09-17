@@ -165,7 +165,8 @@
       "assets/page-products.css",
       "assets/chrome.css"
     ],
-    "chromeFrom": "產品介紹.html"
+    "chromeFrom": "產品介紹.html",
+    "navActive": "產品介紹.html"
   },
   "sections": [
     {

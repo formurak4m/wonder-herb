@@ -1,0 +1,7 @@
+<!-- filters.html — the SHARED site chrome (P10).
+     Lifted once from 產品介紹.html, which is now retired to legacy/. This file is
+     the source of truth: the renderer no longer copies chrome out of a page.
+     {{media.*}} is filled from data/site.json, so re-hosting the logo or the
+     flags is a data edit. The active nav link is NOT here - renderer/chrome.js
+     adds it for whichever page is being rendered. -->
+<svg class="svg-filters" aria-hidden="true"><defs><filter id="glass-distortion"><feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="5" /><feDisplacementMap in="SourceGraphic" in2="noise" scale="5" /></filter></defs></svg>

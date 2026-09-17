@@ -45,6 +45,7 @@ const { renderToStaticMarkup } = require('react-dom/server');
 const { resolveField, LANGS, PRIMARY } = require('./i18n');
 const { buildHead, pageUrl, pageFile, HREFLANG } = require('./head');
 const { baseTemplate } = require('./template');
+const { siteChrome } = require('./chrome');
 const { PRICE_HOLD } = require('../assets/site.js');
 const { readOriginalPage, isRetired } = require('./source-page');
 
@@ -275,33 +276,29 @@ function loadStyles(sourcePage) {
     .map(block => block.replace(/^<style[^>]*>/i, '').replace(/<\/style>$/i, ''));
 }
 
-/* STOPGAP (see the header). Lift the site furniture out of a live page: the
-   fixed nav wrapper above <main> and the <footer> below it. */
-function loadChrome(sourcePage) {
-  if (!sourcePage) return {};
-  /* The ORIGINAL page (renderer/source-page.js). After P9-T1 retires a page,
-     the root file is the pre-rendered output: lifting chrome from it would
-     copy our own output back into itself on every render. */
-  const html = readOriginalPage(sourcePage);
-  const header = html.match(/<div class="fixed-nav-wrapper">[\s\S]*?<\/div><!-- \/\.fixed-nav-wrapper -->/i);
-  const footer = html.match(/<footer[\s\S]*?<\/footer>/i);
-  /* The floating WhatsApp button sits OUTSIDE both, after <footer>, so lifting
-     only header + footer silently dropped it - a contact channel, most visible
-     on phones. Found at P9-T1 by the full visual diff. It is a plain wa.me link
-     with no script behind it, identical on all 18 pages. */
-  const floating = html.match(/<a[^>]*class="mobile-fixed-contact-btn"[\s\S]*?<\/a>/i);
-  /* The homepage defines an SVG filter (#glass-distortion) before the nav, and
-     FIVE rules in its stylesheet apply it - the carousel, the glass cards and
-     the case-studies card all lose their frosted look without it. It sits
-     outside the nav wrapper, so lifting header + footer dropped it silently;
-     the element is `position:absolute; width:0; height:0`, so it costs no
-     layout and no other gate could see it go. Only index.html has one.
-     The live page has the SAME block TWICE, which means a duplicate element id
-     - invalid, and the second is dead weight. One is lifted. */
-  const filters = html.match(/<svg[^>]*class="svg-filters"[\s\S]*?<\/svg>/i);
-  return { header: header ? header[0] : '', footer: footer ? footer[0] : '',
-           floating: floating ? floating[0] : '',
-           filters: filters ? filters[0] : '' };
+/* The site furniture, from the SHARED PARTIAL (renderer/chrome.js).
+
+   Until P10 this LIFTED the chrome out of whichever hand-coded page a tree
+   named, because all 18 pages carry their own hand-copied copy. That stopgap
+   ended when Phase 10 had to re-host the nav logo and the flag icons: under the
+   lift those URLs lived inside 15 retired pages in legacy/, so moving them
+   would have meant editing files nobody is supposed to touch. The partial holds
+   them as tokens filled from data/site.json, which makes it a data edit - and
+   it gives Phase 13's add-page-from-template chrome for a page that has no
+   original to lift from.
+
+   Takes the tree's `assets` (a bare page name still works):
+     navActive   which nav link is highlighted. NOT the page's own href: the six
+                 product detail pages highlight 產品介紹, their parent section,
+                 and assuming "the page highlights itself" silently un-highlighted
+                 the nav on all six. Carried per tree, read from each original.
+     chromeFrom  the page being rendered (the fallback for navActive).
+     svgFilters  index.html's SVG filter defs (finding 33). */
+function loadChrome(assetsOrPage) {
+  if (!assetsOrPage) return {};
+  const a = typeof assetsOrPage === 'string' ? { chromeFrom: assetsOrPage } : assetsOrPage;
+  if (!a.chromeFrom) return {};
+  return siteChrome(a.navActive || a.chromeFrom, { filters: Boolean(a.svgFilters) });
 }
 
 function loadTree(file) {
@@ -364,7 +361,7 @@ function main(argv) {
     const tree = loadTree(path.isAbsolute(f) ? f : path.join(process.cwd(), f));
     const assets = tree.assets || {};
     const styles = loadStyles(assets.stylesFrom);
-    const chrome = loadChrome(assets.chromeFrom);
+    const chrome = loadChrome(assets);
     if (assets.stylesFrom) {
       console.log('  ! CSS lifted from ' + assets.stylesFrom +
                   ' (' + styles.length + ' block(s), ' +
