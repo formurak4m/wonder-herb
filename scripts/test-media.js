@@ -42,7 +42,12 @@ const check = (label, cond, extra) => {
    another site (wa.me, facebook, a PubMed citation) is not media and is not
    this suite's business. */
 const MEDIA_EXT = /\.(jpe?g|png|webp|avif|gif|svg|mp4|webm|glb|gltf|pdf)(\?|#|$)/i;
-const MEDIA_HINT = /(googleusercontent|wixstatic|drive\.google\.com\/(thumbnail|uc)|\/media\/|\/img\/|\/video\/)/i;
+/* `drive.google.com/file/d/<id>/view` is in here because it is a DOCUMENT the
+   site links for download - a brochure scan, a lab report - with no extension
+   and no media word in its path. It read as an ordinary outbound link, so the
+   first version of this scanner could not see five of them, on a host we are
+   retiring. Same blind spot, same class, as the two _files/ugd PDFs. */
+const MEDIA_HINT = /(googleusercontent|wixstatic|drive\.google\.com\/(thumbnail|uc|file\/d\/)|\/media\/|\/img\/|\/video\/)/i;
 const looksLikeMedia = v => typeof v === 'string' && /^https?:\/\//.test(v) &&
   (MEDIA_EXT.test(v) || MEDIA_HINT.test(v));
 
@@ -146,6 +151,9 @@ check('a properly content-addressed URL passes it',
       ADDRESSED.test('https://cdn.example.net/photo-1234abcd.jpg'), 'accepted');
 check('the scanner actually finds media, so a green run is not an empty one',
       refs.length > 20, refs.length + ' reference(s) found');
+check('it sees a Drive DOCUMENT link, which carries no extension and no media word',
+      looksLikeMedia('https://drive.google.com/file/d/1AbC/view?usp=sharing'),
+      'five of these were invisible to the first version of this scanner');
 check('it ignores ordinary links, which are not media',
       !looksLikeMedia('https://wa.me/85293318571/') &&
       !looksLikeMedia('https://pubmed.ncbi.nlm.nih.gov/12345678/'), 'wa.me and PubMed ignored');

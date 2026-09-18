@@ -31,7 +31,8 @@
     "test:editor:lang": "node scripts/test-editor-lang.js",
     "publish": "node scripts/publish.js",
     "test:lang-assets": "node scripts/test-lang-assets.js",
-    "test:media": "node scripts/test-media.js"
+    "test:media": "node scripts/test-media.js",
+    "check:media": "node scripts/check-media.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "@puckeditor/core": "^0.23.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "aws4fetch": "1.0.20",
     "esbuild": "^0.28.2",
     "jsdom": "^29.1.1",
     "playwright": "^1.63.0",

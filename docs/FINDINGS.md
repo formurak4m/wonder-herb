@@ -99,6 +99,21 @@ domain** — `https://www.wonder-herb.com/_files/ugd/…` — and so looks self-
 path is Wix's user-file store and dies with the account. It currently serves the two research PDFs
 linked from `研究報告.html`. Found while surveying in-copy links for finding 14.
 
+**Both greps now cover `data/` as well as `*.html`, and the gate itself was written into Phase 18**
+(18 Sep 2026). It had only ever been *described* as widened here; the gate in `BUILD_TASKS.md` still
+grepped `wixstatic` alone until it was checked. `data/` is in scope because a migrated page's media
+is a tree field: the HTML is generated, so the tree is the thing that has to be clean. Today: 33
+`wixstatic` and 2 `_files/ugd` hits in the deployed HTML, 23 in `data/`.
+
+**A third shape of the same blind spot, found at P10-T3 while writing `check:media`.** Five tree
+fields link Drive **documents** — `drive.google.com/file/d/<id>/view` — which carry no file
+extension and no media word in the path, so the media scanner read them as ordinary outbound links
+and could not see them at all. Four documents: two brochure scans, a lab report and a certificate.
+The scanner in `scripts/test-media.js` and `scripts/check-media.js` was widened, with a control that
+asserts it sees one. The pattern across all three misses is the same: **an asset that does not look
+like an asset is invisible to anything that recognises assets by shape**, which is why the real rule
+is the declared-host list, not the URL pattern.
+
 ---
 
 ## 2 · Product photos are hotlinked from Google Drive and get rate-limited
@@ -621,7 +636,9 @@ list at Phase 13, at which point they stop being in-copy links at all. **One is 
 (a) — a formatter limited to links only — rather than reopening bold.
 
 Also recorded in finding 1: those three PDFs live on Wix's file store, so the Phase 18 cutover gate
-was widened to grep `_files/ugd` as well as `wixstatic`.
+was widened to grep `_files/ugd` as well as `wixstatic`. **That widening was written into the gate
+itself on 18 Sep 2026** — until then it existed only as this sentence, which is how a gate quietly
+fails to be one.
 
 ---
 

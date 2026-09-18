@@ -892,15 +892,121 @@ or when a page has no original to lift from (add-page-from-template).
 
 ## Phase 10 — Media + 3D to R2/CDN
 
-### P10-T1 · Move heavy assets out of the repo
-- **Goal:** stop shipping 72 MB of `.glb` on every deploy.
-- **Steps:**
-  1. Create a Cloudflare R2 bucket (or S3). Upload all `*.glb` and site images. Note the public/CDN base URL.
-  2. Add an env var `MEDIA_BASE_URL` and make section components and `data` references build asset URLs from it.
-  3. Update `vercel.json` `.glb` headers only if still serving any locally; otherwise remove that rule.
-  4. `git rm --cached *.glb`, add `*.glb` to `.gitignore`, keep a copy in R2. Rewrite history only if the repo size is a real problem (optional, risky, do last).
-- **Verify:** the live product pages load models from the CDN; the repo no longer contains the `.glb` files; deploy artifact size drops sharply.
-- **Gotcha:** set long cache + CORS on the CDN (the current `vercel.json` already shows the needed headers: `Access-Control-Allow-Origin: *`, `Cache-Control: public, max-age=31536000, immutable`).
+**What this phase is.** Every byte of media the site serves today comes from somewhere we do not
+control and cannot keep: 72 MB of `.glb` committed to Git and redeployed on every push, product
+photos hotlinked from the client's Google Drive (finding 2), the homepage background video and nine
+images on the client's Wix CDN, and — found here — two research PDFs on Wix's file store and four
+documents on Drive. Phase 10 puts all of it in one bucket we own, referenced from one place.
+
+**The payload:** 30 assets, 117.5 MB. Nothing in it needs the client: everything downloads at full
+quality from an ordinary HTTP request (the four Drive documents serve a viewer page at their `/view`
+URL and the file itself from the direct-download endpoint).
+
+**The rule this phase is built on, already a standing decision:** *a heavy or externally hosted asset
+is a TREE FIELD, never markup.* Because of that, re-hosting is a **data edit and a re-render**, not a
+code change — which is what makes the eventual Wix death (finding 1) and the r2.dev → custom-domain
+switch (Phase 18) edits rather than migrations.
+
+**Filenames are content-addressed, with no exceptions:** `<readable-name>-<sha8>.<ext>`, where the
+hash is the first 8 hex of the sha256 of the bytes. That is what makes `immutable` caching safe, and
+it is why finding 34's `Date.now()` cache-buster could be **deleted** rather than replaced. It also
+makes every URL self-verifying: `check:media` hashes what the bucket serves and compares it to the
+name it is served under.
+
+### P10-T1 · Shared chrome partial — DONE (`8e4bde2`)
+Until now the renderer **lifted** chrome out of whichever hand-coded page a tree named. Phase 10
+re-hosts the nav logo and the seven flag icons, and under the lift those URLs lived inside 15
+**retired** pages in `legacy/` — so "move the media" would have meant editing 15 files nobody is
+supposed to touch, breaking the data-edit rule on day one. The chrome is now `renderer/chrome/*.html`
+plus `data/site.json` (`{{media.*}}` tokens), assembled by `renderer/chrome.js`.
+- **Verified three ways:** normalised HTML comparison (5 of 15 pages changed, whitespace and comments
+  only); all 15 pages re-diffed against the 15 Sep baseline with every number matching Phase 9's
+  record; and an **A/B isolating the switch** — lifted chrome vs partial, page against page — giving
+  **14 of 15 byte-identical**. Index differed, and comparing index *against itself* with identical
+  chrome gave 7,788 px against the A/B's 8,079 px in the same row bands: its animated hero, not the
+  change.
+- **Two regressions the mechanical check caught and the eye did not:** the six product pages
+  highlight 產品介紹, their parent section, not themselves — so "a page highlights itself"
+  un-highlighted the nav on all six, and `assets.navActive` is now carried per tree, read from each
+  original; and on the homepage the **logo** also links to `index.html` and matched first, so
+  `markActive` is scoped to `<nav class="nav-menu">`.
+
+### P10-T2 · `test:media`, the offline half of the contract — DONE (`8e4bde2`)
+A media URL is the one kind of content no existing gate looks at: SEO checks that an `og:image`
+exists, never where it points; fidelity maps compare tags and classes; `test:behaviour` asserts
+effects. Suite 7 of 16, in `test:all`, two layers: every media reference is on a host **declared with
+a stated reason** in `data/site.json` (in force today), and — once `media.base` is set — under that
+base, content-addressed, and on no retired host. Layer 2 switches on by **editing data**, not this
+file.
+- **It found two things nobody was looking for.** Two research PDFs served from
+  `www.wonder-herb.com/_files/ugd/` — a **Wix path on the client's own domain**, so they read as
+  internal links and the first inventory missed them; they die at cutover exactly like the video.
+  And five links to Drive **documents** (`/file/d/<id>/view`), which carry no extension and no media
+  word in the path, were invisible to the scanner itself — found while writing `check:media`, fixed
+  in both scanners, with a control that asserts the scanner sees one.
+- One of its own six controls caught a bug in it: `photo-1234abcd.jpg?v=1699` is content-addressed
+  **and** uncacheable, and was passing. The anchor now requires the URL to end at its extension.
+
+### P10-T3 · `check:media`, the online half — WRITTEN, waiting on the bucket
+`npm run check:media`. **Not in `test:all`** — it talks to a real host. This is the owner's **hard
+gate**: nothing is `git rm --cached` out of the repo until it is green. Per asset: 200 with **no
+redirect**; `Content-Type` matching the extension; `Cache-Control` with `immutable` and max-age ≥ a
+year; **CORS required on `.glb`** (the hero loader uses `fetch`, so without it every model fails
+silently while the page still shows its poster) and reported for the rest; the served bytes hashing
+to the 8 hex digits in the filename; and, against `data/media-manifest.json`, the right length and
+nothing uploaded that the site does not reference.
+- **First it checks the bucket itself:** a key that cannot exist must **not** answer 200. If the host
+  served something friendly for every path, every check after it would pass while pointing at
+  nothing.
+- Every contract rule is a **pure function**, and every negative control applies that same function
+  to a value it must reject *and* one it must accept. A control that only ever asserts rejection
+  passes just as happily when the function returns false for everything.
+- **It can be exercised before the bucket exists:** `node scripts/check-media.js --against-current`
+  runs the identical contract over the media the site uses **today**, against real HTTP responses.
+  Result: **34 of 34 fail**, and the failure shapes are the proof — Drive's `/thumbnail` transforms
+  answer 302, Drive's `/d/<id>` URLs carry no extension and `private, max-age=86400`, Wix and flagcdn
+  are not content-addressed. Exit 0: it is a demonstration, not a gate.
+
+### P10-T4 · The uploader — devDependency `aws4fetch@1.0.20`
+Scripted, not by dashboard: a scripted upload is repeatable and verifiable and a manual one is not.
+MIT, **zero dependencies**, 84 KB on disk, pinned exactly, `devDependencies`, and `node_modules/` is
+gitignored so it cannot reach the published site. It sets the content type and
+`public, max-age=31536000, immutable` per object, and writes `data/media-manifest.json` — the record
+of what each URL means, which `check:media` then verifies against.
+
+### P10-T5 · Repoint, re-render, re-diff
+`data/site.json` gains `media.base`; every reference becomes `base + key`. This turns on `test:media`
+layer 2 automatically. Then re-render and **re-diff all 15 pages at 1280 and 390, scripts on and
+off** — the six host-resized images are pre-generated at their **measured** dimensions (measured from
+the fetched bytes' own headers, not inferred: 1000×774 ×2, 800×1036, 800×620, 347×513, 366×513), so
+the diff must come back at the Phase 9 numbers.
+
+### P10-T6 · Only then, out of the repo
+`git rm --cached` the four referenced `.glb`, add `*.glb` to `.gitignore`, delete the three unused
+ones (0.3 MB, dead weight — 7 are committed, 4 are referenced), and drop `vercel.json`'s `.glb` CORS
+rule, which exists only because the models were served from here.
+- **Gate (owner):** `check:media` green — 200, correct content type, CORS, immutable — **before** any
+  `git rm --cached`. Not a step; a gate.
+
+### P10-T7 · Finding 34 — DONE (`4f793f1`)
+All four models were fetched **eagerly on page load**, all at once, each behind a `Date.now()`
+cache-buster that made them uncacheable: ~72 MB per visit for three models the visitor may never see.
+Fixed in `assets/behaviour/home-hero.js` — a model loads when its slide activates, the buster is
+deleted outright — and gated in `test:behaviour` with a three.js stub, proved by restoring the old
+loader and watching the check fail (4 fetched on load, 4 cache-busted).
+
+### P10-T8 · P8-T3, the deploy allow-list — lands with this phase
+Scheduled here rather than after, because this is the phase that changes what deploys. It touches
+`.github/workflows/static.yml`, so it gets its own isolated review: **the diff is shown alone before
+it is applied.**
+
+> **Open decision — the 12 flagcdn references.** Seven language-switcher flags in the shared chrome
+> and five office-location flags on 聯絡我們 come from `flagcdn.com`, a fourth-party CDN, and are
+> **not** in the 30-asset payload. After the move they would be the only media not under
+> `media.base`, so either they move too (payload 30 → 42, about 40 KB, and the rule "every media
+> reference is under `media.base`" stays absolute) or `flagcdn.com` becomes a permanently declared
+> host with an exemption in `test:media` layer 2. **Recommendation: move them** — a rule with one
+> exemption acquires more, and it removes a fourth-party dependency from the language switcher.
 
 ---
 
@@ -1031,6 +1137,16 @@ When Phases 0-12 are done: the client can log in over the internet, edit the cor
 - Migrate the remaining 13-14 pages to trees, each verified against baseline, each passing `test:seo`, old files moved to `legacy/`.
 - **Verify:** all 18 pages render from trees; `legacy/` holds the retired originals; full test suite green.
 
+### P13-T4 · Responsive image variants and modern formats — deferred here from Phase 10, deliberately
+**Why it is not Phase 10.** Phase 10 moves the existing bytes and nothing else. Every image goes to R2 at the **single size the site already uses** — including the six that Google Drive was resizing for us, which are pre-generated at their **measured** dimensions (1000×774 ×2, 800×1036, 800×620, 347×513, 366×513) so the move is byte-for-byte what a visitor sees today and the visual diff can prove it. Adding `srcset`/`sizes` or WebP/AVIF in the same step would change the rendered page at the same moment as the host, and no diff could then tell a re-hosting bug from an encoding one.
+
+**What this task is.** `srcset` and `sizes` are a **tree-shape change** (an image field stops being one URL and becomes a set) and **section-library work** (every section that renders an `<img>` has to emit the new markup, in both Puck and the renderer). Modern formats add `<picture>` with fallbacks. That is Phase 13's kind of work, not Phase 10's.
+
+- Decide the variant widths from the real layout breakpoints, not from round numbers.
+- Change the image field's shape once, in one place, and migrate every tree to it.
+- Generate WebP (and AVIF if it pays) alongside the original at upload time, in the same **content-addressed** scheme, so `immutable` caching still holds and `test:media` needs no exception.
+- **Verify:** every page re-diffed at 1280 and 390, scripts on and off; `test:media` green with the new field shape; the bytes a visitor downloads measurably smaller than today, stated as a number.
+
 ## Phase 13G — GEO: AI-crawler visibility, as deliberate work
 
 Lettered, not numbered, so Phases 14–18 keep their existing numbers.
@@ -1139,7 +1255,11 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
 
 ## Phase 18 — Cutover
 - Point the domain fully at the new pre-rendered site (already GitHub Pages via CNAME; confirm DNS and that all pages/languages are live). Submit the new sitemap to Search Console. Watch analytics and crawl stats for a week. Only then cancel Wix.
-- **Gate — the site still depends on Wix for media.** `grep -rn "wixstatic" *.html` must return **nothing** before Wix is switched off. It currently returns 45 hits across all 18 pages: the homepage background video plus the `og:image` / `twitter:image` social previews. Cancelling Wix with any of these left breaks the homepage and every link preview. Phase 10 is what clears it. See `docs/FINDINGS.md` finding 1.
+- **Gate — the site still depends on Wix for media, by TWO routes.** Wix serves this site from its CDN *and* from its file store on the client's own domain, so one grep is not enough. Both must return **nothing** before Wix is switched off:
+  1. `grep -rn "wixstatic" *.html data/` — **the CDN**: the homepage background video (also used on 研究報告) and the `og:image` / `twitter:image` social previews. **33 hits** in the deployed HTML today.
+  2. `grep -rn "_files/ugd" *.html data/` — **Wix's file store**, served from `https://www.wonder-herb.com/_files/ugd/…`. This one looks self-hosted and is not: the files are not in this repo and die with the Wix account exactly like the video. **2 hits** today, both research PDFs linked from 研究報告. They were missed by Phase 10's first inventory *because* they look like internal links, and were caught by `npm run test:media`, which requires every media host to be declared with a reason (finding 1).
+  `data/` is grepped alongside `*.html` because a migrated page's media is a **tree field** now: the HTML is generated, so the tree is the thing that has to be clean. **23 hits in `data/` today.** Cancelling Wix with any of these left breaks the homepage, the research downloads and every link preview. Phase 10 is what clears it. See `docs/FINDINGS.md` finding 1.
+- **Gate — the media must not still be on `r2.dev` (P10-T6).** Phase 10 ships on the bucket's `*.r2.dev` development URL by deliberate choice: it needs no DNS on a domain that still points at Wix, and no client dependency. Cloudflare rate-limits `r2.dev` and documents it as **not for production**, so shipping the real cutover on it would be a defect we chose, not one we inherited. Before Wix is switched off, `media.base` in `data/site.json` must be the custom domain (`https://media.wonder-herb.com/`) and **no reference anywhere may contain `r2.dev`**: `grep -rn "r2.dev" *.html data/ assets/` returns nothing, and `npm run check:media` is green against the custom domain (200, correct content type, CORS on the `.glb` models, `immutable` caching). Because every URL is content-addressed and the base is data, the switch itself is a `data/site.json` edit plus a re-render — but it is a **gate**, not a nicety.
 - **Correction (15 Sep 2026):** the domain is **not** "already GitHub Pages via CNAME". `www.wonder-herb.com` and the apex resolve to Wix today; the `CNAME` file in the repo does not point DNS anywhere. Cutover is a DNS change plus a deliberate re-enable of GitHub Pages, which the owner unpublished on 15 Sep 2026 (finding 26).
 - **Gate — finding 26 must not ship again.**
   1. **Stale "Review" comments on `main`.** 13 pages still carry an HTML comment listing "Review" among their structured-data types, including one naming social proof as its purpose. Remove them before cutover; `rebuild/editor` already did (`d2ee9c4`). Check: `git grep -n -e '<!--[^>]*[Rr]eview[^>]*-->' -- '*.html'` on the branch being deployed returns **nothing**.
@@ -1147,7 +1267,7 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
   3. **No `noindex` anywhere** in what deploys: `git grep -n -i noindex -- '*.html'`, except the ones that deliberately carry it: `account.html`, `購物車.html`, `product.html`, `admin/index.html`, `editor/index.html`, and every retired original under `legacy/` (which must also stay out of the deploy). A stray one de-indexes the client's real site. That risk is why the Pages copy was taken down rather than noindexed.
   4. **No patient case material presented as a review or rating** in what deploys. (Health-claim review applies to the client's replacement content, not the current copy: owner, 15 Sep 2026.)
   5. **典型病例's ItemList must not ship as it stands** (docs/FINDINGS.md finding 29). It says `numberOfItems` 15 while listing 3, types its entries `Testimonial` (not a schema.org type), and names real patients. It is carried verbatim today because site content is not authoritative and this is the owner's call with the client - but it is structured data about identifiable patients, so it is a cutover gate, not a nicety. Check: `node -e "…"` on the deployed tree, or simply read the ItemList in `data/pages/cases.json`. Fix, drop, or derive it from `data/cases.json` (the FAQPage treatment, `renderer/render.js faqPageNode`, with a `test:seo` check as the model) - then this gate can be automated like the other four.
-- **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed, the `wixstatic` grep is clean, and the four finding-26 checks above are clean. Then, and only then, switch Wix off.
+- **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed, **both media greps (`wixstatic` and `_files/ugd`) are clean**, **the `r2.dev` grep is clean and `check:media` is green against `media.wonder-herb.com`**, and the four finding-26 checks above are clean. Then, and only then, switch Wix off.
 
 ---
 

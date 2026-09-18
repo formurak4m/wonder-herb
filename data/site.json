@@ -27,6 +27,11 @@
       "static.wixstatic.com",
       "video.wixstatic.com",
       "www.wonder-herb.com"
-    ]
+    ],
+    "corsOrigins": [
+      "https://www.wonder-herb.com",
+      "https://formurak4m.github.io"
+    ],
+    "cacheMinSeconds": 31536000
   }
 }
