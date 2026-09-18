@@ -11,6 +11,35 @@ page (產品介紹) at P9-T1; 27 from migrating 常見問題 at P9 (page two); 2
 **Nothing here is fixed.** Each is logged against the phase that owns it, so it gets fixed in the
 right place rather than opportunistically. Do not fix these out of their phase.
 
+> ## How to write a finding: findings describe, gates enforce
+>
+> **A rule that exists only in this file is not a rule. It is worse than nothing, because we will
+> trust it at the moment it matters and it will not be there.**
+>
+> This is not a hypothetical. Finding 1 said, in writing, that the Phase 18 cutover gate "was
+> widened to grep `_files/ugd` as well as `wixstatic`". The gate in `BUILD_TASKS.md` still grepped
+> `wixstatic` alone. At cutover we would have run the gate, watched it come back clean, and
+> cancelled Wix with two research PDFs still served from the Wix file store — on the strength of a
+> sentence in a documentation file. The gap was found by asking, not by anything failing.
+>
+> So, for every finding:
+>
+> 1. **If it claims something is now checked, it must name the file and the assertion** — close
+>    enough that a reader can open the file and find the line. `test:seo` is not a citation;
+>    `scripts/test-seo.js`, `no aggregateRating / review / rating data in JSON-LD` is.
+> 2. **"Guarded", "gated", "now fails", "enforced" without a named assertion is a CLAIM, not a
+>    gate.** Write it as **NOT GATED** until it is one. An honest gap is safe; a false claim is not.
+> 3. **Name the right file.** A citation pointing at the wrong suite fails exactly like no citation
+>    at the moment someone tries to verify it. (Finding 15 named `test:behaviour` for D1; the
+>    assertion is in `scripts/test-render.js`.)
+> 4. **A manual gate — a grep a human runs — is allowed**, but only written into the phase that runs
+>    it, with the exact command, and marked as manual. A manual gate nobody has scheduled is a note.
+> 5. **A gate must bite.** It needs a negative control proving it fails when its subject is removed.
+>    A check that passes without its code is not a test (findings 12, 23).
+>
+> The audit that established the state of this file is recorded at finding 35.
+
+
 Evidence for all of them is in `baseline/manifest.json` (gitignored) — per page: rendered text
 length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 
@@ -30,7 +59,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 12 | Pre-rendered pages publish **visually blank** without the reveal script | **High — passes green, looks broken** | Phase 5 (P5-T1 template) |
 | 13 | Sections silently dropped markup from their source blocks | Resolved | Closed at P4-T4 |
 | 14 | Body copy uses **bold, lists and links**; plain-text fields drop them | Decided — option (c) | P4-T5 |
-| 15 | Chrome's layout depends on JS, and there is no shared stylesheet | **High — D1 required, not optional** | **FIXED at P9** — D1 (sticky nav + `overflow-x: clip` in `assets/chrome.css`, asserted by `test:behaviour`) and D2 (one sheet per page, `chrome.css` linked last, guarded in `template.js`). The shared-sheet half is closed by measurement: only 22-26 rules per page are safely shareable |
+| 15 | Chrome's layout depends on JS, and there is no shared stylesheet | **High — D1 required, not optional** | **FIXED at P9** — D1 (sticky nav + `overflow-x: clip` in `assets/chrome.css`, asserted by `scripts/test-render.js:109-113`, `assets/chrome.css holds the sticky rule` — **corrected 18 Sep 2026: this said `test:behaviour`, which does not assert it**, finding 35) and D2 (one sheet per page, `chrome.css` linked last, guarded in `template.js`). The shared-sheet half is closed by measurement: only 22-26 rules per page are safely shareable |
 | 16 | **`export` published staff emails and an internal audit trail to a public URL** | **HIGH — security** | Fixed at P7-T1a |
 | 17 | `export` wrote `updatedAt` bookkeeping into public site data; one real stock change was unpublished | Medium — fixed | P7-T1a; stock change committed 15 Sep 2026 (`e567a69`), data/ matches the database |
 | 18 | `renderer/i18n.js` is CommonJS, so the editor cannot import it; Vite shim is a stopgap | Medium | **Phase 11** (re-owned 16 Sep 2026: it was owned by Phase 9, which closed without doing it. It never blocked a page — it belongs with P11-T2, when the editor becomes client-facing and its build has to stand on its own) |
@@ -48,8 +77,9 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 30 | **產品_雲芝糖肽精華_A publishes the wrong product's title**: its script overwrites the trial pack's correct `<title>` with the standard pack's | Medium — SEO, live today on 1 of 6 product pages | **Fixed by migrating the page** (no script to overwrite it); `test:seo` now compares against the page it replaces; on the client list as a fix (docs/CLIENT-QUESTIONS.md §6) |
 | 31 | **PT3 is clinic-only on its page and sellable in the data**: no `clinicOnly` flag on WH-PT3-090, so the grid and the migrated panel both offer it at HK$2,480 | Medium — a visitor can buy what the page says is clinic-only | One data edit (`clinicOnly: true`) fixes panel, grid and cart at once — **owner + client**, like finding 9 |
 | 32 | **The homepage hero, product carousel and featured cases were built entirely in JavaScript**: with scripts off the live page shows 0 slides, 0 product cards, 0 case cards and 768 characters of text | High — the largest crawler-visibility gap on the site | **Fixed by migrating index.html** (P9, 16 Sep 2026): 6 slides, 3 product cards, 3 case cards, 1,331 characters |
-| 33 | **index.html defines an SVG filter (`#glass-distortion`) that five of its CSS rules apply, and it sits outside every block the chrome lift copied**: dropping it costs the carousel and every glass card their frosted look, and the element is `position:absolute; width:0; height:0`, so no gate can see it go | Medium — silent visual loss, found by hand at P9 | **Fixed**: `loadChrome` lifts it. The live page declares it TWICE, which is a duplicate element id — one is lifted |
+| 33 | **index.html defines an SVG filter (`#glass-distortion`) that five of its CSS rules apply, and it sits outside every block the chrome lift copied**: dropping it costs the carousel and every glass card their frosted look, and the element is `position:absolute; width:0; height:0`, so no gate can see it go | Medium — silent visual loss, found by hand at P9 | **Fixed**: `loadChrome` lifts it. The live page declares it TWICE, which is a duplicate element id — one is lifted. **Gated 18 Sep 2026** (it had none until finding 35's audit): `scripts/test-render.js`, `the rendered homepage contains the filter it applies`, with the CSS-usage count, the tree flag and a negative control |
 | 34 | **Every homepage visit downloads all four 3D models (~72 MB) and cannot cache them**: the loader initialises every `.carousel-3d-container` on load rather than when its slide is shown, and appends `?v=` + `Date.now()` to each URL, so the browser cache is defeated on every visit and a repeat visitor pays the full 72 MB again | **High — bandwidth and mobile data; pre-existing on the live page, not caused by migrating** | **Phase 10**: it is the move that sets cache headers, and the cache-buster defeats them. Fix with the move: drop the buster (immutable, content-addressed URLs) and initialise a model when its slide becomes active |
+| 35 | **A gate that existed only in FINDINGS.md**: finding 1 recorded the Phase 18 cutover gate as widened to cover `_files/ugd`; the gate itself still grepped `wixstatic` alone, so at cutover we would have cancelled Wix with two research PDFs still served from it | **High — a false claim of safety, relied on at an irreversible step** | **Fixed 18 Sep 2026**, with an audit of every other claimed gate: 19 of 21 real, finding 15 mis-cited its suite, finding 33 had no gate at all (both fixed). The rule is now at the top of this file: **findings describe, gates enforce** |
 
 ---
 
@@ -2068,3 +2098,71 @@ in code needs to change; `test:behaviour` already covers both states.
 - Which is right. The product's own title says 指定診所發售, and the clinic note has been on the page
   since before this project; but the price and stock in the database look deliberate too. That is a
   question for the client, like the disputed prices in finding 9.
+
+---
+
+## 35 · A gate that existed only in this file — and the audit of every other one
+
+**Found at P10-T3 (18 Sep 2026), by the owner asking whether a documented widening had actually
+landed.** It had not. Finding 1 stated that the Phase 18 cutover gate "was widened to grep
+`_files/ugd` as well as `wixstatic`". The gate in `BUILD_TASKS.md` still grepped `wixstatic` alone.
+Nothing was failing, nothing was wrong in the code, and every suite was green: the rule simply did
+not exist anywhere an execution could reach it.
+
+**Why this is a finding and not a typo.** It is the only failure mode in this project where *more
+documentation makes things worse*. An undocumented gap is a gap someone may still find. A gap
+documented as closed is one nobody will look for, and it fails at the exact moment it is relied on —
+here, at cutover, cancelling the client's Wix account with two research PDFs still served from it.
+The governing rule is now written at the top of this file: **findings describe, gates enforce**.
+
+### The audit
+
+Every finding claiming a gate, check or rule was checked against the code. **19 of 21 claims are
+real and located.** Two defects found, both now fixed, and one class of gate is inherently manual
+and is recorded as such.
+
+| # | The claim | Where it actually is | Verdict |
+|---|---|---|---|
+| 1 | Phase 18 greps `wixstatic` **and** `_files/ugd` | `BUILD_TASKS.md` Phase 18 gate, both patterns, over `*.html` **and** `data/` | **WAS DOCUMENTATION-ONLY — fixed 18 Sep 2026.** Manual by nature (see below) |
+| 1 | `test:media` requires every media host to be declared | `scripts/test-media.js`, `every absolute URL in data/ is on a host declared with a kind and a reason` | real, and generalised at this audit |
+| 3 | The `<h1>` exemption is narrow, reasoned and asserted | `scripts/test-seo.js:133`, `the allow-list is exactly the two agreed pages` (+ the `AGREED` constant at :131) | real |
+| 8 | `test:sections` asserts both halves of the image degrade | `scripts/test-sections.js`, `no broken <img>` and its partner | real |
+| 12 | The reveal guards ship on every page | `scripts/test-render.js:68,71,93` | real |
+| 13 | A section without a fidelity map fails | `scripts/test-sections.js:891`, `every registered section has a fidelity map` | real |
+| 15 | D1 (sticky nav, `overflow-x: clip`) is **"asserted by `test:behaviour`"** | `scripts/test-render.js:109-113` — **not** `test:behaviour` | **MIS-CITED — corrected 18 Sep 2026.** The gate exists; the finding pointed at the wrong suite, which fails identically the moment someone tries to verify it |
+| 16, 22 | `test:data` scans every tracked file, plus untracked files git would add | `scripts/test-published-data.js`, incl. `no bookkeeping or identity field` at :107 | real |
+| 17 | `export` strips `updatedBy`/`updatedAt`/`_id` | `scripts/export.js pageForSite()`, gated at `scripts/test-published-data.js:285` | real |
+| 21 | The SEO gate asserts `zh-Hant` | `scripts/test-seo.js` | real |
+| 23 | `test:behaviour` fails a `PRICE_HOLD` that drifts from `assets/site.js` | `scripts/test-behaviour.js:144` | real |
+| 23 | The approved refusal wording, and **no dialog ever opens** | `scripts/test-behaviour.js` (dialog listener at :278, asserted per refusal) | real |
+| 23 | The floating WhatsApp button is carried with the chrome | `scripts/test-render.js:124` | real |
+| 24 | The language notice's text, `lang` and close-button label, in-language | `scripts/test-behaviour.js:769` (`UNAVAILABLE`) | real |
+| 25 | `test:editor:lang` adds 5 `mergeTree` checks | `scripts/test-editor-lang.js` | real |
+| 25 | PT3's price hold cannot be lifted without the `clinicOnly` flag | `scripts/test-behaviour.js` | real |
+| 26 | `test:seo` fails any rating or review data, not waivable | `scripts/test-seo.js:287`, planted-node control at :305 | real |
+| 27 | `test:seo` fails a `FAQPage` naming questions the visible list does not | `scripts/test-seo.js:205-212` | real |
+| 28 | `test:lang-assets` holds per-language assets for every retired page | `scripts/test-lang-assets.js` | real |
+| 30 | `test:seo` compares the title against **the page it replaces** | `scripts/test-seo.js:407` | real |
+| 32 | Scripts-off content is asserted, with dead-control detection | `scripts/test-behaviour.js:927,937,997` | real |
+| 33 | "**Fixed**: `loadChrome` lifts it" (the `#glass-distortion` filter) | nothing — **NO GATE EXISTED** | **NOT GATED — gate written 18 Sep 2026**, `scripts/test-render.js`, four checks incl. a negative control |
+| 34 | Models load lazily, with no cache-buster | `scripts/test-behaviour.js:611` (`modelsLoadLazily`), three.js stub | real. The `immutable` HEADER is **not** assertable offline and says so at :609 — it is `check:media`'s |
+
+**Also checked mechanically:** every `npm run …` named in `BUILD_TASKS.md`, `CLAUDE.md`,
+`docs/FINDINGS.md`, `ADMIN_GUIDE.md` and `SETUP.md` exists in `package.json` (**no misses**), and
+every source file cited in those docs exists (two hits, both benign: `editor/dist/` is a build
+output and `assets/site.css` is named in the past tense as something that was built and discarded).
+
+### The one gate that stays manual, and why that is allowed
+
+The Phase 18 Wix greps cannot be a suite in `test:all`: they are a **precondition for an irreversible
+external action** — cancelling the client's account — not a property of a build. A green `test:all`
+the week before cutover proves nothing about the day of it. So it stays a manual gate, and under the
+rule at the top of this file it is written into **the phase that runs it**, with the exact commands
+and today's expected counts, so a human running it can tell "clean" from "I typed it wrong".
+
+### What this changes about finding 28 and finding 1
+
+Both were caught by a human noticing, not by a gate. The generalisation now in `test:media` — **every
+absolute URL in `data/` must be on a host declared with a kind and a reason** — is the first check in
+this project that does not depend on recognising an asset by the shape of its URL, which is the thing
+that failed three times. See the header comment of `scripts/test-media.js`.

@@ -18,20 +18,82 @@
       "drive.google.com": "brochure and lab-report scans and documents on the client's Drive (finding 2) - Phase 10 moves them",
       "static.wixstatic.com": "images still on the client's Wix CDN, which dies at cutover (finding 1) - Phase 10 moves them",
       "video.wixstatic.com": "the background video on the client's Wix CDN (finding 1) - Phase 10 moves it",
-      "flagcdn.com": "language-switcher flag icons in the shared chrome",
+      "flagcdn.com": "language-switcher flag icons in the shared chrome, and five office-location flags on 聯絡我們. A FOURTH-PARTY CDN - moving to R2 with everything else at Phase 10 (owner, 18 Sep 2026): an exemption from the media contract is the beginning of a list of them",
       "www.wonder-herb.com": "two research PDFs under /_files/ugd/ - that is a WIX path on the client's own domain, not this repo (the files are not in it). They die at cutover exactly like the video (finding 1) - Phase 10 moves them"
+    },
+    "hostPaths": {
+      "www.wonder-herb.com": "/_files/ugd/"
     },
     "retiredHosts": [
       "lh3.googleusercontent.com",
       "drive.google.com",
       "static.wixstatic.com",
       "video.wixstatic.com",
-      "www.wonder-herb.com"
+      "www.wonder-herb.com",
+      "flagcdn.com"
     ],
     "corsOrigins": [
       "https://www.wonder-herb.com",
       "https://formurak4m.github.io"
     ],
     "cacheMinSeconds": 31536000
+  },
+  "externalHosts": {
+    "schema.org": {
+      "kind": "vocabulary",
+      "why": "the JSON-LD @context and enum values (schema.org/InStock). Never fetched by a browser; an identifier, not a dependency"
+    },
+    "www.wonder-herb.com": {
+      "kind": "self",
+      "why": "our own canonicals, hreflang and the @id of the Organization node. ALSO a media host: /_files/ugd/ is Wix's file store and dies at cutover (finding 1), which is why it appears in media.hosts too"
+    },
+    "formurak4m.github.io": {
+      "kind": "self",
+      "why": "the GitHub Pages origin, named as a CORS origin so media still loads if the site is served from there before cutover"
+    },
+    "fonts.googleapis.com": {
+      "kind": "runtime",
+      "why": "webfont stylesheet, preconnected from every page. A third-party runtime dependency: if it is blocked or slow the page falls back to the CJK system stack (finding 21b)"
+    },
+    "fonts.gstatic.com": {
+      "kind": "runtime",
+      "why": "the font files behind fonts.googleapis.com"
+    },
+    "cdnjs.cloudflare.com": {
+      "kind": "runtime",
+      "why": "three.js r128, GLTFLoader and OrbitControls for the homepage hero. Declared as `deps` in renderer/template.js BEHAVIOURS, not in markup. A third-party runtime dependency for the 3D slides only - the poster shows without it"
+    },
+    "mp.weixin.qq.com": {
+      "kind": "link",
+      "why": "the client's WeChat articles, linked from 微信發表文章. Outbound links to the client's own published content, not assets"
+    },
+    "wa.me": {
+      "kind": "link",
+      "why": "WhatsApp click-to-chat for the business number, in the chrome's floating button and the contact cards"
+    },
+    "maps.app.goo.gl": {
+      "kind": "link",
+      "why": "a Google Maps link on a contact card"
+    },
+    "www.google.com": {
+      "kind": "embed",
+      "why": "the Google Maps iframe on 聯絡我們. An embedded third party: it sets its own cookies and is outside our media contract entirely"
+    },
+    "pubmed.ncbi.nlm.nih.gov": {
+      "kind": "link",
+      "why": "citations on 產品_憶活素 and 研究報告"
+    },
+    "www.ncbi.nlm.nih.gov": {
+      "kind": "link",
+      "why": "a citation on 研究報告"
+    },
+    "www.mdpi.com": {
+      "kind": "link",
+      "why": "journal citations"
+    },
+    "journals.plos.org": {
+      "kind": "link",
+      "why": "journal citations"
+    }
   }
 }

@@ -1,18 +1,56 @@
-/* test:media - where the site's media is allowed to come from, offline.
+/* test:media - where the site is allowed to fetch anything from, offline.
  *
- * WHY THIS SUITE EXISTS. A media URL is the one kind of content no existing
- * gate looks at. SEO checks that an og:image EXISTS, never where it points;
- * the fidelity maps compare tags and classes; test:behaviour asserts effects.
- * A photo moved to a bucket nobody can read, a model left on a host that dies
- * at cutover, or a fourth-party CDN quietly added to the page would pass every
- * one of them - the same blind spot that let the German brochure through
- * (finding 28) and hid 72 MB of uncacheable models (finding 34).
+ * ===================================================================
+ * THE GOVERNING RULE: THE DECLARED-HOST LIST, NOT THE URL PATTERN.
+ * ===================================================================
  *
- * WHAT IT ASSERTS, in two layers:
+ * EVERY absolute URL in data/ must be on a host DECLARED in data/site.json,
+ * with a kind and a written reason - as a media host in `media.hosts`, or as
+ * something else in `externalHosts` (a link, an embed, a vocabulary, a runtime
+ * dependency). Nothing external may appear anywhere in the site's data without
+ * someone writing down what it is and why it is there.
  *
- *   1. ALWAYS. Every media reference in data/ is an absolute https URL on a
- *      host DECLARED in data/site.json `media.hosts`, each with a stated
- *      reason. A new host cannot appear without someone writing down why.
+ * WHY THAT IS THE RULE, and not "find the things that look like assets".
+ * Recognising media by the SHAPE of its URL has now failed three times, each
+ * time on an asset that did not look like one:
+ *
+ *   - finding 28: 小册子 swaps its brochure scan per language. Structurally
+ *     perfect, and it would have published the German brochure to Chinese
+ *     visitors. Only the visual diff saw it.
+ *   - finding 1, Phase 10: two research PDFs served from
+ *     `www.wonder-herb.com/_files/ugd/` - Wix's file store on the CLIENT'S OWN
+ *     DOMAIN. They read as internal links. The first inventory missed them.
+ *   - P10-T3: five links to Drive DOCUMENTS, `drive.google.com/file/d/<id>/
+ *     view`, with no extension and no media word in the path. The scanner in
+ *     this very file could not see them.
+ *
+ * A pattern can only catch what someone already thought of. A declared-host
+ * list inverts the burden: an UNDECLARED host is a failure by default, whatever
+ * its URL looks like. The shape heuristic below still exists, but it has been
+ * demoted - it decides WHICH contract applies to a URL, never WHETHER the URL
+ * is accounted for.
+ *
+ * And the inverse catches the rest: a URL on a declared MEDIA host that the
+ * shape heuristic did NOT flag is reported, because that is precisely the
+ * Drive-document miss, and it is caught there without the heuristic having to
+ * be right.
+ *
+ * ===================================================================
+ *
+ * WHY THIS SUITE EXISTS AT ALL. A media URL is the one kind of content no
+ * other gate looks at. SEO checks that an og:image EXISTS, never where it
+ * points; the fidelity maps compare tags and classes; test:behaviour asserts
+ * effects. A photo moved to a bucket nobody can read, a model left on a host
+ * that dies at cutover, or a fourth-party CDN quietly added to the page passes
+ * every one of them.
+ *
+ * WHAT IT ASSERTS, in three layers:
+ *
+ *   0. ALWAYS. Every absolute URL in data/ is on a declared host (the rule
+ *      above), and every media reference is https.
+ *
+ *   1. ALWAYS. Every MEDIA reference is on a host declared in `media.hosts`
+ *      specifically - a link host is not a licence to serve an asset from it.
  *
  *   2. ONCE `media.base` IS SET (Phase 10, when the assets move to R2). Every
  *      media reference must start with that base; must be content-addressed
@@ -21,8 +59,7 @@
  *      reference may remain on a host listed as retired.
  *
  * Layer 2 is data-driven on purpose: the move flips it on by editing
- * data/site.json, not this file. Until then layer 1 is doing real work - it
- * fails today if a reference points anywhere unexpected.
+ * data/site.json, not this file.
  *
  * THIS SUITE IS OFFLINE. Whether those URLs actually RESOLVE, with the right
  * content type, CORS and cache headers, is `npm run check:media`, which talks
@@ -69,6 +106,30 @@ function references() {
   return out;
 }
 
+/* EVERY absolute URL in data/, media-shaped or not. This is what the governing
+   rule is checked against: the shape heuristic above chooses which contract
+   applies, this one decides whether the URL is accounted for at all. */
+function everyUrl() {
+  const out = [];
+  const walk = (o, where, at) => {
+    if (typeof o === 'string') {
+      const m = o.match(/^https?:\/\/[^\s"'<>]+/);
+      if (m) out.push({ url: m[0], where: where + at });
+      return;
+    }
+    if (Array.isArray(o)) return o.forEach((v, i) => walk(v, where, at + '[' + i + ']'));
+    if (o && typeof o === 'object') Object.entries(o).forEach(([k, v]) => walk(v, where, at + '.' + k));
+  };
+  const read = f => JSON.parse(fs.readFileSync(f, 'utf8').replace(/^﻿/, ''));
+  fs.readdirSync(path.join(ROOT, 'data/pages')).filter(f => f.endsWith('.json')).forEach(f =>
+    walk(read(path.join(ROOT, 'data/pages', f)), 'data/pages/' + f, ''));
+  ['products.json', 'cases.json', 'faq.json', 'homepage.json', 'site.json'].forEach(f => {
+    const p = path.join(ROOT, 'data', f);
+    if (fs.existsSync(p)) walk(read(p), 'data/' + f, '');
+  });
+  return out;
+}
+
 /* Content-addressed AND cacheable: the URL ends at its extension. The trailing
    anchor is not pedantry - `photo-1234abcd.jpg?v=1699999` is content-addressed
    and still uncacheable, which is exactly the shape finding 34 was. */
@@ -83,13 +144,73 @@ const declared = media.hosts || {};
 const base = media.base || '';
 const retired = media.retiredHosts || [];
 
+const externals = site.externalHosts || {};
+
 console.log('\n=== where the media is declared to live ===\n');
 check('data/site.json declares its media hosts', Object.keys(declared).length > 0,
       Object.keys(declared).join(', ') || 'NONE DECLARED');
 Object.entries(declared).forEach(([h, why]) => console.log('        ' + h.padEnd(30) + why));
 console.log('        base: ' + (base || '(not set - the assets have not moved yet)'));
 
+/* ---- layer 0: THE GOVERNING RULE ----
+   Every absolute URL in data/ is on a declared host. Not every media URL -
+   every URL. This is the check that does not depend on recognising an asset by
+   its shape, and it is the one that would have caught all three misses in the
+   header comment on the day they were introduced. */
+const hostOfUrl = u => { try { return new URL(u).hostname; } catch (e) { return null; } };
+const allUrls = everyUrl();
+const knownHost = h => Boolean(h) && (declared[h] !== undefined || externals[h] !== undefined);
+
+console.log('\n=== the governing rule: every external host is declared (' +
+            allUrls.length + ' absolute URL(s) in data/) ===\n');
+const byHost = new Map();
+allUrls.forEach(r => {
+  const h = hostOfUrl(r.url);
+  if (!byHost.has(h)) byHost.set(h, { n: 0, first: r });
+  byHost.get(h).n++;
+});
+[...byHost.entries()].sort((a, b) => b[1].n - a[1].n).forEach(([h, v]) => {
+  const d = declared[h] !== undefined ? 'media'
+          : externals[h] ? (externals[h].kind || 'declared') : 'UNDECLARED';
+  console.log('        ' + String(v.n).padStart(4) + '  ' + String(h).padEnd(28) + d);
+});
+const undeclaredHosts = [...byHost.keys()].filter(h => !knownHost(h));
+check('every absolute URL in data/ is on a host declared with a kind and a reason',
+      undeclaredHosts.length === 0,
+      undeclaredHosts.length ? undeclaredHosts.join(', ') + '  <- add it to data/site.json'
+                             : byHost.size + ' host(s), all declared');
+
+const noReason = Object.entries(externals).filter(([, v]) => !v || !v.kind || !v.why || !String(v.why).trim());
+check('every declared non-media host states a kind AND a reason', noReason.length === 0,
+      noReason.length ? noReason.map(([h]) => h).join(', ')
+                      : Object.keys(externals).length + ' host(s) with reasons');
+
 const refs = references();
+
+/* The inverse of the shape heuristic, and the check that catches what the
+   heuristic misses: a URL sitting on a MEDIA host that the heuristic did not
+   flag. That is exactly what the five Drive document links were. */
+const shaped = new Set(refs.map(r => r.url));
+/* A host can have two roles. `www.wonder-herb.com` serves our own pages AND,
+   under /_files/ugd/, Wix's file store. `media.hostPaths` says which part of
+   such a host is media; a host with no entry is media everywhere. Without
+   this the check would demand that every canonical and every JSON-LD @id be
+   treated as an asset. */
+const mediaPath = media.hostPaths || {};
+const isMediaUrl = u => {
+  const h = hostOfUrl(u);
+  if (declared[h] === undefined) return false;
+  const prefix = mediaPath[h];
+  if (!prefix) return true;
+  try { return new URL(u).pathname.indexOf(prefix) === 0; } catch (e) { return false; }
+};
+const unshapedOnMediaHost = allUrls.filter(r => isMediaUrl(r.url) && !shaped.has(r.url));
+check('nothing sits on a media host without being treated as media',
+      unshapedOnMediaHost.length === 0,
+      unshapedOnMediaHost.length
+        ? unshapedOnMediaHost.slice(0, 4).map(r => r.url.slice(0, 64) + ' (' + r.where + ')').join('; ') +
+          (unshapedOnMediaHost.length > 4 ? ' +' + (unshapedOnMediaHost.length - 4) + ' more' : '')
+        : 'the shape heuristic and the host list agree');
 console.log('\n=== every media reference in data/ (' + refs.length + ') ===\n');
 
 const hostOf = u => { try { return new URL(u).hostname; } catch (e) { return null; } };
@@ -138,6 +259,23 @@ console.log('\n=== negative controls ===\n');
 
 const asIfHost = (list, host) => list.filter(r => hostOf(r.url) === host).length;
 const fakeRef = { url: 'https://cdn.example.net/thing-12345678.jpg', where: 'CONTROL' };
+/* --- the governing rule's own controls --- */
+check('an UNDECLARED host WOULD fail the governing rule',
+      !knownHost('cdn.evil.example'), 'rejected');
+check('a declared host passes it, whether media or a plain link',
+      knownHost('wa.me') && knownHost(Object.keys(declared)[0]), 'both accepted');
+check('a declared host missing its kind or its reason WOULD fail',
+      [['h', { kind: 'link' }], ['i', { why: 'x' }], ['j', {}]]
+        .filter(([, v]) => !v || !v.kind || !v.why).length === 3,
+      'all three malformed declarations rejected');
+check('on a DUAL-ROLE host, only the declared media path counts as media',
+      isMediaUrl('https://www.wonder-herb.com/_files/ugd/x.pdf') &&
+      !isMediaUrl('https://www.wonder-herb.com/index.html'),
+      'the Wix file store is media; our own pages are not');
+check('on a media-only host, every URL counts as media',
+      isMediaUrl('https://lh3.googleusercontent.com/d/anything'),
+      'no hostPaths entry means the whole host is media');
+
 check('a reference on an undeclared host WOULD fail the host check',
       !declared[hostOf(fakeRef.url)], hostOf(fakeRef.url) + ' is not declared');
 check('a plain-http reference WOULD fail the https check',

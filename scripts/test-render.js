@@ -129,6 +129,48 @@ check('no runtime nav-offset script ships any more',
       html.indexOf('paddingTop') === -1,
       'the height is reserved by layout, not measured by JS');
 
+/* The SVG filter defs (docs/FINDINGS.md finding 33). index.html declares a
+   `#glass-distortion` filter that five of its CSS rules apply, in an element
+   that is position:absolute, width:0, height:0 - so if it goes, the carousel
+   and every glass card lose their frosted look and NOTHING notices: no gate
+   can see a zero-sized element disappear, and the finding said so.
+   It said so and then recorded itself as fixed, with no gate at all, which is
+   how a claim outlives the thing it claims. This is that gate: the CSS that
+   needs the filter, the tree that asks for it, and the filter itself must all
+   three be present together. */
+console.log('\n=== the SVG filter defs (docs/FINDINGS.md finding 33) ===\n');
+const indexTreePath = path.join(ROOT, 'data', 'pages', 'index.json');
+if (fs.existsSync(indexTreePath)) {
+  const indexTree = JSON.parse(fs.readFileSync(indexTreePath, 'utf8').replace(/^﻿/, ''));
+  const indexCss = fs.readFileSync(path.join(ROOT, 'assets', 'page-index.css'), 'utf8');
+  const usedBy = (indexCss.match(/url\(#glass-distortion\)/g) || []).length;
+  check('the homepage stylesheet still applies url(#glass-distortion)', usedBy > 0,
+        usedBy + ' rule(s) - if this ever reaches 0 the defs can go too');
+  check('the homepage tree asks for the filter defs (assets.svgFilters)',
+        indexTree.assets && indexTree.assets.svgFilters === true,
+        'a tree that uses the filter must carry the flag that emits it');
+  const withFilters = renderPage(indexTree, PRIMARY, data, {
+    chrome: loadChrome(indexTree.assets),
+    styles: loadStyles(indexTree.assets.stylesFrom)
+  });
+  check('the rendered homepage contains the filter it applies',
+        /id="glass-distortion"/.test(withFilters),
+        'five CSS rules reference it; the element is width:0, so losing it is silent');
+  /* Negative control: the same page WITHOUT the flag must lose the filter.
+     Otherwise the check above would pass on a page that never needed it. */
+  const noFlag = JSON.parse(JSON.stringify(indexTree));
+  noFlag.assets.svgFilters = false;
+  const without = renderPage(noFlag, PRIMARY, data, {
+    chrome: loadChrome(noFlag.assets), styles: loadStyles(noFlag.assets.stylesFrom)
+  });
+  check('  negative control: without the flag the filter is NOT emitted',
+        !/id="glass-distortion"/.test(without),
+        'so the check above is testing the flag, not the template');
+} else {
+  check('the homepage tree exists, so finding 33 can be gated at all', false,
+        'data/pages/index.json is missing');
+}
+
 /* The guard bites: a chrome page that forgets the sheet must fail loudly rather
    than publish with the heading under the nav. */
 let d1Threw = '';
