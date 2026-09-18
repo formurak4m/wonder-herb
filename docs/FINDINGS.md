@@ -80,6 +80,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 33 | **index.html defines an SVG filter (`#glass-distortion`) that five of its CSS rules apply, and it sits outside every block the chrome lift copied**: dropping it costs the carousel and every glass card their frosted look, and the element is `position:absolute; width:0; height:0`, so no gate can see it go | Medium — silent visual loss, found by hand at P9 | **Fixed**: `loadChrome` lifts it. The live page declares it TWICE, which is a duplicate element id — one is lifted. **Gated 18 Sep 2026** (it had none until finding 35's audit): `scripts/test-render.js`, `the rendered homepage contains the filter it applies`, with the CSS-usage count, the tree flag and a negative control |
 | 34 | **Every homepage visit downloads all four 3D models (~72 MB) and cannot cache them**: the loader initialises every `.carousel-3d-container` on load rather than when its slide is shown, and appends `?v=` + `Date.now()` to each URL, so the browser cache is defeated on every visit and a repeat visitor pays the full 72 MB again | **High — bandwidth and mobile data; pre-existing on the live page, not caused by migrating** | **Phase 10**: it is the move that sets cache headers, and the cache-buster defeats them. Fix with the move: drop the buster (immutable, content-addressed URLs) and initialise a model when its slide becomes active |
 | 35 | **A gate that existed only in FINDINGS.md**: finding 1 recorded the Phase 18 cutover gate as widened to cover `_files/ugd`; the gate itself still grepped `wixstatic` alone, so at cutover we would have cancelled Wix with two research PDFs still served from it | **High — a false claim of safety, relied on at an irreversible step** | **Fixed 18 Sep 2026**, with an audit of every other claimed gate: 19 of 21 real, finding 15 mis-cited its suite, finding 33 had no gate at all (both fixed). The rule is now at the top of this file: **findings describe, gates enforce** |
+| 36 | **Three third-party CDNs are runtime dependencies of the public site**: Font Awesome on all 18 pages (**13 of them on a `6.0.0-beta3` pre-release**, 5 on 6.5.1), three.js r128 for the homepage hero, and Google Fonts (Inter + Playfair, 45 URLs). Counted for the first time by finding 35's declared-host rule, because every earlier gate looked at media and a stylesheet is not media | Medium — every icon on the site vanishes if cdnjs is blocked; typography falls back if Google Fonts is. Pre-existing, inherited from the live pages | **Phase 13** (owner, 18 Sep 2026: declared now, decided later; explicitly **not** Phase 10). Three parts: self-host + subset + single-version Font Awesome; decide three.js; self-host the Latin faces **after finding 21b**, which is downstream of this |
 
 ---
 
@@ -1208,6 +1209,13 @@ Hong Kong site. The real fix is to stop depending on `lang`-based fallback: decl
 font stack after Inter (e.g. `"Noto Sans TC", "PingFang TC", "Microsoft JhengHei"`), so every visitor
 gets the intended face regardless of platform or script state. A typography choice for the client.
 
+**And it cannot be answered alone — see finding 36 (18 Sep 2026).** The Latin half of this stack
+(Inter, Playfair Display) is fetched from `fonts.googleapis.com` at runtime, a third-party dependency
+nobody had counted until the declared-host rule counted it. Choosing a CJK stack while the Latin half
+arrives over an uncontrolled network decides half the problem: what a visitor actually sees at first
+paint depends on whether that request succeeded. **Answer this, then self-host the Latin faces to the
+chosen stack** (finding 36, Phase 13).
+
 ### Before page two
 
 1. Re-capture the baseline under a **production hostname**, and add a **scripts-off** capture —
@@ -2166,3 +2174,64 @@ Both were caught by a human noticing, not by a gate. The generalisation now in `
 absolute URL in `data/` must be on a host declared with a kind and a reason** — is the first check in
 this project that does not depend on recognising an asset by the shape of its URL, which is the thing
 that failed three times. See the header comment of `scripts/test-media.js`.
+
+---
+
+## 36 · Three third-party CDNs are runtime dependencies of the public site, and one is on a beta
+
+**Found at P10-T3 (18 Sep 2026), by declaring every external host rather than every media URL.**
+They were never hidden — they are in the markup of all 18 pages and always have been — but nothing
+had ever counted them, because every gate we had looked at *media*, and a stylesheet or a script is
+not media. Declaring them was the point of finding 35's generalisation. **Declaring a dependency does
+not remove it**, which is what this finding is for.
+
+### What the public site loads from someone else
+
+| Host | What | Where it is declared | If it is blocked or down |
+|---|---|---|---|
+| `cdnjs.cloudflare.com` | **Font Awesome** icon CSS, on **all 18 pages** | each tree's `assets.stylesheets` | **every icon on the site disappears** — the quick-view eye, the info icon, the phone and WhatsApp glyphs, the nav and footer icons. The buttons remain and still work; they become blank |
+| `cdnjs.cloudflare.com` | **three.js r128 + GLTFLoader + OrbitControls** | `renderer/template.js` BEHAVIOURS `deps`, homepage only | the hero's 3D slides never initialise. **This one degrades correctly**: the slide keeps the product photograph pre-rendered inside the container the loader would have replaced, so a visitor sees a still image, not a hole |
+| `fonts.googleapis.com` + `fonts.gstatic.com` | **Inter** and **Playfair Display**, 45 URLs across the trees | each tree's `assets.stylesheets` + `preconnect` | typography falls back to the system stack. Latin copy reflows; **and see below** |
+
+### The version split, inherited and now measured
+
+Font Awesome is pinned at **two different versions**, and the majority are on a **beta release**:
+
+- **`6.0.0-beta3` on 13 of 18 pages** — index, 產品介紹, 典型病例, 常見問題, 研究報告, 聯絡我們,
+  小册子, 微信發表文章, 產品_PT3, 產品_乙肝清, plus `product.html`, `account.html`, `購物車.html`.
+- **`6.5.1` on 5** — 產品_憶活素, 產品_T3, 產品_雲芝糖肽精華 A and B, 有效成份檢測.
+
+**Pre-existing, not caused by the migration**: the same split is in `legacy/` and on the three
+hand-coded pages, and the trees carry it faithfully. It is recorded here because nothing else counts
+it, and because "we ship a beta of a third-party icon font, on most of the site, from a CDN we do not
+control" is a sentence nobody had ever had the chance to disagree with.
+
+### The connection to finding 21b
+
+**21b is downstream of this one.** The CJK font stack is undecided (the scripts-on baseline captures
+the fallback font for `lang="zh"` because the live language script overwrites `zh-Hant`), and that
+question cannot be answered independently of *where the fonts come from*. Self-hosting the Latin
+faces settles what is actually available at first paint; deciding the CJK stack while the Latin half
+arrives from a third party over an uncontrolled network is deciding half a problem. If 21b is
+answered by choosing a stack, this finding is how that stack gets delivered.
+
+### Not now — and explicitly NOT Phase 10
+
+**Owner, 18 Sep 2026: declared now, decided later.** Phase 10 is moving 42 assets and nothing else;
+folding self-hosted fonts and libraries into it would change what the browser loads at the same
+moment as where it loads from, and the re-diff could not then separate a re-hosting bug from a font
+metric change — the same reasoning that put responsive variants in P13-T4.
+
+**Owned by Phase 13**, with P13-T4, as one decision in three parts:
+
+1. **Font Awesome** — self-host, subset to the icons actually used, and settle on **one** version.
+   The subset is the interesting part: this site uses on the order of a dozen glyphs and downloads a
+   whole icon font for them on every page.
+2. **three.js** — self-host or keep. The weakest case for moving: it is one page, it degrades
+   correctly to a photograph, and pinning r128 in our own bucket also means owning its updates.
+3. **Google Fonts** — self-host the Latin faces, **after 21b is answered**, so the Latin and CJK
+   halves of the stack are decided together.
+
+**Verify, when it is done:** no page references a host outside `media.hosts`; `test:media`'s
+declared-host layer is the gate that will say so, since a self-hosted face is a media URL under
+`media.base` like any other.

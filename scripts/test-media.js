@@ -191,16 +191,50 @@ const refs = references();
    heuristic misses: a URL sitting on a MEDIA host that the heuristic did not
    flag. That is exactly what the five Drive document links were. */
 const shaped = new Set(refs.map(r => r.url));
-/* A host can have two roles. `www.wonder-herb.com` serves our own pages AND,
-   under /_files/ugd/, Wix's file store. `media.hostPaths` says which part of
-   such a host is media; a host with no entry is media everywhere. Without
-   this the check would demand that every canonical and every JSON-LD @id be
-   treated as an asset. */
+/* ---------------------------------------------------------------------------
+   A HOST CAN HAVE TWO ROLES, AND THIS IS NOT AN EDGE CASE TO SIMPLIFY AWAY.
+
+   `www.wonder-herb.com` is simultaneously:
+     - OUR OWN DOMAIN. Every canonical, every hreflang, every JSON-LD `@id`
+       points at it. 37 URLs in data/ today, none of them assets.
+     - A MEDIA HOST WE DO NOT CONTROL. Under /_files/ugd/ it is Wix's user-file
+       store, serving two research PDFs that die the day the Wix account is
+       cancelled (finding 1).
+
+   That duality is the whole reason those PDFs were missed by the first Phase 10
+   inventory: a URL on our own domain reads as an internal link, so nobody
+   looked at it, and the same instinct will suggest deleting `hostPaths` and
+   treating the host as "ours". Do not. The simplification is available in both
+   directions and both are wrong:
+
+     - Drop `www.wonder-herb.com` from `media.hosts`, and the two PDFs stop
+       being media at all. The cutover gate goes back to trusting a domain name,
+       which is the mistake finding 1 already made once.
+     - Keep it in `media.hosts` with no `hostPaths`, and this check demands that
+       all 37 canonicals be treated as assets, which is noise - and noise is how
+       a real failure gets waived.
+
+   `media.hostPaths` says which PART of such a host is media. A host with no
+   entry is media everywhere, which is the right default: the dual role is the
+   exception and has to be declared, not assumed.
+
+   The general rule, for the next host like this: a host is not one thing
+   because it has one name. Declare the boundary, in data, with a reason.
+   --------------------------------------------------------------------------- */
 const mediaPath = media.hostPaths || {};
+/* Each entry is { path, why } - the reason lives with the declaration, in data,
+   like every other host reason here. A bare string is accepted so that a future
+   entry written the obvious way still works rather than silently widening the
+   host to "media everywhere". */
+const prefixFor = h => {
+  const e = mediaPath[h];
+  if (!e) return null;
+  return typeof e === 'string' ? e : e.path || null;
+};
 const isMediaUrl = u => {
   const h = hostOfUrl(u);
   if (declared[h] === undefined) return false;
-  const prefix = mediaPath[h];
+  const prefix = prefixFor(h);
   if (!prefix) return true;
   try { return new URL(u).pathname.indexOf(prefix) === 0; } catch (e) { return false; }
 };
@@ -272,6 +306,9 @@ check('on a DUAL-ROLE host, only the declared media path counts as media',
       isMediaUrl('https://www.wonder-herb.com/_files/ugd/x.pdf') &&
       !isMediaUrl('https://www.wonder-herb.com/index.html'),
       'the Wix file store is media; our own pages are not');
+check('every declared host boundary states WHY the host has two roles',
+      Object.entries(mediaPath).every(([, e]) => e && typeof e === 'object' && e.path && e.why),
+      Object.keys(mediaPath).join(', ') || 'none declared');
 check('on a media-only host, every URL counts as media',
       isMediaUrl('https://lh3.googleusercontent.com/d/anything'),
       'no hostPaths entry means the whole host is media');

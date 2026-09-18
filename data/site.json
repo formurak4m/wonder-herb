@@ -22,7 +22,10 @@
       "www.wonder-herb.com": "two research PDFs under /_files/ugd/ - that is a WIX path on the client's own domain, not this repo (the files are not in it). They die at cutover exactly like the video (finding 1) - Phase 10 moves them"
     },
     "hostPaths": {
-      "www.wonder-herb.com": "/_files/ugd/"
+      "www.wonder-herb.com": {
+        "path": "/_files/ugd/",
+        "why": "A DUAL-ROLE HOST. This is our own domain - every canonical, hreflang and JSON-LD @id points at it - but /_files/ugd/ is Wix's user-file store, which we do not control and which dies when the Wix account is cancelled (finding 1). Only that path is media. Removing this entry is wrong in both directions: see the comment in scripts/test-media.js"
+      }
     },
     "retiredHosts": [
       "lh3.googleusercontent.com",
