@@ -2208,7 +2208,8 @@ it exists, the product form's Photo field is a URL, not a picker — the design'
    P11-T2b (the seven modules that already have a backend).
 2. **Phase 10 resumes and completes** the moment the bucket exists. Everything else stops.
 3. **Then:** P11-T2c (Puck in the shell), P12-T4 (the four content modules), P12-T5 (publish),
-   P12-T6/T7 (version history, missing translations).
+   P12-T2 (version history — it already existed as a task; the design makes it a screen) and
+   P12-T6 (missing translations).
 4. **Phase 13:** media library. **Month 2:** enquiries, after the public contact form exists.
 
 #### Sequencing — wiring before features
@@ -2222,7 +2223,7 @@ it exists, the product form's Photo field is a URL, not a picker — the design'
 4. **P12-T4 · The four content modules.** Cheapest real feature in the plan, and it closes finding
    28's document half.
 5. **P12-T5 · Publish from the admin** — see below.
-6. **P12-T6 · Version history** over the publish log; **P12-T7 · Missing translations**.
+6. **P12-T2 · Version history** over the publish log; **P12-T6 · Missing translations**.
 7. **Phase 13 · Media library** on Phase 10's manifest. **Month 2 · Enquiries**, after the public
    contact form exists.
 
@@ -2280,7 +2281,7 @@ Non-negotiable 1 says a broken admin must never take the live site down, so:
 - **Verify:** a `staff` token cannot delete a page or edit SEO via the API (returns 403); an `admin` token can.
 
 ### P12-T2 · Version history and rollback
-- **Goal:** one-click undo of a bad publish.
+- **Goal:** one-click undo of a bad publish. **The final design (P11-T2) makes this a screen, 版本記錄**: a timeline of every publish with date, time, who and a summary; preview any past version; restore with a confirm step that says exactly what will change. The brief calls it "the main safety net" and is explicit that it must **never show a commit hash** — the client did not ask for git and must not be shown it. That is a presentation rule over the mechanism below, not a change to it.
 - **Steps:**
   1. Since every publish is a Git commit, add an admin action that lists recent `data/pages` commits and can revert one (call a server endpoint that runs the git revert + re-render, or document the manual `git revert` for now).
   2. Also snapshot the page tree in a `pages_history` collection on each save.
@@ -2289,7 +2290,7 @@ Non-negotiable 1 says a broken admin must never take the live site down, so:
 ### P12-T3 · Make the admin's product form multilingual
 - **Goal:** give staff a way to edit product names and descriptions in all seven languages. Today they can edit `zh` and **cannot reach the other six at all** — the form is a single `<input>` per field.
 - **Why it is a task and not a bug:** the data became per-language at P9-T1 (finding 19), recovering seven translations the live site already shipped. `server/index.js` `protectLangMaps()` stops a plain-string save from deleting them (finding 20, HIGH), so nothing is at risk — but a guard is not an editor. **This form is the client's only route to their own translations.** Until it lands, a typo in the German product name can only be fixed by a developer.
-- **Files:** `admin/index.html` (the product form and its save path).
+- **Files:** the **new admin app** (P11-T2), not `admin/index.html` — that file is superseded by the final design and retires to `legacy/` when P11-T2b lands. **This task folds into P11-T2b**: the design's product edit form is already multilingual by construction (per-language Name, Description, Price note and Ribbon), so building the form to the design *is* this task. What stays separate is the API-side rule in step 4 below, which is the floor for every caller.
 - **Steps:**
   1. Add a content-language picker to the product form, matching the Puck editor's — one language at a time, not seven inputs per field (the P8-T1 reasoning: seven inputs bury the form, and one-at-a-time is how a person actually works, especially through a Chinese IME).
   2. **Reuse `editor/lang.js`'s `project` / `merge`.** That logic is already proven by the 26 checks in `scripts/test-editor-lang.js`, including the two bugs it was written to catch: fallback poisoning, and losing translations when items are reordered. Do not write a second implementation — a second one will get the same two things wrong.
@@ -2303,6 +2304,64 @@ Non-negotiable 1 says a broken admin must never take the live site down, so:
      It bites **today** in two places: the admin product form deletes `link`, `ribbon` and `priceNote` (and would delete `clinicOnly`), and an unchanged Puck save deletes the product grid's section-level `"wrap": "container"` (proven by running `mergeTree`). Homepage and FAQ are the same shape waiting for their first new field. The forms and `mergeTree` get fixed too, as defence in depth, not as the fix. The Puck side of it was fixed narrowly at P9-T1 (`mergeTree` keeps node-level keys), so saving 產品介紹 in the editor is safe; the API rule for every path is still this step. **Blocks** lifting PT3's price hold (`assets/site.js` `PRICE_HOLD`).
 - **Verify:** edit a product's German name in the admin, save, confirm `zh` and the other five are untouched — the same round-trip `scripts/test-editor-lang.js` runs for page trees. Confirm an untranslated field shows **empty**, never the Chinese fallback. **For step 4:** one test loops **every** content write path. For each, it saves through the real caller (admin form, `mergeTree`) with fields the caller doesn't show present in the store, and confirms they survive in MongoDB and in `data/` after export. Include PT3 with `link`/`ribbon`/`priceNote`/`clinicOnly`, and 產品介紹's tree with `wrap`. Negative control: the same saves against the pre-fix API lose them. A new write path must fail this test until it merges.
 - **Gotcha:** `admin/index.html` is vanilla JS with no build step, and `editor/lang.js` is an ES module importing CommonJS (finding 18). Settle how the admin loads it — a small shared build, or the `<script type="module">` the page can already use — rather than copying the functions across, which would fork the logic the moment either side changes.
+
+### P12-T4 · The four content modules — research, testing, booklet, article
+- **Goal:** the Content group in the final design (P11-T2) edits 研究報告, 有效成份檢測, 小册子 and
+  微信發表文章 as item collections, the way Cases and FAQ already work. Page **layout** stays in Puck;
+  these edit the items a list section renders.
+- **Why it is cheap:** `/api/cms?type=<module>` is a **generic list route over `COLLECTIONS`**. This
+  is five registry entries and **no new route**: `server/db.js COLLECTIONS`, `server/index.js
+  MODULE_OF`, `server/auth.js MODULES`, `scripts/export.js`, `scripts/seed.js`.
+- **The shapes, from the design's own columns:**
+  - **research** — title, institution, year, report file, translation coverage
+  - **testing** — batch, product, test, tested-on, result, report file
+  - **booklet** — title, **language**, pages, file size, last updated, status
+  - **article** — title, published date, WeChat link, translation coverage, status
+- **The booklet row is finding 28's proper model:** a per-language document is a **row with a
+  language**, not one tree field trying to hold several. 小册子 would have published the German
+  brochure to Chinese visitors; this is the shape that makes that impossible rather than merely
+  caught.
+- **BLOCKED ON PHASE 10 — a real dependency, counted not guessed.** Three of the four carry exactly
+  the documents Phase 10 is re-hosting: `data/pages/testing.json` holds 3 Drive document links,
+  `brochure.json` 2, `research.json` the 2 `_files/ugd` PDFs. Seeding these collections first means
+  seeding Drive and Wix URLs that Phase 10 then rewrites inside a brand-new write path, with the
+  re-diff unable to tell a seeding bug from a re-hosting one.
+- **Verify:** each page's list section renders from its collection, not from markup; `test:seo` and
+  the visual diff unchanged for all four pages; `test:media` sees the documents at their new home; a
+  staff account without the module's permission is refused by the API, not just by a hidden nav item.
+
+### P12-T5 · Publish from the admin — the one that can touch the live site
+- **Goal:** the design's Publish button, its four progress steps, and its failure state.
+- **Why it is the dangerous task.** `npm run publish` is a **CLI the owner runs**: export →
+  `sections:build` → render → `test:seo` → `test:data`, stopping on any failure. Making it a button
+  means **a web request runs the whole publish pipeline**. Non-negotiable 1 says a broken admin must
+  never take the live site down, and this is the only part of the design that can.
+- **The gates are already the UX.** The design's progress steps are our existing suites named for a
+  non-technical reader — "Checking every page for search engines" **is** `test:seo`. The client's
+  reassurance and our test suite are the same object, which is the best thing in this design.
+- **Requirements:**
+  1. The endpoint **refuses** when any gate fails, and nothing is written.
+  2. The refusal says what happened in the design's plain words ("The Products page lost its FAQ
+     information for Google."), which page, what to do, and **"Your live site has not changed."**
+  3. Gated on the `Publish` permission, not merely on being signed in.
+  4. The unpublished-changes list and the site-status indicator read the same state the button acts
+     on — one source, or the indicator will lie.
+- **Verify, and this is a hard gate:** plant a tree that fails `test:seo`, call the endpoint, and
+  assert it returns the failure **and that nothing was written**. **A publish endpoint that cannot be
+  proven to refuse is not shippable.** Negative control as usual: remove the refusal and watch the
+  check fail.
+
+### P12-T6 · Missing translations
+- **Goal:** the design's 待翻譯內容 view — every field with Chinese content and no translation,
+  grouped by page and language, a progress bar per language, and a click that lands on the field.
+- **Why it is cheap and worth doing early:** nothing new is stored. Coverage is **derivable** from
+  the trees and the content collections, both of which are already per-language objects with a `zh`
+  fallback. One computed endpoint.
+- **It is also the honest face of finding 24.** Migrated pages are Chinese-only until Phase 14; this
+  view is what turns that accepted regression from an invisible gap into a worklist the client can
+  see and act on.
+- **Verify:** the count matches a hand count on one page; translating a field moves the bar; the
+  "jump to field" link lands on the right field in the right language.
 
 ---
 
