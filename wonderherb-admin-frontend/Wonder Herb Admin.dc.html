@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #eceeef; }
+  a { color: #0f6b6b; text-decoration: none; }
+  a:hover { color: #0a5252; text-decoration: underline; }
+  :focus-visible { outline: 2px solid #0f6b6b; outline-offset: 2px; }
+  ::selection { background: #cfe3e3; }
+  input, select, textarea, button { font: inherit; color: inherit; }
+  @keyframes whSpin { to { transform: rotate(360deg); } }
+  @keyframes whFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
+</style>
+</helmet>
+
+<div style="font-family: 'IBM Plex Sans', 'Noto Sans TC', 'PingFang HK', sans-serif; color: #22272b; background: #eceeef; min-height: 100vh; display: flex; flex-direction: column; font-size: 14px; line-height: 1.5;">
+
+  <div style="display: flex; align-items: center; gap: 20px; height: 56px; padding: 0 16px 0 20px; background: #ffffff; border-bottom: 1px solid #d9dedf; flex: none; position: sticky; top: 0; z-index: 40;">
+    <div style="display: flex; align-items: baseline; gap: 9px; min-width: 212px;">
+      <span style="font-family: 'Playfair Display', serif; font-size: 20px; color: #8c1d2c; letter-spacing: .5px;">康草堂</span>
+      <span style="font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #5f686b;">Wonder Herb</span>
+    </div>
+
+    <div onClick="{{ toggleChanges }}" role="button" tabindex="0" style="{{ statusPillStyle }}">
+      <span style="{{ statusDotStyle }}"></span>
+      <span>{{ statusLabel }}</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+    </div>
+
+    <div style="flex: 1;"></div>
+
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 11px; color: #5f686b; letter-spacing: .04em;">{{ t.adminLang }}</span>
+      <div style="display: flex; border: 1px solid #c8cfd1; background: #f3f5f5; border-radius: 3px; overflow: hidden;">
+        <button onClick="{{ setUiZh }}" style="{{ uiZhStyle }}">中</button>
+        <button onClick="{{ setUiEn }}" style="{{ uiEnStyle }}">EN</button>
+      </div>
+    </div>
+
+    <div style="width: 1px; height: 24px; background: #e2e6e7;"></div>
+
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="width: 28px; height: 28px; border-radius: 50%; background: #0f6b6b; color: #fff; display: grid; place-items: center; font-size: 12px; font-weight: 600;">A</div>
+      <div style="display: flex; flex-direction: column; line-height: 1.25;">
+        <span style="font-size: 13px; font-weight: 500;">Ankur Chan</span>
+        <span style="font-size: 11px; color: #5f686b;">{{ t.roleAdmin }}</span>
+      </div>
+      <button onClick="{{ goSignIn }}" style="background: none; border: 1px solid transparent; color: #5f686b; font-size: 12px; padding: 5px 8px; cursor: pointer; border-radius: 3px;" style-hover="background:#f3f5f5;color:#22272b;">{{ t.signOut }}</button>
+    </div>
+  </div>
+
+  <sc-if value="{{ changesOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; top: 56px; left: 232px; z-index: 60; width: 384px; background: #fff; border: 1px solid #d0d6d7; box-shadow: 0 12px 30px rgba(20,32,36,.16); animation: whFade .14s ease-out;">
+      <div style="padding: 14px 16px 10px; border-bottom: 1px solid #edf0f0;">
+        <div style="font-weight: 600; font-size: 14px;">{{ t.unpublishedTitle }}</div>
+        <div style="font-size: 12px; color: #5f686b; margin-top: 3px;">{{ t.unpublishedHelp }}</div>
+      </div>
+      <div style="display: flex; flex-direction: column;">
+        <sc-for list="{{ changes }}" as="c" hint-placeholder-count="3">
+          <div style="display: flex; gap: 10px; padding: 11px 16px; border-bottom: 1px solid #f2f4f4;">
+            <span style="font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #0f6b6b; border: 1px solid #b9d2d2; padding: 2px 6px; height: 19px; flex: none;">{{ c.kind }}</span>
+            <div style="min-width: 0;">
+              <div style="font-size: 13px;">{{ c.what }}</div>
+              <div style="font-size: 11px; color: #5f686b; margin-top: 2px;">{{ c.who }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: flex; gap: 8px; padding: 12px 16px; background: #fafbfb;">
+        <button onClick="{{ runPublish }}" style="flex: 1; background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 9px 14px; font-weight: 600; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.publishNow }}</button>
+        <button onClick="{{ toggleChanges }}" style="background: #fff; border: 1px solid #c8cfd1; padding: 9px 14px; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.close }}</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="display: flex; flex: 1; min-height: 0; align-items: stretch;">
+
+    <nav style="width: 232px; flex: none; background: #fbfcfc; border-right: 1px solid #d9dedf; padding: 14px 0 28px; display: flex; flex-direction: column; gap: 2px;">
+      <sc-for list="{{ navGroups }}" as="g" hint-placeholder-count="5">
+        <div style="padding: 14px 20px 6px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #6a7275; font-weight: 600;">{{ g.label }}</div>
+        <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+          <div onClick="{{ it.go }}" role="button" tabindex="0" style="{{ it.style }}">
+            <span style="display: grid; place-items: center; width: 16px; flex: none; opacity: .85;">{{ it.icon }}</span>
+            <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25;">
+              <span style="font-size: 13.5px;">{{ it.primary }}</span>
+              <span style="font-size: 10.5px; color: #5f686b; letter-spacing: .01em;">{{ it.secondary }}</span>
+            </span>
+            <sc-if value="{{ it.badge }}" hint-placeholder-val="{{ false }}">
+              <span style="{{ it.badgeStyle }}">{{ it.badge }}</span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </sc-for>
+    </nav>
+
+    <main style="flex: 1; min-width: 0; overflow: auto;">
+
+      <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+        <div style="padding: 26px 30px 48px; max-width: 1180px;">
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+            <div>
+              <h1 style="margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -.01em;">{{ t.dashboard }}</h1>
+              <div style="font-size: 13px; color: #5f686b; margin-top: 4px;">{{ t.dashSub }}</div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button style="background: #fff; border: 1px solid #c8cfd1; padding: 8px 13px; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.addProduct }}</button>
+              <button style="background: #fff; border: 1px solid #c8cfd1; padding: 8px 13px; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.recordInvoice }}</button>
+              <button onClick="{{ goPages }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 8px 13px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.pagesLabel }}</button>
+            </div>
+          </div>
+
+          <div style="background: #fff; border: 1px solid #d5dbdc; border-left: 3px solid #b8860b; padding: 16px 18px; display: flex; gap: 22px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 18px;">
+            <div style="flex: 1; min-width: 260px;">
+              <div style="font-size: 15px; font-weight: 600;">{{ t.unpublishedTitle }}</div>
+              <div style="font-size: 13px; color: #5f686b; margin-top: 3px;">{{ t.unpublishedHelp }}</div>
+              <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 12px;">
+                <sc-for list="{{ changes }}" as="c" hint-placeholder-count="3">
+                  <div style="display: flex; gap: 9px; align-items: baseline; font-size: 13px;">
+                    <span style="font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #0f6b6b; border: 1px solid #b9d2d2; padding: 1px 6px;">{{ c.kind }}</span>
+                    <span>{{ c.what }}</span>
+                    <span style="color: #5f686b; font-size: 11.5px;">{{ c.who }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <button onClick="{{ runPublish }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 10px 20px; font-weight: 600; font-size: 13.5px; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.publishNow }}</button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-bottom: 18px;">
+            <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="4">
+              <div style="background: #fff; border: 1px solid #d5dbdc; padding: 15px 16px 14px;">
+                <div style="font-size: 12px; color: #5f686b; letter-spacing: .02em;">{{ m.label }}</div>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 7px;">
+                  <span style="{{ m.valueStyle }}">{{ m.value }}</span>
+                  <span style="font-size: 12px; color: #5f686b;">{{ m.unit }}</span>
+                </div>
+                <div style="font-size: 12px; color: #5f686b; margin-top: 8px; border-top: 1px solid #eef1f1; padding-top: 8px;">{{ m.detail }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px;">
+            <div style="background: #fff; border: 1px solid #d5dbdc;">
+              <div style="padding: 13px 16px; border-bottom: 1px solid #e8ecec; font-weight: 600; font-size: 14px;">{{ t.recentActivity }}</div>
+              <sc-for list="{{ activity }}" as="a" hint-placeholder-count="5">
+                <div style="display: flex; gap: 12px; padding: 11px 16px; border-bottom: 1px solid #f2f4f4; align-items: baseline;">
+                  <span style="width: 74px; flex: none; font-size: 11.5px; color: #5f686b;">{{ a.when }}</span>
+                  <span style="flex: 1; font-size: 13px;">{{ a.what }}</span>
+                  <span style="font-size: 12px; color: #5f686b;">{{ a.who }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="background: #fff; border: 1px solid #d5dbdc; padding: 15px 16px;">
+                <div style="font-weight: 600; font-size: 14px;">{{ t.lastPublished }}</div>
+                <div style="font-size: 20px; margin-top: 8px; font-weight: 500;">2026-09-19 14:32</div>
+                <div style="font-size: 12.5px; color: #5f686b; margin-top: 6px;">{{ t.lastPublishedBy }}</div>
+                <div style="display: flex; align-items: center; gap: 7px; margin-top: 12px; padding-top: 11px; border-top: 1px solid #eef1f1; font-size: 12.5px; color: #17795c;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+                  <span>{{ t.allChecksPassed }}</span>
+                </div>
+              </div>
+              <div style="background: #fff; border: 1px solid #d5dbdc; padding: 15px 16px;">
+                <div style="font-weight: 600; font-size: 14px;">{{ t.translationHealth }}</div>
+                <div style="display: flex; flex-direction: column; gap: 9px; margin-top: 12px;">
+                  <sc-for list="{{ translationBars }}" as="b" hint-placeholder-count="3">
+                    <div>
+                      <div style="display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 4px;">
+                        <span>{{ b.name }}</span>
+                        <span style="color: #5f686b;">{{ b.pct }}</span>
+                      </div>
+                      <div style="height: 5px; background: #e9eded;">
+                        <div style="{{ b.barStyle }}"></div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showPageHeader }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 26px 30px 0; max-width: 1240px;">
+          <sc-if value="{{ screen.backLabel }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ screen.back }}" style="display: flex; align-items: center; gap: 6px; background: none; border: 1px solid transparent; color: #5f686b; font-size: 12.5px; padding: 5px 8px 5px 0; cursor: pointer; margin-bottom: 6px;" style-hover="color:#22272b;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+              <span>{{ screen.backLabel }}</span>
+            </button>
+          </sc-if>
+          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+            <div>
+              <h1 style="margin: 0; font-size: 25px; font-weight: 600; letter-spacing: -.01em;">{{ screen.title }}</h1>
+              <div style="font-size: 13px; color: #5f686b; margin-top: 4px;">{{ screen.sub }}</div>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ screen.actions }}" as="a" hint-placeholder-count="2">
+                <button onClick="{{ a.go }}" style="{{ a.style }}">{{ a.name }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isTable }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 18px 30px 48px; max-width: 1240px;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 7px; border: 1px solid #c8cfd1; background: #fff; padding: 7px 10px; border-radius: 3px; min-width: 230px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8b9397" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+              <input placeholder="{{ screen.searchPlaceholder }}" style="border: none; outline: none; font-size: 13px; flex: 1; background: none;">
+            </div>
+            <sc-for list="{{ screen.filters }}" as="f" hint-placeholder-count="2">
+              <select style="border: 1px solid #c8cfd1; background: #fff; padding: 7px 9px; font-size: 13px; border-radius: 3px; cursor: pointer;">
+                <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="3">
+                  <option>{{ o }}</option>
+                </sc-for>
+              </select>
+            </sc-for>
+            <span style="flex: 1;"></span>
+            <span style="font-size: 12.5px; color: #5f686b;">{{ screen.count }}</span>
+          </div>
+
+          <div style="background: #fff; border: 1px solid #d5dbdc;">
+            <div style="{{ screen.headStyle }}">
+              <sc-for list="{{ screen.cols }}" as="c" hint-placeholder-count="5">
+                <span style="{{ c.style }}">{{ c.label }}</span>
+              </sc-for>
+            </div>
+            <sc-for list="{{ screen.rows }}" as="r" hint-placeholder-count="6">
+              <div onClick="{{ r.go }}" style="{{ r.style }}">
+                <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="5">
+                  <sc-if value="{{ c.isInput }}" hint-placeholder-val="{{ false }}">
+                    <input value="{{ c.text }}" onChange="{{ noop }}" style="{{ c.style }}">
+                  </sc-if>
+                  <sc-if value="{{ c.isText }}" hint-placeholder-val="{{ true }}">
+                    <span style="{{ c.style }}">{{ c.text }}</span>
+                  </sc-if>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ screen.footNote }}" hint-placeholder-val="{{ false }}">
+            <div style="font-size: 12.5px; color: #5f686b; margin-top: 12px;">{{ screen.footNote }}</div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStatePanel }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 18px 30px 48px; max-width: 1240px;">
+          <div style="{{ statePanel.boxStyle }}">
+            <div style="width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid #d5dbdc; background: #fff; margin: 0 auto 14px; color: #5f686b;">{{ statePanel.icon }}</div>
+            <div style="font-size: 16px; font-weight: 600;">{{ statePanel.title }}</div>
+            <div style="font-size: 13.5px; color: #4c5559; margin-top: 8px; line-height: 1.65; max-width: 460px; margin-left: auto; margin-right: auto;">{{ statePanel.body }}</div>
+            <div style="display: flex; gap: 8px; justify-content: center; margin-top: 18px;">
+              <button style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ statePanel.action }}</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 0 30px 48px; max-width: 1240px;">
+          <div style="background: #fff; border: 1px solid #d5dbdc;">
+            <div style="padding: 13px 16px; border-bottom: 1px solid #e8ecec;">
+              <div style="font-weight: 600; font-size: 14px;">{{ perms.title }}</div>
+              <div style="font-size: 12.5px; color: #5f686b; margin-top: 3px;">{{ perms.sub }}</div>
+            </div>
+            <div style="padding: 4px 16px 16px; overflow-x: auto;">
+              <div style="min-width: 560px;">
+                <div style="display: grid; grid-template-columns: minmax(140px, 1.6fr) repeat(3, 84px); gap: 8px; padding: 10px 0; border-bottom: 1px solid #e8ecec;">
+                  <span style="font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #6a7275; font-weight: 600;">{{ perms.moduleCol }}</span>
+                  <sc-for list="{{ perms.levels }}" as="l" hint-placeholder-count="3">
+                    <span style="font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #6a7275; font-weight: 600; text-align: center;">{{ l }}</span>
+                  </sc-for>
+                </div>
+                <sc-for list="{{ perms.rows }}" as="r" hint-placeholder-count="6">
+                  <div style="display: grid; grid-template-columns: minmax(140px, 1.6fr) repeat(3, 84px); gap: 8px; padding: 9px 0; border-bottom: 1px solid #f4f6f6; align-items: center;">
+                    <span style="font-size: 13.5px;">{{ r.module }}</span>
+                    <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="3">
+                      <span style="display: grid; place-items: center;"><span style="{{ c.style }}"></span></span>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding: 14px 16px; border-top: 1px solid #e8ecec; background: #fafbfb;">
+              <div style="font-size: 13px; font-weight: 600; margin-bottom: 9px;">{{ perms.websiteTitle }}</div>
+              <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                <sc-for list="{{ perms.websitePerms }}" as="w" hint-placeholder-count="4">
+                  <span style="{{ w.style }}">{{ w.name }}</span>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isProductEdit }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 18px 30px 48px; max-width: 1240px; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 16px; align-items: start;">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="background: #fff; border: 1px solid #d5dbdc;">
+              <div style="padding: 13px 16px; border-bottom: 1px solid #e8ecec; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: space-between;">
+                <span>{{ pe.basicsTitle }}</span>
+                <div style="display: flex; align-items: center; gap: 6px; border: 1px solid #8fb7b7; background: #f1f7f7; padding: 3px 7px; border-radius: 3px;">
+                  <span style="font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: #0f6b6b; font-weight: 600;">{{ t.contentLang }}</span>
+                  <select onChange="{{ setClang }}" value="{{ clang }}" style="border: 1px solid #b7cfcf; background: #fff; padding: 3px 5px; font-size: 12.5px; border-radius: 2px; cursor: pointer;">
+                    <sc-for list="{{ langOptions }}" as="o" hint-placeholder-count="7">
+                      <option value="{{ o.id }}">{{ o.name }}</option>
+                    </sc-for>
+                  </select>
+                </div>
+              </div>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                  <label style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #565f62; margin-bottom: 5px;">
+                    <span>{{ pe.nameLabel }}</span>
+                    <sc-if value="{{ isSecondaryLang }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: #8a6d1f; border: 1px solid #ddc98a; background: #fdf8ea; padding: 1px 5px;">{{ t.notTranslated }}</span>
+                    </sc-if>
+                  </label>
+                  <input value="{{ pe.nameValue }}" placeholder="{{ pe.namePlaceholder }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 14px; border-radius: 2px;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                  <div>
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #565f62; margin-bottom: 5px;">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8b9397" stroke-width="1.6" stroke-linecap="round"><rect x="5" y="11" width="14" height="9"></rect><path d="M8 11V8a4 4 0 018 0v3"></path></svg>
+                      <span>SKU</span>
+                    </label>
+                    <input value="WH-PSP-500" disabled="{{ true }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #dde2e3; background: #f4f6f6; color: #5f686b; padding: 9px; font-size: 14px; border-radius: 2px;">
+                    <div style="font-size: 11.5px; color: #5f686b; margin-top: 5px;">{{ pe.skuNote }}</div>
+                  </div>
+                  <div>
+                    <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ pe.priceLabel }}</label>
+                    <input value="3800.00" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 14px; border-radius: 2px;">
+                    <div style="font-size: 11.5px; color: #5f686b; margin-top: 5px;">HK$3,800.00</div>
+                  </div>
+                </div>
+                <div>
+                  <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ pe.descLabel }}</label>
+                  <textarea rows="4" value="{{ pe.descValue }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 13.5px; line-height: 1.7; border-radius: 2px; font-family: inherit; resize: vertical;"></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                  <div>
+                    <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ pe.priceNoteLabel }}</label>
+                    <input value="{{ pe.priceNoteValue }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 13.5px; border-radius: 2px;">
+                  </div>
+                  <div>
+                    <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ pe.ribbonLabel }}</label>
+                    <input value="{{ pe.ribbonValue }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 13.5px; border-radius: 2px;">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: #fff; border: 1px solid #d5dbdc;">
+              <div style="padding: 13px 16px; border-bottom: 1px solid #e8ecec; font-weight: 600; font-size: 14px;">{{ pe.stockTitle }}</div>
+              <div style="padding: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+                <div>
+                  <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ pe.stockStatus }}</label>
+                  <select style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 13.5px; border-radius: 2px;">
+                    <option>{{ pe.inStock }}</option>
+                    <option>{{ pe.outOfStock }}</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ pe.stockCount }}</label>
+                  <input value="24" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 13.5px; border-radius: 2px;">
+                </div>
+                <div>
+                  <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ pe.reorder }}</label>
+                  <input value="20" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 13.5px; border-radius: 2px;">
+                </div>
+              </div>
+              <div style="padding: 0 16px 16px; display: flex; flex-direction: column; gap: 11px;">
+                <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                  <input type="checkbox" style="width: 15px; height: 15px; margin-top: 2px; accent-color: #0f6b6b;">
+                  <span>
+                    <span style="font-size: 13.5px; display: block;">{{ pe.clinicOnly }}</span>
+                    <span style="font-size: 11.5px; color: #5f686b;">{{ pe.clinicOnlyNote }}</span>
+                  </span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+                  <input type="checkbox" style="width: 15px; height: 15px; margin-top: 2px; accent-color: #0f6b6b;">
+                  <span>
+                    <span style="font-size: 13.5px; display: block;">{{ pe.priceOnHold }}</span>
+                    <span style="font-size: 11.5px; color: #5f686b;">{{ pe.priceOnHoldNote }}</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="background: #fff; border: 1px solid #d5dbdc; padding: 16px;">
+              <div style="font-weight: 600; font-size: 14px; margin-bottom: 11px;">{{ pe.photoTitle }}</div>
+              <div style="aspect-ratio: 4 / 3; background: #eef1f0; border: 1px solid #e3e7e7; display: grid; place-items: center; color: #5f686b; font-size: 11px; letter-spacing: .08em;">WH-PSP-500</div>
+              <button style="width: 100%; margin-top: 10px; background: #fff; border: 1px solid #c8cfd1; padding: 8px; font-size: 12.5px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ pe.chooseFromMedia }}</button>
+              <div style="font-weight: 600; font-size: 14px; margin: 18px 0 9px;">{{ pe.modelTitle }}</div>
+              <button style="width: 100%; background: #fff; border: 1px dashed #c3cbcd; padding: 12px; font-size: 12.5px; color: #5f686b; cursor: pointer; border-radius: 3px;" style-hover="background:#f5f7f7;">{{ pe.chooseFromMedia }}</button>
+            </div>
+            <div style="background: #fff; border: 1px solid #d5dbdc; padding: 16px;">
+              <div style="font-weight: 600; font-size: 14px; margin-bottom: 10px;">{{ pe.badgesTitle }}</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <sc-for list="{{ pe.badges }}" as="b" hint-placeholder-count="3">
+                  <span style="display: inline-flex; align-items: center; gap: 6px; border: 1px solid #b9d2d2; background: #f1f7f7; color: #0b4f4f; font-size: 12px; padding: 4px 8px;">{{ b }}<span style="color: #0b4f4f;">×</span></span>
+                </sc-for>
+                <button style="border: 1px dashed #c3cbcd; background: none; font-size: 12px; padding: 4px 9px; cursor: pointer; color: #5f686b;">+ {{ pe.addBadge }}</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="grid-column: 1 / -1; background: #fff; border: 1px solid #d5dbdc; border-top: 3px solid #0f6b6b; padding: 14px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; position: sticky; bottom: 0;">
+            <button onClick="{{ saveProduct }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 10px 22px; font-size: 13.5px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.save }}</button>
+            <button onClick="{{ goProducts }}" style="background: #fff; border: 1px solid #c8cfd1; padding: 10px 18px; font-size: 13.5px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.close }}</button>
+            <span style="font-size: 12.5px; color: #5f686b;">{{ pe.footNote }}</span>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isEnquiries }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 18px 30px 48px; max-width: 1240px;">
+          <div style="background: #fff; border: 1px solid #d5dbdc; display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); min-height: 520px;">
+            <div style="border-right: 1px solid #e4e8e9; display: flex; flex-direction: column;">
+              <sc-for list="{{ enquiries }}" as="e" hint-placeholder-count="5">
+                <div onClick="{{ e.go }}" style="{{ e.style }}">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <sc-if value="{{ e.unread }}" hint-placeholder-val="{{ true }}">
+                      <span style="width: 7px; height: 7px; border-radius: 50%; background: #8c1d2c; flex: none;"></span>
+                    </sc-if>
+                    <span style="{{ e.nameStyle }}">{{ e.name }}</span>
+                    <span style="flex: 1;"></span>
+                    <span style="font-size: 11.5px; color: #5f686b;">{{ e.when }}</span>
+                  </div>
+                  <div style="font-size: 12.5px; color: #5f686b; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ e.preview }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="padding: 20px 22px; display: flex; flex-direction: column; gap: 16px;">
+              <div style="display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                  <div style="font-size: 17px; font-weight: 600;">{{ enq.name }}</div>
+                  <div style="font-size: 12.5px; color: #5f686b; margin-top: 3px;">{{ enq.meta }}</div>
+                </div>
+                <div style="display: flex; gap: 7px;">
+                  <button style="display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #c8cfd1; padding: 7px 12px; font-size: 12.5px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">WhatsApp</button>
+                  <button style="background: #fff; border: 1px solid #c8cfd1; padding: 7px 12px; font-size: 12.5px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ enq.emailLabel }}</button>
+                  <button style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 7px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ enq.markHandled }}</button>
+                </div>
+              </div>
+              <div style="border-top: 1px solid #eef1f1; padding-top: 16px; font-size: 14px; line-height: 1.85; color: #3d4548; white-space: pre-line;">{{ enq.body }}</div>
+              <div style="margin-top: auto; border-top: 1px solid #eef1f1; padding-top: 14px; display: flex; gap: 18px; font-size: 12.5px; color: #5f686b; flex-wrap: wrap;">
+                <span>{{ enq.sourceLabel }}</span>
+                <span>{{ enq.langLabel }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isMedia }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 18px 30px 48px; max-width: 1240px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; align-items: start;">
+          <div>
+            <div style="background: #fff; border: 1px solid #d5dbdc; padding: 13px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 220px;">
+                <div style="font-size: 13px; font-weight: 600;">{{ media.uploadingName }}</div>
+                <div style="height: 5px; background: #e9eded; margin-top: 7px;">
+                  <div style="height: 100%; width: 68%; background: #0f6b6b;"></div>
+                </div>
+              </div>
+              <span style="font-size: 12.5px; color: #5f686b;">68% · 2.4 MB / 3.5 MB</span>
+              <button style="background: none; border: 1px solid #c8cfd1; padding: 6px 11px; font-size: 12.5px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.close }}</button>
+            </div>
+
+            <div style="border: 1px dashed #bcc5c7; background: #fbfcfc; padding: 18px; text-align: center; margin-bottom: 14px;">
+              <div style="font-size: 13.5px;">{{ media.dropTitle }}</div>
+              <div style="font-size: 12px; color: #5f686b; margin-top: 5px;">{{ media.dropRules }}</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
+              <sc-for list="{{ mediaItems }}" as="m" hint-placeholder-count="8">
+                <div onClick="{{ m.go }}" style="{{ m.style }}">
+                  <div style="aspect-ratio: 1 / 1; background: #eef1f0; display: grid; place-items: center; color: #5f686b;">{{ m.icon }}</div>
+                  <div style="padding: 7px 8px 9px;">
+                    <div style="font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ m.name }}</div>
+                    <div style="font-size: 11px; color: #5f686b; margin-top: 2px;">{{ m.meta }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="background: #fff; border: 1px solid #d5dbdc; position: sticky; top: 72px;">
+            <div style="padding: 13px 16px; border-bottom: 1px solid #e8ecec; font-weight: 600; font-size: 14px;">{{ media.detailTitle }}</div>
+            <div style="padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+              <div style="aspect-ratio: 4 / 3; background: #eef1f0; display: grid; place-items: center; color: #5f686b; font-size: 11px; letter-spacing: .08em;">psp-500-box.jpg</div>
+              <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: #4c5559;">
+                <div style="display: flex; justify-content: space-between;"><span style="color: #5f686b;">{{ media.sizeLabel }}</span><span>1.8 MB</span></div>
+                <div style="display: flex; justify-content: space-between;"><span style="color: #5f686b;">{{ media.dimsLabel }}</span><span>2048 × 1536</span></div>
+                <div style="display: flex; justify-content: space-between;"><span style="color: #5f686b;">{{ media.usedLabel }}</span><span style="color: #0f6b6b;">{{ media.usedValue }}</span></div>
+              </div>
+              <div>
+                <label style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #565f62; margin-bottom: 5px;">
+                  <span>{{ media.altLabel }}</span>
+                  <span style="font-size: 10px; color: #5f686b;">{{ media.altLangTag }}</span>
+                </label>
+                <input value="{{ media.altValue }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 8px 9px; font-size: 13px; border-radius: 2px;">
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 7px; border-top: 1px solid #eef1f1; padding-top: 14px;">
+                <button style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ media.useLabel }}</button>
+                <button style="background: #fff; border: 1px solid #c8cfd1; padding: 8px; font-size: 12.5px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ media.replaceLabel }}</button>
+                <button style="background: #fff; border: 1px solid #ddc3c7; color: #8c1d2c; padding: 8px; font-size: 12.5px; cursor: pointer; border-radius: 3px;" style-hover="background:#fcf4f5;">{{ media.deleteLabel }}</button>
+                <div style="font-size: 11.5px; color: #8a6d1f; background: #fdf8ea; border: 1px solid #ddc98a; padding: 7px 9px; line-height: 1.5;">{{ media.deleteWarn }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isVersions }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 18px 30px 48px; max-width: 900px;">
+          <div style="background: #fff; border: 1px solid #d5dbdc;">
+            <sc-for list="{{ versions }}" as="v" hint-placeholder-count="5">
+              <div style="display: flex; gap: 16px; padding: 16px 18px; border-bottom: 1px solid #f2f4f4;">
+                <div style="width: 110px; flex: none;">
+                  <div style="font-size: 13.5px; font-weight: 600;">{{ v.date }}</div>
+                  <div style="font-size: 12px; color: #5f686b; margin-top: 2px;">{{ v.time }}</div>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="display: flex; align-items: center; gap: 9px; flex-wrap: wrap;">
+                    <span style="font-size: 13.5px; font-weight: 500;">{{ v.who }}</span>
+                    <sc-if value="{{ v.current }}" hint-placeholder-val="{{ false }}">
+                      <span style="font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #17795c; border: 1px solid #a9d3c3; background: #f0f7f4; padding: 1px 6px;">{{ versionsT.liveNow }}</span>
+                    </sc-if>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 3px; margin-top: 7px;">
+                    <sc-for list="{{ v.changes }}" as="c" hint-placeholder-count="2">
+                      <div style="font-size: 12.5px; color: #4c5559;">— {{ c }}</div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 7px; align-items: flex-start; flex: none;">
+                  <button style="background: #fff; border: 1px solid #c8cfd1; padding: 7px 12px; font-size: 12.5px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ versionsT.preview }}</button>
+                  <sc-if value="{{ v.restorable }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ v.restore }}" style="background: #fff; border: 1px solid #0f6b6b; color: #0f6b6b; padding: 7px 12px; font-size: 12.5px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#e3efef;">{{ versionsT.restore }}</button>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isTranslations }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 18px 30px 48px; max-width: 1000px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px;">
+            <sc-for list="{{ translationCards }}" as="b" hint-placeholder-count="4">
+              <div style="background: #fff; border: 1px solid #d5dbdc; padding: 13px 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <span style="font-size: 13.5px; font-weight: 500;">{{ b.name }}</span>
+                  <span style="font-size: 13px; color: #5f686b;">{{ b.pct }}</span>
+                </div>
+                <div style="height: 5px; background: #e9eded; margin-top: 8px;">
+                  <div style="{{ b.barStyle }}"></div>
+                </div>
+                <div style="font-size: 11.5px; color: #5f686b; margin-top: 7px;">{{ b.missing }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <sc-for list="{{ translationGroups }}" as="g" hint-placeholder-count="3">
+            <div style="background: #fff; border: 1px solid #d5dbdc; margin-bottom: 14px;">
+              <div style="padding: 11px 16px; border-bottom: 1px solid #e8ecec; font-weight: 600; font-size: 13.5px; display: flex; justify-content: space-between;">
+                <span>{{ g.page }}</span>
+                <span style="font-weight: 400; color: #5f686b; font-size: 12.5px;">{{ g.count }}</span>
+              </div>
+              <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3">
+                <div onClick="{{ goEditor }}" style="display: flex; align-items: center; gap: 14px; padding: 11px 16px; border-bottom: 1px solid #f4f6f6; cursor: pointer;" style-hover="background:#f7f9f9;">
+                  <span style="width: 92px; flex: none; font-size: 12px; color: #5f686b;">{{ r.lang }}</span>
+                  <span style="flex: 1; min-width: 0; font-size: 13px;">{{ r.field }}</span>
+                  <span style="font-size: 12.5px; color: #5f686b; font-style: italic; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.zh }}</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a9b1b3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
+        <div style="padding: 18px 30px 48px; max-width: 820px;">
+          <sc-if value="{{ form.perLang }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; align-items: center; gap: 8px; border: 1px solid #8fb7b7; background: #f1f7f7; padding: 8px 11px; margin-bottom: 14px;">
+              <span style="font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #0f6b6b; font-weight: 600;">{{ t.contentLang }}</span>
+              <select onChange="{{ setClang }}" value="{{ clang }}" style="border: 1px solid #b7cfcf; background: #fff; padding: 4px 6px; font-size: 13px; border-radius: 2px; cursor: pointer;">
+                <sc-for list="{{ langOptions }}" as="o" hint-placeholder-count="7">
+                  <option value="{{ o.id }}">{{ o.name }}</option>
+                </sc-for>
+              </select>
+              <span style="font-size: 12px; color: #3f5b5b;">{{ form.langNote }}</span>
+            </div>
+          </sc-if>
+
+          <sc-for list="{{ form.sections }}" as="s" hint-placeholder-count="2">
+            <div style="background: #fff; border: 1px solid #d5dbdc; margin-bottom: 14px;">
+              <div style="padding: 13px 16px; border-bottom: 1px solid #e8ecec; font-weight: 600; font-size: 14px;">{{ s.title }}</div>
+              <div style="padding: 16px; display: flex; flex-direction: column; gap: 15px;">
+                <sc-for list="{{ s.fields }}" as="f" hint-placeholder-count="3">
+                  <div>
+                    <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ f.label }}</label>
+                    <sc-if value="{{ f.isArea }}" hint-placeholder-val="{{ false }}">
+                      <textarea rows="3" value="{{ f.value }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 13.5px; line-height: 1.7; border-radius: 2px; font-family: inherit; resize: vertical;"></textarea>
+                    </sc-if>
+                    <sc-if value="{{ f.isInput }}" hint-placeholder-val="{{ true }}">
+                      <input value="{{ f.value }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 13.5px; border-radius: 2px;">
+                    </sc-if>
+                    <sc-if value="{{ f.hint }}" hint-placeholder-val="{{ false }}">
+                      <div style="font-size: 11.5px; color: #5f686b; margin-top: 5px;">{{ f.hint }}</div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+
+          <div style="background: #fff; border: 1px solid #d5dbdc; border-top: 3px solid #0f6b6b; padding: 14px 16px; display: flex; align-items: center; gap: 12px;">
+            <button onClick="{{ saveLang }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 10px 22px; font-size: 13.5px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.save }}</button>
+            <span style="font-size: 12.5px; color: #5f686b;">{{ t.goesLiveOnPublish }}</span>
+          </div>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <sc-if value="{{ isEditor }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 80; background: #eceeef; display: flex; flex-direction: column; overflow: auto;">
+
+      <div style="flex: none; background: #fff; border-bottom: 1px solid #d9dedf; min-width: 1280px;">
+        <div style="display: flex; align-items: center; gap: 14px; height: 52px; padding: 0 16px;">
+          <button onClick="{{ goPages }}" style="display: flex; align-items: center; gap: 6px; background: none; border: 1px solid transparent; color: #5f686b; font-size: 12.5px; padding: 6px 8px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;color:#22272b;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"></path></svg>
+            <span>{{ t.backToPages }}</span>
+          </button>
+          <div style="width: 1px; height: 22px; background: #e2e6e7;"></div>
+
+          <div style="display: flex; align-items: center; gap: 7px;">
+            <span style="font-size: 11px; color: #5f686b;">{{ t.page }}</span>
+            <div onClick="{{ goPages }}" role="button" tabindex="0" style="display: flex; align-items: center; gap: 8px; border: 1px solid #c8cfd1; padding: 5px 10px; font-size: 13px; cursor: pointer; background: #fff; border-radius: 3px;" style-hover="background:#f5f7f7;">
+              <span style="font-weight: 500;">{{ pageName }}</span>
+              <span style="font-size: 11.5px; color: #5f686b; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;">{{ pageUrl }}</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5f686b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 7px; padding: 4px 6px 4px 10px; border: 1px solid #8fb7b7; background: #f1f7f7; border-radius: 3px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0f6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3a15 15 0 010 18a15 15 0 010-18"></path></svg>
+            <span style="font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: #0f6b6b; font-weight: 600;">{{ t.contentLang }}</span>
+            <select onChange="{{ setClang }}" value="{{ clang }}" style="border: 1px solid #b7cfcf; background: #fff; padding: 4px 6px; font-size: 13px; border-radius: 2px; cursor: pointer;">
+              <sc-for list="{{ langOptions }}" as="o" hint-placeholder-count="7">
+                <option value="{{ o.id }}">{{ o.name }}</option>
+              </sc-for>
+            </select>
+          </div>
+
+          <div style="flex: 1;"></div>
+
+          <div style="display: flex; gap: 2px;">
+            <button style="background: none; border: 1px solid transparent; padding: 7px; cursor: pointer; color: #4c5559; border-radius: 3px;" style-hover="background:#f1f4f4;" aria-label="Undo">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"></path><path d="M4 9h11a5 5 0 010 10h-4"></path></svg>
+            </button>
+            <button style="background: none; border: 1px solid transparent; padding: 7px; cursor: pointer; color: #b0b7b9; border-radius: 3px;" aria-label="Redo" disabled="{{ true }}">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"></path><path d="M20 9H9a5 5 0 000 10h4"></path></svg>
+            </button>
+          </div>
+          <div style="position: relative;">
+            <button onClick="{{ togglePageVer }}" style="display: flex; align-items: center; gap: 7px; background: #fff; border: 1px solid #c8cfd1; padding: 7px 13px; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 10-8.5-12"></path><path d="M3 4v5h5"></path><path d="M12 8v4l3 2"></path></svg>
+              <span>{{ t.versionsBtn }}</span>
+            </button>
+            <sc-if value="{{ pageVerOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position: absolute; top: 40px; right: 0; width: 370px; background: #fff; border: 1px solid #d0d6d7; box-shadow: 0 12px 30px rgba(20,32,36,.16); z-index: 90; animation: whFade .14s ease-out;">
+                <div style="padding: 13px 15px 11px; border-bottom: 1px solid #edf0f0;">
+                  <div style="font-size: 14px; font-weight: 600;">{{ pageVerT.title }}</div>
+                  <div style="font-size: 12px; color: #5f686b; margin-top: 3px; line-height: 1.45;">{{ pageVerT.help }}</div>
+                </div>
+                <sc-for list="{{ pageVersions }}" as="v" hint-placeholder-count="4">
+                  <div style="{{ v.style }}">
+                    <div style="width: 84px; flex: none;">
+                      <div style="font-size: 12.5px; font-weight: 600;">{{ v.date }}</div>
+                      <div style="font-size: 11.5px; color: #5f686b; margin-top: 2px;">{{ v.time }}</div>
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="display: flex; align-items: center; gap: 7px; flex-wrap: wrap;">
+                        <span style="font-size: 12.5px; font-weight: 500;">{{ v.who }}</span>
+                        <sc-if value="{{ v.current }}" hint-placeholder-val="{{ false }}">
+                          <span style="font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: #17795c; border: 1px solid #a9d3c3; background: #f0f7f4; padding: 1px 5px;">{{ versionsT.liveNow }}</span>
+                        </sc-if>
+                      </div>
+                      <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 5px;">
+                        <sc-for list="{{ v.changes }}" as="c" hint-placeholder-count="2">
+                          <div style="font-size: 12px; color: #4c5559;">— {{ c }}</div>
+                        </sc-for>
+                      </div>
+                    </div>
+                    <sc-if value="{{ v.restorable }}" hint-placeholder-val="{{ true }}">
+                      <button onClick="{{ v.restore }}" style="flex: none; align-self: flex-start; background: #fff; border: 1px solid #0f6b6b; color: #0f6b6b; padding: 5px 11px; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#e3efef;">{{ versionsT.restore }}</button>
+                    </sc-if>
+                  </div>
+                </sc-for>
+                <div style="padding: 11px 15px; background: #fafbfb;">
+                  <a href="#" onClick="{{ goVersions }}" style="font-size: 12.5px;">{{ pageVerT.allLink }}</a>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+          <button style="background: #fff; border: 1px solid #c8cfd1; padding: 7px 14px; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.preview }}</button>
+          <div style="position: relative; display: flex;">
+            <button onClick="{{ runPublish }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; border-right: none; padding: 7px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 3px 0 0 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.publish }}</button>
+            <button onClick="{{ togglePublishMenu }}" aria-label="{{ publishMenu.draftTitle }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; border-left: 1px solid #3d8484; padding: 7px 9px; cursor: pointer; border-radius: 0 3px 3px 0; display: grid; place-items: center;" style-hover="background:#0a5252;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            <sc-if value="{{ publishMenuOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="position: absolute; top: 40px; right: 0; width: 290px; background: #fff; border: 1px solid #d0d6d7; box-shadow: 0 12px 30px rgba(20,32,36,.16); z-index: 90; animation: whFade .14s ease-out;">
+                <div onClick="{{ runPublish }}" role="button" tabindex="0" style="padding: 12px 14px; border-bottom: 1px solid #f2f4f4; cursor: pointer;" style-hover="background:#f4f8f8;">
+                  <div style="font-size: 13.5px; font-weight: 600;">{{ publishMenu.publishTitle }}</div>
+                  <div style="font-size: 12px; color: #5f686b; margin-top: 3px; line-height: 1.45;">{{ publishMenu.publishBody }}</div>
+                </div>
+                <div onClick="{{ saveDraft }}" role="button" tabindex="0" style="padding: 12px 14px; cursor: pointer;" style-hover="background:#f4f8f8;">
+                  <div style="font-size: 13.5px; font-weight: 600;">{{ publishMenu.draftTitle }}</div>
+                  <div style="font-size: 12px; color: #5f686b; margin-top: 3px; line-height: 1.45;">{{ publishMenu.draftBody }}</div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+
+        <div style="{{ statusLineStyle }}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path></svg>
+          <span>{{ statusLineText }}</span>
+          <sc-if value="{{ isSecondaryLang }}" hint-placeholder-val="{{ false }}">
+            <a href="#" style="margin-left: 4px; text-decoration: underline;">{{ t.missingTranslations }}</a>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="flex: 1; min-height: 0; display: flex; min-width: 1280px;">
+
+        <div style="width: 250px; flex: none; background: #fff; border-right: 1px solid #d9dedf; display: flex; flex-direction: column;">
+          <div style="display: flex; border-bottom: 1px solid #e4e8e9;">
+            <button onClick="{{ setTabAdd }}" style="{{ tabAddStyle }}">{{ t.addBlock }}</button>
+            <button onClick="{{ setTabOutline }}" style="{{ tabOutlineStyle }}">{{ t.pageOutline }}</button>
+          </div>
+
+          <sc-if value="{{ tabIsAdd }}" hint-placeholder-val="{{ true }}">
+            <div style="overflow: auto; padding: 4px 0 20px;">
+              <sc-for list="{{ blockLibrary }}" as="grp" hint-placeholder-count="6">
+                <div style="padding: 13px 14px 5px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #6a7275; font-weight: 600;">{{ grp.label }}</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 7px; padding: 0 14px;">
+                  <sc-for list="{{ grp.items }}" as="b" hint-placeholder-count="4">
+                    <div role="button" tabindex="0" style="border: 1px solid #dde2e3; background: #fff; cursor: grab; padding: 7px 7px 8px;" style-hover="border-color:#0f6b6b;background:#f4f8f8;">
+                      <div style="height: 34px; background: #f1f4f4; border: 1px solid #e6eaea; display: grid; place-items: center; color: #8fa0a3;">{{ b.thumb }}</div>
+                      <div style="font-size: 11.5px; margin-top: 5px; line-height: 1.25;">{{ b.name }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tabIsOutline }}" hint-placeholder-val="{{ false }}">
+            <div style="overflow: auto; padding: 10px 12px 20px; display: flex; flex-direction: column; gap: 4px;">
+              <sc-for list="{{ outline }}" as="o" hint-placeholder-count="5">
+                <div onClick="{{ o.go }}" role="button" tabindex="0" style="{{ o.style }}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a9b1b3" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
+                  <span style="flex: 1;">{{ o.name }}</span>
+                  <sc-if value="{{ o.linked }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: #0f6b6b; border: 1px solid #b9d2d2; padding: 1px 4px;">{{ t.linked }}</span>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; background: #e4e7e8;">
+          <div style="flex: none; display: flex; align-items: center; justify-content: center; gap: 4px; padding: 9px; border-bottom: 1px solid #d6dbdc; background: #eceeef;">
+            <sc-for list="{{ devices }}" as="d" hint-placeholder-count="3">
+              <button onClick="{{ d.go }}" style="{{ d.style }}">{{ d.name }}</button>
+            </sc-for>
+          </div>
+
+          <div style="flex: 1; overflow: auto; padding: 22px 26px 60px; display: flex; justify-content: center;">
+            <div style="{{ canvasStyle }}">
+
+              <div onClick="{{ selHeader }}" style="position: relative; padding: 46px 40px 38px; text-align: center; background: #f7f6f3; cursor: pointer;">
+                <sc-if value="{{ selIsHeader }}" hint-placeholder-val="{{ false }}">
+                  <div style="position: absolute; inset: 0; border: 2px solid #0f6b6b; pointer-events: none;"></div>
+                </sc-if>
+                <div style="font-family: 'Playfair Display', serif; font-size: 34px; color: #22272b;">{{ page.headerTitle }}</div>
+                <div style="font-size: 14px; color: #5f686b; margin-top: 10px; display: inline-flex; align-items: center; gap: 8px;">
+                  <span style="{{ page.headerSubStyle }}">{{ page.headerSub }}</span>
+                  <sc-if value="{{ page.headerSubUn }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: #8a6d1f; border: 1px solid #ddc98a; background: #fdf8ea; padding: 1px 5px;">{{ t.notTranslated }}</span>
+                  </sc-if>
+                </div>
+              </div>
+
+              <div onClick="{{ selText }}" style="position: relative; padding: 34px 40px; background: #fff; cursor: pointer;">
+                <sc-if value="{{ selIsText }}" hint-placeholder-val="{{ true }}">
+                  <div style="position: absolute; inset: 0; border: 2px solid #0f6b6b; pointer-events: none;"></div>
+                  <div style="position: absolute; top: -13px; right: 8px; display: flex; gap: 1px; background: #0f6b6b; padding: 2px; z-index: 5;">
+                    <sc-for list="{{ blockTools }}" as="tool" hint-placeholder-count="4">
+                      <button title="{{ tool.name }}" aria-label="{{ tool.name }}" style="background: none; border: none; color: #fff; padding: 3px 5px; cursor: pointer; display: grid; place-items: center; border-radius: 2px;" style-hover="background:#0a5252;">{{ tool.icon }}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <div style="max-width: 660px; margin: 0 auto;">
+                  <div style="font-weight: 700; font-size: 15px; color: #8c1d2c; margin-bottom: 8px;">{{ page.textLabel }}</div>
+                  <p style="{{ page.textBodyStyle }}">{{ page.textBody }}</p>
+                  <sc-if value="{{ page.textBodyUn }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top: 8px; display: inline-flex; align-items: center; gap: 7px; font-size: 11.5px; color: #8a6d1f; background: #fdf8ea; border: 1px solid #ddc98a; padding: 4px 8px;">
+                      <span style="font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; font-weight: 600;">{{ t.notTranslated }}</span>
+                      <span>{{ t.fallbackNote }}</span>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+
+              <div onClick="{{ selGrid }}" style="position: relative; padding: 34px 40px 40px; background: #fbfbfa; cursor: pointer;">
+                <sc-if value="{{ selIsGrid }}" hint-placeholder-val="{{ false }}">
+                  <div style="position: absolute; inset: 0; border: 2px solid #0f6b6b; pointer-events: none;"></div>
+                  <div style="position: absolute; top: -13px; right: 8px; display: flex; gap: 1px; background: #0f6b6b; padding: 2px; z-index: 5;">
+                    <sc-for list="{{ blockTools }}" as="tool" hint-placeholder-count="4">
+                      <button title="{{ tool.name }}" aria-label="{{ tool.name }}" style="background: none; border: none; color: #fff; padding: 3px 5px; cursor: pointer; display: grid; place-items: center; border-radius: 2px;" style-hover="background:#0a5252;">{{ tool.icon }}</button>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;">
+                  <sc-for list="{{ products }}" as="p" hint-placeholder-count="3">
+                    <div style="border: 1px solid #e6e4df; background: #fff; position: relative;">
+                      <div style="position: absolute; top: 0; right: 0; background: #8c1d2c; color: #fff; font-size: 10px; padding: 3px 8px; letter-spacing: .04em;">{{ p.ribbon }}</div>
+                      <div style="aspect-ratio: 4 / 3; background: #eef1f0; display: grid; place-items: center; color: #5f686b; font-size: 10.5px; letter-spacing: .08em;">{{ p.sku }}</div>
+                      <div style="padding: 11px 12px 14px;">
+                        <div style="font-size: 13px; line-height: 1.4; min-height: 36px;">{{ p.name }}</div>
+                        <div style="font-family: 'Playfair Display', serif; font-size: 17px; color: #8c1d2c; margin-top: 6px;">{{ p.price }}</div>
+                        <div style="margin-top: 9px; border: 1px solid #0f6b6b; color: #0f6b6b; text-align: center; padding: 5px; font-size: 12px;">{{ page.quickView }}</div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div onClick="{{ selFaq }}" style="position: relative; padding: 32px 40px 42px; background: #fff; cursor: pointer;">
+                <sc-if value="{{ selIsFaq }}" hint-placeholder-val="{{ false }}">
+                  <div style="position: absolute; inset: 0; border: 2px solid #0f6b6b; pointer-events: none;"></div>
+                </sc-if>
+                <div style="max-width: 660px; margin: 0 auto;">
+                  <div style="font-family: 'Playfair Display', serif; font-size: 21px; margin-bottom: 14px;">{{ page.faqTitle }}</div>
+                  <sc-for list="{{ faqItems }}" as="f" hint-placeholder-count="3">
+                    <div style="border-bottom: 1px solid #ecebe7; padding: 12px 0; display: flex; align-items: center; gap: 10px;">
+                      <span style="{{ f.style }}">{{ f.q }}</span>
+                      <sc-if value="{{ f.un }}" hint-placeholder-val="{{ false }}">
+                        <span style="font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: #8a6d1f; border: 1px solid #ddc98a; background: #fdf8ea; padding: 1px 5px; flex: none;">{{ t.notTranslated }}</span>
+                      </sc-if>
+                      <span style="flex: 1;"></span>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a9b1b3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div style="width: 306px; flex: none; background: #fff; border-left: 1px solid #d9dedf; display: flex; flex-direction: column; overflow: auto;">
+          <div style="padding: 13px 16px; border-bottom: 1px solid #e4e8e9;">
+            <div style="font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #6a7275; font-weight: 600;">{{ t.blockSettings }}</div>
+            <div style="font-size: 15px; font-weight: 600; margin-top: 3px;">{{ selName }}</div>
+          </div>
+
+          <sc-if value="{{ isSecondaryLang }}" hint-placeholder-val="{{ false }}">
+            <div style="margin: 12px 14px 0; border: 1px solid #ddc98a; background: #fdf8ea; padding: 10px 12px; font-size: 12px; color: #6b5514; line-height: 1.5;">{{ t.editingLangWarning }}</div>
+          </sc-if>
+
+          <sc-if value="{{ selIsText }}" hint-placeholder-val="{{ true }}">
+            <div style="padding: 14px 16px 22px; display: flex; flex-direction: column; gap: 15px;">
+              <div>
+                <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ t.fieldLabel }}</label>
+                <input value="{{ page.textLabel }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 8px 9px; font-size: 13px; border-radius: 2px;">
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                  <label style="font-size: 12px; color: #565f62;">{{ t.fieldText }}</label>
+                  <sc-if value="{{ page.textBodyUn }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: #8a6d1f; border: 1px solid #ddc98a; background: #fdf8ea; padding: 1px 5px;">{{ t.notTranslated }}</span>
+                  </sc-if>
+                </div>
+                <textarea rows="5" placeholder="{{ page.textPlaceholder }}" onChange="{{ noop }}" value="{{ page.textFieldValue }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 8px 9px; font-size: 13px; line-height: 1.6; border-radius: 2px; resize: vertical; font-family: inherit;"></textarea>
+                <sc-if value="{{ page.textBodyUn }}" hint-placeholder-val="{{ false }}">
+                  <div style="font-size: 11.5px; color: #5f686b; margin-top: 5px; line-height: 1.5;">{{ t.hintShowsChinese }}</div>
+                </sc-if>
+              </div>
+              <div>
+                <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ t.layoutVariant }}</label>
+                <div style="display: flex; border: 1px solid #c8cfd1; border-radius: 2px; overflow: hidden;">
+                  <sc-for list="{{ variants }}" as="v" hint-placeholder-count="3">
+                    <button onClick="{{ v.go }}" style="{{ v.style }}">{{ v.name }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <label style="display: flex; align-items: center; gap: 9px; font-size: 13px; cursor: pointer;">
+                <input type="checkbox" style="width: 15px; height: 15px; accent-color: #0f6b6b;">
+                <span>{{ t.emphasise }}</span>
+              </label>
+              <div style="border-top: 1px solid #eef1f1; padding-top: 14px; display: flex; gap: 8px; align-items: center;">
+                <button onClick="{{ saveLang }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.save }}</button>
+                <span style="font-size: 11.5px; color: #5f686b;">{{ t.goesLiveOnPublish }}</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ selIsGrid }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 14px 16px 22px; display: flex; flex-direction: column; gap: 15px;">
+              <div style="border: 1px solid #b9d2d2; background: #f1f7f7; padding: 12px 13px;">
+                <div style="display: flex; gap: 8px; align-items: flex-start;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f6b6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:1px;"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"></path><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"></path></svg>
+                  <div>
+                    <div style="font-size: 13px; font-weight: 600; color: #0b4f4f;">{{ t.linkedTitle }}</div>
+                    <div style="font-size: 12px; color: #3f5b5b; margin-top: 4px; line-height: 1.5;">{{ t.linkedBody }}</div>
+                  </div>
+                </div>
+                <button style="margin-top: 10px; width: 100%; background: #fff; border: 1px solid #0f6b6b; color: #0f6b6b; padding: 7px; font-size: 12.5px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#e3efef;">{{ t.openProducts }}</button>
+              </div>
+              <div>
+                <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ t.whichProducts }}</label>
+                <select style="width: 100%; border: 1px solid #c8cfd1; padding: 8px 9px; font-size: 13px; border-radius: 2px;">
+                  <option>{{ t.allProducts }}</option>
+                  <option>雲芝系列</option>
+                  <option>複合配方</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ t.perRow }}</label>
+                <div style="display: flex; border: 1px solid #c8cfd1; border-radius: 2px; overflow: hidden;">
+                  <button style="flex: 1; padding: 7px; font-size: 12.5px; background: #fff; border: none; cursor: pointer;">2</button>
+                  <button style="flex: 1; padding: 7px; font-size: 12.5px; background: #0f6b6b; color: #fff; border: none; cursor: pointer;">3</button>
+                  <button style="flex: 1; padding: 7px; font-size: 12.5px; background: #fff; border: none; cursor: pointer;">4</button>
+                </div>
+              </div>
+              <div>
+                <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ t.quickViewLabel }}</label>
+                <input value="{{ page.quickView }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 8px 9px; font-size: 13px; border-radius: 2px;">
+              </div>
+              <div style="border-top: 1px solid #eef1f1; padding-top: 14px; display: flex; gap: 8px; align-items: center;">
+                <button onClick="{{ saveLang }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.save }}</button>
+                <span style="font-size: 11.5px; color: #5f686b;">{{ t.goesLiveOnPublish }}</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ selIsOther }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 14px 16px 22px; display: flex; flex-direction: column; gap: 15px;">
+              <div>
+                <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ t.fieldHeading }}</label>
+                <input value="{{ selHeadingValue }}" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 8px 9px; font-size: 13px; border-radius: 2px;">
+              </div>
+              <div>
+                <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ t.layoutVariant }}</label>
+                <div style="display: flex; border: 1px solid #c8cfd1; border-radius: 2px; overflow: hidden;">
+                  <sc-for list="{{ variants }}" as="v" hint-placeholder-count="3">
+                    <button onClick="{{ v.go }}" style="{{ v.style }}">{{ v.name }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="border-top: 1px solid #eef1f1; padding-top: 14px; display: flex; gap: 8px; align-items: center;">
+                <button onClick="{{ saveLang }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.save }}</button>
+                <span style="font-size: 11.5px; color: #5f686b;">{{ t.goesLiveOnPublish }}</span>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isSignIn }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 150; background: #f7f6f3; display: grid; place-items: center; padding: 24px;">
+      <div style="width: 380px; max-width: 100%;">
+        <div style="text-align: center; margin-bottom: 26px;">
+          <div style="font-family: 'Playfair Display', serif; font-size: 30px; color: #8c1d2c;">康草堂</div>
+          <div style="font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #5f686b; margin-top: 4px;">Wonder Herb · {{ signin.adminLabel }}</div>
+        </div>
+        <div style="background: #fff; border: 1px solid #d5dbdc; padding: 24px;">
+          <div style="border: 1px solid #e3d3d5; background: #fcf6f6; color: #7a2430; font-size: 12.5px; padding: 9px 11px; margin-bottom: 16px; line-height: 1.5;">{{ signin.error }}</div>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div>
+              <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ signin.emailLabel }}</label>
+              <input value="owner@example.com" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 10px; font-size: 14px; border-radius: 2px;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ signin.passwordLabel }}</label>
+              <input type="password" value="........" onChange="{{ noop }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 10px; font-size: 14px; border-radius: 2px;">
+            </div>
+            <button onClick="{{ goDash }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 11px; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ signin.submit }}</button>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <a href="#" style="font-size: 12.5px;">{{ signin.forgot }}</a>
+              <div style="display: flex; border: 1px solid #c8cfd1; background: #f3f5f5; border-radius: 3px; overflow: hidden;">
+                <button onClick="{{ setUiZh }}" style="{{ uiZhStyle }}">中</button>
+                <button onClick="{{ setUiEn }}" style="{{ uiEnStyle }}">EN</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size: 12px; color: #5f686b; text-align: center; margin-top: 16px;">{{ signin.lockNote }}</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ addPageOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 210; background: rgba(28,34,37,.52); display: grid; place-items: start center; padding: 24px; overflow-y: auto;">
+      <div style="width: 470px; max-width: 100%; max-height: calc(100vh - 48px); overflow-y: auto; background: #fff; border: 1px solid #c9d0d1; box-shadow: 0 24px 60px rgba(14,22,26,.3); padding: 26px; animation: whFade .18s ease-out;">
+        <div style="font-size: 18px; font-weight: 600;">{{ addPage.title }}</div>
+        <div style="font-size: 13px; color: #4c5559; margin-top: 7px; line-height: 1.55;">{{ addPage.intro }}</div>
+        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 18px;">
+          <div>
+            <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ addPage.nameLabel }}</label>
+            <input value="{{ addPage.nameValue }}" onChange="{{ setNpName }}" placeholder="{{ addPage.namePlaceholder }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 14px; border-radius: 2px;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 5px;">{{ addPage.urlLabel }}</label>
+            <input value="{{ addPage.urlValue }}" onChange="{{ setNpUrl }}" placeholder="{{ addPage.urlPlaceholder }}" style="width: 100%; border: 1px solid #c8cfd1; padding: 9px; font-size: 14px; border-radius: 2px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;">
+            <div style="font-size: 11.5px; color: #5f686b; margin-top: 5px;">{{ addPage.urlHint }}</div>
+            <sc-if value="{{ addPage.urlPreview }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size: 11.5px; color: #0b4f4f; margin-top: 4px;">{{ addPage.urlPreview }}</div>
+            </sc-if>
+            <sc-if value="{{ addPage.slugTaken }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size: 11.5px; color: #7a2430; background: #fcf6f6; border: 1px solid #e3d3d5; padding: 6px 8px; margin-top: 6px; line-height: 1.45;">{{ addPage.slugTakenNote }}</div>
+            </sc-if>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; color: #565f62; margin-bottom: 6px;">{{ addPage.templateLabel }}</label>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <sc-for list="{{ addPage.templates }}" as="tpl" hint-placeholder-count="3">
+                <div onClick="{{ tpl.go }}" role="button" tabindex="0" style="{{ tpl.style }}">{{ tpl.name }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer;">
+            <input type="checkbox" style="width: 15px; height: 15px; margin-top: 2px; accent-color: #0f6b6b;">
+            <span>
+              <span style="font-size: 13.5px; display: block;">{{ addPage.menuLabel }}</span>
+              <span style="font-size: 11.5px; color: #5f686b;">{{ addPage.menuHint }}</span>
+            </span>
+          </label>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: 22px;">
+          <button onClick="{{ createPage }}" disabled="{{ addPage.createDisabled }}" style="{{ addPage.createStyle }}">{{ addPage.create }}</button>
+          <button onClick="{{ closeAddPage }}" style="background: #fff; border: 1px solid #c8cfd1; padding: 9px 18px; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.close }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ restoreOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 200; background: rgba(28,34,37,.52); display: grid; place-items: start center; padding: 24px; overflow-y: auto;">
+      <div style="width: 460px; max-width: 100%; max-height: calc(100vh - 48px); overflow-y: auto; background: #fff; border: 1px solid #c9d0d1; box-shadow: 0 24px 60px rgba(14,22,26,.3); padding: 26px; animation: whFade .18s ease-out;">
+        <div style="font-size: 18px; font-weight: 600;">{{ restore.title }}</div>
+        <div style="font-size: 13.5px; color: #4c5559; margin-top: 10px; line-height: 1.6;">{{ restore.intro }}</div>
+        <div style="border: 1px solid #e0e5e6; background: #fafbfb; padding: 13px 14px; margin-top: 14px; display: flex; flex-direction: column; gap: 6px;">
+          <sc-for list="{{ restore.items }}" as="i" hint-placeholder-count="3">
+            <div style="font-size: 13px; color: #3d4548;">— {{ i }}</div>
+          </sc-for>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 12px; background: #f1f7f7; border: 1px solid #b9d2d2; font-size: 12.5px; color: #0b4f4f;">{{ restore.reassure }}</div>
+        <div style="display: flex; gap: 8px; margin-top: 20px;">
+          <button onClick="{{ confirmRestore }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 9px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ restore.confirm }}</button>
+          <button onClick="{{ closeRestore }}" style="background: #fff; border: 1px solid #c8cfd1; padding: 9px 18px; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.close }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 120; background: #22272b; color: #fff; padding: 11px 18px; font-size: 13px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 26px rgba(0,0,0,.24); animation: whFade .18s ease-out;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6fd3b2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+      <span>{{ toast }}</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ publishOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; z-index: 200; background: rgba(28,34,37,.52); display: grid; place-items: start center; padding: 24px; overflow-y: auto;">
+      <div style="width: 480px; max-width: 100%; max-height: calc(100vh - 48px); overflow-y: auto; background: #fff; border: 1px solid #c9d0d1; box-shadow: 0 24px 60px rgba(14,22,26,.3); animation: whFade .18s ease-out;">
+
+        <sc-if value="{{ publishRunning }}" hint-placeholder-val="{{ true }}">
+          <div style="padding: 24px 26px 20px;">
+            <div style="font-size: 18px; font-weight: 600;">{{ t.publishing }}</div>
+            <div style="font-size: 13px; color: #5f686b; margin-top: 4px;">{{ t.publishingHelp }}</div>
+            <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 20px;">
+              <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0;">
+                  <span style="{{ s.dotStyle }}">{{ s.mark }}</span>
+                  <span style="{{ s.textStyle }}">{{ s.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ publishDone }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 26px;">
+            <div style="display: flex; align-items: center; gap: 11px;">
+              <span style="width: 30px; height: 30px; border-radius: 50%; background: #17795c; color: #fff; display: grid; place-items: center; flex: none;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+              </span>
+              <div style="font-size: 18px; font-weight: 600;">{{ t.publishedTitle }}</div>
+            </div>
+            <div style="font-size: 13.5px; color: #4c5559; margin-top: 12px; line-height: 1.6;">{{ t.publishedBody }}</div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+              <button onClick="{{ closePublish }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.viewSite }}</button>
+              <button onClick="{{ closePublish }}" style="background: #fff; border: 1px solid #c8cfd1; padding: 9px 16px; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.versionHistory }}</button>
+              <span style="flex: 1;"></span>
+              <button onClick="{{ closePublish }}" style="background: none; border: 1px solid transparent; color: #5f686b; padding: 9px 12px; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.close }}</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ publishBlocked }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 26px;">
+            <div style="display: flex; align-items: center; gap: 11px;">
+              <span style="width: 30px; height: 30px; border-radius: 50%; background: #8c1d2c; color: #fff; display: grid; place-items: center; flex: none;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v5"></path><path d="M12 16h.01"></path></svg>
+              </span>
+              <div style="font-size: 18px; font-weight: 600;">{{ t.blockedTitle }}</div>
+            </div>
+            <div style="margin-top: 14px; border: 1px solid #e3d3d5; background: #fcf6f6; padding: 13px 14px;">
+              <div style="font-size: 13.5px; color: #22272b; line-height: 1.6;">{{ t.blockedWhat }}</div>
+              <div style="font-size: 12.5px; color: #5f686b; margin-top: 7px;">{{ t.blockedWhere }}</div>
+            </div>
+            <div style="font-size: 13.5px; color: #4c5559; margin-top: 14px; line-height: 1.6;">{{ t.blockedWhatToDo }}</div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 9px 12px; background: #f1f7f7; border: 1px solid #b9d2d2; font-size: 13px; color: #0b4f4f;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M12 3l8 4v5c0 4.5-3.2 7.9-8 9-4.8-1.1-8-4.5-8-9V7z"></path></svg>
+              <span>{{ t.blockedReassure }}</span>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 20px;">
+              <button onClick="{{ closePublish }}" style="background: #0f6b6b; color: #fff; border: 1px solid #0f6b6b; padding: 9px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 3px;" style-hover="background:#0a5252;border-color:#0a5252;">{{ t.undoLastChange }}</button>
+              <button onClick="{{ closePublish }}" style="background: #fff; border: 1px solid #c8cfd1; padding: 9px 16px; font-size: 13px; cursor: pointer; border-radius: 3px;" style-hover="background:#f1f4f4;">{{ t.close }}</button>
+            </div>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;publishOutcome&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;success&quot;,&quot;blocked&quot;],&quot;default&quot;:&quot;success&quot;,&quot;tsType&quot;:&quot;'success' | 'blocked'&quot;,&quot;section&quot;:&quot;Prototype states&quot;},&quot;uiLanguage&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;zh&quot;,&quot;en&quot;],&quot;default&quot;:&quot;zh&quot;,&quot;tsType&quot;:&quot;'zh' | 'en'&quot;,&quot;section&quot;:&quot;Prototype states&quot;},&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;empty&quot;,&quot;error&quot;,&quot;offline&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;'normal' | 'empty' | 'error' | 'offline'&quot;,&quot;section&quot;:&quot;Prototype states&quot;}}">
+class Component extends DCLogic {
+  state = {
+    route: 'dashboard', ui: null, clang: 'zh', sel: 'text', dev: 'desktop',
+    tab: 'add', variant: 0, changesOpen: false, publish: null, step: 0, toast: null,
+    enqI: 0, mediaI: 0, restoreOpen: false, pageI: 2,
+    addPageOpen: false, npName: '', npUrl: '', npTemplate: 0, newPages: [], publishMenuOpen: false,
+    pageVerOpen: false, restoreVer: null
+  };
+
+  componentWillUnmount() { (this._t || []).forEach(clearTimeout); if (this._toastT) clearTimeout(this._toastT); }
+
+  ic(...d) {
+    return React.createElement('svg', { width: 16, height: 16, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round' },
+      d.map((p, i) => React.createElement('path', { key: i, d: p })));
+  }
+
+  runPublish = () => {
+    (this._t || []).forEach(clearTimeout);
+    const blocked = (this.props.publishOutcome ?? 'success') === 'blocked';
+    this.setState({ publish: 'running', step: 0, changesOpen: false, publishMenuOpen: false });
+    this._t = [];
+    const at = (ms, fn) => this._t.push(setTimeout(fn, ms));
+    at(950, () => this.setState({ step: 1 }));
+    at(2000, () => this.setState({ step: 2 }));
+    at(3200, () => blocked ? this.setState({ publish: 'blocked' }) : this.setState({ step: 3 }));
+    at(4100, () => { if (!blocked) this.setState({ publish: 'done' }); });
+  };
+
+  flash(msg) {
+    if (this._toastT) clearTimeout(this._toastT);
+    this.setState({ toast: msg });
+    this._toastT = setTimeout(() => this.setState({ toast: null }), 4000);
+  }
+
+  renderVals() {
+    const S = this.state;
+    const ui = S.ui ?? this.props.uiLanguage ?? 'zh';
+    const zh = ui === 'zh';
+    const teal = '#0f6b6b', maroon = '#8c1d2c';
+
+    const L = {
+      zh: {
+        adminLang: '介面語言', roleAdmin: '管理員', signOut: '登出', close: '關閉',
+        dashboard: '儀表板', dashSub: '今天的網站與業務概況', addProduct: '新增產品', recordInvoice: '記錄發票', pagesLabel: '頁面',
+        unpublishedTitle: '未發佈的更改 (3)', unpublishedHelp: '這些更改只會在您按下「發佈」後才會在網站上出現。',
+        publishNow: '發佈網站', publish: '發佈', preview: '預覽',
+        recentActivity: '最近活動', lastPublished: '上次發佈', lastPublishedBy: '由 Ankur Chan 發佈，共 15 個頁面', allChecksPassed: '所有頁面通過檢查',
+        translationHealth: '翻譯進度', notInBatch: '這個畫面屬於下一批設計。', backToDash: '返回儀表板',
+        backToAdmin: '返回管理', backToPages: '返回頁面', page: '頁面', contentLang: '內容語言', versionsBtn: '版本',
+        addBlock: '加入區塊', pageOutline: '頁面大綱', linked: '連結',
+        blockSettings: '區塊設定', fieldLabel: '標籤', fieldText: '內文', fieldHeading: '標題',
+        layoutVariant: '版面', emphasise: '整段加粗', save: '儲存', goesLiveOnPublish: '發佈後才會上線',
+        notTranslated: '未翻譯', fallbackNote: '網站會顯示中文',
+        hintShowsChinese: '留空的話，網站會顯示中文原文。儲存不會更改中文。',
+        missingTranslations: '待翻譯內容',
+        editingLangWarning: '您正在編輯其他語言。儲存只會更改這個語言，中文和其他語言不會受影響。',
+        linkedTitle: '產品來自您的產品目錄', linkedBody: '要更改名稱、價格或相片，請到「產品」修改。這裡只控制顯示方式。',
+        openProducts: '開啟產品', whichProducts: '顯示哪些產品', allProducts: '全部產品', perRow: '每行數量', quickViewLabel: '「快速檢視」按鈕文字',
+        publishing: '正在發佈…', publishingHelp: '請稍候，您的網站仍然維持原狀。',
+        stepSave: '儲存您的更改', stepBuild: '建立頁面', stepCheck: '檢查每個頁面的搜尋引擎資料', stepDone: '已發佈',
+        publishedTitle: '已發佈，您的網站已更新。', publishedBody: '15 個頁面已上線。如果有問題，可以在「版本記錄」還原到上一個版本。',
+        viewSite: '查看網站', versionHistory: '版本記錄',
+        blockedTitle: '發佈已停止', blockedWhat: '「產品介紹」頁面遺失了給 Google 的常見問題資料。', blockedWhere: '出問題的頁面：產品介紹',
+        blockedWhatToDo: '請還原您在這個頁面的最後一次更改，或聯絡您的開發人員。', blockedReassure: '您的網站沒有任何改變，訪客看到的仍然是舊版本。',
+        undoLastChange: '還原最後一次更改',
+        savedOther: '已儲存英文。其他語言不變。', savedZh: '已儲存中文。',
+        statusUpToDate: '已是最新', statusUnpublished: '未發佈的更改 (3)',
+        v1: '玻璃卡', v2: '純色卡', v3: '引言',
+        mu: '上移', md: '下移', dup: '複製', del: '刪除',
+        desktop: '桌上電腦', tablet: '平板', mobile: '手機',
+        gOverview: '概覽', gBusiness: '業務', gContent: '內容', gWebsite: '網站', gAdmin: '管理'
+      },
+      en: {
+        adminLang: 'Admin language', roleAdmin: 'Admin', signOut: 'Sign out', close: 'Close',
+        dashboard: 'Dashboard', dashSub: 'Your site and business today', addProduct: 'Add product', recordInvoice: 'Record invoice', pagesLabel: 'Pages',
+        unpublishedTitle: 'Unpublished changes (3)', unpublishedHelp: 'These changes appear on the website only after you publish.',
+        publishNow: 'Publish site', publish: 'Publish', preview: 'Preview',
+        recentActivity: 'Recent activity', lastPublished: 'Last published', lastPublishedBy: 'By Ankur Chan, 15 pages', allChecksPassed: 'All pages passed their checks',
+        translationHealth: 'Translation progress', notInBatch: 'This screen is in the next batch of designs.', backToDash: 'Back to dashboard',
+        backToAdmin: 'Back to admin', backToPages: 'Back to Pages', page: 'Page', contentLang: 'Content language', versionsBtn: 'Versions',
+        addBlock: 'Add block', pageOutline: 'Page outline', linked: 'Linked',
+        blockSettings: 'Block settings', fieldLabel: 'Label', fieldText: 'Text', fieldHeading: 'Heading',
+        layoutVariant: 'Layout', emphasise: 'Emphasise whole paragraph', save: 'Save', goesLiveOnPublish: 'Goes live when you publish',
+        notTranslated: 'Not translated', fallbackNote: 'The site shows Chinese',
+        hintShowsChinese: 'Leave empty and the site shows the Chinese. Saving cannot change the Chinese.',
+        missingTranslations: 'Missing translations',
+        editingLangWarning: 'You are editing another language. Saving changes only this language — Chinese and the others are untouched.',
+        linkedTitle: 'Products come from your catalogue', linkedBody: 'To change a name, price or photo, edit it in Products. This block only controls how they are shown.',
+        openProducts: 'Open Products', whichProducts: 'Which products', allProducts: 'All products', perRow: 'Per row', quickViewLabel: '"Quick view" button text',
+        publishing: 'Publishing…', publishingHelp: 'One moment. Your live site is unchanged until this finishes.',
+        stepSave: 'Saving your changes', stepBuild: 'Building the pages', stepCheck: 'Checking every page for search engines', stepDone: 'Published',
+        publishedTitle: 'Published. Your site is updated.', publishedBody: '15 pages are live. If something looks wrong, you can restore the previous version from Version history.',
+        viewSite: 'View site', versionHistory: 'Version history',
+        blockedTitle: 'Publish stopped', blockedWhat: 'The Products page lost its FAQ information for Google.', blockedWhere: 'Page with the problem: 產品介紹 (Products)',
+        blockedWhatToDo: 'Undo your last change to this page, or ask your developer.', blockedReassure: 'Your live site has not changed. Visitors still see the previous version.',
+        undoLastChange: 'Undo last change',
+        savedOther: 'Saved English. Other languages unchanged.', savedZh: 'Saved Chinese.',
+        statusUpToDate: 'Up to date', statusUnpublished: 'Unpublished changes (3)',
+        v1: 'Glass card', v2: 'Plain card', v3: 'Intro',
+        mu: 'Move up', md: 'Move down', dup: 'Duplicate', del: 'Delete',
+        desktop: 'Desktop', tablet: 'Tablet', mobile: 'Mobile',
+        gOverview: 'Overview', gBusiness: 'Business', gContent: 'Content', gWebsite: 'Website', gAdmin: 'Admin'
+      }
+    };
+    const t = L[ui];
+
+    const go = r => () => this.setState({ route: r, changesOpen: false });
+    const navDef = [
+      ['gOverview', [['dashboard', '儀表板', 'Dashboard', ['M3 3h7v8H3z', 'M14 3h7v5h-7z', 'M14 12h7v9h-7z', 'M3 15h7v6H3z'], 0]]],
+      ['gBusiness', [
+        ['products', '產品', 'Products', ['M21 8l-9-5-9 5 9 5 9-5z', 'M3 8v8l9 5 9-5V8'], 0],
+        ['inventory', '庫存', 'Inventory', ['M3 7h18v12H3z', 'M3 11h18', 'M9 7V4h6v3'], 2],
+        ['sales', '銷售', 'Sales', ['M6 3h12v18l-3-2-3 2-3-2-3 2z', 'M9 8h6', 'M9 12h6'], 0],
+        ['customers', '客戶', 'Customers', ['M16 20v-2a4 4 0 00-8 0v2', 'M12 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7'], 0],
+        ['enquiries', '查詢', 'Enquiries', ['M3 6h18v12H3z', 'M3 7l9 6 9-6'], 3]
+      ]],
+      ['gContent', [
+        ['cases', '典型病例', 'Typical Cases', ['M5 3h10l4 4v14H5z', 'M15 3v5h4', 'M9 13h6', 'M9 17h4'], 0],
+        ['research', '研究報告', 'Research Report', ['M6 3h9l4 4v14H6z', 'M15 3v5h4', 'M9.5 15.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5', 'M13 17l-1.8-1.8'], 0],
+        ['testing', '有效成份檢測', 'Ingredient testing', ['M9 3h6', 'M10 3v7.5L6.5 17a3 3 0 002.6 4.5h5.8A3 3 0 0017.5 17L14 10.5V3', 'M8 14h8'], 0],
+        ['booklet', '小册子', 'Booklet', ['M4 5h7v15H4z', 'M13 5h7v15h-7z', 'M11 5v15', 'M13 5v15'], 0],
+        ['article', '微信發表文章', 'Article', ['M4 5h16v11H9l-4 3z', 'M8.5 10h.01', 'M12 10h.01', 'M15.5 10h.01'], 0],
+        ['faq', '常見問題', 'Frequently Asked Questions', ['M12 21a9 9 0 100-18 9 9 0 000 18', 'M9.6 9.5a2.5 2.5 0 014.7 1.1c0 1.7-2.3 2-2.3 3.4', 'M12 17h.01'], 0],
+        ['homepage', '首頁文字', 'Homepage text', ['M4 6h16', 'M4 12h10', 'M4 18h13'], 0]
+      ]],
+      ['gWebsite', [
+        ['pages', '頁面', 'Pages', ['M5 3h9l5 5v13H5z', 'M14 3v5h5', 'M9 13h6', 'M9 17h4'], 0],
+        ['media', '媒體庫', 'Media library', ['M3 5h18v14H3z', 'M3 15l5-5 4 4 3-3 6 6'], 0],
+        ['versions', '版本記錄', 'Version history', ['M12 21a9 9 0 10-8.5-12', 'M3 4v5h5', 'M12 8v4l3 2'], 0],
+        ['translations', '待翻譯內容', 'Missing translations', ['M4 6h10', 'M9 4v2c0 4-2.5 7-5 8', 'M7 12c1.6 2.3 3.6 3.4 6 4', 'M13 20l4-9 4 9', 'M14.6 17h4.8'], 41]
+      ]],
+      ['gAdmin', [
+        ['users', '用戶與權限', 'Users and permissions', ['M15 20v-2a4 4 0 00-8 0v2', 'M11 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7', 'M18 8v3', 'M18 14h.01'], 0],
+        ['settings', '網站設定', 'Site settings', ['M12 15a3 3 0 100-6 3 3 0 000 6', 'M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-2.7 1.1V21a2 2 0 11-4 0v-.1A1.6 1.6 0 007.5 19.4l-.1.1a2 2 0 11-2.8-2.8l.1-.1A1.6 1.6 0 003 15H3a2 2 0 110-4h.1A1.6 1.6 0 004.6 8.5l-.1-.1a2 2 0 112.8-2.8l.1.1A1.6 1.6 0 0010 4.6V4a2 2 0 114 0v.1a1.6 1.6 0 002.7 1.1l.1-.1a2 2 0 112.8 2.8l-.1.1A1.6 1.6 0 0021 11h.1a2 2 0 110 4H21'], 0]
+      ]]
+    ];
+
+    const navGroups = navDef.map(([gk, items]) => ({
+      label: t[gk],
+      items: items.map(([id, cz, ce, paths, badge]) => {
+        const active = S.route === id || (id === 'editor' && S.route === 'editor');
+        return {
+          primary: zh ? cz : ce, secondary: zh ? ce : cz, icon: this.ic(...paths),
+          badge: badge ? String(badge) : null, go: go(id),
+          badgeStyle: { fontSize: '10.5px', fontWeight: 600, padding: '1px 6px', borderRadius: '9px', flex: 'none', background: id === 'enquiries' ? maroon : '#e2e7e8', color: id === 'enquiries' ? '#fff' : '#5b6467' },
+          style: {
+            display: 'flex', alignItems: 'center', gap: '10px', padding: '7px 16px 7px 20px', cursor: 'pointer',
+            borderLeft: active ? '3px solid ' + teal : '3px solid transparent',
+            paddingLeft: active ? '17px' : '20px',
+            background: active ? '#eaf1f1' : 'transparent',
+            color: active ? '#0b4f4f' : '#3d4548',
+            fontWeight: active ? 600 : 400
+          }
+        };
+      })
+    }));
+
+    const langNames = { zh: '繁體中文 (主要)', en: 'English', de: 'Deutsch', es: 'Español', fr: 'Français', ja: '日本語', ru: 'Русский' };
+    const langOptions = Object.keys(langNames).map(id => ({ id, name: langNames[id] }));
+    const secondary = S.clang !== 'zh';
+
+    const basePages = [
+      { zh: '首頁', en: 'Home', url: '/', blocks: 8, tr: 7, edited: zh ? '9月19日' : '19 Sep', draft: false },
+      { zh: '關於我們', en: 'about Us', url: '/about', blocks: 6, tr: 7, edited: zh ? '9月12日' : '12 Sep', draft: false },
+      { zh: '產品介紹', en: 'Product Introduction', url: '/products', blocks: 4, tr: 5, edited: zh ? '今天 09:47' : 'Today 09:47', draft: false },
+      { zh: '研究報告', en: 'Research Report', url: '/research', blocks: 5, tr: 4, edited: zh ? '9月16日' : '16 Sep', draft: false },
+      { zh: '有效成份檢測', en: 'Ingredient testing', url: '/ingredient-testing', blocks: 4, tr: 3, edited: zh ? '9月10日' : '10 Sep', draft: false },
+      { zh: '典型病例', en: 'Typical Cases', url: '/cases', blocks: 5, tr: 4, edited: zh ? '9月02日' : '2 Sep', draft: false },
+      { zh: '小册子', en: 'booklet', url: '/booklet', blocks: 4, tr: 3, edited: zh ? '9月09日' : '9 Sep', draft: false },
+      { zh: '微信發表文章', en: 'article', url: '/articles', blocks: 3, tr: 2, edited: zh ? '今天 08:20' : 'Today 08:20', draft: false },
+      { zh: '常見問題', en: 'Frequently Asked Questions', url: '/faq', blocks: 3, tr: 5, edited: zh ? '8月28日' : '28 Aug', draft: false },
+      { zh: '聯絡我們', en: 'Contact Us', url: '/contact', blocks: 3, tr: 7, edited: zh ? '8月14日' : '14 Aug', draft: false }
+    ];
+    const sitePages = basePages.concat(S.newPages || []);
+    const curPage = sitePages[S.pageI ?? 2] || sitePages[2];
+    const npName = S.npName || '';
+    const npUrl = S.npUrl || '';
+    const slugify = name => {
+      const ascii = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      const base = ascii || ('page-' + (sitePages.length + 1));
+      const taken = sitePages.map(p => p.url);
+      let url = '/' + base, n = 2;
+      while (taken.indexOf(url) !== -1) { url = '/' + base + '-' + n; n += 1; }
+      return url;
+    };
+    const npSlug = npUrl.trim() ? (npUrl.trim().charAt(0) === '/' ? npUrl.trim() : '/' + npUrl.trim()) : (npName.trim() ? slugify(npName) : '');
+    const npSlugTaken = !!npSlug && sitePages.some(p => p.url === npSlug);
+
+    const content = {
+      zh: { headerSub: '天然草本．臨床實證', textBody: '康草堂的雲芝糖肽精華採用加拿大 GMP 認證廠房生產，配方經大學研究機構驗證，適合需要長期調理的人士。', faq: ['服用方法是怎樣的？', '產品有甚麼認證？', '可以與其他藥物同服嗎？'] },
+      en: { headerSub: null, textBody: null, faq: ['How do I take this product?', null, null] }
+    };
+    const cur = content[S.clang] || { headerSub: null, textBody: null, faq: [null, null, null] };
+    const zhc = content.zh;
+    const un = v => v === null || v === undefined;
+    const faintStyle = { color: '#5f686b', fontStyle: 'italic' };
+
+    const page = {
+      headerTitle: S.clang === 'en' ? curPage.en : curPage.zh,
+      headerSub: un(cur.headerSub) ? zhc.headerSub : cur.headerSub,
+      headerSubUn: un(cur.headerSub),
+      headerSubStyle: un(cur.headerSub) ? faintStyle : {},
+      textLabel: S.clang === 'en' ? 'About Yunzhi PSP' : '關於雲芝糖肽',
+      textBody: un(cur.textBody) ? zhc.textBody : cur.textBody,
+      textBodyUn: un(cur.textBody),
+      textBodyStyle: Object.assign({ margin: 0, fontSize: '14.5px', lineHeight: 1.85, color: '#3d4548' }, un(cur.textBody) ? faintStyle : {}),
+      textFieldValue: un(cur.textBody) ? '' : cur.textBody,
+      textPlaceholder: un(cur.textBody) ? zhc.textBody : '',
+      quickView: S.clang === 'en' ? 'Quick view' : '快速檢視',
+      faqTitle: S.clang === 'en' ? 'Frequently asked questions' : '常見問題'
+    };
+
+    const faqItems = zhc.faq.map((q, i) => {
+      const v = cur.faq[i];
+      return { q: un(v) ? q : v, un: un(v), style: un(v) ? Object.assign({ fontSize: '14px' }, faintStyle) : { fontSize: '14px' } };
+    });
+
+    const products = [
+      { name: '雲芝糖肽精華 PSP (標準裝 500粒)', sku: 'WH-PSP-500', price: 'HK$3,800.00', ribbon: 'GMP' },
+      { name: '雲芝糖肽精華 PSP (試用裝 60粒)', sku: 'WH-PSP-060', price: 'HK$580.00', ribbon: 'GMP' },
+      { name: 'T3 複合配方 (120粒)', sku: 'WH-T3-120', price: 'HK$1,280.00', ribbon: 'GMP' }
+    ];
+
+    const selNames = { header: zh ? '頁面標題' : 'Page header', text: zh ? '文字區塊' : 'Text block', grid: zh ? '產品格狀' : 'Product grid', faq: zh ? '常見問題列表' : 'FAQ list' };
+    const outlineIds = ['header', 'text', 'grid', 'faq'];
+    const outline = outlineIds.map(id => ({
+      name: selNames[id], linked: id === 'grid' || id === 'faq',
+      go: () => this.setState({ sel: id }),
+      style: {
+        display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', fontSize: '13px', cursor: 'pointer',
+        border: '1px solid ' + (S.sel === id ? teal : '#e4e8e9'), background: S.sel === id ? '#eaf1f1' : '#fff',
+        color: S.sel === id ? '#0b4f4f' : '#3d4548', fontWeight: S.sel === id ? 600 : 400
+      }
+    }));
+
+    const blockLibrary = [
+      { label: zh ? '頁首' : 'Headers', items: [{ name: zh ? '頁面標題' : 'Page header' }, { name: zh ? '主視覺橫額' : 'Hero banner' }] },
+      { label: zh ? '文字' : 'Text', items: [{ name: zh ? '文字區塊' : 'Text block' }, { name: zh ? '重點說明' : 'Callout' }] },
+      { label: zh ? '產品' : 'Products', items: [{ name: zh ? '產品格狀' : 'Product grid' }, { name: zh ? '產品輪播' : 'Product carousel' }, { name: zh ? '產品詳情' : 'Product detail' }, { name: zh ? '相關產品' : 'Related products' }] },
+      { label: zh ? '媒體' : 'Media', items: [{ name: zh ? '相簿' : 'Gallery' }, { name: zh ? '地圖' : 'Map' }] },
+      { label: zh ? '列表' : 'Lists', items: [{ name: zh ? '卡片格狀' : 'Card grid' }, { name: zh ? '常見問題列表' : 'FAQ list' }, { name: zh ? '病例列表' : 'Case list' }] },
+      { label: zh ? '行動' : 'Actions', items: [{ name: zh ? '行動呼籲橫幅' : 'Call-to-action band' }, { name: zh ? '聯絡卡片' : 'Contact cards' }] }
+    ];
+    const thumbs = [['M4 8h16', 'M7 13h10'], ['M4 6h16v12H4z'], ['M4 6h5v5H4z', 'M11 6h5v5h-5z', 'M4 13h5v5H4z', 'M11 13h5v5h-5z'], ['M5 7h14', 'M5 12h14', 'M5 17h9'], ['M4 7h16v10H4z', 'M4 14l4-4 4 4'], ['M8 8h8v8H8z']];
+    blockLibrary.forEach((g, gi) => g.items.forEach((b, bi) => { b.thumb = this.ic(...thumbs[(gi + bi) % thumbs.length]); }));
+
+    const segBtn = (on) => ({ flex: 1, padding: '7px 8px', fontSize: '12.5px', cursor: 'pointer', border: 'none', background: on ? teal : '#fff', color: on ? '#fff' : '#3d4548', fontWeight: on ? 600 : 400 });
+    const variants = [t.v1, t.v2, t.v3].map((name, i) => ({ name, go: () => this.setState({ variant: i }), style: segBtn(S.variant === i) }));
+
+    const devWidths = { desktop: 980, tablet: 760, mobile: 390 };
+    const devices = ['desktop', 'tablet', 'mobile'].map(id => ({
+      name: t[id], go: () => this.setState({ dev: id }),
+      style: { padding: '5px 14px', fontSize: '12.5px', cursor: 'pointer', borderRadius: '3px', border: '1px solid ' + (S.dev === id ? teal : '#c8cfd1'), background: S.dev === id ? teal : '#fff', color: S.dev === id ? '#fff' : '#3d4548', fontWeight: S.dev === id ? 600 : 400 }
+    }));
+
+    const toolIcons = [['M12 19V5', 'M6 11l6-6 6 6'], ['M12 5v14', 'M6 13l6 6 6-6'], ['M9 9h11v11H9z', 'M5 15H4V4h11v1'], ['M4 7h16', 'M9 7V4h6v3', 'M6 7l1 13h10l1-13']];
+    const blockTools = [t.mu, t.md, t.dup, t.del].map((name, i) => ({ name, icon: this.ic(...toolIcons[i]) }));
+
+    const stepLabels = [t.stepSave, t.stepBuild, t.stepCheck, t.stepDone];
+    const steps = stepLabels.map((label, i) => {
+      const done = i < S.step, active = i === S.step;
+      return {
+        label, mark: done ? '✓' : (active ? '' : String(i + 1)),
+        dotStyle: {
+          width: '22px', height: '22px', borderRadius: '50%', display: 'grid', placeItems: 'center', flex: 'none', fontSize: '11px', fontWeight: 600,
+          background: done ? '#17795c' : (active ? '#fff' : '#f1f4f4'),
+          color: done ? '#fff' : '#5f686b',
+          border: active ? '2px solid ' + teal : '1px solid #dfe4e5',
+          borderTopColor: active ? 'transparent' : undefined,
+          animation: active ? 'whSpin .9s linear infinite' : 'none'
+        },
+        textStyle: { fontSize: '14px', color: done ? '#22272b' : (active ? '#22272b' : '#5f686b'), fontWeight: active ? 600 : 400 }
+      };
+    });
+
+    const R = S.route;
+    const dataState = this.props.dataState ?? 'normal';
+    const cell = (text, extra) => ({ text, isText: true, isInput: false, style: Object.assign({ fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }, extra || {}) });
+    const pill = (text, fg, bg, bd) => ({ text, isText: true, isInput: false, style: { fontSize: '11.5px', justifySelf: 'start', color: fg, background: bg, border: '1px solid ' + bd, padding: '2px 8px', whiteSpace: 'nowrap' } });
+    const inp = text => ({ text, isInput: true, isText: false, style: { width: '68px', border: '1px solid #c8cfd1', padding: '5px 7px', fontSize: '13px', borderRadius: '2px' } });
+    const ok = txt => pill(txt, '#17795c', '#f0f7f4', '#a9d3c3');
+    const warn = txt => pill(txt, '#8a6d1f', '#fdf8ea', '#ddc98a');
+    const bad = txt => pill(txt, '#8c1d2c', '#fcf4f5', '#e3d3d5');
+    const info = txt => pill(txt, '#0b4f4f', '#f1f7f7', '#b9d2d2');
+    const muted = { color: '#5f686b' };
+    const colStyle = { fontSize: '11px', letterSpacing: '.08em', textTransform: 'uppercase', color: '#6a7275', fontWeight: 600 };
+    const btnP = { background: teal, color: '#fff', border: '1px solid ' + teal, padding: '8px 14px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', borderRadius: '3px' };
+    const btnS = { background: '#fff', border: '1px solid #c8cfd1', padding: '8px 14px', fontSize: '13px', cursor: 'pointer', borderRadius: '3px' };
+    const mkTable = (grid, cols, rows, go) => ({
+      headStyle: { display: 'grid', gridTemplateColumns: grid, gap: '12px', alignItems: 'center', padding: '10px 16px', background: '#fafbfb', borderBottom: '1px solid #e4e8e9' },
+      cols: cols.map(label => ({ label, style: colStyle })),
+      rows: rows.map(cells => ({
+        cells,
+        go: go || (() => {}),
+        style: { display: 'grid', gridTemplateColumns: grid, gap: '12px', alignItems: 'center', padding: '11px 16px', borderBottom: '1px solid #f2f4f4', cursor: go ? 'pointer' : 'default' }
+      }))
+    });
+
+    const prodNames = ['雲芝糖肽精華 PSP (標準裝 500粒)', '雲芝糖肽精華 PSP (試用裝 60粒)', 'T3 複合配方 (120粒)', 'PT3 強化配方 (90粒)', '乙肝清 草本護肝膠囊', '憶活素 腦部保健膠囊'];
+    const prodSkus = ['WH-PSP-500', 'WH-PSP-060', 'WH-T3-120', 'WH-PT3-090', 'WH-HB-180', 'WH-MB-060'];
+    const prodPrices = ['HK$3,800.00', 'HK$580.00', 'HK$1,280.00', 'HK$2,480.00', 'HK$980.00', 'HK$1,150.00'];
+    const stockCounts = ['24', '86', '41', '12', '6', '3'];
+    const reorders = ['20', '30', '25', '10', '15', '12'];
+
+    const screens = {};
+    const goProductEdit = () => this.setState({ route: 'product-edit' });
+
+    screens.products = Object.assign({
+      title: zh ? '產品' : 'Products', sub: zh ? '6 項產品 · 價格與庫存在發佈後才會上線' : '6 products · prices and stock go live when you publish',
+      searchPlaceholder: zh ? '搜尋名稱或 SKU' : 'Search name or SKU',
+      filters: [{ options: zh ? ['全部分類', '雲芝系列', '複合配方', '護肝', '腦部保健'] : ['All categories', 'Yunzhi', 'Compound', 'Liver', 'Brain'] }, { options: zh ? ['全部狀態', '有貨', '缺貨', '僅限診所'] : ['All statuses', 'In stock', 'Out of stock', 'Clinic only'] }],
+      count: zh ? '6 項' : '6 items',
+      actions: [{ name: zh ? '匯出' : 'Export', style: btnS, go: () => {} }, { name: zh ? '新增產品' : 'Add product', style: btnP, go: goProductEdit }]
+    }, mkTable('1.9fr .85fr .8fr .8fr 1fr .85fr',
+      zh ? ['產品', 'SKU', '價格', '庫存', '標記', '最後編輯'] : ['Product', 'SKU', 'Price', 'Stock', 'Flags', 'Last edited'],
+      [
+        [cell(prodNames[0]), cell(prodSkus[0], muted), cell(prodPrices[0], { fontWeight: 600 }), ok(zh ? '有貨 24' : 'In stock 24'), cell('—', muted), cell(zh ? '今天 11:04' : 'Today 11:04', muted)],
+        [cell(prodNames[1]), cell(prodSkus[1], muted), cell(prodPrices[1], { fontWeight: 600 }), ok(zh ? '有貨 86' : 'In stock 86'), cell('—', muted), cell(zh ? '9月12日' : '12 Sep', muted)],
+        [cell(prodNames[2]), cell(prodSkus[2], muted), cell(prodPrices[2], { fontWeight: 600 }), ok(zh ? '有貨 41' : 'In stock 41'), cell('—', muted), cell(zh ? '9月08日' : '8 Sep', muted)],
+        [cell(prodNames[3]), cell(prodSkus[3], muted), cell(prodPrices[3], { fontWeight: 600 }), ok(zh ? '有貨 12' : 'In stock 12'), info(zh ? '僅限診所' : 'Clinic only'), cell(zh ? '今天 10:12' : 'Today 10:12', muted)],
+        [cell(prodNames[4]), cell(prodSkus[4], muted), cell(prodPrices[4], { fontWeight: 600 }), warn(zh ? '低庫存 6' : 'Low 6'), cell('—', muted), cell(zh ? '9月02日' : '2 Sep', muted)],
+        [cell(prodNames[5]), cell(prodSkus[5], muted), cell('—', { fontWeight: 600 }), warn(zh ? '低庫存 3' : 'Low 3'), warn(zh ? '價格待定' : 'Price on hold'), cell(zh ? '8月28日' : '28 Aug', muted)]
+      ], goProductEdit));
+
+    screens.inventory = Object.assign({
+      title: zh ? '庫存' : 'Inventory', sub: zh ? '直接在表格輸入數量，離開欄位即儲存' : 'Type straight into the table; each field saves as you leave it',
+      searchPlaceholder: zh ? '搜尋產品' : 'Search products',
+      filters: [{ options: zh ? ['全部', '低於補貨點', '缺貨'] : ['All', 'Below reorder point', 'Out of stock'] }],
+      count: zh ? '2 項低於補貨點' : '2 below reorder point',
+      actions: [{ name: zh ? '匯出試算表' : 'Export to spreadsheet', style: btnS, go: () => {} }, { name: zh ? '變動記錄' : 'Movement log', style: btnS, go: () => {} }]
+    }, mkTable('1.9fr .8fr .6fr .7fr .8fr 1fr',
+      zh ? ['產品', 'SKU', '庫存', '補貨點', '狀態', '最後變動'] : ['Product', 'SKU', 'Stock', 'Reorder at', 'Status', 'Last movement'],
+      prodNames.map((n, i) => [
+        cell(n), cell(prodSkus[i], muted), inp(stockCounts[i]), inp(reorders[i]),
+        (Number(stockCounts[i]) <= Number(reorders[i]) ? warn(zh ? '需補貨' : 'Reorder') : ok(zh ? '正常' : 'OK')),
+        cell(i === 0 ? (zh ? '−8 · 陳小姐 · 今天' : '−8 · Ms Chan · today') : (zh ? '—' : '—'), muted)
+      ])));
+
+    screens.sales = Object.assign({
+      title: zh ? '銷售' : 'Sales', sub: zh ? '員工輸入的發票 · 網站沒有網上付款' : 'Staff-entered invoices · the site has no online checkout',
+      searchPlaceholder: zh ? '搜尋發票或客戶' : 'Search invoice or customer',
+      filters: [{ options: zh ? ['2026年9月', '2026年8月', '2026年7月'] : ['September 2026', 'August 2026', 'July 2026'] }, { options: zh ? ['全部狀態', '已付款', '未付款'] : ['All statuses', 'Paid', 'Unpaid'] }],
+      count: zh ? '未付款 5 張 · HK$18,640.00' : '5 unpaid · HK$18,640.00',
+      actions: [{ name: zh ? '下載銷售報表' : 'Download workbook', style: btnS, go: () => {} }, { name: zh ? '記錄發票' : 'Record invoice', style: btnP, go: () => {} }]
+    }, mkTable('.8fr 1.4fr .9fr .9fr .8fr',
+      zh ? ['發票', '客戶', '日期', '金額', '狀態'] : ['Invoice', 'Customer', 'Date', 'Total', 'Status'],
+      [
+        [cell('#1042', { fontWeight: 600 }), cell(zh ? '仁康中醫診所' : '仁康中醫診所'), cell('2026-09-20', muted), cell('HK$7,600.00', { fontWeight: 600 }), bad(zh ? '未付款' : 'Unpaid')],
+        [cell('#1041', { fontWeight: 600 }), cell('李先生'), cell('2026-09-18', muted), cell('HK$3,800.00', { fontWeight: 600 }), ok(zh ? '已付款' : 'Paid')],
+        [cell('#1040', { fontWeight: 600 }), cell(zh ? '健源藥房' : '健源藥房'), cell('2026-09-15', muted), cell('HK$5,120.00', { fontWeight: 600 }), bad(zh ? '未付款' : 'Unpaid')],
+        [cell('#1039', { fontWeight: 600 }), cell('陳女士'), cell('2026-09-11', muted), cell('HK$580.00', { fontWeight: 600 }), ok(zh ? '已付款' : 'Paid')],
+        [cell('#1038', { fontWeight: 600 }), cell(zh ? '康健醫務中心' : '康健醫務中心'), cell('2026-09-05', muted), cell('HK$2,480.00', { fontWeight: 600 }), bad(zh ? '未付款' : 'Unpaid')]
+      ], () => {}));
+
+    screens.customers = Object.assign({
+      title: zh ? '客戶' : 'Customers', sub: zh ? '客戶資料與發票記錄' : 'Customer records and their invoices',
+      searchPlaceholder: zh ? '搜尋客戶' : 'Search customers',
+      filters: [{ options: zh ? ['全部', '診所', '個人'] : ['All', 'Clinics', 'Individuals'] }],
+      count: zh ? '5 位客戶' : '5 customers',
+      actions: [{ name: zh ? '新增客戶' : 'Add customer', style: btnP, go: () => {} }]
+    }, mkTable('1.3fr 1.3fr .7fr .9fr .9fr',
+      zh ? ['客戶', '聯絡', '發票', '累計金額', '最後購買'] : ['Customer', 'Contact', 'Invoices', 'Total', 'Last order'],
+      [
+        [cell(zh ? '仁康中醫診所' : '仁康中醫診所'), cell('+852 2381 ••••', muted), cell('14'), cell('HK$86,400.00', { fontWeight: 600 }), cell('2026-09-20', muted)],
+        [cell(zh ? '健源藥房' : '健源藥房'), cell('+852 2790 ••••', muted), cell('9'), cell('HK$41,280.00', { fontWeight: 600 }), cell('2026-09-15', muted)],
+        [cell('李先生'), cell('lee••••@gmail.com', muted), cell('6'), cell('HK$22,800.00', { fontWeight: 600 }), cell('2026-09-18', muted)],
+        [cell(zh ? '康健醫務中心' : '康健醫務中心'), cell('+852 2408 ••••', muted), cell('5'), cell('HK$12,400.00', { fontWeight: 600 }), cell('2026-09-05', muted)],
+        [cell('陳女士'), cell('+852 9123 ••••', muted), cell('3'), cell('HK$1,740.00', { fontWeight: 600 }), cell('2026-09-11', muted)]
+      ], () => {}));
+
+    screens.users = Object.assign({
+      title: zh ? '用戶與權限' : 'Users and permissions', sub: zh ? '員工只會看到獲授權的項目' : 'Staff only see the modules they are allowed to use',
+      searchPlaceholder: zh ? '搜尋用戶' : 'Search users',
+      filters: [{ options: zh ? ['全部角色', '管理員', '員工'] : ['All roles', 'Admin', 'Staff'] }],
+      count: zh ? '3 位用戶' : '3 users',
+      actions: [{ name: zh ? '邀請用戶' : 'Invite user', style: btnP, go: () => {} }]
+    }, mkTable('1.2fr 1.5fr .9fr 1fr',
+      zh ? ['姓名', '電郵', '角色', '最後活動'] : ['Name', 'Email', 'Role', 'Last active'],
+      [
+        [cell('Ankur Chan 🔒'), cell('owner@example.com', muted), info(zh ? '管理員 · 擁有人' : 'Admin · Owner'), cell(zh ? '現在' : 'Now', muted)],
+        [cell(zh ? '陳小姐' : 'Ms Chan'), cell('staff1@example.com', muted), cell(zh ? '員工' : 'Staff'), cell(zh ? '今天 11:04' : 'Today 11:04', muted)],
+        [cell(zh ? '李先生' : 'Mr Lee'), cell('staff2@example.com', muted), cell(zh ? '員工' : 'Staff'), cell(zh ? '昨天' : 'Yesterday', muted)]
+      ], () => {}));
+
+    screens.cases = Object.assign({
+      title: zh ? '典型病例' : 'Cases', sub: zh ? '顯示在「典型病例」頁面的案例' : 'Case studies shown on the 典型病例 page',
+      searchPlaceholder: zh ? '搜尋病例' : 'Search cases',
+      filters: [{ options: zh ? ['全部分類', '肝', '免疫', '腦部'] : ['All categories', 'Liver', 'Immunity', 'Brain'] }],
+      count: zh ? '4 個病例' : '4 cases',
+      actions: [{ name: zh ? '新增病例' : 'Add case', style: btnP, go: () => {} }]
+    }, mkTable('2fr 1fr .9fr .9fr',
+      zh ? ['標題', '分類', '翻譯', '最後編輯'] : ['Title', 'Category', 'Translations', 'Last edited'],
+      [
+        [cell(zh ? '長期疲勞個案 · 六個月跟進' : '長期疲勞個案 · 六個月跟進'), cell(zh ? '免疫' : 'Immunity', muted), ok('7 / 7'), cell('2026-09-02', muted)],
+        [cell(zh ? '肝功能指標個案 · 三個月跟進' : '肝功能指標個案 · 三個月跟進'), cell(zh ? '肝' : 'Liver', muted), warn('4 / 7'), cell('2026-08-24', muted)],
+        [cell(zh ? '記憶力個案 · 十二個月跟進' : '記憶力個案 · 十二個月跟進'), cell(zh ? '腦部' : 'Brain', muted), warn('2 / 7'), cell('2026-08-11', muted)],
+        [cell(zh ? '術後調理個案 · 四個月跟進' : '術後調理個案 · 四個月跟進'), cell(zh ? '免疫' : 'Immunity', muted), ok('7 / 7'), cell('2026-07-30', muted)]
+      ], () => {}));
+
+    screens.faq = Object.assign({
+      title: zh ? '常見問題' : 'FAQ', sub: zh ? '拖曳左邊的把手可以調整次序' : 'Drag the handle on the left to reorder',
+      searchPlaceholder: zh ? '搜尋問題' : 'Search questions',
+      filters: [{ options: zh ? ['全部分類', '服用', '認證', '訂購'] : ['All categories', 'Dosage', 'Certification', 'Ordering'] }],
+      count: zh ? '5 條問題' : '5 questions',
+      actions: [{ name: zh ? '新增問題' : 'Add question', style: btnP, go: () => {} }]
+    }, mkTable('.4fr 2.2fr 1fr .9fr',
+      zh ? ['次序', '問題', '分類', '翻譯'] : ['Order', 'Question', 'Category', 'Translations'],
+      [
+        [cell('⠿ 1', muted), cell(zh ? '服用方法是怎樣的？' : '服用方法是怎樣的？'), cell(zh ? '服用' : 'Dosage', muted), ok('7 / 7')],
+        [cell('⠿ 2', muted), cell(zh ? '產品有甚麼認證？' : '產品有甚麼認證？'), cell(zh ? '認證' : 'Certification', muted), warn('5 / 7')],
+        [cell('⠿ 3', muted), cell(zh ? '可以與其他藥物同服嗎？' : '可以與其他藥物同服嗎？'), cell(zh ? '服用' : 'Dosage', muted), warn('3 / 7')],
+        [cell('⠿ 4', muted), cell(zh ? '如何訂購及送貨？' : '如何訂購及送貨？'), cell(zh ? '訂購' : 'Ordering', muted), ok('7 / 7')],
+        [cell('⠿ 5', muted), cell(zh ? '開封後應如何存放？' : '開封後應如何存放？'), cell(zh ? '服用' : 'Dosage', muted), warn('2 / 7')]
+      ], () => {}));
+
+    screens.research = Object.assign({
+      title: zh ? '研究報告' : 'Research Report', sub: zh ? '顯示在「研究報告」頁面的報告與論文' : 'Reports and papers shown on the 研究報告 page',
+      searchPlaceholder: zh ? '搜尋報告' : 'Search reports',
+      filters: [{ options: zh ? ['全部機構', '香港大學', '香港中文大學', '加拿大實驗室'] : ['All institutions', 'HKU', 'CUHK', 'Canadian lab'] }, { options: zh ? ['全部年份', '2026', '2025', '2024'] : ['All years', '2026', '2025', '2024'] }],
+      count: zh ? '5 份報告' : '5 reports',
+      actions: [{ name: zh ? '新增報告' : 'Add report', style: btnP, go: () => {} }]
+    }, mkTable('2fr 1.1fr .5fr .9fr .7fr',
+      zh ? ['標題', '研究機構', '年份', '報告檔案', '翻譯'] : ['Title', 'Institution', 'Year', 'Report file', 'Translations'],
+      [
+        [cell('雲芝糖肽對免疫指標的影響'), cell(zh ? '香港大學' : 'HKU', muted), cell('2026', muted), cell('psp-immunity-2026.pdf', muted), ok('7 / 7')],
+        [cell('雲芝糖肽長期服用安全性評估'), cell(zh ? '香港中文大學' : 'CUHK', muted), cell('2025', muted), cell('psp-safety-2025.pdf', muted), warn('4 / 7')],
+        [cell('PSP 標準化提取物成份分析'), cell(zh ? '加拿大實驗室' : 'Canadian lab', muted), cell('2025', muted), cell('psp-extract-2025.pdf', muted), warn('3 / 7')],
+        [cell('T3 複合配方臨床觀察報告'), cell(zh ? '香港大學' : 'HKU', muted), cell('2024', muted), cell('t3-clinical-2024.pdf', muted), warn('2 / 7')],
+        [cell('雲芝培植與提取工藝研究'), cell(zh ? '加拿大實驗室' : 'Canadian lab', muted), cell('2024', muted), cell('cultivation-2024.pdf', muted), ok('7 / 7')]
+      ], () => {}));
+
+    screens.testing = Object.assign({
+      title: zh ? '有效成份檢測' : 'Ingredient testing', sub: zh ? '每批次的檢測報告，顯示在「有效成份檢測」頁面' : 'Per-batch test reports shown on the 有效成份檢測 page',
+      searchPlaceholder: zh ? '搜尋批次或產品' : 'Search batch or product',
+      filters: [{ options: zh ? ['全部產品', 'PSP 系列', 'T3 系列', 'PT3 系列'] : ['All products', 'PSP', 'T3', 'PT3'] }, { options: zh ? ['全部結果', '合格', '待覆核'] : ['All results', 'Passed', 'Under review'] }],
+      count: zh ? '5 個批次' : '5 batches',
+      actions: [{ name: zh ? '新增檢測報告' : 'Add test report', style: btnP, go: () => {} }]
+    }, mkTable('.9fr 1.5fr 1fr .9fr .8fr .8fr',
+      zh ? ['批次', '產品', '檢測項目', '檢測日期', '結果', '報告檔案'] : ['Batch', 'Product', 'Test', 'Tested on', 'Result', 'Report'],
+      [
+        [cell('B2609-01', { fontWeight: 600 }), cell(prodNames[0]), cell(zh ? 'PSP 含量' : 'PSP content', muted), cell('2026-09-04', muted), ok(zh ? '合格' : 'Passed'), cell('b2609-01.pdf', muted)],
+        [cell('B2609-02', { fontWeight: 600 }), cell(prodNames[1]), cell(zh ? 'PSP 含量' : 'PSP content', muted), cell('2026-09-04', muted), ok(zh ? '合格' : 'Passed'), cell('b2609-02.pdf', muted)],
+        [cell('B2608-04', { fontWeight: 600 }), cell(prodNames[2]), cell(zh ? '重金屬' : 'Heavy metals', muted), cell('2026-08-21', muted), ok(zh ? '合格' : 'Passed'), cell('b2608-04.pdf', muted)],
+        [cell('B2608-05', { fontWeight: 600 }), cell(prodNames[3]), cell(zh ? '微生物' : 'Microbial', muted), cell('2026-08-21', muted), warn(zh ? '待覆核' : 'Under review'), cell('—', muted)],
+        [cell('B2607-02', { fontWeight: 600 }), cell(prodNames[4]), cell(zh ? '農藥殘留' : 'Pesticide residue', muted), cell('2026-07-15', muted), ok(zh ? '合格' : 'Passed'), cell('b2607-02.pdf', muted)]
+      ], () => {}));
+
+    screens.booklet = Object.assign({
+      title: zh ? '小册子' : 'Booklet', sub: zh ? '可供訪客下載的小册子，顯示在「小册子」頁面' : 'Downloadable booklets shown on the 小册子 page',
+      searchPlaceholder: zh ? '搜尋小册子' : 'Search booklets',
+      filters: [{ options: zh ? ['全部語言', '繁體中文', 'English', '日本語'] : ['All languages', '繁體中文', 'English', '日本語'] }],
+      count: zh ? '4 本小册子' : '4 booklets',
+      actions: [{ name: zh ? '上載小册子' : 'Upload booklet', style: btnP, go: () => {} }]
+    }, mkTable('1.8fr 1fr .6fr .7fr .9fr .8fr',
+      zh ? ['標題', '語言', '頁數', '檔案大小', '最後更新', '狀態'] : ['Title', 'Language', 'Pages', 'File size', 'Last updated', 'Status'],
+      [
+        [cell('康草堂產品小册子 2026'), cell('繁體中文', muted), cell('16', muted), cell('4.2 MB', muted), cell(zh ? '9月09日' : '9 Sep', muted), ok(zh ? '已上線' : 'Live')],
+        [cell('Wonder Herb Product Booklet 2026'), cell('English', muted), cell('16', muted), cell('4.0 MB', muted), cell(zh ? '9月09日' : '9 Sep', muted), ok(zh ? '已上線' : 'Live')],
+        [cell('雲芝糖肽研究摘要'), cell('繁體中文', muted), cell('8', muted), cell('1.9 MB', muted), cell(zh ? '8月24日' : '24 Aug', muted), ok(zh ? '已上線' : 'Live')],
+        [cell('ワンダーハーブ製品案内'), cell('日本語', muted), cell('12', muted), cell('3.1 MB', muted), cell(zh ? '今天 08:20' : 'Today 08:20', muted), warn(zh ? '草稿' : 'Draft')]
+      ], () => {}));
+
+    screens.article = Object.assign({
+      title: zh ? '微信發表文章' : 'Article', sub: zh ? '在微信發表的文章，同時顯示在網站' : 'Articles published on WeChat and mirrored on the website',
+      searchPlaceholder: zh ? '搜尋文章' : 'Search articles',
+      filters: [{ options: zh ? ['全部狀態', '已發表', '草稿'] : ['All statuses', 'Published', 'Draft'] }],
+      count: zh ? '5 篇文章' : '5 articles',
+      actions: [{ name: zh ? '新增文章' : 'Add article', style: btnP, go: () => {} }]
+    }, mkTable('2fr .9fr .9fr .8fr .8fr',
+      zh ? ['標題', '發表日期', '微信連結', '翻譯', '狀態'] : ['Title', 'Published', 'WeChat link', 'Translations', 'Status'],
+      [
+        [cell('秋季調理：雲芝糖肽的服用建議'), cell('2026-09-12', muted), cell('mp.weixin.qq.com/…', muted), warn('2 / 7'), ok(zh ? '已發表' : 'Published')],
+        [cell('甚麼是 PSP？三分鐘認識雲芝糖肽'), cell('2026-08-30', muted), cell('mp.weixin.qq.com/…', muted), ok('7 / 7'), ok(zh ? '已發表' : 'Published')],
+        [cell('加拿大 GMP 廠房實地探訪'), cell('2026-08-15', muted), cell('mp.weixin.qq.com/…', muted), warn('3 / 7'), ok(zh ? '已發表' : 'Published')],
+        [cell('客戶問得最多的五個問題'), cell('2026-07-28', muted), cell('mp.weixin.qq.com/…', muted), warn('1 / 7'), ok(zh ? '已發表' : 'Published')],
+        [cell('冬季進補：常見誤解'), cell('—', muted), cell('—', muted), warn('0 / 7'), warn(zh ? '草稿' : 'Draft')]
+      ], () => {}));
+
+    screens.pages = (() => {
+      const rows = sitePages.map((p, i) => [
+        cell(zh ? p.zh : p.en, { fontWeight: 500 }),
+        cell(p.url, Object.assign({ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: '12.5px' }, muted)),
+        cell(String(p.blocks), muted),
+        (p.tr === 7 ? ok('7 / 7') : warn(p.tr + ' / 7')),
+        cell(p.edited, muted),
+        (p.draft ? warn(zh ? '草稿' : 'Draft') : ok(zh ? '已上線' : 'Live'))
+      ]);
+      const tb = mkTable('1.5fr 1.2fr .5fr .7fr .9fr .7fr',
+        zh ? ['頁面', '網址', '區塊', '翻譯', '最後編輯', '狀態'] : ['Page', 'URL', 'Blocks', 'Translations', 'Last edited', 'Status'],
+        rows);
+      tb.rows.forEach((r, i) => {
+        r.go = () => this.setState({ route: 'editor', pageI: i, sel: 'text' });
+        r.style = Object.assign({}, r.style, { cursor: 'pointer' });
+      });
+      return Object.assign({
+        title: zh ? '頁面' : 'Pages',
+        sub: zh ? '點擊任何頁面就會在編輯器中打開' : 'Click any page to open it in the editor',
+        searchPlaceholder: zh ? '搜尋頁面' : 'Search pages',
+        filters: [{ options: zh ? ['全部狀態', '已上線', '草稿'] : ['All statuses', 'Live', 'Draft'] }, { options: zh ? ['全部翻譯', '未完成翻譯'] : ['All translations', 'Incomplete'] }],
+        count: zh ? sitePages.length + ' 個頁面' : sitePages.length + ' pages',
+        footNote: zh ? '頁面的次序由「網站設定」的選單設定，不是這裡。' : 'The order pages appear in the site menu is set in Site settings, not here.',
+        actions: [{ name: zh ? '新增頁面' : 'Add page', style: btnP, go: () => this.setState({ addPageOpen: true, npName: '', npUrl: '', npTemplate: 0 }) }]
+      }, tb);
+    })();
+
+    const isTableRoute = !!screens[R];
+    const statePanels = {
+      empty: {
+        icon: this.ic('M4 7h16', 'M4 12h16', 'M4 17h9'),
+        title: R === 'enquiries' ? (zh ? '暫時沒有查詢' : 'No enquiries yet') : (zh ? '尚未有產品' : 'No products yet'),
+        body: R === 'enquiries' ? (zh ? '網站聯絡表格收到的訊息會顯示在這裡。' : "Messages from your website's contact form appear here.") : (zh ? '加入第一項產品，它就會出現在網站的產品頁面。' : 'Add your first product and it will appear on the website.'),
+        action: R === 'enquiries' ? (zh ? '查看聯絡表格' : 'View the contact form') : (zh ? '新增第一項產品' : 'Add your first product')
+      },
+      error: {
+        icon: this.ic('M12 8v5', 'M12 16h.01', 'M12 3l9 17H3z'),
+        title: zh ? '未能載入產品清單' : "Couldn't load the product list",
+        body: zh ? '伺服器回覆時發生問題。您的網站沒有受影響，仍然正常運作。' : 'The server had a problem answering. Your live website is not affected and is still running normally.',
+        action: zh ? '再試一次' : 'Try again'
+      },
+      offline: {
+        icon: this.ic('M2 8.8a15 15 0 0120 0', 'M5 12.5a10 10 0 0114 0', 'M8.5 16a5 5 0 017 0', 'M12 20h.01'),
+        title: zh ? '連接不到伺服器' : "Can't reach the server",
+        body: zh ? '您的網站沒有受影響。請稍後再試一次。' : 'Your live website is not affected. Try again in a moment.',
+        action: zh ? '重新連接' : 'Reconnect'
+      }
+    };
+    const stateActive = dataState !== 'normal' && (R === 'products' || R === 'enquiries');
+    const statePanel = Object.assign({ boxStyle: { background: '#fff', border: '1px solid #d5dbdc', padding: '56px 24px', textAlign: 'center' } }, statePanels[dataState] || statePanels.empty);
+
+    const enqData = [
+      { name: zh ? '黃先生' : 'Mr Wong', when: zh ? '今天 08:52' : 'Today 08:52', unread: true, preview: zh ? '想查詢 PSP 標準裝的診所供貨價…' : 'Asking about clinic supply pricing for PSP 500…', body: zh ? '您好，\n\n我是仁康中醫診所的採購負責人。想查詢 PSP 標準裝 500 粒的診所供貨價，以及每月穩定供貨的安排。\n\n另外想知道是否有相關的檢測報告可以提供給我們存檔。\n\n謝謝。' : 'Hello,\n\nI handle purchasing for a clinic. I would like to ask about clinic supply pricing for PSP 500, and whether a steady monthly supply can be arranged.\n\nI would also like to know whether test reports are available for our records.\n\nThank you.', meta: zh ? '+852 9123 •••• · wong••••@gmail.com' : '+852 9123 •••• · wong••••@gmail.com' },
+      { name: zh ? '林女士' : 'Ms Lam', when: zh ? '今天 07:31' : 'Today 07:31', unread: true, preview: zh ? '服用 T3 期間可否同時服用其他保健品？' : 'Can T3 be taken alongside other supplements?', body: zh ? '您好，想請問服用 T3 複合配方期間，可否同時服用其他保健品？謝謝。' : 'Hello, can T3 be taken alongside other supplements? Thank you.', meta: 'lam••••@yahoo.com.hk' },
+      { name: zh ? '健源藥房' : '健源藥房', when: zh ? '昨天 16:40' : 'Yesterday 16:40', unread: true, preview: zh ? '想補訂 PT3 強化配方，請問供貨期…' : 'Reordering PT3 — what is the lead time?', body: zh ? '想補訂 PT3 強化配方 20 盒，請問供貨期大約多久？' : 'We would like to reorder 20 boxes of PT3. What is the lead time?', meta: '+852 2790 ••••' },
+      { name: zh ? '周先生' : 'Mr Chau', when: zh ? '9月18日' : '18 Sep', unread: false, preview: zh ? '已處理 · 查詢送貨安排' : 'Handled · asked about delivery', body: zh ? '請問送貨到新界區需要多少運費？' : 'What is the delivery charge to the New Territories?', meta: 'chau••••@gmail.com' },
+      { name: zh ? '康健醫務中心' : '康健醫務中心', when: zh ? '9月14日' : '14 Sep', unread: false, preview: zh ? '已處理 · 索取產品資料' : 'Handled · requested product information', body: zh ? '想索取全線產品的資料單張。' : 'We would like a product information sheet for the full range.', meta: '+852 2408 ••••' }
+    ];
+    const enqI = S.enqI || 0;
+    const enquiries = enqData.map((e, i) => ({
+      name: e.name, when: e.when, preview: e.preview, unread: e.unread,
+      go: () => this.setState({ enqI: i }),
+      nameStyle: { fontSize: '13.5px', fontWeight: e.unread ? 600 : 400 },
+      style: { padding: '12px 14px', borderBottom: '1px solid #f2f4f4', cursor: 'pointer', background: i === enqI ? '#eaf1f1' : '#fff', borderLeft: '3px solid ' + (i === enqI ? teal : 'transparent') }
+    }));
+    const enqSel = enqData[enqI];
+    const enq = {
+      name: enqSel.name, meta: enqSel.meta, body: enqSel.body,
+      emailLabel: zh ? '電郵回覆' : 'Reply by email', markHandled: zh ? '標記為已處理' : 'Mark as handled',
+      sourceLabel: zh ? '來源：聯絡我們頁面' : 'Source: 聯絡我們 (Contact) page',
+      langLabel: zh ? '訪客語言：繁體中文' : 'Visitor language: 繁體中文'
+    };
+
+    const mediaNames = ['psp-500-box.jpg', 'psp-060-box.jpg', 't3-120-box.jpg', 'pt3-090-box.jpg', 'lab-report-2026.pdf', 'psp-capsule.glb', 'factory-line.jpg', 'gmp-certificate.pdf'];
+    const mediaMeta = ['1.8 MB · 2048×1536', '1.4 MB · 2048×1536', '1.6 MB · 2048×1536', '1.5 MB · 2048×1536', '820 KB · PDF', '4.2 MB · 3D', '2.9 MB · 3200×2133', '410 KB · PDF'];
+    const mediaI = S.mediaI || 0;
+    const mediaIcons = [['M4 5h16v14H4z', 'M4 15l5-5 4 4 3-3 4 4'], ['M5 3h10l4 4v14H5z', 'M15 3v5h4'], ['M12 3l8 4.5v9L12 21l-8-4.5v-9z', 'M4 7.5l8 4.5 8-4.5', 'M12 12v9']];
+    const mediaItems = mediaNames.map((name, i) => {
+      const kind = name.endsWith('.pdf') ? 1 : (name.endsWith('.glb') ? 2 : 0);
+      return {
+        name, meta: mediaMeta[i], icon: this.ic(...mediaIcons[kind]),
+        go: () => this.setState({ mediaI: i }),
+        style: { border: '1px solid ' + (i === mediaI ? teal : '#dde2e3'), background: '#fff', cursor: 'pointer', outline: i === mediaI ? '1px solid ' + teal : 'none' }
+      };
+    });
+    const media = {
+      uploadingName: zh ? '正在上載 factory-line-2026.jpg' : 'Uploading factory-line-2026.jpg',
+      dropTitle: zh ? '把檔案拖到這裡，或點擊選擇檔案' : 'Drag files here, or click to browse',
+      dropRules: zh ? 'JPG、PNG、PDF、GLB · 每個檔案最大 20 MB · 大相片會自動縮小' : 'JPG, PNG, PDF, GLB · 20 MB per file · large photos are resized automatically',
+      detailTitle: zh ? '檔案資料' : 'File details',
+      sizeLabel: zh ? '檔案大小' : 'Size', dimsLabel: zh ? '尺寸' : 'Dimensions', usedLabel: zh ? '使用於' : 'Used on',
+      usedValue: zh ? '3 個頁面' : '3 pages',
+      altLabel: zh ? '替代文字' : 'Alt text',
+      altLangTag: (zh ? '語言：' : 'Language: ') + langNames[S.clang],
+      altValue: S.clang === 'zh' ? '雲芝糖肽精華 PSP 標準裝包裝盒' : '',
+      useLabel: zh ? '用於這個位置' : 'Use this file',
+      replaceLabel: zh ? '更換檔案' : 'Replace file',
+      deleteLabel: zh ? '刪除' : 'Delete',
+      deleteWarn: zh ? '這個檔案正在 3 個頁面使用中，刪除後那些位置會留空。' : 'This file is used on 3 pages. Deleting it leaves those places empty.'
+    };
+
+    const versionsT = { liveNow: zh ? '現正上線' : 'Live now', preview: zh ? '預覽' : 'Preview', restore: zh ? '還原' : 'Restore' };
+    const versions = [
+      { date: '2026-09-19', time: '14:32', who: 'Ankur Chan', current: true, restorable: false, changes: zh ? ['編輯「產品介紹」頁面的文字區塊', '更新 3 張產品相片'] : ['Edited a text block on 產品介紹', 'Updated 3 product photos'] },
+      { date: '2026-09-16', time: '09:15', who: zh ? '陳小姐' : 'Ms Chan', current: false, restorable: true, changes: zh ? ['更新 6 項產品的庫存', '新增 2 條常見問題'] : ['Updated stock for 6 products', 'Added 2 FAQ questions'] },
+      { date: '2026-09-09', time: '17:48', who: 'Ankur Chan', current: false, restorable: true, changes: zh ? ['新增「小册子」頁面', '更新首頁文字'] : ['Added the 小册子 page', 'Updated homepage text'] },
+      { date: '2026-09-01', time: '11:20', who: 'Ankur Chan', current: false, restorable: true, changes: zh ? ['英文翻譯更新（32 個欄位）'] : ['English translations updated (32 fields)'] },
+      { date: '2026-08-22', time: '16:05', who: zh ? '陳小姐' : 'Ms Chan', current: false, restorable: true, changes: zh ? ['更新 PT3 價格', '新增一個典型病例'] : ['Updated the PT3 price', 'Added a case study'] }
+    ].map(v => Object.assign(v, {
+      restore: () => this.setState({ restoreOpen: true, restoreVer: { date: v.date, time: v.time, scope: 'site', items: v.changes } })
+    }));
+
+    const rv = S.restoreVer;
+    const restore = {
+      title: rv
+        ? (zh ? '還原到 ' + rv.date + ' ' + rv.time + ' 的版本？' : 'Restore the version from ' + rv.date + '?')
+        : (zh ? '還原到 2026-09-16 14:32 的版本？' : 'Restore the version from 2026-09-16?'),
+      intro: rv && rv.scope === 'page'
+        ? (zh ? '只有「' + rv.page + '」這個頁面會回到當時的內容：' : 'Only the ' + rv.page + ' page goes back to how it was then:')
+        : (zh ? '還原後，以下項目會回到當時的內容：' : 'Restoring puts these back to how they were then:'),
+      items: rv ? rv.items : (zh ? ['「產品介紹」頁面的文字區塊', '3 張產品相片', '2 條常見問題'] : ['The text block on 產品介紹', '3 product photos', '2 FAQ questions']),
+      reassure: rv && rv.scope === 'page'
+        ? (zh ? '其他頁面不受影響。還原也可以再還原。' : 'Other pages are not affected, and a restore can itself be undone.')
+        : (zh ? '還原也可以再還原。現時的版本會保留在版本記錄中。' : 'A restore can itself be undone — the current version stays in Version history.'),
+      confirm: zh ? '還原這個版本' : 'Restore this version'
+    };
+
+    const pageVerSeed = [
+      { date: curPage.edited.indexOf(zh ? '今天' : 'Today') === 0 || curPage.edited === (zh ? '剛剛' : 'Just now') ? '2026-09-22' : '2026-09-19', time: '14:32', who: 'Ankur Chan', current: true, changes: zh ? ['編輯文字區塊', '更新標題'] : ['Edited a text block', 'Updated the heading'] },
+      { date: '2026-09-16', time: '09:15', who: zh ? '陳小姐' : 'Ms Chan', current: false, changes: zh ? ['更換產品相片'] : ['Replaced a product photo'] },
+      { date: '2026-09-09', time: '17:48', who: 'Ankur Chan', current: false, changes: zh ? ['新增產品格狀區塊'] : ['Added a product grid block'] },
+      { date: '2026-09-01', time: '11:20', who: 'Ankur Chan', current: false, changes: zh ? ['英文翻譯更新'] : ['English translations updated'] }
+    ];
+    const pageVersions = pageVerSeed.map(v => ({
+      date: v.date, time: v.time, who: v.who, current: v.current, restorable: !v.current, changes: v.changes,
+      restore: () => this.setState({
+        pageVerOpen: false, restoreOpen: true,
+        restoreVer: { date: v.date, time: v.time, scope: 'page', page: curPage.zh, items: v.changes }
+      }),
+      style: { display: 'flex', gap: '12px', padding: '12px 14px', borderBottom: '1px solid #f2f4f4', background: v.current ? '#f4f8f8' : '#fff' }
+    }));
+
+    const translationCards = [
+      { name: 'English', pct: '82%', missing: zh ? '缺少 14 個欄位' : '14 fields missing', barStyle: { height: '100%', width: '82%', background: teal } },
+      { name: '日本語', pct: '64%', missing: zh ? '缺少 28 個欄位' : '28 fields missing', barStyle: { height: '100%', width: '64%', background: teal } },
+      { name: 'Deutsch', pct: '31%', missing: zh ? '缺少 54 個欄位' : '54 fields missing', barStyle: { height: '100%', width: '31%', background: '#b8860b' } },
+      { name: 'Русский', pct: '18%', missing: zh ? '缺少 64 個欄位' : '64 fields missing', barStyle: { height: '100%', width: '18%', background: '#b8860b' } }
+    ];
+    const translationGroups = [
+      { page: '產品介紹', count: zh ? '3 個欄位' : '3 fields', rows: [
+        { lang: 'English', field: zh ? '文字區塊 · 內文' : 'Text block · Text', zh: '康草堂的雲芝糖肽精華採用加拿大 GMP 認證廠房生產…' },
+        { lang: 'English', field: zh ? '頁面標題 · 副標題' : 'Page header · Subheading', zh: '天然草本．臨床實證' },
+        { lang: 'Deutsch', field: zh ? '文字區塊 · 標籤' : 'Text block · Label', zh: '關於雲芝糖肽' }
+      ] },
+      { page: '常見問題', count: zh ? '2 個欄位' : '2 fields', rows: [
+        { lang: 'English', field: zh ? '問題 2 · 答案' : 'Question 2 · Answer', zh: '所有產品均在加拿大 GMP 認證廠房生產…' },
+        { lang: '日本語', field: zh ? '問題 3 · 問題' : 'Question 3 · Question', zh: '可以與其他藥物同服嗎？' }
+      ] },
+      { page: '典型病例', count: zh ? '2 個欄位' : '2 fields', rows: [
+        { lang: 'Deutsch', field: zh ? '病例 2 · 故事內容' : 'Case 2 · Story', zh: '肝功能指標個案 · 三個月跟進' },
+        { lang: 'Русский', field: zh ? '病例 1 · 標題' : 'Case 1 · Title', zh: '長期疲勞個案 · 六個月跟進' }
+      ] }
+    ];
+
+    const forms = {
+      homepage: {
+        perLang: true,
+        langNote: secondary ? (zh ? '留空的欄位會顯示中文' : 'Empty fields show the Chinese') : (zh ? '主要語言' : 'Primary language'),
+        sections: [
+          { title: zh ? '公司簡介' : 'Company intro', fields: [
+            { label: zh ? '標題' : 'Heading', isInput: true, value: S.clang === 'zh' ? '天然草本．臨床實證' : (S.clang === 'en' ? 'Natural herbs, clinically studied' : '') },
+            { label: zh ? '簡介文字' : 'Intro text', isArea: true, value: S.clang === 'zh' ? '康草堂自 1998 年起專注雲芝糖肽的研發與生產，產品於加拿大 GMP 認證廠房製造。' : '', hint: secondary ? (zh ? '留空的話，網站會顯示中文原文。' : 'Leave empty and the site shows the Chinese.') : null }
+          ] },
+          { title: zh ? '數據區塊' : 'Stats band', fields: [
+            { label: zh ? '數據一' : 'Stat one', isInput: true, value: S.clang === 'zh' ? '27 年研發經驗' : (S.clang === 'en' ? '27 years of research' : '') },
+            { label: zh ? '數據二' : 'Stat two', isInput: true, value: S.clang === 'zh' ? '加拿大 GMP 認證廠房' : (S.clang === 'en' ? 'GMP-certified facility in Canada' : '') },
+            { label: zh ? '數據三' : 'Stat three', isInput: true, value: S.clang === 'zh' ? '6 款核心產品' : (S.clang === 'en' ? '6 core products' : '') }
+          ] }
+        ]
+      },
+      settings: {
+        perLang: true,
+        langNote: zh ? '網站標題與描述按語言分開設定' : 'Site title and description are set per language',
+        sections: [
+          { title: zh ? '網站資料' : 'Site details', fields: [
+            { label: zh ? '網站標題' : 'Site title', isInput: true, value: S.clang === 'zh' ? '康草堂 Wonder Herb 健康產品有限公司' : (S.clang === 'en' ? 'Wonder Herb Health Products Ltd.' : '') },
+            { label: zh ? '網站描述' : 'Site description', isArea: true, value: S.clang === 'zh' ? '香港天然草本保健品，專注雲芝糖肽研發與生產。' : '', hint: zh ? '顯示在 Google 搜尋結果' : 'Shown in Google search results' },
+            { label: zh ? '分享圖片' : 'Social share image', isInput: true, value: 'share-2026.jpg', hint: zh ? '在媒體庫選擇 · 建議 1200×630' : 'Choose from the Media library · 1200×630 recommended' },
+            { label: 'Favicon', isInput: true, value: 'favicon-wh.png' }
+          ] },
+          { title: zh ? '聯絡資料' : 'Contact details', fields: [
+            { label: zh ? '電話' : 'Phone', isInput: true, value: '+852 2381 0000' },
+            { label: 'WhatsApp', isInput: true, value: '+852 9000 0000' },
+            { label: zh ? '電郵' : 'Email', isInput: true, value: 'info@example.com' },
+            { label: zh ? '地址' : 'Address', isArea: true, value: S.clang === 'zh' ? '香港九龍旺角彌敦道 000 號 00 樓' : '' }
+          ] },
+          { title: zh ? '網站語言' : 'Site languages', fields: [
+            { label: zh ? '已啟用的語言' : 'Languages enabled', isInput: true, value: '繁體中文, English, Deutsch, Español, Français, 日本語, Русский', hint: zh ? '關閉某個語言會把它從網站的語言選單移除，內容不會刪除。' : 'Turning a language off removes it from the site menu. The content is kept.' }
+          ] }
+        ]
+      }
+    };
+    const form = forms[R === 'homepage' ? 'homepage' : 'settings'];
+
+    const permDot = level => ({ width: '13px', height: '13px', borderRadius: '50%', display: 'block', background: level ? teal : '#fff', border: '1px solid ' + (level ? teal : '#c3cbcd') });
+    const perms = {
+      title: zh ? '陳小姐的權限' : "Ms Chan's permissions",
+      sub: zh ? '員工可以逐個模組設定：無 / 檢視 / 編輯' : 'Per module, a staff member can have None / View / Edit',
+      moduleCol: zh ? '模組' : 'Module',
+      levels: zh ? ['無', '檢視', '編輯'] : ['None', 'View', 'Edit'],
+      rows: [
+        [zh ? '典型病例' : 'Cases', 1], [zh ? '產品' : 'Products', 1], [zh ? '庫存' : 'Inventory', 2],
+        [zh ? '常見問題' : 'FAQ', 1], [zh ? '首頁文字' : 'Homepage', 0], [zh ? '銷售' : 'Sales', 2]
+      ].map(([module, lv]) => ({ module, cells: [0, 1, 2].map(i => ({ style: permDot(i === lv) })) })),
+      websiteTitle: zh ? '網站編輯權限' : 'Website editing permissions',
+      websitePerms: [
+        { name: zh ? '編輯頁面' : 'Edit pages', on: true }, { name: zh ? '刪除頁面' : 'Delete pages', on: false },
+        { name: zh ? '編輯 SEO 設定' : 'Edit SEO settings', on: false }, { name: zh ? '發佈' : 'Publish', on: false }
+      ].map(w => ({ name: (w.on ? '✓ ' : '× ') + w.name, style: { fontSize: '12.5px', padding: '4px 10px', border: '1px solid ' + (w.on ? '#b9d2d2' : '#dde2e3'), background: w.on ? '#f1f7f7' : '#fafbfb', color: w.on ? '#0b4f4f' : '#5f686b' } }))
+    };
+
+    const pe = {
+      basicsTitle: zh ? '基本資料' : 'Basics',
+      nameLabel: zh ? '產品名稱' : 'Product name',
+      nameValue: S.clang === 'zh' ? '雲芝糖肽精華 PSP (標準裝 500粒)' : (S.clang === 'en' ? 'Yunzhi PSP Essence (500 capsules)' : ''),
+      namePlaceholder: secondary ? '雲芝糖肽精華 PSP (標準裝 500粒)' : '',
+      skuNote: zh ? 'SKU 設定後不可更改，它是產品的永久身分。' : 'The SKU cannot be changed once set — it is the product’s permanent identity.',
+      priceLabel: zh ? '價格 (HKD)' : 'Price (HKD)',
+      descLabel: zh ? '產品描述' : 'Description',
+      descValue: S.clang === 'zh' ? '每粒含雲芝糖肽 (PSP) 標準化提取物，於加拿大 GMP 認證廠房生產。' : '',
+      priceNoteLabel: zh ? '價格附註' : 'Price note',
+      priceNoteValue: S.clang === 'zh' ? '' : '',
+      ribbonLabel: zh ? '角標文字' : 'Ribbon',
+      ribbonValue: S.clang === 'zh' ? 'GMP 認證' : (S.clang === 'en' ? 'GMP certified' : ''),
+      stockTitle: zh ? '庫存與銷售規則' : 'Stock and selling rules',
+      stockStatus: zh ? '庫存狀態' : 'Stock status', inStock: zh ? '有貨' : 'In stock', outOfStock: zh ? '缺貨' : 'Out of stock',
+      stockCount: zh ? '庫存數量' : 'Stock count', reorder: zh ? '補貨點' : 'Reorder point',
+      clinicOnly: zh ? '僅限診所' : 'Clinic only',
+      clinicOnlyNote: zh ? '網站仍會顯示這件產品，但訪客不能加入購物車。' : 'The site still shows the product, but visitors cannot add it to the cart.',
+      priceOnHold: zh ? '價格待定' : 'Price on hold',
+      priceOnHoldNote: zh ? '網站不顯示價格，訪客不能加入購物車。' : 'The site hides the price and visitors cannot add it to the cart.',
+      photoTitle: zh ? '產品相片' : 'Photo', modelTitle: zh ? '3D 模型（選填）' : '3D model (optional)',
+      chooseFromMedia: zh ? '從媒體庫選擇' : 'Choose from Media library',
+      badgesTitle: zh ? '認證標章' : 'Badges and certifications',
+      badges: zh ? ['GMP 認證', '大學研究', '加拿大製造'] : ['GMP certified', 'University research', 'Made in Canada'],
+      addBadge: zh ? '新增' : 'Add',
+      footNote: zh ? '更改會在您發佈後才在網站出現。這個表格不會刪除沒有顯示的資料。' : 'Changes go live when you publish. Fields not shown here are kept exactly as they are.'
+    };
+
+    const signin = {
+      adminLabel: zh ? '管理系統' : 'Admin',
+      error: zh ? '密碼不正確。還可以試 3 次，之後帳戶會暫時鎖定 15 分鐘。' : 'That password is not correct. You have 3 more attempts before the account is locked for 15 minutes.',
+      emailLabel: zh ? '電郵地址' : 'Email address', passwordLabel: zh ? '密碼' : 'Password',
+      submit: zh ? '登入' : 'Sign in', forgot: zh ? '忘記密碼？' : 'Forgot password?',
+      lockNote: zh ? '只有獲授權的員工可以登入。' : 'Only authorised staff can sign in.'
+    };
+
+    const screenMeta = screens[R] || null;
+    const pageTitles = {
+      enquiries: [zh ? '查詢' : 'Enquiries', zh ? '網站聯絡表格收到的訊息' : "Messages from your website's contact form"],
+      media: [zh ? '媒體庫' : 'Media library', zh ? '相片、3D 模型、影片與 PDF' : 'Photos, 3D models, videos and PDFs'],
+      versions: [zh ? '版本記錄' : 'Version history', zh ? '每次發佈都可以預覽和還原' : 'Every publish can be previewed and restored'],
+      translations: [zh ? '待翻譯內容' : 'Missing translations', zh ? '有中文但未有其他語言的欄位' : 'Fields that have Chinese but no other language'],
+      homepage: [zh ? '首頁文字' : 'Homepage text', zh ? '首頁上不屬於版面的文字' : 'The homepage text that is not part of page layout'],
+      settings: [zh ? '網站設定' : 'Site settings', zh ? '只有管理員可以更改' : 'Admins only'],
+      'product-edit': [zh ? '雲芝糖肽精華 PSP (標準裝 500粒)' : 'Yunzhi PSP Essence (500 capsules)', 'WH-PSP-500']
+    };
+    const screen = screenMeta || (pageTitles[R] ? {
+      title: pageTitles[R][0], sub: pageTitles[R][1], actions: [], filters: [], cols: [], rows: [],
+      backLabel: R === 'product-edit' ? (zh ? '返回產品' : 'Back to Products') : null,
+      back: () => this.setState({ route: 'products' })
+    } : { title: '', sub: '', actions: [], filters: [], cols: [], rows: [] });
+
+    const hasChanges = true;
+    return {
+      t, ui, clang: S.clang, langOptions, navGroups, page, faqItems, products, outline, blockLibrary, variants, devices, blockTools, steps,
+      isDashboard: S.route === 'dashboard',
+      isEditor: S.route === 'editor',
+      isPlaceholder: S.route !== 'dashboard' && S.route !== 'editor',
+      placeholderTitle: (() => { for (const [, items] of navDef) for (const it of items) if (it[0] === S.route) return zh ? it[1] : it[2]; return ''; })(),
+      isSecondaryLang: secondary,
+      selName: selNames[S.sel],
+      selIsHeader: S.sel === 'header', selIsText: S.sel === 'text', selIsGrid: S.sel === 'grid', selIsFaq: S.sel === 'faq',
+      selIsOther: S.sel === 'header' || S.sel === 'faq',
+      selHeadingValue: S.sel === 'faq' ? page.faqTitle : page.headerTitle,
+      selHeader: () => this.setState({ sel: 'header' }), selText: () => this.setState({ sel: 'text' }),
+      selGrid: () => this.setState({ sel: 'grid' }), selFaq: () => this.setState({ sel: 'faq' }),
+      tabIsAdd: S.tab === 'add', tabIsOutline: S.tab === 'outline',
+      setTabAdd: () => this.setState({ tab: 'add' }), setTabOutline: () => this.setState({ tab: 'outline' }),
+      tabAddStyle: { flex: 1, padding: '11px 8px', fontSize: '13px', cursor: 'pointer', background: 'none', border: 'none', borderBottom: '2px solid ' + (S.tab === 'add' ? teal : 'transparent'), color: S.tab === 'add' ? '#0b4f4f' : '#5f686b', fontWeight: S.tab === 'add' ? 600 : 400 },
+      tabOutlineStyle: { flex: 1, padding: '11px 8px', fontSize: '13px', cursor: 'pointer', background: 'none', border: 'none', borderBottom: '2px solid ' + (S.tab === 'outline' ? teal : 'transparent'), color: S.tab === 'outline' ? '#0b4f4f' : '#5f686b', fontWeight: S.tab === 'outline' ? 600 : 400 },
+      canvasStyle: { width: devWidths[S.dev] + 'px', maxWidth: '100%', background: '#fff', border: '1px solid #cfd5d6', boxShadow: '0 2px 14px rgba(20,32,36,.07)', transition: 'width .18s ease' },
+      statusLineStyle: {
+        display: 'flex', alignItems: 'center', gap: '8px', padding: '7px 16px', fontSize: '12.5px',
+        background: secondary ? '#fdf8ea' : '#f4f7f7', color: secondary ? '#6b5514' : '#4c5559',
+        borderTop: '1px solid ' + (secondary ? '#eadfbb' : '#eaeeee')
+      },
+      statusLineText: secondary
+        ? (zh ? '正在編輯' + langNames[S.clang] + '。留空的欄位未翻譯，網站會顯示中文。儲存不會更改中文。'
+              : 'Editing ' + langNames[S.clang] + '. Empty fields are untranslated and will show Chinese on the site. Saving cannot change the Chinese.')
+        : (zh ? '正在編輯中文，網站的主要語言。' : 'Editing Chinese, the primary language.'),
+      setClang: e => this.setState({ clang: e.target.value }),
+      setUiZh: () => this.setState({ ui: 'zh' }), setUiEn: () => this.setState({ ui: 'en' }),
+      uiZhStyle: { padding: '4px 11px', fontSize: '13px', cursor: 'pointer', border: 'none', background: zh ? teal : 'transparent', color: zh ? '#fff' : '#5b6467', fontWeight: zh ? 600 : 400 },
+      uiEnStyle: { padding: '4px 11px', fontSize: '12px', cursor: 'pointer', border: 'none', background: !zh ? teal : 'transparent', color: !zh ? '#fff' : '#5b6467', fontWeight: !zh ? 600 : 400, letterSpacing: '.04em' },
+      statusLabel: hasChanges ? t.statusUnpublished : t.statusUpToDate,
+      statusPillStyle: { display: 'flex', alignItems: 'center', gap: '7px', padding: '5px 10px', border: '1px solid ' + (hasChanges ? '#e0cf9a' : '#bfd8cf'), background: hasChanges ? '#fdf8ea' : '#f0f7f4', color: hasChanges ? '#6b5514' : '#17795c', fontSize: '12.5px', cursor: 'pointer', borderRadius: '3px', fontWeight: 500 },
+      statusDotStyle: { width: '7px', height: '7px', borderRadius: '50%', background: hasChanges ? '#b8860b' : '#17795c', flex: 'none' },
+      changesOpen: S.changesOpen,
+      toggleChanges: () => this.setState({ changesOpen: !S.changesOpen }),
+      changes: [
+        { kind: zh ? '庫存' : 'Stock', what: zh ? 'PSP 標準裝 500粒 庫存改為 24' : 'PSP 500 stock changed to 24', who: zh ? '陳小姐 · 今天 11:04' : 'Ms Chan · today 11:04' },
+        { kind: zh ? '價格' : 'Price', what: zh ? 'PT3 強化配方 價格改為 HK$2,480.00' : 'PT3 price changed to HK$2,480.00', who: 'Ankur · ' + (zh ? '今天 10:12' : 'today 10:12') },
+        { kind: zh ? '頁面' : 'Page', what: zh ? '「產品介紹」頁面已編輯' : '產品介紹 (Products) page edited', who: 'Ankur · ' + (zh ? '今天 09:47' : 'today 09:47') }
+      ],
+      metrics: [
+        { label: zh ? '低庫存' : 'Low stock', value: '2', unit: zh ? '項產品' : 'products', detail: zh ? '乙肝清、憶活素 已低於補貨點' : 'WH-HB-180, WH-MB-060 below reorder point', valueStyle: { fontSize: '30px', fontWeight: 600, color: maroon, lineHeight: 1 } },
+        { label: zh ? '未付發票' : 'Unpaid invoices', value: '5', unit: 'HK$18,640.00', detail: zh ? '最舊一張已過期 12 天' : 'Oldest is 12 days overdue', valueStyle: { fontSize: '30px', fontWeight: 600, lineHeight: 1 } },
+        { label: zh ? '新查詢' : 'New enquiries', value: '3', unit: zh ? '未讀' : 'unread', detail: zh ? '最新：今天 08:52' : 'Latest: today 08:52', valueStyle: { fontSize: '30px', fontWeight: 600, color: teal, lineHeight: 1 } },
+        { label: zh ? '待翻譯內容' : 'Missing translations', value: '41', unit: zh ? '個欄位' : 'fields', detail: zh ? '主要集中在 Deutsch 與 Русский' : 'Mostly Deutsch and Русский', valueStyle: { fontSize: '30px', fontWeight: 600, lineHeight: 1 } }
+      ],
+      activity: [
+        { when: zh ? '今天 11:04' : 'Today 11:04', what: zh ? '更改 PSP 標準裝庫存（32 → 24）' : 'Changed PSP 500 stock (32 → 24)', who: zh ? '陳小姐' : 'Ms Chan' },
+        { when: zh ? '今天 10:12' : 'Today 10:12', what: zh ? '更改 PT3 強化配方 價格' : 'Changed PT3 price', who: 'Ankur' },
+        { when: zh ? '今天 09:47' : 'Today 09:47', what: zh ? '編輯「產品介紹」頁面的文字區塊' : 'Edited a text block on 產品介紹', who: 'Ankur' },
+        { when: zh ? '昨天 17:20' : 'Yesterday 17:20', what: zh ? '新增發票 #1042' : 'Added invoice #1042', who: zh ? '陳小姐' : 'Ms Chan' },
+        { when: zh ? '昨天 14:32' : 'Yesterday 14:32', what: zh ? '發佈網站（15 個頁面）' : 'Published the site (15 pages)', who: 'Ankur' }
+      ],
+      translationBars: [
+        { name: 'English', pct: '82%', barStyle: { height: '100%', width: '82%', background: teal } },
+        { name: '日本語', pct: '64%', barStyle: { height: '100%', width: '64%', background: teal } },
+        { name: 'Deutsch', pct: '31%', barStyle: { height: '100%', width: '31%', background: '#b8860b' } }
+      ],
+      goEditor: go('editor'), goDash: go('dashboard'), goProducts: go('products'), goPages: go('pages'),
+      goVersions: () => this.setState({ route: 'versions', pageVerOpen: false }),
+      pageName: curPage.zh, pageUrl: curPage.url,
+      pageSecondary: zh ? curPage.en : curPage.zh,
+      goSignIn: go('signin'), isSignIn: R === 'signin', signin,
+      showPageHeader: R !== 'dashboard' && R !== 'editor' && R !== 'signin',
+      screen,
+      isTable: isTableRoute && !stateActive,
+      isStatePanel: stateActive, statePanel,
+      isUsers: R === 'users' && !stateActive,
+      perms,
+      isProductEdit: R === 'product-edit', pe,
+      saveProduct: () => this.flash(zh ? '已儲存。發佈後才會在網站出現。' : 'Saved. It goes live when you publish.'),
+      isEnquiries: R === 'enquiries' && !stateActive, enquiries, enq,
+      isMedia: R === 'media', media, mediaItems,
+      isVersions: R === 'versions', versions, versionsT,
+      isTranslations: R === 'translations', translationCards, translationGroups,
+      isForm: R === 'homepage' || R === 'settings', form,
+      addPageOpen: !!S.addPageOpen,
+      addPage: {
+        title: zh ? '新增頁面' : 'Add page',
+        intro: zh ? '新頁面會先儲存為草稿。發佈之後訪客才會看到。' : 'A new page starts as a draft. Visitors only see it after you publish.',
+        nameLabel: zh ? '頁面名稱（中文）' : 'Page name (Chinese)',
+        namePlaceholder: zh ? '例如：批發查詢' : 'e.g. 批發查詢',
+        urlLabel: zh ? '網址' : 'URL',
+        urlHint: zh ? '留空的話，系統會自動根據名稱建立。' : 'Leave empty and one is created from the name.',
+        templateLabel: zh ? '由甚麼開始' : 'Start from',
+        menuLabel: zh ? '加入網站選單' : 'Add to the site menu',
+        menuHint: zh ? '不加入的話，頁面仍然可以用網址開啟。' : 'If not, the page still works by its URL.',
+        create: zh ? '建立並開啟編輯器' : 'Create and open the editor',
+        nameValue: npName, urlValue: npUrl, urlPlaceholder: npSlug || '/new-page',
+        urlPreview: npSlug ? (zh ? '網址會是 ' + npSlug : 'The URL will be ' + npSlug) : '',
+        slugTaken: npSlugTaken,
+        slugTakenNote: zh ? '這個網址已經有其他頁面使用，請改一個。' : 'Another page already uses this URL. Please choose a different one.',
+        createDisabled: !npName.trim() || npSlugTaken,
+        createStyle: (() => { const on = !!npName.trim() && !npSlugTaken; return { background: on ? teal : '#b6c4c4', color: '#fff', border: '1px solid ' + (on ? teal : '#b6c4c4'), padding: '9px 18px', fontSize: '13px', fontWeight: 600, cursor: on ? 'pointer' : 'not-allowed', borderRadius: '3px' }; })(),
+        templates: [
+          zh ? '空白頁面' : 'Blank page',
+          zh ? '文字頁面（標題＋文字）' : 'Text page (header + text)',
+          zh ? '產品頁面（標題＋產品格狀）' : 'Product page (header + product grid)'
+        ].map((name, i) => ({
+          name, go: () => this.setState({ npTemplate: i }),
+          style: { display: 'flex', alignItems: 'center', gap: '9px', padding: '9px 11px', fontSize: '13px', cursor: 'pointer', border: '1px solid ' + ((S.npTemplate || 0) === i ? teal : '#dde2e3'), background: (S.npTemplate || 0) === i ? '#f1f7f7' : '#fff', color: (S.npTemplate || 0) === i ? '#0b4f4f' : '#3d4548', fontWeight: (S.npTemplate || 0) === i ? 600 : 400 }
+        }))
+      },
+      setNpName: e => this.setState({ npName: e.target.value }),
+      setNpUrl: e => this.setState({ npUrl: e.target.value }),
+      closeAddPage: () => this.setState({ addPageOpen: false }),
+      createPage: () => {
+        if (!npName.trim() || npSlugTaken) return;
+        const blocks = [0, 2, 2][S.npTemplate || 0];
+        const np = { zh: npName.trim(), en: npName.trim(), url: npSlug, blocks, tr: 0, edited: zh ? '剛剛' : 'Just now', draft: true };
+        const next = (S.newPages || []).concat([np]);
+        this.setState({ newPages: next, addPageOpen: false, route: 'editor', pageI: basePages.length + next.length - 1, sel: 'text' });
+        this.flash(zh ? '已建立「' + np.zh + '」草稿。發佈後才會上線。' : 'Draft page "' + np.zh + '" created. It goes live when you publish.');
+      },
+      publishMenuOpen: !!S.publishMenuOpen,
+      togglePublishMenu: () => this.setState({ publishMenuOpen: !S.publishMenuOpen }),
+      publishMenu: {
+        publishTitle: zh ? '發佈網站' : 'Publish site',
+        publishBody: zh ? '所有更改立即在網站上出現。' : 'All your changes appear on the website now.',
+        draftTitle: zh ? '儲存為草稿' : 'Save as draft',
+        draftBody: zh ? '儲存您的工作，網站維持不變。' : 'Keeps your work. The website stays as it is.'
+      },
+      saveDraft: () => { this.setState({ publishMenuOpen: false }); this.flash(zh ? '已儲存草稿。網站沒有改變。' : 'Draft saved. The website has not changed.'); },
+      restoreOpen: !!S.restoreOpen, restore,
+      closeRestore: () => this.setState({ restoreOpen: false, restoreVer: null }),
+      confirmRestore: () => {
+        const d = rv ? rv.date : '2026-09-16';
+        const scoped = rv && rv.scope === 'page';
+        this.setState({ restoreOpen: false, restoreVer: null });
+        this.flash(scoped
+          ? (zh ? '「' + rv.page + '」已還原到 ' + d + ' 的版本。發佈後才會上線。' : rv.page + ' restored to the ' + d + ' version. It goes live when you publish.')
+          : (zh ? '已還原到 ' + d + ' 的版本。' : 'Restored the version from ' + d + '.'));
+      },
+      pageVerOpen: !!S.pageVerOpen,
+      togglePageVer: () => this.setState({ pageVerOpen: !S.pageVerOpen }),
+      pageVersions,
+      pageVerT: {
+        title: zh ? '「' + curPage.zh + '」的版本' : 'Versions of ' + curPage.en,
+        help: zh ? '只列出這個頁面的更改。還原不會影響其他頁面。' : 'Only this page’s changes. Restoring does not affect other pages.',
+        allLink: zh ? '查看整個網站的版本記錄' : 'See version history for the whole site'
+      },
+      noop: () => {},
+      saveLang: () => this.flash(secondary && S.clang === 'en' ? t.savedOther : (secondary ? (zh ? '已儲存' + langNames[S.clang] + '。其他語言不變。' : 'Saved ' + langNames[S.clang] + '. Other languages unchanged.') : t.savedZh)),
+      toast: S.toast,
+      runPublish: this.runPublish,
+      closePublish: () => this.setState({ publish: null }),
+      publishOpen: !!S.publish,
+      publishRunning: S.publish === 'running',
+      publishDone: S.publish === 'done',
+      publishBlocked: S.publish === 'blocked'
+    };
+  }
+}
+</script>
+</body>
+</html>

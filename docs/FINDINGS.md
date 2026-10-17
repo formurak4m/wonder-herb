@@ -2267,12 +2267,20 @@ do that over a directory it has not opened.
 (finding 22): the practice is the primary control, the scan is the backstop. This finding is the
 backstop having a hole, not a disclosure.
 
+**Demonstrated on vendoring, 17 Oct 2026.** Removing the nested `.git` took the gate from
+scanning **one directory name** to scanning **nine real files** — and it immediately **failed**,
+on five company-domain addresses in the prototype's Users screen, sign-in field and Site settings
+field, only one of which is the business's public contact address. So the hole was not theoretical:
+it was hiding exactly the class of thing the gate exists for, in the first folder to land in it.
+The values were redacted to a reserved example domain before anything was committed, and are not
+reproduced here (finding 22 practice). The design is unaffected — they were sample values.
+
 **Fix (Phase 10, with P8-T3):** the scanner walks nested repositories explicitly rather than
 delegating enumeration to `git ls-files`, or refuses outright when it finds a `.git` below the
 root and says so. **Either way it must say which it did**, because a scanner that silently skips is
 the thing being fixed. Negative control: plant a fingerprinted address inside a nested repo and
 assert the gate fails.
 
-**Also decide (owner):** whether `wonderherb-admin-frontend/` is vendored into this repo (its
-`.git` and `_ds/` removed, the design kept as a reference), left outside it, or made a submodule.
-A submodule is a sharp edge for what is a reference document. See P11-T2.
+**Decided (owner, 17 Oct 2026): vendored.** The `.git` and `_ds/` are gone, the
+prototype, brief and screenshots stay as the admin's reference. The archived `.git` lives outside
+the repo. See P11-T2.

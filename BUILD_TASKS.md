@@ -2099,7 +2099,17 @@ the target, not an implementation. Two traps inside it:
 - **`_ds/` is a DIFFERENT design system** — "Industry": steel-blue wireframe, Barlow Condensed,
   Lucide, blueprint corner marks. The delivered HTML never references it (zero matches for `_ds`).
   It contradicts the real design and must be deleted, not wired up.
-- **It is a nested git repository**, which is a hole in `test:data` — see finding 37.
+- **It WAS a nested git repository**, which is a hole in `test:data` — see finding 37. **Vendored
+  into this repo on 17 Oct 2026 (owner):** its `.git` and `_ds/` removed, the prototype, the
+  design brief and the reference screenshots kept — 2.2 MB down to 716 KB. The nested repo also
+  held a "Wix.com admin page design" zip that had already been deleted from the working tree; the
+  whole `.git` was archived outside the repo before removal rather than destroyed.
+- **Its sample ACCOUNT addresses were redacted on vendoring.** The Users screen, the sign-in field
+  and the Site settings contact field carried five company-domain addresses, only one of which was
+  the business's public contact address. This repo is public (finding 22), so all five became
+  reserved example-domain addresses. The design is unchanged — they are sample values, and the
+  prototype already redacts its own sample enquiry contacts the same way. The originals are in the
+  archived `.git` and in the design tool.
 
 **What the design settles.** The Content group lists 研究報告, 有效成份檢測, 小册子 and
 微信發表文章 alongside 典型病例 and 常見問題, which at first looks like it rebuilds in forms what
@@ -2121,10 +2131,12 @@ Puck's shape — Add panel left, canvas centre, settings right.
 - **Rejected:** keeping `dc-runtime` (generated, marked do-not-edit, not a framework). **Rejected:**
   porting to vanilla like `admin/index.html` — 19 destinations against 3,563 lines of unstructured
   HTML is how the current admin became unmaintainable.
-- **Design tokens are extracted ONCE** from the prototype into a single token file — teal `#0f6b6b`,
-  maroon `#8c1d2c`, the neutrals, IBM Plex Sans / Noto Sans TC / Playfair Display. Note these are
-  **not** the live site's values (`#2eada5` / `#1a7a75` teal, `#9b2e2e` maroon): the admin is
-  deliberately calmer (brief §8.2). No component hand-types a hex.
+- **The palette is FINAL and is not to be resampled (owner, 17 Oct 2026).** The admin's teal is
+  `#0f6b6b` and its maroon `#8c1d2c`. These are deliberately **not** the live site's values
+  (`#2eada5` / `#1a7a75` teal, `#9b2e2e` maroon) — the admin is a workplace and is calmer than
+  the shopfront (brief §8.2). Do not "correct" them toward the public site; that question is closed.
+  Tokens are extracted ONCE from the prototype into a single token file — those two, the neutrals,
+  and IBM Plex Sans / Noto Sans TC / Playfair Display — and **no component hand-types a hex**.
 - The admin's fonts are a **third-party runtime dependency like the public site's** — finding 36
   covers them, and self-hosting should cover both or neither.
 - The design drops Font Awesome entirely for inline SVG paths. That is the right call and is the
@@ -2155,6 +2167,49 @@ list route** over `COLLECTIONS`, which is why four new content modules are cheap
 | Missing translations | derivable from trees + lists | one computed endpoint |
 | Enquiries | — | whole feature, and it needs the **public contact form** first |
 | Site settings | `data/site.json` is file-only | no route; decide whether site settings enter Mongo |
+
+#### Where this sits against Phase 10 — decided 17 Oct 2026
+
+The owner left the call to me. The answer is **both, with a boundary**, and it rests on two things I
+checked rather than assumed.
+
+**The shell starts now, in parallel.** Phase 10 is blocked on the R2 bucket, which is not ours to
+unblock, and **P11-T2a needs no bucket**. The two workstreams touch disjoint files:
+
+| Phase 10's remaining steps | The admin shell + wiring |
+|---|---|
+| `data/site.json`, `data/pages/*.json` (~60 refs), `data/products.json` | a new app directory (`editor/` grown up) |
+| `data/media-manifest.json`, `scripts/upload-media.js` (new) | `server/index.js` (serving the built app) |
+| the four `.glb`, `.gitignore`, `vercel.json`, `static.yml` | `package.json` (scripts) |
+
+The only shared file is `package.json`, and only its `scripts` block. Nothing in the shell reads or
+writes a page tree, so neither workstream can corrupt the other's re-diff.
+
+**Phase 10 preempts the moment credentials land.** Its remaining sequence runs upload → **hard gate**
+→ repoint → re-render → re-diff (**hard stop on any deviation**) → **hard gate** → `git rm --cached`.
+That is not a sequence to interleave with other work: a gate is only a gate if nothing else is moving
+underneath it. The admin work pauses, Phase 10 finishes, then the admin work resumes.
+
+**P12-T4, the four content modules, WAITS for Phase 10.** This is a real dependency, not tidiness.
+Three of the four collections carry exactly the documents Phase 10 is re-hosting — counted, not
+guessed: `data/pages/testing.json` holds 3 Drive document links, `brochure.json` 2, and
+`research.json` the 2 `_files/ugd` PDFs. Seeding those collections first would mean seeding Drive and
+Wix URLs that Phase 10 then has to rewrite inside a brand-new write path, with the re-diff unable to
+tell a seeding bug from a re-hosting one. And the booklet screen's per-language PDFs **are**
+finding 28, whose fix is the move itself. Build these on top of a finished move, not across one.
+
+**The media library stays at Phase 13**, on Phase 10's `data/media-manifest.json` as its index. Until
+it exists, the product form's Photo field is a URL, not a picker — the design's picker is the Phase
+13 state of that same field.
+
+**So the order is:**
+
+1. **Now, alongside the Phase 10 block:** P11-T2a (shell, auth, nav, permission hiding, tokens) and
+   P11-T2b (the seven modules that already have a backend).
+2. **Phase 10 resumes and completes** the moment the bucket exists. Everything else stops.
+3. **Then:** P11-T2c (Puck in the shell), P12-T4 (the four content modules), P12-T5 (publish),
+   P12-T6/T7 (version history, missing translations).
+4. **Phase 13:** media library. **Month 2:** enquiries, after the public contact form exists.
 
 #### Sequencing — wiring before features
 
