@@ -2083,17 +2083,128 @@ Owned by Phase 11 rather than Phase 17 because hosting is what breaks it. Today'
   does not reset the count; a correct password during lockout is still refused; the lock expires; an
   unknown email gets the same response and timing class as a known one.
 
-### P11-T2 · ONE admin site, one login — a client requirement, not a nicety
-- **Goal:** the client reaches sales, inventory, products, customers, users **and** the visual page editor from **one place**, signing in **once**. They must never be given two URLs or asked to log in twice. The two-app split stays underneath; it must not surface.
-- **Why here and not earlier:** this needs (a) an editor that works — P8-T2, done; (b) real pages to edit, or "Edit site" opens onto one demo tree — Phase 9; (c) **a decision about which origin serves what**, which is exactly what Phase 11 decides. Building it before hosting means building against `localhost:5173` assumptions and redoing it. Doing it as part of hosting means hosting delivers one product rather than two.
-- **Files:** `admin/index.html` (a nav entry), `editor/vite.config.mjs` (`base`), `server/index.js` (serve the built editor), the host's routing config, `.github/workflows/static.yml` (via P8-T3's allow-list).
-- **Proposed shape — cheapest thing that actually solves it:**
-  1. `npm run editor:build` emits `editor/dist/`. Serve that **under the admin's own origin** at a subpath, e.g. `/admin/pages/`. Locally that is one `express.static` line; in production it is one routing rule on whatever hosts the admin.
-  2. Add a left-nav entry to `admin/index.html` — 頁面編輯 / "Edit site" — linking to that subpath. That is the entire client-visible change.
-  3. **Same origin means single sign-in comes for free.** The editor already reads the same `wh_admin_token` key from `localStorage` that `admin/index.html` writes (`admin/index.html:1354`). On one origin they are the same storage, so the editor's own sign-in screen becomes a fallback that is never seen. **No change to the auth model, no shared-cookie work, no second session.**
-  4. Set Vite `base` to the subpath, or the built asset URLs resolve at the wrong path.
-- **Verify:** sign in to `/admin` once, click 頁面編輯, edit and save a page **without being asked to log in again**; sign out in the admin and confirm the editor is signed out too; confirm there is exactly one URL to hand the client.
-- **Depends on:** **P8-T3** (the deploy allow-list must ship `editor/dist/` while still excluding `editor/` source — see the note there), **Phase 9** (pages worth editing), **Phase 12** (who is allowed to open the editor at all).
+### P11-T2 · ONE admin, built to the final design — supersedes the two-app split
+
+> **The design in `wonderherb-admin-frontend/` is FINAL and is the only admin design (owner,
+> 17 Oct 2026).** No other admin UI is to be worked on or designed. `admin/index.html` and the Puck
+> editor's own shell are both **superseded**: they keep working until the new app covers their
+> modules, then retire. Anything that disagrees with that folder is wrong, including earlier text in
+> this file.
+
+**What the folder is, and is not.** It is a design prototype: `support.js` is a generated design-tool
+runtime (`dc-runtime`) rendering `<sc-if>` / `<sc-for>` templates against `window.React`, and the
+HTML is one 172 KB file of inline-styled mockup with hard-coded data and no API call anywhere. It is
+the target, not an implementation. Two traps inside it:
+
+- **`_ds/` is a DIFFERENT design system** — "Industry": steel-blue wireframe, Barlow Condensed,
+  Lucide, blueprint corner marks. The delivered HTML never references it (zero matches for `_ds`).
+  It contradicts the real design and must be deleted, not wired up.
+- **It is a nested git repository**, which is a hole in `test:data` — see finding 37.
+
+**What the design settles.** The Content group lists 研究報告, 有效成份檢測, 小册子 and
+微信發表文章 alongside 典型病例 and 常見問題, which at first looks like it rebuilds in forms what
+Puck already does (non-negotiable 3). Reading the screens, it does not: each is an **item
+collection** feeding a list section on its page — reports with an institution, year and PDF; test
+reports per batch; booklets **with a language column**; WeChat articles with a link and a
+translation count. Exactly the `faq-accordion` ↔ `data/faq.json` boundary we already have. **Page
+layout stays in Puck; these screens edit the data a list section renders.** The booklet screen is
+also the first proper model for finding 28: a per-language document is a row with a language, not
+one tree field trying to hold several.
+
+#### The architecture: the admin app IS the editor app, grown up
+
+The Puck editor is already a React + Vite app talking to this API (`editor/api.js`). The admin app is
+that app with the designed shell around it and Puck as one route. That delivers "one admin site, one
+login" by construction rather than by gluing two apps together, and the design's editor screen *is*
+Puck's shape — Add panel left, canvas centre, settings right.
+
+- **Rejected:** keeping `dc-runtime` (generated, marked do-not-edit, not a framework). **Rejected:**
+  porting to vanilla like `admin/index.html` — 19 destinations against 3,563 lines of unstructured
+  HTML is how the current admin became unmaintainable.
+- **Design tokens are extracted ONCE** from the prototype into a single token file — teal `#0f6b6b`,
+  maroon `#8c1d2c`, the neutrals, IBM Plex Sans / Noto Sans TC / Playfair Display. Note these are
+  **not** the live site's values (`#2eada5` / `#1a7a75` teal, `#9b2e2e` maroon): the admin is
+  deliberately calmer (brief §8.2). No component hand-types a hex.
+- The admin's fonts are a **third-party runtime dependency like the public site's** — finding 36
+  covers them, and self-hosting should cover both or neither.
+- The design drops Font Awesome entirely for inline SVG paths. That is the right call and is the
+  answer finding 36 wanted for the public site too.
+
+#### The connection map — every screen against the API that exists today
+
+Taken from the API surface, not from memory: 32 routes, `/api/cms?type=<module>` being a **generic
+list route** over `COLLECTIONS`, which is why four new content modules are cheap.
+
+| Design screen | What it talks to today | Gap |
+|---|---|---|
+| Sign in | `POST /api/auth/login`, `GET /api/auth/status` | **none** |
+| Shell, nav, permission hiding | `GET /api/auth/me` | `auth.js MODULES` needs the 4 content modules + the website permissions (Edit pages, Delete pages, Edit SEO, Publish) |
+| Products list + edit form | `GET/POST /api/cms?type=products` | **none.** `protectLangMaps` already enforces the design's "never delete a field it does not show" (finding 25) |
+| Inventory + movement log | `POST /api/stock/:sku/adjust`, `?type=movements` | **none** |
+| Sales, Customers | `/api/sales/*` | **none** |
+| Cases, FAQ, Homepage text | `/api/cms?type=…` | **none** |
+| **Research, Testing, Booklet, Article** | — | 4 entries in `COLLECTIONS`, `MODULE_OF`, `auth.MODULES`, `export.js`, `seed.js`. No new routes |
+| Pages list | `GET /api/pages` | add last-edited / last-published / status |
+| Page editor | `GET/PUT /api/pages/:slug`, `POST /api/preview` | **none for editing** |
+| Dashboard: low stock, unpaid invoices | products + `/api/sales/invoices` | compose only |
+| Dashboard: recent activity | `POST /api/activity` exists | **no `GET`** |
+| Dashboard + top bar: unpublished changes, last published | — | **the publish state does not exist** |
+| **Publish button** | `npm run publish` is a CLI the owner runs | **no API at all.** This is the centrepiece of the design's safety story |
+| Media library | — | whole feature; **Phase 10's `data/media-manifest.json` is its index** |
+| Version history + restore | — | whole feature, a publish log over git, showing no hashes |
+| Missing translations | derivable from trees + lists | one computed endpoint |
+| Enquiries | — | whole feature, and it needs the **public contact form** first |
+| Site settings | `data/site.json` is file-only | no route; decide whether site settings enter Mongo |
+
+#### Sequencing — wiring before features
+
+1. **P11-T2a · Shell.** Vite app, extracted tokens, nav, sign-in, `GET /api/auth/me`, permission
+   hiding, the two language switches. No new backend.
+2. **P11-T2b · The modules that already have a backend** — Products, Inventory, Sales, Customers,
+   Cases, FAQ, Homepage text. Pure wiring. At the end of this the new admin replaces
+   `admin/index.html`, which retires to `legacy/`.
+3. **P11-T2c · Puck as a route** inside the designed shell. `editor/App.jsx`'s own chrome goes.
+4. **P12-T4 · The four content modules.** Cheapest real feature in the plan, and it closes finding
+   28's document half.
+5. **P12-T5 · Publish from the admin** — see below.
+6. **P12-T6 · Version history** over the publish log; **P12-T7 · Missing translations**.
+7. **Phase 13 · Media library** on Phase 10's manifest. **Month 2 · Enquiries**, after the public
+   contact form exists.
+
+#### P12-T5 is the dangerous one
+
+`npm run publish` runs export → sections:build → render → `test:seo` → `test:data` and stops on any
+failure. Turning that into a button means a **web request can now run the whole publish pipeline**.
+Non-negotiable 1 says a broken admin must never take the live site down, so:
+
+- The API must **refuse to publish when any gate fails**, and say which page and why in the plain
+  words the design specifies ("The Products page lost its FAQ information for Google."), with
+  "Your live site has not changed."
+- **Gate, with a negative control:** plant a failure (a tree that fails `test:seo`), call the publish
+  endpoint, and assert that it returns the failure **and that nothing was written**. A publish
+  endpoint that cannot be proven to refuse is not shippable.
+- Publishing is gated on the `Publish` permission, not on being signed in.
+- The progress steps the design shows are our existing gates, named for a non-technical reader:
+  "Checking every page for search engines" **is** `test:seo`. The client's reassurance and our test
+  suite become the same thing.
+
+#### Gates for this task
+
+- **One design, enforced:** a check that no component hard-codes a colour — every value resolves to
+  the extracted token file. The design being final is a rule, so it gets an assertion, not a
+  sentence (finding 35).
+- **Permission hiding verified by effect:** a staff account without `products` sees no Products nav
+  item and gets a refusal from the route, with a negative control.
+- **Finding 25 holds through the new forms:** the product form saves without deleting `link`,
+  `ribbon` or `priceNote` it never showed.
+- **No second admin:** when P11-T2b lands, `admin/index.html` moves to `legacy/` in the same commit
+  that makes the new app the default. Two live admin UIs is the state this task exists to end.
+
+- **Verify:** sign in once; reach every module and the page editor from one nav without a second
+  login; a staff account sees only its modules; publish succeeds, and a planted gate failure stops
+  it with the live site untouched.
+
+#### The origin decision, unchanged by the design
 - **Decisions this forces — take them at Phase 11, not now:**
   1. **Same origin, or a separate host?** Same-origin subpath costs nothing and changes no auth. A separate host (`editor.wonder-herb.com`) means `localStorage` cannot be shared and single sign-in becomes a real auth change — a cookie on the parent domain, which means httpOnly + SameSite + CSRF handling the project does not have today. **This is the decision everything else hangs off.**
   2. **Does the admin (and now the editor) stay on GitHub Pages, or move to the API host?** Moving them makes findings 6 and 16 largely vanish, because the deploy stops being "the whole repo". But `admin/index.html` is served from Pages *on purpose*: it falls back to the committed files when the API is down (CLAUDE.md hard rule 1). Moving it breaks that. Decide deliberately — **and note the split need not be all-or-nothing: hard rule 1 exists to protect the PUBLIC SITE, which stays static on Pages, non-negotiable. The admin and editor are tools, not the public site; if the API is down the client simply cannot edit for a while, which is tolerable in a way a dead public site never is. So moving admin+editor to the API host may well be fine even though moving the public site never would be.**

@@ -81,6 +81,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 34 | **Every homepage visit downloads all four 3D models (~72 MB) and cannot cache them**: the loader initialises every `.carousel-3d-container` on load rather than when its slide is shown, and appends `?v=` + `Date.now()` to each URL, so the browser cache is defeated on every visit and a repeat visitor pays the full 72 MB again | **High — bandwidth and mobile data; pre-existing on the live page, not caused by migrating** | **Phase 10**: it is the move that sets cache headers, and the cache-buster defeats them. Fix with the move: drop the buster (immutable, content-addressed URLs) and initialise a model when its slide becomes active |
 | 35 | **A gate that existed only in FINDINGS.md**: finding 1 recorded the Phase 18 cutover gate as widened to cover `_files/ugd`; the gate itself still grepped `wixstatic` alone, so at cutover we would have cancelled Wix with two research PDFs still served from it | **High — a false claim of safety, relied on at an irreversible step** | **Fixed 18 Sep 2026**, with an audit of every other claimed gate: 19 of 21 real, finding 15 mis-cited its suite, finding 33 had no gate at all (both fixed). The rule is now at the top of this file: **findings describe, gates enforce** |
 | 36 | **Three third-party CDNs are runtime dependencies of the public site**: Font Awesome on all 18 pages (**13 of them on a `6.0.0-beta3` pre-release**, 5 on 6.5.1), three.js r128 for the homepage hero, and Google Fonts (Inter + Playfair, 45 URLs). Counted for the first time by finding 35's declared-host rule, because every earlier gate looked at media and a stylesheet is not media | Medium — every icon on the site vanishes if cdnjs is blocked; typography falls back if Google Fonts is. Pre-existing, inherited from the live pages | **Phase 13** (owner, 18 Sep 2026: declared now, decided later; explicitly **not** Phase 10). Three parts: self-host + subset + single-version Font Awesome; decide three.js; self-host the Latin faces **after finding 21b**, which is downstream of this |
+| 37 | **A nested git repository is invisible to the leak gate**: `test:data` scans "every tracked file plus every untracked file git would add", but git reports a nested repo as a SINGLE directory entry, so 2.2 MB of `wonderherb-admin-frontend/` was scanned as one path name and never opened. The gate ran green over content it had not read | Medium — the repo is PUBLIC and the folder carries a design brief, staff names and sample contact details | **Phase 10**, with P8-T3. The claim is literally true (git would add a gitlink, not those files) and still misleading, which is the finding-35 class exactly |
 
 ---
 
@@ -2235,3 +2236,43 @@ metric change — the same reasoning that put responsive variants in P13-T4.
 **Verify, when it is done:** no page references a host outside `media.hosts`; `test:media`'s
 declared-host layer is the gate that will say so, since a self-hosted face is a media URL under
 `media.base` like any other.
+
+---
+
+## 37 · A nested git repository is invisible to the leak gate
+
+**Found 17 Oct 2026**, when `wonderherb-admin-frontend/` arrived as a folder with its own `.git`.
+
+`scripts/test-published-data.js` scans **every tracked file plus every untracked file git would
+add** — the extension made at P9-T1 so that a `data/`-only scan could not miss `docs/FINDINGS.md`
+(finding 22). But git does not enumerate inside a nested repository:
+
+```
+$ git ls-files -o --exclude-standard | grep admin-frontend
+wonderherb-admin-frontend/            <- one entry, not 10+ files
+```
+
+So `npm run test:data` passed green having read **one directory name** in place of 2.2 MB of HTML,
+JavaScript and Markdown. The repo is public; that folder carries a design brief, staff first names,
+and sample enquiry contact details.
+
+**Why it is a finding and not a shrug.** The gate's claim is *literally* true — git would add a
+gitlink, not those files — and that is precisely what makes it dangerous. It is the finding-35 class:
+a sentence that is accurate about the mechanism and wrong about the protection, which is the kind we
+trust at the moment it matters. The scan exists to catch what the primary practice misses; it cannot
+do that over a directory it has not opened.
+
+**To its credit, the design prototype redacts its own sample data** (`wong••••@gmail.com`,
+`+852 9123 ••••`). The practice held where the gate did not — which is the standing position
+(finding 22): the practice is the primary control, the scan is the backstop. This finding is the
+backstop having a hole, not a disclosure.
+
+**Fix (Phase 10, with P8-T3):** the scanner walks nested repositories explicitly rather than
+delegating enumeration to `git ls-files`, or refuses outright when it finds a `.git` below the
+root and says so. **Either way it must say which it did**, because a scanner that silently skips is
+the thing being fixed. Negative control: plant a fingerprinted address inside a nested repo and
+assert the gate fails.
+
+**Also decide (owner):** whether `wonderherb-admin-frontend/` is vendored into this repo (its
+`.git` and `_ds/` removed, the design kept as a reference), left outside it, or made a submodule.
+A submodule is a sharp edge for what is a reference document. See P11-T2.

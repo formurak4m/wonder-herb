@@ -83,7 +83,7 @@ Other issues:
 - **Site content is NOT authoritative (owner, 15 Sep 2026):** the client will replace all of it. Content disputes are not blockers, and nothing further is to be investigated, escalated or changed on them unless the owner asks. **Don't change site data unless the owner explicitly asks.** Prices come from `data/products.json` (no price hold); PSP-500's out-of-stock state is committed.
 - Currency is HKD.
 
-Known issues are logged in `docs/FINDINGS.md` (36 findings so far), each with the phase that owns its fix. The index table at the top shows which are fixed. **Do not fix a finding out of its phase** unless the owner says so.
+Known issues are logged in `docs/FINDINGS.md` (37 findings so far), each with the phase that owns its fix. The index table at the top shows which are fixed. **Do not fix a finding out of its phase** unless the owner says so.
 
 ## The two changes we are adding (in order of value)
 
@@ -239,6 +239,8 @@ Month 2: all 18 pages, all 7 languages, full ~22 sections, add-page-from-templat
 - **A pre-rendered page's stock changes go live at publish, not instantly.** Accepted; the client guide must say so at retirement.
 - **Phase 9 definition-of-done waivers:** "heavy assets from R2" (a Phase 10 dependency). "Editable in Puck" now passes after the `mergeTree` fix.
 - **One admin site, one login** is a client requirement (P11-T2).
+- **The admin design in `wonderherb-admin-frontend/` is FINAL and is the ONLY admin design** (owner, 17 Oct 2026). Do not design, propose or build any other admin UI. It is a *design prototype*, not code: `support.js` is a generated `dc-runtime` and the HTML is one inline-styled mockup with no API call — the target to build toward. `admin/index.html` and the Puck editor's own shell are **superseded** and retire to `legacy/` as the new app covers their modules. **`_ds/` inside that folder is a DIFFERENT, unused design system** ("Industry": steel-blue wireframe, Barlow, Lucide) that the delivered HTML never references — delete it, never wire it up. The plan is P11-T2.
+- **The four content modules are collections, not pages** (research, testing, booklet, article). The design's Content group edits the ITEMS a list section renders - reports, per-batch test reports, booklets with a language, WeChat articles - exactly the `faq-accordion` ↔ `data/faq.json` boundary. Page LAYOUT stays in Puck. This does not breach non-negotiable 3, and the booklet row's language column is the first proper model for finding 28's per-language documents.
 - **Login throttle hardening** belongs to Phase 11 (P11-T3).
 
 ## Open questions to confirm with the project owner / client
