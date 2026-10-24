@@ -86,6 +86,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 39 | **The site chrome was built once per PAGE, not once per LANGUAGE**: `renderer/render.js` called `loadChrome()` outside the `LANGS_IN_SCOPE` loop, so every language of a page received the same chrome object. Any per-language wording in the header, footer, floating button or any future chrome element was impossible — not hard, impossible | Medium — structural. Invisible while only `zh` renders (finding 24), and it would have surfaced at Phase 14 as "why does the chrome not translate?" | **Fixed 24 Oct 2026** at P13-T5: the call moved inside the loop and `loadChrome(assets, lang)` takes the language. Found because the chat widget needed per-language strings; the fix is not a chat fix |
 | 40 | **Counting a class name across a file counts its CSS too** — and the migration changes exactly that property. Counting `faq-question` in 常見問題 gave 13 on the live page and 6 on the migrated one, read as "the FAQ lost 7 questions". It had not: the live page is **inline-styled**, so 7 of its 13 were the selector `.faq-question`; the migrated page links an external sheet, so all 6 of its hits were real elements. Both pages render 6 | Medium — it produced a confident, wrong number that was one step from a content edit on the owner's instruction | **Method, recorded 24 Oct 2026.** Count `class="x"`, not `x`, whenever the comparison spans a page that still has inline CSS |
 | 41 | **An edit made directly to a GENERATED file is reverted by the next `npm run export`.** `assets.navActive` was added to 14 page-tree FILES at P10-T1 and never to MongoDB. It sat correct for five weeks and the first export since stripped all 14 — the chrome partial's nav fix, silently undone | **High — latent.** Armed the moment the edit was made, and it would have detonated at the first publish from the admin, which is an export. **Nothing would have caught it:** no suite asserts `navActive` or the nav highlight, and no suite exercises `export` at all | **Rule, recorded 24 Oct 2026.** The database is the source of truth for anything in a page tree. Fixed by writing `navActive` into the 14 page documents, so export now preserves it |
+| 42 | **The Google Fonts URL is malformed, so Inter and Playfair Display have NEVER loaded.** It declares two axes (`opsz,wght`) then gives `14..32,300;400;500;600;700` — one value pair followed by four bare numbers. Google Fonts answers **400**. Byte-identical on the pre-migration hand-coded pages, so this predates the rebuild and is live today on all 18 pages | Medium — the site has always rendered in fallback fonts, and the typography the design assumes has never been delivered. Not a regression and not caused by the merge | **Phase 13**, with finding 36 (self-hosting) and finding 21b (the CJK stack). One-line fix available now: paired values, e.g. `Inter:opsz,wght@14..32,300..700` returns 200 |
 
 ---
 
@@ -2483,3 +2484,51 @@ whose whole job is to make export safe to trigger from a button.
 
 **Sibling of finding 25** (the store merges, never replaces): both are about a write path removing a
 field nobody showed it. Finding 25 is inside the API; this one is the pipeline around it.
+
+---
+
+## 42 · The Google Fonts URL is malformed — the webfonts have never loaded
+
+**Found 24 Oct 2026**, verifying the deployed site after the merge to `main`. Every page logged one
+failed request, on every width.
+
+```
+requestfailed  fonts.googleapis.com/css2?family=Inter:opsz,wght@14..3...
+```
+
+**The cause.** Google Fonts' v2 API requires that when a family declares **two** axes, every value
+is a **tuple** of both — `14..32,300;14..32,400`. The site's URL declares `opsz,wght` and then
+supplies `14..32,300;400;500;600;700`: one correct pair, then four bare weights. The request is
+rejected:
+
+| URL | status |
+|---|---|
+| as deployed | **400** |
+| `Inter:opsz,wght@14..32,300..700` (paired) | 200 |
+| `Inter:wght@300..700` (single axis) | 200 |
+
+**It predates the rebuild.** `git show 6503a01:產品介紹.html` carries the identical string, so the
+hand-coded pages had it too. **Inter and Playfair Display have never rendered on this site** — every
+visitor has always seen the fallback stack. The merge did not cause it and does not worsen it; the
+live verification is simply the first time anyone watched the network panel.
+
+**Why it went unseen.** Nothing checks it. `test:media` governs *media* hosts and a stylesheet is
+not media (finding 36). The visual baseline and every diff since were captured with the same failing
+request on both sides, so the fallback font is baked into the reference as "correct" — the
+comparison is consistent, and consistently wrong about what the design intended.
+
+**What it touches.**
+- **Finding 36** lists `fonts.googleapis.com` as a third-party runtime dependency and asks whether
+  to self-host. That decision is now easier: the dependency is **currently delivering nothing**.
+- **Finding 21b** (the CJK font stack, undecided, a client question) assumes Inter is present and
+  the CJK face follows it. It does not.
+- The admin design brief specifies Inter and Playfair for the public site. That has never been true
+  of the running site.
+
+**Fix, at Phase 13 with finding 36.** Either correct the URL (one line, in 15 page trees' `assets.stylesheets` and the 3 hand-coded pages) or self-host the faces and drop the dependency — the
+latter being finding 36's recommendation anyway. **Decide the typography first**: fixing the URL
+would change how every page looks, which is a visual change to put through the diff deliberately
+rather than as a side effect of a bug fix. Correcting it is therefore **not** a quick win to slip in.
+
+**Verify, when fixed:** the stylesheet returns 200, and the 18-page visual diff is re-run and
+explained, because the whole site's type will shift.
