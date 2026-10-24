@@ -83,6 +83,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 36 | **Three third-party CDNs are runtime dependencies of the public site**: Font Awesome on all 18 pages (**13 of them on a `6.0.0-beta3` pre-release**, 5 on 6.5.1), three.js r128 for the homepage hero, and Google Fonts (Inter + Playfair, 45 URLs). Counted for the first time by finding 35's declared-host rule, because every earlier gate looked at media and a stylesheet is not media | Medium — every icon on the site vanishes if cdnjs is blocked; typography falls back if Google Fonts is. Pre-existing, inherited from the live pages | **Phase 13** (owner, 18 Sep 2026: declared now, decided later; explicitly **not** Phase 10). Three parts: self-host + subset + single-version Font Awesome; decide three.js; self-host the Latin faces **after finding 21b**, which is downstream of this |
 | 37 | **A nested git repository is invisible to the leak gate**: `test:data` scans "every tracked file plus every untracked file git would add", but git reports a nested repo as a SINGLE directory entry, so 2.2 MB of `wonderherb-admin-frontend/` was scanned as one path name and never opened. The gate ran green over content it had not read | Medium — the repo is PUBLIC and the folder carries a design brief, staff names and sample contact details | **Phase 10**, with P8-T3. The claim is literally true (git would add a gitlink, not those files) and still misleading, which is the finding-35 class exactly |
 | 38 | **Three content files, three different per-language shapes**: `products.json` carries per-language objects on its text fields, `cases.json` keys each ITEM by language at the top level, and **`faq.json` has no language dimension at all — `q` and `a` are plain strings**. Non-negotiable 6 says every text field is a per-language object | Medium — masked today because migrated pages are Chinese-only (finding 24), so nothing renders the missing languages. Blocks multilingual grounding for the chat widget, and the admin design's FAQ screen assumes per-language | **Phase 14** (all 7 languages), where per-language content lands. The chat widget (P13-T5) is front-end only and does not depend on it; Phase 15's answer API does |
+| 39 | **The site chrome was built once per PAGE, not once per LANGUAGE**: `renderer/render.js` called `loadChrome()` outside the `LANGS_IN_SCOPE` loop, so every language of a page received the same chrome object. Any per-language wording in the header, footer, floating button or any future chrome element was impossible — not hard, impossible | Medium — structural. Invisible while only `zh` renders (finding 24), and it would have surfaced at Phase 14 as "why does the chrome not translate?" | **Fixed 24 Oct 2026** at P13-T5: the call moved inside the loop and `loadChrome(assets, lang)` takes the language. Found because the chat widget needed per-language strings; the fix is not a chat fix |
 
 ---
 
@@ -2328,3 +2329,46 @@ per-field objects, since `editor/lang.js`'s `project`/`merge` and the 26 checks 
 **Verify, when it is fixed:** every content file answers the same question the same way; a
 `test:i18n` check asserts the shape rather than trusting it; the Missing translations view reports
 the FAQ's real coverage instead of silence.
+
+---
+
+## 39 · The site chrome was built once per page, not once per language
+
+**Found 24 Oct 2026** while adding the chat widget (P13-T5), which is the first piece of chrome to
+carry words rather than only markup and URLs.
+
+`renderer/render.js` built the chrome **outside** the language loop:
+
+```js
+const chrome = loadChrome(assets);          // once per page
+LANGS_IN_SCOPE.forEach(lang => {
+  const html = renderPage(tree, lang, data, { styles, chrome, registry });
+```
+
+So every language of a page got the same chrome object. **Per-language chrome was not difficult,
+it was impossible** — there was no language in scope at the point the chrome was made.
+
+**Why nothing was broken.** Until now the chrome carried only markup and URLs: a nav, a footer, a
+logo, seven flag images, a WhatsApp link. None of it is language-dependent in the `zh`-only world
+Phase 9 shipped (finding 24). The defect was real the whole time and had nothing to render wrong.
+
+**Why it is a finding and not a line in P13-T5.** It would have surfaced at **Phase 14**, when the
+other six languages switch on, as "why does the chrome not translate?" — and at that point it is a
+renderer change made under the pressure of a language rollout, with every page's diff moving at the
+same time. It is also not specific to chat: the nav labels, the footer, the floating button's own
+label and anything added to the chrome later all inherit it. A structural limit found by the first
+feature to touch it is worth recording as structural.
+
+**Fixed:** `loadChrome(assetsOrPage, lang)` takes an optional language and passes it to
+`siteChrome`; the call moved inside `LANGS_IN_SCOPE.forEach`. The parameter is optional, so every
+other caller — `scripts/test-behaviour.js`, `scripts/test-render.js`, `scripts/test-ui-mongo.js`
+— keeps working and falls back to `zh`.
+
+**Output is unchanged today**, which is the point: with only `zh` in scope the two orderings
+produce byte-identical pages, and the 18-page visual diff attributes every changed pixel to the chat
+launcher and nothing to this. The fix costs one chrome build per language per page, which is a file
+read.
+
+**Verify, at Phase 14:** a page rendered in two languages carries two different chromes. There is no
+assertion for that today because there is only one language to render; the check belongs with the
+work that makes it checkable.

@@ -421,6 +421,13 @@ Use Wix-familiar, plain words. Never "deploy", "render", "commit", "JSON", "tree
 
 Please have the Chinese labels checked by a native Hong Kong reader before build.
 
+> **Added 24 Oct 2026 (not part of the original brief).** The same applies beyond this table. The
+> public site's **chat widget** (P13-T5) carries 10 UI strings in each of 7 languages
+> (`data/site.json`, `chat.strings`). The `zh` and `en` text is owner-approved; **`de`, `es`,
+> `fr`, `ja` and `ru` are translations of it that no native speaker has read**, including the
+> health-disclaimer refusal. Both sets — this vocabulary table and those five languages — are a
+> **Phase 18 cutover gate** in `BUILD_TASKS.md`, so neither can ship unreviewed.
+
 ---
 
 ## 10. Real content to use in mockups

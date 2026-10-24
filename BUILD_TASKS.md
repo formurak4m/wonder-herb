@@ -2330,26 +2330,139 @@ Non-negotiable 1 says a broken admin must never take the live site down, so:
   the visual diff unchanged for all four pages; `test:media` sees the documents at their new home; a
   staff account without the module's permission is refused by the API, not just by a hidden nav item.
 
-### P12-T5 · Publish from the admin — the one that can touch the live site
-- **Goal:** the design's Publish button, its four progress steps, and its failure state.
-- **Why it is the dangerous task.** `npm run publish` is a **CLI the owner runs**: export →
-  `sections:build` → render → `test:seo` → `test:data`, stopping on any failure. Making it a button
-  means **a web request runs the whole publish pipeline**. Non-negotiable 1 says a broken admin must
-  never take the live site down, and this is the only part of the design that can.
-- **The gates are already the UX.** The design's progress steps are our existing suites named for a
-  non-technical reader — "Checking every page for search engines" **is** `test:seo`. The client's
-  reassurance and our test suite are the same object, which is the best thing in this design.
-- **Requirements:**
-  1. The endpoint **refuses** when any gate fails, and nothing is written.
-  2. The refusal says what happened in the design's plain words ("The Products page lost its FAQ
-     information for Google."), which page, what to do, and **"Your live site has not changed."**
-  3. Gated on the `Publish` permission, not merely on being signed in.
-  4. The unpublished-changes list and the site-status indicator read the same state the button acts
-     on — one source, or the indicator will lie.
-- **Verify, and this is a hard gate:** plant a tree that fails `test:seo`, call the endpoint, and
-  assert it returns the failure **and that nothing was written**. **A publish endpoint that cannot be
-  proven to refuse is not shippable.** Negative control as usual: remove the refusal and watch the
-  check fail.
+### P12-T5 · Publish from the admin — THE PLAN (no code until the owner has read it)
+
+**This is the only part of the admin that can change the live site.** Non-negotiable 1 says a broken
+admin must never take the live site down. Everything below is arranged around that one sentence.
+
+---
+
+#### 1. The fact that decides the whole design
+
+**`npm run publish` deliberately does not commit, push or deploy.** Its own header says so:
+
+> *WHAT THIS COMMAND DOES NOT DO: it does not commit, it does not push, and it does not deploy.
+> There is no `git` call anywhere in this file. That is deliberate and it is the project's rule.*
+
+It runs export → sections:build → render → `test:seo` → `test:data`, stops on the first failure, and
+then **prints instructions for a human** to read `git diff` and push. Publishing to the live site is
+a person pushing to `main`, which fires `.github/workflows/static.yml`.
+
+**And the deploy workflow runs no gate at all.** Checked, not assumed: `static.yml` has three steps —
+checkout, configure-pages, upload `path: '.'` — and **no build, no test, no `npm` anywhere**. So:
+
+> **The SEO and leak gates are not on the path to the live site.** They are a local command someone
+> chooses to run first. The thing that actually protects the site today is **the human between
+> `publish` and `push`**.
+
+A Publish button removes that human. That is the whole risk of this task, and it cannot be designed
+around by being careful — it has to be designed around structurally.
+
+---
+
+#### 2. What "Publish" must mean — the owner's decision
+
+The design promises the client *"Published. Your site is updated."* Four ways to honour that:
+
+| | What the button does | Live site changes? | Verdict |
+|---|---|---|---|
+| **A** | Render + gate only; a human still pushes | **No** | The success message would be a **lie**. Rejected. |
+| **B** | Render + gate + commit + push, from the API | Yes | Removes the human AND needs push-to-`main` credentials in a web service. The most dangerous option. |
+| **C** | API commits data; **CI renders, gates and deploys** | Yes | Recommended — see below. |
+| **D** | Publish opens a pull request; someone approves | Yes, after approval | Honest and safe, but the client sees "submitted", not "published". A real option if the owner wants a human kept in the loop. |
+
+**Recommendation: C**, with **D available as a per-role setting** if the owner wants staff
+publishes reviewed and admin publishes immediate.
+
+---
+
+#### 3. Why C, concretely
+
+```
+admin "Publish"
+   -> API: check the `Publish` permission
+   -> API: export MongoDB -> data/*.json, data/pages/*.json
+   -> API: commit those files through the GitHub contents API
+   -> that commit triggers the workflow
+   -> CI: sections:build -> render -> test:seo -> test:data      <-- THE GATE, in CI
+   -> CI: deploy to Pages                                        <-- only if the gate passed
+   -> admin polls the run and shows the four progress steps
+```
+
+Four properties worth the complexity:
+
+1. **The gate moves onto the path to the live site.** Today it is beside that path. In CI, a failed
+   gate means the deploy step never runs — the protection becomes structural instead of procedural.
+   This is worth doing *even if the button is never built*.
+2. **No working tree is needed.** A hosted API — certainly a serverless one — has no checkout and no
+   `git`. The contents API needs neither.
+3. **No push-to-`main` credentials sit in the web service.** A scoped token that can commit is
+   narrower than a deploy key, and the deploy itself stays inside GitHub's own runner.
+4. **The audit trail already exists**: a commit plus a workflow run, which is exactly what P12-T2
+   (version history) needs to list and restore. The two tasks share one substrate.
+
+**What C costs:** `static.yml` has to change, and it is the file P8-T3 also edits — so these two
+land together or they conflict. The workflow needs `npm ci` and a Node step it does not have today.
+
+---
+
+#### 4. The failure path, which is the part that matters
+
+The design specifies plain words, and the pipeline already produces them. The mapping:
+
+| Pipeline failure | What the client sees |
+|---|---|
+| `test:seo` on one page | *"The Products page lost its FAQ information for Google."* + which page + *"Undo your last change to this page, or ask your developer."* |
+| `test:data` | **never shown in detail.** It fails on private data; echoing the reason into a client-facing UI would print the thing the gate exists to stop (finding 22). It says a check failed, names no value, and tells the owner to look at the run. |
+| render throws | the page and the renderer's own message, which is already written for a human |
+| CI unreachable | *"Can't reach the publishing service. Your live website is not affected."* |
+
+**Every failure ends with "Your live site has not changed."** — and under C that sentence is **true
+by construction**, because the deploy step is downstream of the gate.
+
+---
+
+#### 5. The hard gate on this task
+
+> **A publish endpoint that cannot be proven to refuse is not shippable.**
+
+The proof, and it is a test, not a review:
+- Plant a tree that fails `test:seo`. Call the endpoint. Assert it reports failure **and that the
+  deployed site is byte-identical afterwards**.
+- Plant a leak that fails `test:data`. Same assertion, and additionally assert the response **does
+  not contain the offending value**.
+- **Negative control:** remove the gate step from the workflow and watch both checks fail. A gate
+  that cannot be shown to bite is not a gate (finding 35).
+- Assert a user **without** the `Publish` permission is refused by the API, not merely by a hidden
+  button.
+
+---
+
+#### 6. Scope boundaries
+
+**In:** the endpoint, the permission, the progress states, the failure states, the
+unpublished-changes list, the workflow change that puts the gates before the deploy.
+
+**Out, and deliberately:**
+- **Scheduled or automatic publishing.** Every publish is someone pressing a button.
+- **Publishing from a draft branch.** One target, `main`.
+- **Rollback** — that is P12-T2, on the same substrate.
+- **Anything that writes to the site outside this path.** There must be exactly one way the live
+  site changes, or the gate has a hole beside it.
+
+---
+
+#### 7. Open questions for the owner
+
+1. **C or D** — immediate publish, or publish-as-pull-request? Or D for staff and C for admins?
+2. **Who may publish?** The design has a `Publish` permission separate from editing. Confirm staff
+   can hold it.
+3. **The unpublished-changes list** compares MongoDB against the published `data/`. Is "changed
+   since last publish" computed per record (precise, more work) or per file (cheap, coarse)?
+4. **P8-T3 and this task both edit `static.yml`.** Confirm they land together, with the diff shown
+   alone before applying, as P8-T3 already requires.
+5. **The gate-in-CI change is independently valuable.** Worth doing at Phase 10 with P8-T3, before
+   any button exists? It closes a real hole in today's deploy regardless of the admin.
 
 ### P12-T6 · Missing translations
 - **Goal:** the design's 待翻譯內容 view — every field with Chinese content and no translation,
@@ -2606,7 +2719,22 @@ to be rebuilt, and `llms.txt` in particular is a description of a page set that 
   3. **No `noindex` anywhere** in what deploys: `git grep -n -i noindex -- '*.html'`, except the ones that deliberately carry it: `account.html`, `購物車.html`, `product.html`, `admin/index.html`, `editor/index.html`, and every retired original under `legacy/` (which must also stay out of the deploy). A stray one de-indexes the client's real site. That risk is why the Pages copy was taken down rather than noindexed.
   4. **No patient case material presented as a review or rating** in what deploys. (Health-claim review applies to the client's replacement content, not the current copy: owner, 15 Sep 2026.)
   5. **典型病例's ItemList must not ship as it stands** (docs/FINDINGS.md finding 29). It says `numberOfItems` 15 while listing 3, types its entries `Testimonial` (not a schema.org type), and names real patients. It is carried verbatim today because site content is not authoritative and this is the owner's call with the client - but it is structured data about identifiable patients, so it is a cutover gate, not a nicety. Check: `node -e "…"` on the deployed tree, or simply read the ItemList in `data/pages/cases.json`. Fix, drop, or derive it from `data/cases.json` (the FAQPage treatment, `renderer/render.js faqPageNode`, with a `test:seo` check as the model) - then this gate can be automated like the other four.
-- **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed, **both media greps (`wixstatic` and `_files/ugd`) are clean**, **the `r2.dev` grep is clean and `check:media` is green against `media.wonder-herb.com`**, and the four finding-26 checks above are clean. Then, and only then, switch Wix off.
+- **Gate — no UI string ships in a language nobody has read.** Translated interface text that no
+  native speaker has checked is exactly the thing that reads as amateur **in the markets the extra
+  languages exist to reach**, and it is invisible to every automated gate we have: the strings are
+  present, the fallback works, nothing fails.
+  Two sets need a native read before Wix is switched off:
+  1. **The chat widget's `de`, `es`, `fr`, `ja`, `ru` strings** (`data/site.json`, `chat.strings`,
+     10 strings each). The `zh` and `en` text is owner-approved (24 Oct 2026); the other five are
+     translations **of** that text and have been read by no one. Note the refusal string especially —
+     it is the one that carries a health disclaimer.
+  2. **The admin's Chinese vocabulary table**, which the design brief itself asks for: *"Please have
+     the Chinese labels checked by a native Hong Kong reader before build"*
+     (`wonderherb-admin-frontend/uploads/wonder-herb-admin-design-brief.md`, §9).
+  Check: a named person has signed off each set. There is no automated form of this gate, and
+  saying so is the point — see the manual-gate rule in `docs/FINDINGS.md` finding 35.
+
+- **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed, **both media greps (`wixstatic` and `_files/ugd`) are clean**, **the `r2.dev` grep is clean and `check:media` is green against `media.wonder-herb.com`**, **every translated UI string has been read by a native speaker**, and the four finding-26 checks above are clean. Then, and only then, switch Wix off.
 
 ---
 
