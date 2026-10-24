@@ -1,4 +1,28 @@
-# Simple workflow for deploying static content to GitHub Pages
+# Deploy the public site to GitHub Pages.
+#
+# TWO THINGS THIS WORKFLOW DOES THAT IT DID NOT BEFORE (P8-T3, 24 Oct 2026):
+#
+#   1. IT GATES. It runs test:seo and test:data BEFORE the deploy step exists in
+#      the job's path. Until now the gates were a local command somebody chose
+#      to run first (`npm run publish`), which means the thing protecting the
+#      live site was the human between `publish` and `push`. A failing gate now
+#      fails the job, and the upload and deploy steps never run.
+#
+#      That matters most for what comes next: P12-T5 puts a Publish button in
+#      the admin, which removes that human. The gate has to be ON the path to
+#      the live site before a button is allowed to start the journey.
+#
+#   2. IT SHIPS AN ALLOW-LIST, not the repository. `path: '.'` published 79 MB
+#      and 189 files, including editor/, server/, renderer/, scripts/, docs/
+#      and the vendored admin design, under the client's own domain. Nothing in
+#      it was a credential and the repo is public anyway, but internal material
+#      was crawlable on a customer-facing URL. Now only what the site serves is
+#      uploaded.
+#
+# WHAT THIS WORKFLOW DELIBERATELY DOES NOT DO: it does not export from MongoDB
+# and it does not re-render. It gates and ships THE COMMITTED FILES, so what
+# goes live is exactly what a human read in `git diff` before pushing. Export
+# and render stay in `npm run publish`, upstream of the commit.
 name: Deploy static content to Pages
 
 on:
@@ -30,14 +54,124 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
+        # The gates read git history (test:data scans tracked files), so the
+        # .git dir must be present.
+        # legacy/ MUST be in the checkout even though it is NOT in the artifact:
+        # test:seo lifts each page's styles from its retired original through
+        # renderer/source-page.js, and test:data asserts every original carries
+        # noindex. Both FAIL with legacy/ absent - measured, 24 Oct 2026. The
+        # allow-list below controls what SHIPS, not what the build may read.
         uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        # Playwright is a devDependency used only by the browser suites, which
+        # do not run here. Skipping its browser download keeps this job short.
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
+        run: npm ci --no-audit --no-fund
+
+      - name: Build the sections bundle
+        # test:seo renders every page tree through the real renderer, which
+        # needs renderer/.build/sections.cjs. It is gitignored, so CI builds it.
+        run: npm run sections:build
+
+      # ----------------------------------------------------------------- GATES
+      # If either of these fails, the job fails and NOTHING below runs - no
+      # artifact is uploaded and no deployment is created. The previously live
+      # site stays exactly as it is.
+
+      - name: 'GATE: SEO (test:seo)'
+        run: npm run test:seo
+
+      - name: 'GATE: no private data in published files (test:data)'
+        run: npm run test:data
+
+      # ------------------------------------------------------- THE ALLOW-LIST
+      # Explicit copies rather than an exclude list: a new directory in the
+      # repository is NOT published until someone adds it here, which is the
+      # safe direction for the default to fail in.
+
+      - name: Assemble the site (allow-list, P8-T3)
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+
+          # the 18 public pages
+          cp ./*.html _site/
+
+          # the 3D models, until Phase 10 moves them to R2 and this line goes
+          if compgen -G "./*.glb" > /dev/null; then cp ./*.glb _site/; fi
+
+          # published CSS and behaviour
+          cp -r assets _site/
+
+          # the content the three hand-coded pages still fetch at runtime
+          cp -r data _site/
+
+          # The vanilla admin. It is served from Pages ON PURPOSE: it is the
+          # only working admin interface today, and hard rule 1 says a broken
+          # admin must never take the site down - serving it as static files
+          # means it survives the API being down. It needs no build.
+          # REMOVE THIS WHEN P11-T2 LANDS and the new admin shell has a home of
+          # its own; that task is the trigger, not a date. Until then excluding
+          # it would remove the only route in, to fix something that is not yet
+          # a problem.
+          cp -r admin _site/
+
+          # site-level files
+          for f in CNAME robots.txt sitemap.xml llms.txt; do
+            if [ -f "$f" ]; then cp "$f" _site/; fi
+          done
+
+          echo "staged $(find _site -type f | wc -l) files, $(du -sh _site | cut -f1)"
+
+      - name: 'GATE: the artifact is complete, and holds nothing it should not'
+        run: |
+          set -euo pipefail
+
+          # what the site needs
+          pages=$(find _site -maxdepth 1 -name '*.html' | wc -l)
+          test "$pages" -ge 18 || { echo "only $pages pages staged, expected >= 18" >&2; exit 1; }
+          for required in _site/assets _site/data _site/admin _site/robots.txt _site/CNAME _site/index.html; do
+            test -e "$required" || { echo "missing from the artifact: $required" >&2; exit 1; }
+          done
+
+          # what it must never hold. This is the assertion P8-T3 exists for:
+          # if the allow-list above is ever widened by accident, this fails
+          # rather than publishing the repository again.
+          # NOTE: admin/ is deliberately absent from this list - see the
+          # allow-list above for why it ships, and what removes it.
+          for forbidden in server scripts renderer sections editor api docs legacy \
+                           wonderherb-admin-frontend node_modules package.json \
+                           package-lock.json vercel.json .env .env.example; do
+            if [ -e "_site/$forbidden" ]; then
+              echo "EXCLUDED PATH PRESENT IN THE ARTIFACT: $forbidden" >&2
+              exit 1
+            fi
+          done
+
+          # nothing matching a secret or a spreadsheet, whatever its path
+          if find _site -name '*.xlsx' -o -name '.env*' | grep -q .; then
+            echo "a spreadsheet or an env file reached the artifact" >&2
+            exit 1
+          fi
+
+          echo "artifact verified: $pages pages, assets/ data/ admin/ present, 14 excluded paths absent"
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          path: '_site'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
