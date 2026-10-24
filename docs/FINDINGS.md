@@ -82,6 +82,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 35 | **A gate that existed only in FINDINGS.md**: finding 1 recorded the Phase 18 cutover gate as widened to cover `_files/ugd`; the gate itself still grepped `wixstatic` alone, so at cutover we would have cancelled Wix with two research PDFs still served from it | **High — a false claim of safety, relied on at an irreversible step** | **Fixed 18 Sep 2026**, with an audit of every other claimed gate: 19 of 21 real, finding 15 mis-cited its suite, finding 33 had no gate at all (both fixed). The rule is now at the top of this file: **findings describe, gates enforce** |
 | 36 | **Three third-party CDNs are runtime dependencies of the public site**: Font Awesome on all 18 pages (**13 of them on a `6.0.0-beta3` pre-release**, 5 on 6.5.1), three.js r128 for the homepage hero, and Google Fonts (Inter + Playfair, 45 URLs). Counted for the first time by finding 35's declared-host rule, because every earlier gate looked at media and a stylesheet is not media | Medium — every icon on the site vanishes if cdnjs is blocked; typography falls back if Google Fonts is. Pre-existing, inherited from the live pages | **Phase 13** (owner, 18 Sep 2026: declared now, decided later; explicitly **not** Phase 10). Three parts: self-host + subset + single-version Font Awesome; decide three.js; self-host the Latin faces **after finding 21b**, which is downstream of this |
 | 37 | **A nested git repository is invisible to the leak gate**: `test:data` scans "every tracked file plus every untracked file git would add", but git reports a nested repo as a SINGLE directory entry, so 2.2 MB of `wonderherb-admin-frontend/` was scanned as one path name and never opened. The gate ran green over content it had not read | Medium — the repo is PUBLIC and the folder carries a design brief, staff names and sample contact details | **Phase 10**, with P8-T3. The claim is literally true (git would add a gitlink, not those files) and still misleading, which is the finding-35 class exactly |
+| 38 | **Three content files, three different per-language shapes**: `products.json` carries per-language objects on its text fields, `cases.json` keys each ITEM by language at the top level, and **`faq.json` has no language dimension at all — `q` and `a` are plain strings**. Non-negotiable 6 says every text field is a per-language object | Medium — masked today because migrated pages are Chinese-only (finding 24), so nothing renders the missing languages. Blocks multilingual grounding for the chat widget, and the admin design's FAQ screen assumes per-language | **Phase 14** (all 7 languages), where per-language content lands. The chat widget (P13-T5) is front-end only and does not depend on it; Phase 15's answer API does |
 
 ---
 
@@ -2284,3 +2285,46 @@ assert the gate fails.
 **Decided (owner, 17 Oct 2026): vendored.** The `.git` and `_ds/` are gone, the
 prototype, brief and screenshots stay as the admin's reference. The archived `.git` lives outside
 the repo. See P11-T2.
+
+---
+
+## 38 · Three content files, three different per-language shapes
+
+**Found 24 Oct 2026**, while planning the chat widget: a bot has to answer in the visitor's language,
+which meant asking what shape the content it would be grounded in actually has. The answer is that
+there is no single shape.
+
+| File | How language is carried | Example keys |
+|---|---|---|
+| `data/products.json` | **per-language objects on text fields** — `title`, `desc` (finding 19, fixed at P9-T1) | `id, title, sku, price, status, cat, badges, model` |
+| `data/cases.json` | **each ITEM keyed by language at the top level** | `zh, en, de, es, fr, ja, ru` |
+| `data/faq.json` | **not at all** — `q` and `a` are plain strings | `id, cat, q, a` |
+
+Three files, three answers, and one of them does not carry language in any form. **Non-negotiable 6**
+says every text field is a per-language object with a `zh` fallback; `faq.json` does not meet it and
+`cases.json` meets a different reading of it.
+
+**Why nothing is broken today.** Migrated pages are Chinese-only until Phase 14 (finding 24, an
+accepted regression), so no page ever asks `faq.json` for a language it does not have. The gap is
+invisible precisely because the feature that would expose it is deferred. That is the same shape as
+finding 28 — a per-language asset problem that only the thing which needs it can reveal.
+
+**What it blocks.**
+- **Phase 14** cannot render 常見問題 in seven languages without changing this file's shape.
+- **The admin's FAQ screen** in the final design specifies "an ordered list of questions and answers,
+  **per language**" with a bold lead-in label and bullets. The screen cannot be built against plain
+  strings.
+- **Phase 15's chat answer API** cannot ground answers in the FAQ for a non-Chinese visitor.
+- The **Missing translations** view (P12-T6) computes coverage from per-language objects; a file with
+  no language dimension cannot report coverage at all, so the FAQ would silently read as "nothing to
+  translate" rather than "entirely untranslated".
+
+**Not fixed here, and deliberately not fixed by the chat widget.** P13-T5 is front end only, with a
+single function boundary where answers will come from, so it neither reads nor needs this data. Fix
+belongs with **Phase 14**, as one decision about which shape wins — most likely `products.json`'s
+per-field objects, since `editor/lang.js`'s `project`/`merge` and the 26 checks in
+`scripts/test-editor-lang.js` already prove that shape — plus a migration for the other two.
+
+**Verify, when it is fixed:** every content file answers the same question the same way; a
+`test:i18n` check asserts the shape rather than trusting it; the Missing translations view reports
+the FAQ's real coverage instead of silence.
