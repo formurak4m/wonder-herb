@@ -116,6 +116,30 @@ move bought you.
 | **Your homepage sends about 72 MB to every visitor, on every visit.** The page loads all four 3D bottle models the moment it opens — whether or not the visitor ever scrolls to one — and adds a marker to each address that stops the browser from re-using what it already downloaded. | On a phone, roughly 72 MB of mobile data each time someone opens your home page, and a slow first view. A returning visitor pays it again in full, because the page is written in a way that deliberately prevents caching. | **Fixed.** A model now loads only when its slide is actually shown, and a visitor who never reaches a 3D slide downloads none of them at all. The marker that prevented caching is gone, so a returning visitor re-uses what they already have instead of downloading it again. |
 | **The medical citations on 憶活素 MemoProve are invisible to search engines.** The 醫學文獻參考 references are written into an empty box by a script when the page opens, so they exist only in the visitor's browser. | A visitor with JavaScript sees them. Google, Bing and the AI assistants that read your pages see an empty box — so the strongest evidence on that page counts for nothing in search. | **Fixed.** The citations are now written into the page itself, where crawlers read them. |
 
+## 7. Two FAQ answers we need you to approve — a gap on your public page
+
+Your current FAQ page answers five questions. The new page publishes those plus one we restored.
+**Two of your existing questions are not on the new page, and we are asking before we put them
+back**, because both make claims about what the product does and how it behaves in the body:
+
+| Question on your site today | Why it is held |
+|---|---|
+| **雲芝糖肽有什麼副作用？** (What are the side effects?) | A safety statement. If it is wrong, or reads as medical advice, it is the kind of claim a regulator or a customer's doctor will hold you to. |
+| **如何證實雲芝糖肽的功效？** (How is the efficacy proven?) | An efficacy claim. Same reason, and it is the single most sensitive sentence on a supplements site. |
+
+**This is not only a compliance decision, it is a commercial one.** Side effects and "does it
+actually work" are **what people search for before buying a supplement**. A FAQ that does not answer
+them sends that visitor to a search engine, and the answer they find will not be yours. "Removed" is
+not an answer to a question your customers are asking.
+
+**What we need:** the wording you are willing to stand behind for each, approved by whoever is
+responsible for your product claims. We will publish it exactly as given. Until then those two
+questions are absent from the public page, and that absence is a gap, not a fix.
+
+**We have already restored** 康草堂的雲芝糖肽與其他品牌有何不同？ (how your product differs from other
+brands), using your own current wording. That one describes your process and sourcing rather than a
+health outcome, so it did not need this review.
+
 ---
 
 ### Summary
@@ -123,6 +147,7 @@ move bought you.
 | # | Question | Blocks publishing? |
 |---|---|---|
 | 1 | Two prices (憶活素, PT3) | **Yes** |
+| 7 | Two FAQ answers: side effects, proof of efficacy | No, but the page ships without them |
 | 2 | Product names — with or without pack sizes | No |
 | 3 | Product descriptions — six products | No |
 | 4 | Missing photo on the PSP trial pack page | No |

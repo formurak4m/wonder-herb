@@ -403,6 +403,22 @@ Build 8 to 10 first, from the markup already on the live pages so nothing looks 
 - **Gotcha:** selection/instrumentation attributes Puck adds are for the canvas only. The renderer output must be clean (already true, since the renderer calls the components directly, not through Puck).
 
 ### P8-T3 · Publish an allow-list of directories, not the whole repo
+
+> **URGENCY RAISED — LIVE EXPOSURE, DO THIS EARLY IN PHASE 10 (owner, 24 Oct 2026).** Not "whenever
+> Phase 10 gets to it". `rebuild/editor` merged to `main`, so the deploy — which is still
+> `path: '.'`, the whole repository — now publishes `editor/`, `server/`, `renderer/`,
+> `sections/`, `scripts/`, `docs/` and the vendored admin design **under the client's own domain**.
+> **79 MB, 189 files, of which the public site needs a small fraction.**
+>
+> Nothing in it is a credential and nothing is customer data — `.env` and `*.xlsx` are gitignored
+> and do not ship, and the repository was already public on GitHub, so this is not a new disclosure.
+> What changed is that internal material is now **crawlable on a customer-facing URL**, and
+> `docs/FINDINGS.md` describes every security issue on this project.
+>
+> **Stopgap in place:** `robots.txt` now disallows `/docs/` and `/wonderherb-admin-frontend/` for
+> `*` and for each named AI crawler, matching the `/legacy/` pattern. That is a request to
+> well-behaved crawlers, **not** access control — the files are still served to anyone who asks.
+> This task is the real fix.
 > **SCHEDULED WITH PHASE 10** (owner, 16 Sep 2026). Phase 10 moves exactly the assets this
 > allow-list governs, so the two are done together rather than in sequence: today the deploy
 > publishes 337 KB of page CSS, 72 MB of `.glb`, and all of `editor/`, `renderer/`, `sections/`
@@ -909,7 +925,7 @@ baseline on the same run — the floor, not zero, because the live pages move by
 |---|---|---|---|---|
 | index.html | 1.15% | **11.03%** | 1.04% | **14.82%** |
 | 產品介紹 | 0.10% | **15.26%** | 0.12% | **15.04%** |
-| 常見問題 | 0.93% | **39.15%** | 1.25% | **47.64%** |
+| 常見問題 | 0.93% | **28.84%** | 1.25% | **37.67%** |  <!-- was 39.15/47.64 before 康草堂...與其他品牌有何不同 was restored, 24 Oct 2026 -->
 | 典型病例 | 0.49% | **4.08%** | 0.77% | **8.14%** |
 | 小册子 | 0.16% | **2.93%** | 0.15% | **2.72%** |
 | 研究報告 | 2.17% | **6.24%** | 0.77% | **7.00%** |

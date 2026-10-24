@@ -83,7 +83,7 @@ Other issues:
 - **Site content is NOT authoritative (owner, 15 Sep 2026):** the client will replace all of it. Content disputes are not blockers, and nothing further is to be investigated, escalated or changed on them unless the owner asks. **Don't change site data unless the owner explicitly asks.** Prices come from `data/products.json` (no price hold); PSP-500's out-of-stock state is committed.
 - Currency is HKD.
 
-Known issues are logged in `docs/FINDINGS.md` (39 findings so far), each with the phase that owns its fix. The index table at the top shows which are fixed. **Do not fix a finding out of its phase** unless the owner says so.
+Known issues are logged in `docs/FINDINGS.md` (41 findings so far), each with the phase that owns its fix. The index table at the top shows which are fixed. **Do not fix a finding out of its phase** unless the owner says so.
 
 ## The two changes we are adding (in order of value)
 
@@ -198,6 +198,7 @@ Month 2: all 18 pages, all 7 languages, full ~22 sections, add-page-from-templat
   - its behaviour file, if it is interactive (registered in `renderer/template.js` `BEHAVIOURS`).
 - **Identify products by SKU, never by `id`.** Database ids, the old pages' cart ids and the live catalogue's ids all differ (findings 19, 23).
 - **The store merges, never replaces:** no write path may delete a field its caller was not shown (finding 25, being fixed at P12-T3).
+- **The database is the source of truth for anything in a page tree.** `data/` is OUTPUT. `npm run export` writes what MongoDB holds and does NOT merge, so an edit made directly to `data/pages/*.json` is reverted by the next export, however long it survives first (finding 41: `assets.navActive` sat correct in 14 files for five weeks, then vanished, which would have shipped six product pages with a dead nav). No suite asserts it and none exercises `export`, so **the rule is the protection**.
 - **Verify by effect, with a negative control.** A check must fail when the thing it tests is removed. "No errors" is not verification (findings 12, 23).
 - **Findings describe; gates enforce.** A rule written in `docs/FINDINGS.md` and nowhere else is not a rule — it is worse than nothing, because it will be trusted at the moment it matters. If a finding says something is now checked, it **names the file and the assertion**; "guarded" with no citation is written as **NOT GATED** until it is one. A manual gate (a grep a human runs) is written into the phase that runs it, with the exact command. See the box at the top of `docs/FINDINGS.md` and finding 35, the audit that established this (19 of 21 claimed gates were real; one was mis-cited, one did not exist).
 - Preserve the existing test culture: every migrated page runs the SEO gate and `test:behaviour`.

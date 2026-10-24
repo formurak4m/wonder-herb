@@ -84,6 +84,8 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 37 | **A nested git repository is invisible to the leak gate**: `test:data` scans "every tracked file plus every untracked file git would add", but git reports a nested repo as a SINGLE directory entry, so 2.2 MB of `wonderherb-admin-frontend/` was scanned as one path name and never opened. The gate ran green over content it had not read | Medium — the repo is PUBLIC and the folder carries a design brief, staff names and sample contact details | **Phase 10**, with P8-T3. The claim is literally true (git would add a gitlink, not those files) and still misleading, which is the finding-35 class exactly |
 | 38 | **Three content files, three different per-language shapes**: `products.json` carries per-language objects on its text fields, `cases.json` keys each ITEM by language at the top level, and **`faq.json` has no language dimension at all — `q` and `a` are plain strings**. Non-negotiable 6 says every text field is a per-language object | Medium — masked today because migrated pages are Chinese-only (finding 24), so nothing renders the missing languages. Blocks multilingual grounding for the chat widget, and the admin design's FAQ screen assumes per-language | **Phase 14** (all 7 languages), where per-language content lands. The chat widget (P13-T5) is front-end only and does not depend on it; Phase 15's answer API does |
 | 39 | **The site chrome was built once per PAGE, not once per LANGUAGE**: `renderer/render.js` called `loadChrome()` outside the `LANGS_IN_SCOPE` loop, so every language of a page received the same chrome object. Any per-language wording in the header, footer, floating button or any future chrome element was impossible — not hard, impossible | Medium — structural. Invisible while only `zh` renders (finding 24), and it would have surfaced at Phase 14 as "why does the chrome not translate?" | **Fixed 24 Oct 2026** at P13-T5: the call moved inside the loop and `loadChrome(assets, lang)` takes the language. Found because the chat widget needed per-language strings; the fix is not a chat fix |
+| 40 | **Counting a class name across a file counts its CSS too** — and the migration changes exactly that property. Counting `faq-question` in 常見問題 gave 13 on the live page and 6 on the migrated one, read as "the FAQ lost 7 questions". It had not: the live page is **inline-styled**, so 7 of its 13 were the selector `.faq-question`; the migrated page links an external sheet, so all 6 of its hits were real elements. Both pages render 6 | Medium — it produced a confident, wrong number that was one step from a content edit on the owner's instruction | **Method, recorded 24 Oct 2026.** Count `class="x"`, not `x`, whenever the comparison spans a page that still has inline CSS |
+| 41 | **An edit made directly to a GENERATED file is reverted by the next `npm run export`.** `assets.navActive` was added to 14 page-tree FILES at P10-T1 and never to MongoDB. It sat correct for five weeks and the first export since stripped all 14 — the chrome partial's nav fix, silently undone | **High — latent.** Armed the moment the edit was made, and it would have detonated at the first publish from the admin, which is an export. **Nothing would have caught it:** no suite asserts `navActive` or the nav highlight, and no suite exercises `export` at all | **Rule, recorded 24 Oct 2026.** The database is the source of truth for anything in a page tree. Fixed by writing `navActive` into the 14 page documents, so export now preserves it |
 
 ---
 
@@ -2372,3 +2374,112 @@ read.
 **Verify, at Phase 14:** a page rendered in two languages carries two different chromes. There is no
 assertion for that today because there is only one language to render; the check belongs with the
 work that makes it checkable.
+
+---
+
+## 40 · Counting a class name across a file counts its CSS too
+
+**Found 24 Oct 2026**, immediately before merging to `main`, while reporting what a visitor would
+see change. It is a measurement finding, not a code one, and it is recorded because the migration
+**changes the property that makes the mistake possible**.
+
+**What happened.** Comparing the FAQ page before and after migration, I counted occurrences of
+`faq-question` in each file: **13** on the live page, **6** on the migrated one, and reported that
+the FAQ had lost seven questions. The owner — correctly, on that information — instructed me to
+restore them.
+
+The count was wrong:
+
+| | total `faq-question` | as `.faq-question` in CSS | as `class="faq-question"` |
+|---|---|---|---|
+| live page | 13 | **7** | 6 |
+| migrated page | 6 | 0 | 6 |
+
+**Both pages render six.** The live page carries its stylesheet **inline**, so its rules counted as
+content; the migrated page links `assets/page-faq.css` (D2), so it has none.
+
+**Why it is worth a finding rather than a shrug.** The migration's whole job includes moving CSS out
+of the document, so **every before/after comparison in this project spans exactly this asymmetry** —
+an inline-styled original against an externally-styled rendering. Any count of a class name,
+an id, or a colour across those two files is inflated on one side only, in the direction that makes
+the new page look emptier. There are 3 hand-coded pages left with inline CSS and 15 retired
+originals in `legacy/` that a future comparison might reach for.
+
+**The method, which is the fix:** count `class="x"` or a parsed DOM, never the bare token, whenever
+a comparison spans a page that still has inline CSS. Better, count what is *rendered*: the number
+that mattered here was available from the DOM in one line.
+
+**What it nearly cost.** The instruction it produced was "add the 8 missing questions". Acting on it
+would have published eight questions the page never lost, inventing or duplicating content on a
+live customer page. The real difference, found once the count was redone properly, was that the five
+questions had been **substituted, not removed** — which is a different decision with different
+consequences, and the owner took it differently (restore one, hold two for the health-claims
+review; see `docs/CLIENT-QUESTIONS.md` §7).
+
+**Related:** the same class of error as finding 35 — a number nobody re-derived, trusted at the
+moment it mattered.
+
+---
+
+## 41 · An edit to a generated file is reverted by the next export
+
+**Found 24 Oct 2026**, by running `npm run export` for the first time in five weeks — to add one
+FAQ question the owner asked for. It changed **15 files**, not one.
+
+```
+$ npm run export
+15 file(s) changed.
+```
+
+Fourteen of them were page trees, and every one had lost `assets.navActive`.
+
+**How it was armed.** `navActive` was added at P10-T1 to fix the chrome partial's nav regression:
+without it a product page highlights 產品介紹 rather than itself, and on the homepage the logo took
+the highlight. The fix was written **into the 14 tree files** and never into MongoDB. Every suite
+passed, every page rendered correctly, and the branch shipped. It was correct for five weeks.
+
+**`npm run export` is MongoDB → `data/`.** It does not merge; it writes what the database holds.
+Anything living only in the file is not "extra", it is **absent from the source** and disappears the
+next time anybody exports.
+
+**What it would have cost, measured rather than asserted:**
+
+| page | with `navActive` | after an export |
+|---|---|---|
+| 產品介紹 | highlights 產品介紹 | highlights 產品介紹 — unaffected, the `chromeFrom` fallback is itself |
+| **產品_T3** (and the other five product pages) | highlights 產品介紹 | **nothing highlighted at all** |
+
+So the six product detail pages would have published with a dead navigation state. Not a crash, not
+an error — the page looks finished, and the only clue is a nav item that never lights up.
+
+**Why nothing would have caught it**, checked rather than assumed:
+- **No suite asserts `navActive`**, or the nav highlight by effect. `grep` over every
+  `scripts/test-*.js` returns nothing.
+- **No suite exercises `export`.** Every check runs against the files as they currently are, so
+  "would a future export change this?" is a question the test suite does not ask and, as written,
+  cannot ask.
+- The visual diff would have seen it — a nav item changing state is pixels — but only if someone
+  re-diffed **after** an export, and the whole point is that the export happens later, somewhere
+  else, probably from the admin.
+
+**Where it would have detonated.** P12-T5 makes **publish** an admin button, and publish *begins*
+with export. So the first time the client pressed Publish, fourteen trees would have quietly lost a
+field and six pages would have shipped with a dead nav. The feature that triggers it is the feature
+being built.
+
+**The rule, which is the protection:**
+
+> **The database is the source of truth for anything in a page tree.** `data/` is output. An edit
+> made directly to a generated file is a temporary edit, however long it survives.
+
+**Fixed** by writing `navActive` into the 14 page documents in MongoDB and re-exporting: the file
+and the editing surface now agree, and `git status` after an export shows only the intended change.
+
+**Not fixed, and worth saying plainly:** there is still no automated protection. A test that renders
+every tree, exports, and re-renders would catch this class — it would also need a database, which is
+why no existing suite does it. **Until such a check exists the rule is the only protection**, which
+is exactly the position finding 35 says to write down rather than assume. Candidate owner: P12-T5,
+whose whole job is to make export safe to trigger from a button.
+
+**Sibling of finding 25** (the store merges, never replaces): both are about a write path removing a
+field nobody showed it. Finding 25 is inside the API; this one is the pipeline around it.
