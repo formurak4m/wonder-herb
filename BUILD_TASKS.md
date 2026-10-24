@@ -2385,6 +2385,107 @@ When Phases 0-12 are done: the client can log in over the internet, edit the cor
 - Generate WebP (and AVIF if it pays) alongside the original at upload time, in the same **content-addressed** scheme, so `immutable` caching still holds and `test:media` needs no exception.
 - **Verify:** every page re-diffed at 1280 and 390, scripts on and off; `test:media` green with the new field shape; the bytes a visitor downloads measurably smaller than today, stated as a number.
 
+### P13-T5 · The chat widget — FRONT END ONLY, with one boundary for Phase 15
+
+- **Goal:** a chat launcher and panel in the bottom-right of all 18 public pages, shipped **visible
+  and enabled**, telling the truth about the fact that there is no answer service yet.
+- **Owner's scope (24 Oct 2026):** build the UI, the states, the seven languages, the chrome
+  integration and the config surface. **Do NOT build keyword matching, a `faq.json` lookup, or any
+  answer logic** — a scripted matcher is thrown away the moment Phase 15 lands, so it was never
+  written.
+
+#### The boundary, which is the point of the task
+
+`requestAnswer(text, lang)` in `assets/behaviour/chat.js` is the **only** place that knows where an
+answer comes from. It returns `{ kind }`, one of `answer | refusal | unavailable | offline | error`,
+and nothing else in the file inspects anything but `kind`. **Phase 15 replaces that function body
+with an API call and changes nothing else** — not the markup, not the states, not the strings.
+
+Today it returns `unavailable`, and the UI is honest about it: the input is **disabled with its
+reason visible in the placeholder**, and there is **no typing indicator**, because nothing is typing.
+A dead input that silently swallowed a message would pass a "does it open" check and fail the person
+typing into it.
+
+#### The refusal state is built now, though nothing can trigger it
+
+This is a health-products site. A question about treating a condition must be refused and referred to
+a practitioner, and retrofitting that after answers start flowing is how it gets missed. The
+rendering path, the styling and the announcement all exist and are asserted; Phase 15 only has to
+return `{ kind: 'refusal' }`.
+
+The wording is **impersonal by owner decision**: *"Questions about treating a condition can't be
+answered here"*, not *"I can't answer"*. On a health site the first person reads as a person
+declining, which invites being treated as an adviser.
+
+**A response-time promise was proposed and cut.** The draft said "we usually reply the same day".
+Nothing on the site commits to that — the only "working days" language anywhere is about *shipping*
+(1–2 days delivery, `data/faq.json`) — and nobody had committed to it. A response-time promise the
+client cannot keep is worse than no promise.
+
+#### The stacking was measured, and the premise was wrong
+
+The widget was planned at `bottom: 140px` beside a 76px WhatsApp circle. Measured at 390×844, the
+WhatsApp button **is not a circle on a phone**: at ≤768px `.mobile-fixed-contact-btn` becomes a
+**full-width 390×49 bar pinned to `bottom: 0`** with its label showing
+(`assets/page-index.css:3020`). The cart is **not** in the thumb zone either — it lives in the
+sticky nav at the top.
+
+| | launcher | clears |
+|---|---|---|
+| desktop | 76px circle, `bottom: 140px; right: 32px` | the 76px circle at `bottom: 48` (top edge 124px), 16px gap |
+| phone | **56px** circle, `bottom: 61px; right: 16px` | the 49px bar, 12px gap; the panel then goes near-full-screen |
+
+#### Files
+
+**New:** `renderer/chrome/chat.html`, `assets/chat.css`, `assets/behaviour/chat.js`.
+
+**Modified:** `data/site.json` (the `chat` block: `enabled`, `handoffHref`, and 10 strings × 7
+languages), `renderer/chrome.js` (`{{chat.*}}`, escaped, per language), `renderer/template.js`
+(emit the partial, the sheet and the script), `renderer/render.js` (the chrome is built inside the
+language loop, because the wording is per language), `product.html` / `購物車.html` /
+`account.html` (the three hand-coded pages, carrying the identical markup), `scripts/test-behaviour.js`.
+
+**Two files were modified that the pre-build list did not name**, and the reason is worth keeping:
+`renderer/chrome.js`, because its `fill()` only ever knew `{{media.*}}` and the strings needed a
+filler of their own — escaped, unlike the media one, since these are sentences that land in
+`aria-label` and `placeholder` and already contain apostrophes; and `renderer/render.js`, because
+chrome was built once *outside* the language loop, so per-language wording was impossible until it
+moved inside.
+
+`renderer/chrome/floating.html` is **not** in the list: the chat markup went into its own partial
+rather than being appended there, which left the WhatsApp button's file byte-identical and made
+`enabled: false` leave no markup behind.
+
+#### Why chat.css is its own sheet
+
+`assets/chrome.css` is **generated** by `scripts/extract-css.js` and must not be hand-edited, and no
+page tree should have to know about a piece of chrome. So `renderer/template.js` emits
+`assets/chat.css` immediately **before** `chrome.css` — which keeps D1's "chrome.css is the last
+stylesheet" guard true. The chat widget must not be the thing that weakens that guard.
+
+#### Verify
+
+- `chatOpens@1280` and `@390`: opens, input disabled **with a reason**, **no typing indicator**,
+  WhatsApp in the panel, Escape closes and returns focus to the launcher.
+- `chatRefusal@1280`: the refusal renders in the log with the **exact approved wording**, driven
+  through the boundary because the UI cannot reach it yet — a state nobody can reach is a state
+  nobody has checked.
+- **Negative control:** without the behaviour files, every one of those fails (the existing
+  `-no-behaviour` scenario already blocks `assets/behaviour/*`).
+- **Scripts off:** the launcher and panel are hidden by the template's scripts-off rule, so the
+  existing dead-control sweep finds nothing new; the unguarded control finds them, as it must.
+- **Nothing is stored.** No transcript, no `localStorage`, no analytics. PDPO retention is a Phase 15
+  decision and nothing may be kept before it is taken.
+
+#### Deferred
+
+- The answer API, the enabled input, the typing indicator in use, and storage: **Phase 15**, where
+  the handoff should also create an **enquiry** for the admin's Enquiries inbox.
+- Multilingual grounding depends on **finding 38** (three content files, three per-language shapes).
+  The widget itself does not: it reads no content.
+- `de/es/fr/ja/ru` wording is a translation of the approved `zh`/`en` text and **needs a native read
+  before cutover**; the brief asks the same of the admin's Chinese labels.
+
 ## Phase 13G — GEO: AI-crawler visibility, as deliberate work
 
 Lettered, not numbered, so Phases 14–18 keep their existing numbers.

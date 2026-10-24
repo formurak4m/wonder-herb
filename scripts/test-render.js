@@ -197,10 +197,19 @@ console.log('\n=== behaviour scripts are derived from the tree, and cannot be sk
 
 const { baseTemplate } = require(path.join(ROOT, 'renderer', 'template.js'));
 const scriptSrcs = h => (h.match(/<script src="([^"]+)" defer><\/script>/g) || []).map(t => t.replace(/.*src="/, '').replace(/".*/, ''));
-check('a chrome page with a product-grid links site.js then quick-view.js, deferred, after the reveal script',
-      JSON.stringify(scriptSrcs(html)) === JSON.stringify(['assets/site.js', 'assets/behaviour/quick-view.js']) &&
+/* chat.js is appended because the chat widget is CHROME (P13-T5), so a page
+   with chrome gets it and the chrome-less draft below does not. It is LAST on
+   purpose: it depends on no page content, so keeping it at the end means
+   adding it never reordered an existing tag. This assertion is an exact list
+   rather than a "contains" - it is what caught the widget being added. */
+check('a chrome page with a product-grid links site.js then quick-view.js then chat.js, deferred, after the reveal script',
+      JSON.stringify(scriptSrcs(html)) ===
+        JSON.stringify(['assets/site.js', 'assets/behaviour/quick-view.js', 'assets/behaviour/chat.js']) &&
       html.indexOf('src="assets/site.js"') > html.indexOf('scroll reveal'),
       scriptSrcs(html).join(', '));
+check('  the chat widget is last, so adding it reordered nothing',
+      scriptSrcs(html)[scriptSrcs(html).length - 1] === 'assets/behaviour/chat.js',
+      scriptSrcs(html).slice(0, -1).join(', ') + ' then chat.js');
 check('both files exist', scriptSrcs(html).every(s => fs.existsSync(path.join(ROOT, s))), 'on disk');
 check('a page with neither chrome nor a behaviour section loads no behaviour script',
       scriptSrcs(renderPage({ slug: 'plain', path: 'plain.html', sections: [] }, PRIMARY, data, {})).length === 0, 'none');

@@ -1,0 +1,61 @@
+<!-- The chat widget (P13-T5). FRONT END ONLY: there is no answer backend yet,
+     so the panel opens in its "unavailable" state and routes to WhatsApp. The
+     launcher and panel are PRE-RENDERED and hidden by the scripts-off rule in
+     renderer/template.js, matching how .btn-quickview and the language
+     switcher already behave - a control that needs JavaScript is not shown
+     without it. {{chat.*}} is filled from data/site.json, so every word here
+     is a data edit. The WhatsApp button above is untouched: this sits ABOVE
+     it, because on a phone that button is a full-width 49px bar at bottom:0,
+     not a corner circle. -->
+<button type="button" class="wh-chat-launcher" id="wh-chat-launcher"
+        aria-expanded="false" aria-controls="wh-chat-panel" aria-label="{{chat.launcher}}">
+  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
+       stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.3-.6L3 21l1.8-5.1A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/>
+  </svg>
+</button>
+
+<!-- The states that are not on screen at load - refusal, error, offline - ride
+     on the panel as data-* so there is ONE copy of every string, in
+     data/site.json, and assets/behaviour/chat.js reads them back rather than
+     holding a second copy that could drift. Escaped by renderer/chrome.js. -->
+<div class="wh-chat-panel" id="wh-chat-panel" role="dialog"
+     aria-labelledby="wh-chat-title" aria-describedby="wh-chat-state"
+     data-refusal="{{chat.refusal}}"
+     data-error="{{chat.error}}"
+     data-offline="{{chat.offline}}" hidden>
+  <div class="wh-chat-head">
+    <h2 class="wh-chat-title" id="wh-chat-title">{{chat.title}}</h2>
+    <button type="button" class="wh-chat-close" id="wh-chat-close" aria-label="{{chat.close}}">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <!-- role="log" + aria-live="polite" so a screen reader hears a new message
+       without the panel stealing focus mid-read. -->
+  <div class="wh-chat-log" id="wh-chat-log" role="log" aria-live="polite" aria-relevant="additions">
+    <p class="wh-chat-msg wh-chat-msg-system" id="wh-chat-state">{{chat.unavailable}}</p>
+  </div>
+
+  <div class="wh-chat-foot">
+    <a class="wh-chat-handoff" href="{{chat.handoffHref}}" rel="noopener">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+        <path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.3-.2-2.5.7.7-2.4-.2-.3A8 8 0 0 1 12 4z"/>
+      </svg>
+      {{chat.handoff}}
+    </a>
+    <!-- Disabled with a VISIBLE reason, never a dead input that swallows what
+         someone types. Phase 15 enables it; no markup here changes. -->
+    <form class="wh-chat-composer" id="wh-chat-composer">
+      <label class="wh-chat-sr" for="wh-chat-input">{{chat.title}}</label>
+      <input type="text" id="wh-chat-input" class="wh-chat-input"
+             placeholder="{{chat.placeholder}}" autocomplete="off" disabled>
+      <button type="submit" class="wh-chat-send" aria-label="{{chat.send}}" disabled>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
+      </button>
+    </form>
+  </div>
+</div>

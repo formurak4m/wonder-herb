@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&amp;family=Playfair+Display:wght@400;500;600;700&amp;display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="assets/page-research.css">
+  <link rel="stylesheet" href="assets/chat.css">
   <link rel="stylesheet" href="assets/chrome.css">
 
   <script type="application/ld+json">
@@ -120,6 +121,7 @@
   <noscript><style>
     /* controls that need JavaScript: not shown without it */
     .menu-toggle, .lang-selector, .lang-selector-mobile { visibility: hidden !important; }
+    .wh-chat-launcher, .wh-chat-panel { display: none !important; }
   </style></noscript>
 </head>
 <body>
@@ -246,6 +248,58 @@
   </div>
 </footer>
 <a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> <span class="btn-text">立即諮詢</span></a>
+<button type="button" class="wh-chat-launcher" id="wh-chat-launcher"
+        aria-expanded="false" aria-controls="wh-chat-panel" aria-label="開啟對話">
+  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
+       stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.3-.6L3 21l1.8-5.1A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/>
+  </svg>
+</button>
+
+<!-- The states that are not on screen at load - refusal, error, offline - ride
+     on the panel as data-* so there is ONE copy of every string, in
+     data/site.json, and assets/behaviour/chat.js reads them back rather than
+     holding a second copy that could drift. Escaped by renderer/chrome.js. -->
+<div class="wh-chat-panel" id="wh-chat-panel" role="dialog"
+     aria-labelledby="wh-chat-title" aria-describedby="wh-chat-state"
+     data-refusal="有關治療方面的問題，本對話無法解答。如涉及您的健康狀況、症狀或正在服用的藥物，請諮詢專業醫療人員。產品、成分、檢測及訂購方面的問題，可在此查詢。"
+     data-error="發生錯誤，訊息未能傳送。"
+     data-offline="您目前似乎離線。" hidden>
+  <div class="wh-chat-head">
+    <h2 class="wh-chat-title" id="wh-chat-title">線上對話</h2>
+    <button type="button" class="wh-chat-close" id="wh-chat-close" aria-label="關閉對話">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <!-- role="log" + aria-live="polite" so a screen reader hears a new message
+       without the panel stealing focus mid-read. -->
+  <div class="wh-chat-log" id="wh-chat-log" role="log" aria-live="polite" aria-relevant="additions">
+    <p class="wh-chat-msg wh-chat-msg-system" id="wh-chat-state">網上即時對話尚未開放。如有查詢，請透過 WhatsApp 聯絡我們。</p>
+  </div>
+
+  <div class="wh-chat-foot">
+    <a class="wh-chat-handoff" href="https://wa.me/85293318571/" rel="noopener">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+        <path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.3-.2-2.5.7.7-2.4-.2-.3A8 8 0 0 1 12 4z"/>
+      </svg>
+      透過 WhatsApp 聯絡我們
+    </a>
+    <!-- Disabled with a VISIBLE reason, never a dead input that swallows what
+         someone types. Phase 15 enables it; no markup here changes. -->
+    <form class="wh-chat-composer" id="wh-chat-composer">
+      <label class="wh-chat-sr" for="wh-chat-input">線上對話</label>
+      <input type="text" id="wh-chat-input" class="wh-chat-input"
+             placeholder="對話尚未開放" autocomplete="off" disabled>
+      <button type="submit" class="wh-chat-send" aria-label="傳送" disabled>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
+      </button>
+    </form>
+  </div>
+</div>
 
 <!-- scroll reveal: see docs/FINDINGS.md finding 12. Load-bearing. -->
 <script>
@@ -268,5 +322,6 @@
 </script>
 <!-- behaviour: see docs/FINDINGS.md finding 23. Load-bearing. -->
 <script src="assets/site.js" defer></script>
+<script src="assets/behaviour/chat.js" defer></script>
 </body>
 </html>

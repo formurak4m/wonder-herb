@@ -676,6 +676,72 @@ const EFFECTS = {
     } finally { await ctx.close(); }
   },
 
+  /* The chat widget (P13-T5), FRONT END ONLY. What is asserted is the honesty
+     of the shipped state, because that is the part that can mislead a visitor:
+     the panel opens, the input is DISABLED and says why, there is NO typing
+     indicator (nothing is typing), and the WhatsApp route is in the panel. A
+     dead input that silently swallowed a message would pass a "does it open"
+     check and fail the person typing into it. */
+  async chatOpens(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      const atLoad = await page.evaluate(() => ({
+        launcher: !!document.querySelector('#wh-chat-launcher'),
+        panelHidden: document.querySelector('#wh-chat-panel').hidden
+      }));
+      if (!atLoad.launcher) { this.detail = 'no launcher in the page'; return false; }
+      if (!atLoad.panelHidden) { this.detail = 'the panel is open before anyone asked'; return false; }
+      await page.click('#wh-chat-launcher', { timeout: 2000 });
+      const open = await until(() => page.evaluate(() => {
+        const p = document.querySelector('#wh-chat-panel');
+        const i = document.querySelector('#wh-chat-input');
+        const state = document.querySelector('#wh-chat-state');
+        return !p.hidden &&
+               document.querySelector('#wh-chat-launcher').getAttribute('aria-expanded') === 'true' &&
+               i.disabled === true &&
+               (i.getAttribute('placeholder') || '').length > 0 &&
+               (state.textContent || '').trim().length > 0 &&
+               document.querySelectorAll('.wh-chat-typing').length === 0 &&
+               !!document.querySelector('.wh-chat-handoff[href^="https://wa.me/"]');
+      }), 2000);
+      if (!open) { this.detail = 'opened but the shipped state is not honest'; return false; }
+      /* Escape must close it and give focus back, or a keyboard user is
+         trapped in a panel that cannot answer them. */
+      await page.keyboard.press('Escape');
+      const closed = await until(() => page.evaluate(() =>
+        document.querySelector('#wh-chat-panel').hidden &&
+        document.activeElement && document.activeElement.id === 'wh-chat-launcher'), 2000);
+      this.detail = 'opens, input disabled with a reason, no typing indicator, WhatsApp in panel, Escape returns focus: ' + closed;
+      return closed;
+    } finally { await ctx.close(); }
+  },
+
+  /* The refusal state. It cannot be reached through the UI until Phase 15
+     enables the input, and a state nobody can reach is a state nobody has
+     checked - so it is driven through the boundary the widget exposes. The
+     exact approved wording is asserted, like the cart's refusals: wording that
+     drifts on a health site is the defect, not a detail. */
+  async chatRefusal(width) {
+    const ctx = await context(width); const page = await newPage(ctx);
+    try {
+      await page.goto(url(this.scenario, this.file), { waitUntil: 'load' });
+      const expected = (require('../data/site.json').chat.strings.zh.refusal || '').trim();
+      const shown = await page.evaluate(() => {
+        if (!window.WonderHerbChat) return { missing: true };
+        window.WonderHerbChat.render({ kind: 'refusal' });
+        const el = document.querySelector('.wh-chat-msg-refusal');
+        return { missing: false, text: el ? el.textContent.trim() : null,
+                 inLog: !!(el && el.closest('#wh-chat-log')) };
+      });
+      if (shown.missing) { this.detail = 'the widget exposes no boundary to drive'; return false; }
+      const ok = shown.text === expected && shown.inLog;
+      this.detail = ok ? 'refusal renders in the log with the approved wording'
+                       : 'wording or placement wrong (in log: ' + shown.inLog + ')';
+      return ok;
+    } finally { await ctx.close(); }
+  },
+
   async heroSlide(width) {
     const ctx = await context(width); const page = await newPage(ctx);
     try {
@@ -957,7 +1023,13 @@ async function runEffect(name, scenario, width, page) {
         } : {},
         p.keys.indexOf('product-carousel') !== -1 ? {
           'productRotate@1280': 'the arrows rotate the product carousel through all six products'
-        } : {});
+        } : {},
+        /* the chat widget is CHROME, so it is on every page - no key test */
+        {
+          'chatOpens@1280': 'chat opens, the input is disabled WITH a reason, no typing indicator, WhatsApp in the panel, Escape returns focus',
+          'chatOpens@390': 'the same on a phone, where it must clear the full-width WhatsApp bar',
+          'chatRefusal@1280': 'the refusal state renders in the log with the approved wording (P13-T5; nothing can trigger it until Phase 15)'
+        });
       for (const [k, label] of Object.entries(EXTRA)) {
         const [name, w] = k.split('@');
         const r = await runEffect(name, p.key, Number(w), ctxPage);

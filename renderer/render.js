@@ -294,11 +294,14 @@ function loadStyles(sourcePage) {
                  the nav on all six. Carried per tree, read from each original.
      chromeFrom  the page being rendered (the fallback for navActive).
      svgFilters  index.html's SVG filter defs (finding 33). */
-function loadChrome(assetsOrPage) {
+function loadChrome(assetsOrPage, lang) {
   if (!assetsOrPage) return {};
   const a = typeof assetsOrPage === 'string' ? { chromeFrom: assetsOrPage } : assetsOrPage;
   if (!a.chromeFrom) return {};
-  return siteChrome(a.navActive || a.chromeFrom, { filters: Boolean(a.svgFilters) });
+  /* `lang` picks the chat widget's wording (P13-T5) and nothing else; it is
+     optional, so every existing caller keeps working and falls back to zh. */
+  return siteChrome(a.navActive || a.chromeFrom,
+                    { filters: Boolean(a.svgFilters), lang: lang });
 }
 
 function loadTree(file) {
@@ -361,7 +364,6 @@ function main(argv) {
     const tree = loadTree(path.isAbsolute(f) ? f : path.join(process.cwd(), f));
     const assets = tree.assets || {};
     const styles = loadStyles(assets.stylesFrom);
-    const chrome = loadChrome(assets);
     if (assets.stylesFrom) {
       console.log('  ! CSS lifted from ' + assets.stylesFrom +
                   ' (' + styles.length + ' block(s), ' +
@@ -370,6 +372,11 @@ function main(argv) {
     }
 
     LANGS_IN_SCOPE.forEach(lang => {
+      /* Inside the language loop, not outside it: the chat widget's wording
+         (P13-T5) is per language, so the chrome has to be built for the
+         language being rendered. Identical output while only zh is in scope;
+         correct when Phase 14 adds the rest. */
+      const chrome = loadChrome(assets, lang);
       const html = renderPage(tree, lang, data, { styles, chrome, registry });
       /* Every LOCAL asset the page links must exist, or the page ships dead or
          unstyled. The script half was here from P9-T1; the stylesheet half was

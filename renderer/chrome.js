@@ -63,6 +63,39 @@ function fill(html, media) {
   });
 }
 
+const PRIMARY_LANG = 'zh';
+
+/* {{chat.*}} -> the chat widget's wording (P13-T5).
+ *
+ * Kept separate from `fill` above because these are STRINGS chosen by page
+ * language, not URLs: `site.chat.strings[lang]` with the standard zh fallback,
+ * plus `handoffHref`, which is the same in every language.
+ *
+ * ESCAPED, unlike the media filler. A media value is a URL we wrote; these are
+ * sentences an admin will eventually edit, they land in `aria-label` and
+ * `placeholder` attributes as well as in text, and they already contain
+ * apostrophes ("isn't", "can't"). An unescaped `&` or `"` would break the
+ * attribute it sits in, so every value is escaped for both positions.
+ *
+ * An unknown token is left alone rather than replaced with "undefined", the
+ * same rule as `fill`: a visible broken token is a bug someone notices. */
+const escapeValue = s => String(s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+function chatStrings(site, lang) {
+  const chat = site.chat || {};
+  const byLang = chat.strings || {};
+  const picked = byLang[lang] || byLang[PRIMARY_LANG] || {};
+  return Object.assign({}, picked, { handoffHref: chat.handoffHref || '' });
+}
+
+function fillChat(html, site, lang) {
+  const values = chatStrings(site, lang);
+  return html.replace(/\{\{chat\.([\w.]+)\}\}/g, (whole, key) =>
+    typeof values[key] === 'string' ? escapeValue(values[key]) : whole);
+}
+
 /* Mark the nav link for the page being rendered.
    ONLY INSIDE <nav class="nav-menu">. The header holds other links to the same
    pages - the logo links to index.html, and the phone bar links to 產品介紹 -
@@ -84,18 +117,26 @@ function markActive(header, page) {
   return header.replace(nav[0], marked);
 }
 
-/* { header, footer, floating, filters } for one page.
+/* { header, footer, floating, filters, chat } for one page.
    `filters` (the SVG filter defs five of index.html's CSS rules apply, finding
-   33) is emitted only for the page that asks for it. */
+   33) is emitted only for the page that asks for it.
+   `chat` (P13-T5) is emitted only while data/site.json says `chat.enabled`, so
+   turning the widget off is a data edit and leaves no markup behind. It is its
+   own partial rather than part of floating.html so that switching it off does
+   not mean editing around the WhatsApp button, which it must never disturb. */
 function siteChrome(page, opts) {
   const o = opts || {};
-  const media = (siteData().chrome) || {};
+  const site = siteData();
+  const media = site.chrome || {};
+  const lang = o.lang || PRIMARY_LANG;
+  const chatOn = Boolean(site.chat && site.chat.enabled);
   return {
     header: fill(markActive(readPart('header.html'), page), media),
     footer: fill(readPart('footer.html'), media),
     floating: fill(readPart('floating.html'), media),
-    filters: o.filters ? fill(readPart('filters.html'), media) : ''
+    filters: o.filters ? fill(readPart('filters.html'), media) : '',
+    chat: chatOn ? fillChat(readPart('chat.html'), site, lang) : ''
   };
 }
 
-module.exports = { siteChrome, fill, markActive, siteData };
+module.exports = { siteChrome, fill, fillChat, chatStrings, markActive, siteData };
