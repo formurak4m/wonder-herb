@@ -1,0 +1,1858 @@
+# BUILD_TASKS.md — Wonder Herb Admin Rebuild (for Claude Code)
+
+A sequenced, detailed build guide. Work through it top to bottom. Do not skip the **Verify** step in each task before moving to the next. If the repo differs from what a task assumes, fix the task to match reality and note the change in a short comment, do not force it.
+
+Read `CLAUDE.md` first for the non-negotiables. This file is the *how*; CLAUDE.md is the *rules*.
+
+> Honest note: no document guarantees zero errors. This one removes ambiguity and gives you an acceptance test per task so you catch breakage immediately instead of three phases later. Run `npm run test:all` at every phase gate.
+
+---
+
+## 0. How to use this file
+
+- Each task has: **Goal · Depends on · Files · Steps · Verify (done-when) · Gotchas.**
+- Task IDs are stable (P1-T2 etc.). Tick the checklist as you go.
+- After each task that changes behaviour, run its **Verify** and, at phase gates, `npm run test:all`.
+- Never break the two non-negotiables: (1) the public site stays static HTML on GitHub Pages, (2) if the API is off, the admin and site fall back to committed files.
+- Currency is HKD. Languages are `zh` (primary) + `en, de, es, fr, ja, ru` (fall back to `zh`).
+- When you finish a phase, update `CLAUDE.md` "Current state" so the next session is accurate.
+
+### Progress checklist
+```
+[ ] Phase 0  Baseline, branch, safety net
+[ ] Phase 1  Toolchain (React/Vite/esbuild) added without touching the live site
+[ ] Phase 2  Page-tree data model in Mongo + export
+[ ] Phase 3  i18n resolver (per-language field -> value, zh fallback)
+[ ] Phase 4  Section components (core 8-10), shared by editor + renderer
+[ ] Phase 5  Renderer: page tree + data -> pre-rendered static HTML
+[ ] Phase 6  SEO assertion gate (blocks a bad publish)
+[ ] Phase 7  Wire renderer into the publish pipeline
+[ ] Phase 8  Puck editor app (canvas, add/reorder, save to API)
+[ ] Phase 9  Migrate the core pages (zh) and verify visually
+[ ] Phase 10 Media + 72MB .glb moved to R2/CDN
+[ ] Phase 11 Host API + MongoDB (off the laptop)
+[ ] Phase 12 Permissions + version history + rollback
+[ ] --- Month 1 done: usable slice, Wix still live ---
+[ ] Phase 13 All 18 pages, full ~22 sections
+[ ] Phase 14 All 7 languages pre-rendered + hreflang
+[ ] Phase 15 Forms (visitor submissions -> dashboard)
+[ ] Phase 16 Dashboard parity (contacts, orders, analytics)
+[ ] Phase 17 Security hardening + staging
+[ ] Phase 18 Cutover from Wix
+```
+
+---
+
+## Architecture in one picture (what you are building)
+
+```
+Editor (Puck, React)  ─┐
+Admin + Pages CMS ─────┤─► API + MongoDB ──export──► data/ (content + page trees, in Git)
+                        │                                   │
+                        │                          renderer (React server render)
+                        │                                   ▼
+                        │                     pre-rendered static HTML + JSON-LD + hreflang
+                        │                                   │
+                        └──────────────────────────────────┴──► commit to main ─► GitHub Pages
+Media + .glb ──► R2 / CDN (not in Git)
+```
+
+The one idea that makes it work: **section components are React and are used by BOTH the Puck canvas and the Node renderer.** One source of truth, so the editor preview matches the published page.
+
+---
+
+## Phase 0 — Baseline, branch, safety net
+
+### P0-T1 · Snapshot and branch
+- **Goal:** never lose the working state.
+- **Steps:**
+  1. `git status` and `git stash` or commit anything local first.
+  2. Create a branch: `git checkout -b rebuild/editor`.
+  3. Confirm the current pipeline still works end to end: `npm run seed` (into a scratch DB), `npm run dev`, open `admin/index.html` via the API, `npm run export`, `git diff data/` shows sensible output.
+- **Verify:** `npm run test:all` passes on a clean checkout before you change anything.
+- **Gotcha:** do all new work on the branch. `main` auto-deploys to production via `.github/workflows/static.yml`.
+
+### P0-T2 · Record the baseline of the live pages
+- **Goal:** be able to prove "the site still looks the same" after migration.
+- **Steps:**
+  1. For each of the 18 HTML pages, save a rendered screenshot at 1280px and 390px (desktop + phone). Use Playwright: `npx playwright screenshot`.
+  2. Store under `baseline/screens/<page>.<width>.png`. Add `baseline/` to `.gitignore` (do not deploy it).
+  3. Save each page's current `<head>` (title, meta description, canonical, JSON-LD, hreflang) to `baseline/head/<page>.html` for later comparison.
+- **Verify:** `baseline/` contains 18 pages × 2 widths of screenshots and 18 head snapshots.
+- **Gotcha:** these are your visual and SEO regression references. The renderer must match them within tolerance.
+
+---
+
+## Phase 1 — Toolchain, added safely
+
+### P1-T1 · Add React + a bundler for the editor and the renderer
+- **Goal:** introduce React without shipping it to the public site.
+- **Files:** `package.json`, new `editor/`, new `sections/`, new `renderer/`.
+- **Steps:**
+  1. Install dev deps: `npm i -D vite @vitejs/plugin-react esbuild playwright` and runtime deps `npm i react react-dom`.
+  2. Install Puck: `npm i -D @puckeditor/core`.
+     > **The package was renamed.** It used to be `@measured/puck`, which is now formally deprecated
+     > on npm ("Puck has moved. Please use @puckeditor/core instead") and stuck at 0.20.2 from
+     > September 2025. The current package is **`@puckeditor/core`** (0.23.0 as of September 2026,
+     > still MIT, repo moved to `puckeditor/puck`). React peer is `^18.0.0 || ^19.0.0`, so Puck does
+     > not dictate the React version. Confirm the current name and version before installing anyway;
+     > it has changed once already.
+  3. Create three folders: `sections/` (shared React components), `editor/` (Vite React app for Puck), `renderer/` (Node script that server-renders sections to HTML).
+  4. Add scripts to `package.json` (do NOT remove existing ones):
+     ```json
+     "editor:dev": "vite --config editor/vite.config.mjs",
+     "editor:build": "vite build --config editor/vite.config.mjs",
+     "sections:build": "node renderer/build-sections.js",
+     "render": "node renderer/render.js",
+     "test:seo": "node scripts/test-seo.js"
+     ```
+- **Verify:** `npm run editor:dev` starts Vite with an empty React page; the public site and API are untouched (`npm run dev` still works).
+- **Gotcha:** keep the public pages framework-free. React is only for the editor and for server-side rendering, never a runtime dependency of the live pages.
+
+### P1-T2 · esbuild bundle of sections for Node
+- **Goal:** let the Node renderer import the same JSX section components.
+- **Files:** `renderer/build-sections.js`.
+- **Steps:**
+  1. Write `renderer/build-sections.js` to bundle `sections/index.js` to `renderer/.build/sections.cjs` (format `cjs`, platform `node`, `jsx: automatic`, external `react`/`react-dom`).
+     ```js
+     const esbuild = require('esbuild');
+     esbuild.build({
+       entryPoints: ['sections/index.js'],
+       outfile: 'renderer/.build/sections.cjs',
+       bundle: true, format: 'cjs', platform: 'node',
+       jsx: 'automatic', external: ['react', 'react-dom'],
+       logLevel: 'info',
+     }).catch(() => process.exit(1));
+     ```
+  2. Add `renderer/.build/` to `.gitignore`.
+- **Verify:** `npm run sections:build` produces `renderer/.build/sections.cjs` and `node -e "console.log(Object.keys(require('./renderer/.build/sections.cjs').default))"` lists your section names. (Note the `.default`: the bundle's own keys are `['default','registry']`, so without it the command prints the module's exports and looks like it passed.)
+- **Gotcha:** `external: ['react','react-dom']` so the Node process uses one React instance.
+
+---
+
+## Phase 2 — Page-tree data model
+
+### P2-T1 · Define the page-tree schema and Mongo collection
+- **Goal:** store page layouts as data, next to existing content.
+- **Files:** `server/db.js` (add a `pages` collection), `data/pages/` (exported trees).
+- **Steps:**
+  1. Add a **separate** `PAGE_COLLECTIONS = { pages: 'pages' }` map in `server/db.js` with its own routes, and ensure an index on `{ slug: 1 }` unique.
+     > **Not in `COLLECTIONS`.** That map is enumerated by `LIST_MODULES`, so adding `pages` to it would silently change `/api/health` and `/api/cms`, and the generic POST would treat a page tree as an ordered list that `writeList` replaces wholesale — data loss for per-slug documents. `AUTH_COLLECTIONS` and `SALES_COLLECTIONS` are kept out for the same structural reason.
+  2. Page-tree shape (store one document per page):
+     ```json
+     {
+       "slug": "products",
+       "title":  { "zh": "產品介紹", "en": "Products" },
+       "seo":    { "description": { "zh": "...", "en": "..." }, "image": "..." },
+       "path":   { "zh": "產品介紹.html", "en": "en/products.html" },
+       "sections": [
+         { "type": "page-header", "id": "s1",
+           "fields": { "heading": { "zh": "產品介紹", "en": "Our Products" } } },
+         { "type": "product-grid", "id": "s2",
+           "fields": { "source": "products.json", "columns": 3, "showPrices": true } },
+         { "type": "cta-band", "id": "s3", "fields": { } }
+       ]
+     }
+     ```
+  3. Add API routes in `server/index.js`: `GET /api/pages`, `GET /api/pages/:slug`, `PUT /api/pages/:slug` (upsert, admin only). Follow the existing route + auth patterns in that file.
+- **Verify:** `curl localhost:4000/api/pages` returns `[]`; a `PUT` then `GET` round-trips a page tree.
+- **Gotcha:** reuse the existing auth middleware from `server/auth.js`; do not invent a new auth path.
+
+### P2-T2 · Extend export to write page trees
+- **Goal:** page trees follow the same publish path as content.
+- **Files:** `scripts/export.js`.
+- **Steps:**
+  1. In `export.js`, read the `pages` collection and write each tree to `data/pages/<slug>.json` using the existing `writeIfChanged` helper.
+  2. Keep the existing "empty DB" guard so an empty database can never wipe `data/`.
+- **Verify:** `npm run export` writes `data/pages/*.json` only when changed; an unchanged run prints `unchanged` and leaves `git status` clean.
+- **Gotcha:** match the existing formatting (`JSON.stringify(x, null, 2) + '\n'`) so diffs stay small.
+
+---
+
+## Phase 3 — i18n resolver
+
+### P3-T1 · Per-language field resolver with zh fallback
+- **Goal:** one helper that turns a per-language field object into a value for a given language.
+- **Files:** `renderer/i18n.js` (also importable by the editor).
+- **Steps:**
+  1. Implement `resolveField(value, lang, primary='zh')`:
+     - If `value` is a plain object whose keys are a subset of the 7 language codes, return `value[lang]` if non-empty, else `value[primary]`.
+     - If `value` is an array, map each item through `resolveField`.
+     - If `value` is a nested object of fields, recurse into each key.
+     - Otherwise return `value` unchanged.
+  2. Export `LANGS = ['zh','en','de','es','fr','ja','ru']` and `PRIMARY = 'zh'`.
+- **Verify:** unit test in `scripts/test-i18n.js`: `resolveField({zh:'產品', en:'Products'}, 'en')` -> `'Products'`; `resolveField({zh:'產品', en:''}, 'en')` -> `'產品'`; nested and array cases pass.
+- **Gotcha:** treat empty string and missing as "fall back", so a half-translated field still shows Chinese, matching how `.pages.yml` already behaves.
+
+---
+
+## Phase 4 — Section components (core set)
+
+Build 8 to 10 first, from the markup already on the live pages so nothing looks different. Full set (~22) is Phase 13.
+
+### P4-T1 · Section component contract
+- **Goal:** a shape every section follows, usable by Puck and the renderer.
+- **Files:** `sections/<Name>.jsx`, `sections/index.js`.
+> ### Use the real class names. This is the easiest way to waste a day.
+>
+> A section must reuse the class names **already in the live stylesheet**, so the existing CSS
+> styles it with no new CSS at all. Do not invent a naming scheme, and in particular do not use
+> `wh-`prefixed names — **no such classes exist in this site**. A section built on invented
+> classes renders unstyled while passing every test, because the tests check markup, not paint.
+>
+> The method: find the block on the live page (`grep -n '<class you expect>' *.html`), copy its
+> markup, and keep the classes exactly. Take the **variants from the pages too** — the real
+> differences between pages are the variants; anything else is invention.
+>
+> Worked example, `sections/PageHeader.jsx` (built at P4-T1, use it as the reference):
+> markup taken from `產品介紹.html:1446`, which ten of the eighteen pages share. Real classes
+> `page-header` / `container` / `video-background`. Real variants `centered` (nine pages) and
+> `video` (`研究報告.html`, which has a background `<video>` in the header). `aria-labelledby`
+> is optional because `典型病例.html` omits it.
+
+> ### What a fidelity map CANNOT tell you: whether the copy is complete
+>
+> A fidelity map, and every structural gate built on one, compares **tags, classes, attributes and
+> order**. None of them looks at the text inside an element. So a section can carry the right tag
+> with the right class in the right place and be **missing a line of copy**, and the fidelity map,
+> `test:render`, `test:sections` and `test:seo` all stay green. Structural correctness is not
+> content completeness, and a green fidelity run is **not** evidence that the copy is all there.
+>
+> **The visual diff is the only gate that sees missing text.** Treat it that way: never accept a
+> page on structural checks alone, and never explain away a diff region that is smaller than you
+> expected without reading what text is in it.
+>
+> This is not hypothetical. At the P9 product batch every product `<h1>` on the live site is two
+> spans — the product name and a smaller maroon tagline under it. The extractor took the first span
+> only, so **all six pages published without the tagline**: a visible line of the client's copy,
+> gone. SEO passed (an `<h1>` was present and matched), fidelity passed (`h1.product-title > span`
+> existed), behaviour passed. Only the pixel diff showed it.
+>
+> Same class as finding 28 (per-language assets): a defect the structural gates are **built** not to
+> see, caught by the one gate that renders. Both are why the visual diff at 1280 and 390, scripts on
+> and off, is a definition-of-done item and not a formality.
+
+- **Contract:** each file default-exports a React component and named-exports a `config`:
+  ```jsx
+  // sections/PageHeader.jsx — abridged; see the file for the shipped version
+  export const config = {
+    label: 'Page header',
+    fields: {                       // Puck field definitions
+      heading:   { type: 'text' },
+      sub:       { type: 'textarea' },
+      variant:   { type: 'select', options: [
+        { label: 'Centered',         value: 'centered' },
+        { label: 'Background video', value: 'video' },
+      ]},
+      headingId: { type: 'text' },
+    },
+    // every field needs a default, or the editor starts with undefined props
+    defaultProps: { heading: '', sub: '', variant: 'centered', headingId: '' },
+    variants: ['centered', 'video'],
+    // emptyWithoutContent: true,   <- only if the section renders nothing when empty
+  };
+  export default function PageHeader({ heading, sub, variant = 'centered', headingId }) {
+    const id = headingId ? headingId : undefined;   // never render id=""
+    return (
+      <section className="page-header" aria-labelledby={id}>
+        <div className="container">
+          <h1 id={id}>{heading}</h1>
+          {sub ? <p>{sub}</p> : null}
+        </div>
+      </section>
+    );
+  }
+  ```
+  Do not emit the live pages' `data-i18n` attributes: those exist so the browser can swap
+  languages after load, which pre-rendering replaces with plain per-language links.
+
+  **`emptyWithoutContent: true`** — a section may render nothing until it has content: an
+  unmatched sku, an empty gallery or an empty related list should disappear rather than publish
+  a broken shell. Where that is intended, declare it in the config. `test:sections` then requires
+  the section to render empty with its defaults, and still fails any *other* section that renders
+  blank by accident. Rendering nothing is a decision to review once, not a silent blank.
+  Currently declared by `product-detail`, `gallery` and `related-products`.
+  ```js
+  // sections/index.js  — the single registry both sides import
+  import * as PageHeader from './PageHeader.jsx';
+  import * as ProductGrid from './ProductGrid.jsx';
+  // ...
+  export const registry = {
+    'page-header': PageHeader,
+    'product-grid': ProductGrid,
+    // ...
+  };
+  export default Object.fromEntries(
+    Object.entries(registry).map(([k, m]) => [k, m.default])
+  ); // { 'page-header': Component, ... } for the renderer
+  ```
+- **Verify:** `npm run sections:build` succeeds and the registry lists every section; `npm run test:sections` passes. That suite loops the whole registry, so a new section is checked by it the moment it is registered — contract shape, one-source-of-truth, renders on the server, and no editor-only attributes in the output. Add the exact-HTML assertions for the new section alongside.
+- **Gotcha:** components must be pure and must not use browser-only APIs at render time (no `window`, `document`) so they render on the server. Interactive bits (3D viewer, cart button) render a placeholder element that a tiny client script enhances after load.
+- **Gotcha:** React 19 writes some boolean attributes in camelCase (`autoPlay=""`, `playsInline=""`) rather than lowercasing them. HTML attribute names are case-insensitive so browsers parse them identically — assert case-insensitively rather than "fixing" it.
+
+### P4-T2 · Build the core sections
+- **Goal:** cover the core pages (home, products, product-detail, contact).
+- **Sections to build now:** `page-header`, `hero`, `text-block`, `related-products`, `product-grid`, `product-detail`, `contact-cards`, `cta-band`, `gallery`, `faq-accordion`. (All ten built at P4-T2.)
+  > `text-and-image` was in this list and has been **removed**: the site has no two-column text+image block anywhere — a survey of every plausible class and every `*grid*` across all 18 pages found none — so building one meant inventing markup and CSS. `related-products` replaces it: real, on all six product pages, and needed by the Phase 9 migration.
+  > `faq-accordion` keeps its name but renders a **static list, not an accordion**. The live block on `常見問題.html` has no toggle, no collapse and no `aria-expanded`; every answer is always visible. Adding collapse is a behaviour change for the client to approve, not something to introduce behind the name.
+- **Steps:**
+  1. For each, copy the exact HTML from the matching current page, convert to JSX, extract editable bits into `fields`, keep the existing CSS class names so current styles apply unchanged.
+  2. Data-backed sections (`product-grid`, `product-detail`, `faq-accordion`) take a `source` field naming the data file (`products.json`, `faq.json`) and receive the loaded `data` prop from the renderer.
+  3. 1 to 3 layout variants per section via a `variant` select. No absolute positioning.
+- **Verify:** render each section in isolation via the renderer to an HTML snippet and eyeball it against the baseline screenshot.
+- **Gotcha:** move all inline per-page CSS these sections rely on into one shared stylesheet the pre-rendered pages link, so a page built from sections is styled without its old inline `<style>`.
+
+---
+
+## Phase 5 — Renderer
+
+### P5-T1 · Core render functions
+- **Goal:** turn a page tree + data + language into a full HTML document.
+- **Files:** `renderer/render.js`, `renderer/template.js`, `renderer/head.js`.
+- **Steps:**
+  1. `renderer/render.js`:
+     ```js
+     const React = require('react');
+     const { renderToStaticMarkup } = require('react-dom/server');
+     const sections = require('./.build/sections.cjs').default;  // { type: Component }
+     const { resolveField, LANGS, PRIMARY } = require('./i18n');
+     const { buildHead } = require('./head');
+     const { baseTemplate } = require('./template');
+
+     function renderSection(node, lang, data) {
+       const Comp = sections[node.type];
+       if (!Comp) throw new Error('Unknown section type: ' + node.type);
+       const props = resolveField(node.fields || {}, lang);
+       return renderToStaticMarkup(React.createElement(Comp, { ...props, data, lang }));
+     }
+     function renderPage(tree, lang, data) {
+       const body = (tree.sections || []).map(s => renderSection(s, lang, data)).join('\n');
+       const head = buildHead(tree, lang);           // title, meta, canonical, hreflang, JSON-LD
+       return baseTemplate({ head, body, lang });
+     }
+     module.exports = { renderSection, renderPage };
+     ```
+  2. `renderer/head.js` `buildHead(tree, lang)` must output: `<title>`, `<meta name="description">`, `<link rel="canonical">`, a full set of `<link rel="alternate" hreflang="...">` for every language plus `x-default`, Open Graph tags, and any JSON-LD the current page has (copy the schema types from the baseline head snapshots).
+  3. `renderer/template.js` `baseTemplate({head, body, lang})` returns the `<!doctype html>` shell with `<html lang="...">`, the shared stylesheet link, the body, and any small enhancement scripts (language switch = plain links, 3D viewer loader).
+- **Verify:** `node -e "const {renderPage}=require('./renderer/render'); ..."` renders `products` in `zh` to a string containing the product names from `data/products.json` (not an empty shell) and a `<script type=\"application/ld+json\">` block.
+- **Gotcha:** the language switcher must be links to the per-language URLs, not client-side i18n. That is the whole point of pre-rendering.
+
+### P5-T2 · Full-site build script
+- **Goal:** render every page for the languages currently in scope.
+- **Files:** `renderer/render.js` (add a `buildSite()`), driven by `npm run render`.
+- **Steps:**
+  1. Load all page trees from `data/pages/*.json` and all content from `data/*.json`.
+  2. For Month 1, render only `zh` to the canonical paths. For Month 2, loop all `LANGS`, writing non-primary languages under `/<lang>/...` and adding them to the sitemap.
+  3. Write files to the repo root (same locations the current pages occupy) and regenerate `sitemap.xml`.
+- **Verify:** `npm run sections:build && npm run render` regenerates the core pages; opening them with JavaScript disabled still shows full content.
+- **Gotcha:** do not delete pages you have not migrated yet. Render only the migrated slugs and leave the rest as the existing hand-coded files until Phase 13.
+
+---
+
+## Phase 6 — SEO assertion gate
+
+### P6-T1 · SEO test that blocks a bad publish
+- **Goal:** never ship a page that loses SEO.
+- **Files:** `scripts/test-seo.js`.
+- **Steps:** for each rendered page, assert:
+  1. exactly one `<h1>`;
+  2. non-empty `<title>` and `<meta name="description">`;
+  3. a `<link rel="canonical">` whose URL matches the page path;
+  4. `hreflang` links present for every in-scope language plus `x-default`, and reciprocal across the language variants;
+  5. every `<script type="application/ld+json">` block is valid JSON and has an `@type`;
+  6. compare against `baseline/head/<page>.html`: the JSON-LD `@type`s and canonical host must match the baseline.
+- **Verify:** `npm run test:seo` exits 0 for migrated pages; deliberately break a canonical and confirm it exits non-zero.
+- **Gotcha:** this is a gate, not a report. Wire it into publish (Phase 7) so a failing page cannot deploy.
+
+---
+
+## Phase 7 — Wire renderer into publish
+
+### P7-T1 · One publish command
+- **Goal:** `export -> render -> seo check -> commit` in one place.
+- **Files:** `package.json`, optional `scripts/publish.js`.
+- **Steps:**
+  1. Add `"publish": "npm run export && npm run sections:build && npm run render && npm run test:seo"`.
+  2. Document: after `npm run publish` succeeds, `git add -A && git commit -m "publish" && git push` triggers the existing GitHub Pages deploy.
+  3. Optionally add the SEO check to `.github/workflows/static.yml` as a pre-deploy job so a bad commit is caught in CI too.
+- **Verify:** a full `npm run publish` on the core pages succeeds and produces a clean, crawlable set of files; a page with a broken schema fails the command before commit.
+- **Gotcha:** keep `writeIfChanged` semantics so `git diff` stays meaningful.
+
+---
+
+## Phase 8 — Puck editor app
+
+### P8-T1 · Puck config from the section registry
+- **Goal:** the editor offers exactly the sections the renderer knows.
+- **Files:** `editor/puck.config.js`.
+- **Steps:**
+  1. Build Puck's `config.components` by mapping `sections/index.js` `registry`: for each `[type, module]`, set `{ fields: module.config.fields, defaultProps: module.config.defaultProps, render: module.default }`.
+  2. Set the root config (page-level fields: title, seo.description, per language).
+- **Verify:** the Puck left panel lists every core section; dragging one onto the canvas renders the real component.
+- **Gotcha:** the canvas uses the same components as the renderer, so previews match the live page. Do not write separate "editor-only" versions.
+
+### P8-T2 · Editor shell wired to the API
+- **Goal:** load a page tree, edit, save.
+- **Files:** `editor/App.jsx`, `editor/main.jsx`, `editor/vite.config.mjs`.
+- **Steps:**
+  1. On load, `GET /api/pages/:slug` and pass the tree as Puck `data`.
+  2. On publish/save in Puck, `PUT /api/pages/:slug` with the updated tree.
+  3. Add a language picker (which content language you are editing) and an admin UI language toggle (EN/中文), keyed strings in one dictionary.
+  4. Preview button: render the current draft server-side to a private URL (call a `POST /api/preview` that renders one tree to a temp file, or render client-side using the same components).
+- **Verify:** edit a heading in the editor, save, run `npm run publish`, confirm the change appears in the pre-rendered HTML.
+- **Gotcha:** selection/instrumentation attributes Puck adds are for the canvas only. The renderer output must be clean (already true, since the renderer calls the components directly, not through Puck).
+
+### P8-T3 · Publish an allow-list of directories, not the whole repo
+
+> **URGENCY RAISED — LIVE EXPOSURE, DO THIS EARLY IN PHASE 10 (owner, 24 Oct 2026).** Not "whenever
+> Phase 10 gets to it". `rebuild/editor` merged to `main`, so the deploy — which is still
+> `path: '.'`, the whole repository — now publishes `editor/`, `server/`, `renderer/`,
+> `sections/`, `scripts/`, `docs/` and the vendored admin design **under the client's own domain**.
+> **79 MB, 189 files, of which the public site needs a small fraction.**
+>
+> Nothing in it is a credential and nothing is customer data — `.env` and `*.xlsx` are gitignored
+> and do not ship, and the repository was already public on GitHub, so this is not a new disclosure.
+> What changed is that internal material is now **crawlable on a customer-facing URL**, and
+> `docs/FINDINGS.md` describes every security issue on this project.
+>
+> **Stopgap in place:** `robots.txt` now disallows `/docs/` and `/wonderherb-admin-frontend/` for
+> `*` and for each named AI crawler, matching the `/legacy/` pattern. That is a request to
+> well-behaved crawlers, **not** access control — the files are still served to anyone who asks.
+> This task is the real fix.
+> **SCHEDULED WITH PHASE 10** (owner, 16 Sep 2026). Phase 10 moves exactly the assets this
+> allow-list governs, so the two are done together rather than in sequence: today the deploy
+> publishes 337 KB of page CSS, 72 MB of `.glb`, and all of `editor/`, `renderer/`, `sections/`
+> and `server/` on every push to `main`. The isolated-review rule below still stands - the
+> workflow diff is shown on its own and applied only after the owner has seen it.
+- **Goal:** close **findings 6 and 16 together** — they are one root cause: *the deploy is the entire repository, so anything written into the working tree is published by default.* Finding 6 is build artefacts (editor source, bundles) shipping publicly; finding 16 was an internal audit trail with staff emails one commit away from a public URL. Fixing them one at a time leaves the mechanism intact and the next leak unblocked.
+- **Files:** `.github/workflows/static.yml`. **This is the only file in the project that can change the live deploy, so it gets its own isolated review — show the diff and stop before applying it.** Do not fold this into another task's commit.
+- **Steps:**
+  1. Assemble the published site into a build directory from an **explicit allow-list**, and upload only that: the 18 static HTML pages, `data/` content files, `admin/`, `api/`, and the site metadata (`sitemap.xml`, `robots.txt`, `llms.txt`, `CNAME`, favicons, media still in the repo).
+  2. **Excluded by not being listed:** `editor/`, `sections/`, `renderer/` (including `.build/` and `.out/`), `server/`, `scripts/`, `docs/`, `baseline/`, `preview/`, `node_modules/`, `.env*`, and any log or report file.
+  2b. **But note P11-T2:** the client gets one admin site, which means the BUILT editor (`editor/dist/`, produced by `npm run editor:build`) is part of what ships, served under the admin's origin. So the allow-list is `editor/dist/` **in**, `editor/` source **out** — build output and source are not the same decision, and lumping them together either leaks the source or breaks the editor. Write the list that way now even though P11-T2 lands later; a list that has to be reopened is a list someone will get wrong.
+  3. Prefer an allow-list over an ignore-list. An ignore-list fails **open** — a new folder ships unless someone remembers to exclude it. An allow-list fails **closed**, which is the behaviour that would have prevented finding 16.
+- **Verify:** deploy to a branch or preview environment first, never straight to `main`. Then assert on the **published output**, not on the repo: the 18 pages and `data/*.json` are reachable, and `editor/`, `server/`, `scripts/`, `renderer/` and any `*-log.json` return 404. Wire that assertion into the publish gate so the exclusion cannot silently regress.
+- **Gotcha:** `admin/index.html` and `api/cms.js` ARE part of the published site and must stay in the allow-list — the admin is served from Pages and falls back to the committed files when the API is down (CLAUDE.md hard rule 1). Dropping them would break that fallback. Excluding `server/` and `scripts/` does not: nothing the browser loads reads them.
+
+---
+
+## Phase 9 — Migrate the core pages (zh)
+
+### P9-T1 · Convert 4 to 5 core pages to trees
+- **Goal:** home, 產品介紹 (products), a product-detail page, 聯絡我們 (contact), and one more, fully editable and pre-rendered in Chinese.
+- **Steps:**
+  1. For each page, build its `data/pages/<slug>.json` tree from the sections it needs.
+  2. `npm run publish` and compare the output to the baseline screenshots at 1280px and 390px.
+  3. Adjust section markup/CSS until the visual diff is within tolerance.
+  4. Only then retire the old hand-coded file for that page (move it to `legacy/` first, do not delete outright).
+- **Verify:** the migrated core pages render from trees, pass `npm run test:seo`, and match baseline visually. `npm run test:all` still green.
+- **Gotcha:** keep the 3D product viewer working: the `product-detail` section outputs the `<model-viewer>` (or current viewer) element pointing at the model URL, enhanced by the existing client script.
+
+#### 產品介紹 (the first page): DONE 15 Sep 2026, awaiting owner review before page two
+
+**Retired.** The hand-coded original is `legacy/產品介紹.html` (`8d29617`), and `/產品介紹.html` is
+the pre-rendered page, written by `renderer/render.js`. `test:all` is green: 14 suites, 879 checks.
+
+**Owner decisions that unblocked it (15 Sep 2026):**
+- **The site content is not authoritative;** the client will replace all of it. Content disputes
+  are no longer blockers. Findings 9, 17, 22 and 26 stay recorded as background, with no further
+  action or data changes on them.
+- **Prices come from `data/products.json`:** 憶活素 HK$880, PT3 HK$2,480. The price hold was
+  removed (`45106f0`); a different number later is a data edit.
+- **PSP-500 stock:** Group B was committed (`e567a69`), so `data/` and the database agree.
+
+**The five build items, as built:**
+1. **Render to the site root** (`6187f62`): a tree is written to its page's root path once its
+   original is in `legacy/`, only if changed. A page not retired is never written over.
+2. **Chrome/CSS sources repointed** (`6187f62`): `renderer/source-page.js` (legacy/ first) feeds
+   `loadStyles` / `loadChrome`, the preview route, `extract-css.js`, `migrate-products.js` and the
+   fidelity maps. It is a repoint, not the shared chrome partial; that is still open, for when a
+   second page needs chrome.
+3. **UI tests retargeted** (`3505123`): `test-ui-mongo` now proves that the database reaches the
+   published card, and that the committed page needs no database and no scripts.
+   `test-ui-sweep` names the pre-rendered pages it doesn't language-switch. `test-ui-auth` is
+   unchanged.
+4. **`legacy/` kept off the public site** (`8d29617`): `noindex` on the retired copy, `/legacy/`
+   disallowed in every `robots.txt` crawler group, and `test:data` enforcing both, plus "nothing
+   links to it", with a negative control. P8-T3's deploy allow-list, the proper fix, is still not
+   applied.
+5. **Visual diff against the 15 Sep baseline, fully reconciled.**
+   - **Scripts on:** 15.1% at 1280, 14.8% at 390, and all of it has a known cause. Rendered in
+     memory with the old product order, the two old prices and `lang="zh"`, the page equals the
+     control exactly: 2,602 / 785 px, the page-header marquee only. So the difference is **product
+     order** (database order), **the two accepted prices**, and **the `lang` font effect** (finding
+     21b).
+   - **Scripts off:** the old page is an empty shell (0 product cards); the migrated page shows all
+     6. Migrated scripts-off vs scripts-on differs only by the hidden JS-only controls.
+
+**Recorded, accepted:**
+- stock changes go live at publish (flag for `ADMIN_GUIDE.md`);
+- the Chinese-only regression (finding 24);
+- definition-of-done waivers: "heavy assets from R2" (Phase 10 dependency); "editable in Puck"
+  passes after the `mergeTree` fix.
+
+#### The six content pages (the batch): DONE 16 Sep 2026, 07:40–09:01
+
+All six retired to `legacy/`, each its own commit. `test:all` green: 14 suites, **1,203 checks**.
+**81 minutes for six pages**, including the three new section types and one behaviour file.
+
+| page | commit | new work | done |
+|---|---|---|---|
+| 聯絡我們 | `4442997` | section wrappers in the renderer; multi-line contact details | 08:08 |
+| 小册子 | `057e879` | — (caught the per-language brochure scan, finding 28) | 08:19 |
+| 有效成份檢測 | `36a91d0` | — | 08:28 |
+| 微信發表文章 | `3b95641` | stylesheet-exists guard in the renderer | 08:36 |
+| 研究報告 | `a82ea26` | first use of the page-header video variant | 08:44 |
+| 典型病例 | `84fc473` | `case-list` section + `assets/behaviour/case-list.js` | 09:01 |
+
+**Sections built once, up front** (`7382cc7`, owner-approved before building): `card-grid` with five
+variants (brochure, report, icon, article, link-list), `map-embed`, plus `text-block/intro` and
+`callout/info`. `case-list` came later with its page. 14 section types now.
+
+**Three things the batch found that no gate had:**
+1. **The live pages' `<section>` wrappers carry padding** (`2f428e0`). Dropping them moved
+   everything below and left 聯絡我們 10px short. `wrap` now takes `{ section, label, container }`,
+   and adjacent nodes naming the same section share one wrapper, as the live markup does.
+2. **小册子 swaps its brochure image AND link per language** (finding 28). The `src` in the markup
+   is the German scan; pre-rendering it verbatim would have published that to Chinese visitors.
+   Nothing but the visual diff caught it.
+3. **A page could link a stylesheet that does not exist** (`3b95641`). 微信發表文章 rendered happily
+   against a `page-articles.css` nobody had generated and would have published unstyled at 969px
+   wide. The renderer now refuses it, as it already did for behaviour scripts.
+
+**Every page reconciled to the pixel.** At `lang="zh"` five of the six equal the control exactly,
+region for region. 研究報告 differs only inside the page-header band, where its background video
+plays a different frame per capture; every pixel outside that band is identical. 有效成份檢測 carries
+212 px of FontAwesome icon-edge antialiasing, whose only cause is D1 itself (`body{overflow-x:clip}`
+vs `hidden`), with identical geometry to three decimals.
+
+**Scripts off**, every migrated page now differs from its original for two deliberate reasons: the
+original needs JavaScript to clear its fixed nav (D1, finding 15), and our JS-only controls are
+hidden rather than left dead. On 典型病例 the difference is the point: the old page rendered **no
+cases at all** without JavaScript; ours renders all fifteen with their full text.
+
+#### The six product detail pages (the batch): DONE 16 Sep 2026, 09:45–12:14
+
+All six retired to `legacy/`, one commit each. `test:all` green: 15 suites, **1,439 checks**.
+**~2.5 hours for six pages**, of which ~35 minutes was the shared sections and behaviour, and
+**~60 minutes was 產品_T3 alone** — the first page, which paid for the other five.
+
+| page | commit | what it cost |
+|---|---|---|
+| 產品_T3 | `2ad4f76` | 61 min — five structural finds (below) |
+| 產品_PT3 | `931bdc3` | 11 min — the clinic-only one; `<br>` inside copy |
+| 產品_雲芝糖肽精華_A | `464e904` | 9 min — finding 30, the wrong title |
+| 產品_雲芝糖肽精華_B | `86f88eb` | 7 min — out of stock, refusal path |
+| 產品_乙肝清 | `4de1234` | 14 min — exposed the missing heading tagline |
+| 產品_憶活素 | `b3e5fab` | 12 min — citations that no crawler could see |
+
+**No 3D viewer was involved:** `model-viewer` and the `.glb` files are on `index.html` only.
+
+**New, owner-approved before building** (`971713c`): `card-grid`'s `badges` variant, the buy panel's
+data hooks and clinic-only path, and `assets/behaviour/product-detail.js`. Then, during the batch:
+`text-block`'s `group` variant (owner-approved), `assets/behaviour/gallery.js`, and `card-grid`'s
+`references` variant.
+
+**What the visual diff found that no other gate could:**
+1. `<main class="container">` — where the product pages' side padding and max width come from.
+2. The buy panel's badge row carries `style="margin:0; justify-content:flex-start"` (+38px without).
+3. Related-product icons carry `style="font-size:2rem; color:#2EADA5"` (~10px per card without).
+4. The short description's icon is teal.
+5. Document order inside the details card: two groups put their list first and a note after.
+6. **The heading's tagline** — every product `<h1>` is the name plus a smaller maroon line
+   ("澳洲昆士蘭科大臨床實證"). We were publishing only the name, so a visible line of copy was
+   missing from all six pages.
+7. A `<br>` inside a paragraph, which `textContent` joined into one line.
+
+**Two things the migration FIXES, both invisible before:**
+- **finding 30:** 產品_雲芝糖肽精華_A's script overwrote its own correct title with the standard
+  pack's. Pre-rendering publishes the right one; `test:seo` now compares against the page it
+  replaces rather than a baseline that recorded the bug.
+- **產品_憶活素's medical citations** were injected by script into an empty box, so no crawler saw
+  them. They are in the HTML now.
+
+**Recorded, not acted on: finding 31.** PT3's page says clinic-only; the data says In Stock at
+HK$2,480 with no `clinicOnly` flag, so the panel (like the grid, since page one) sells it. One data
+edit fixes panel, grid and cart together — the owner's call with the client.
+
+**Accepted differences, page by page:** the panel's trust badges come from `data/products.json`
+(two) where the pages list three; a handful of mid-sentence bold runs the copy model cannot express
+(finding 14); and on 產品_憶活素 the references box is 24px taller because ours emits a real `<h4>`
+where the live page's malformed injected HTML loses it.
+
+#### Phase 9 scope, closed 16 Sep 2026 (owner): 7 pages, then Phase 9 is done
+
+**In scope:** the 6 product detail pages, then `index.html` (reviewed on its own).
+
+**Out of scope, staying hand-coded, revisit at Phase 11 or later — reasons on the record:**
+
+| page | why it is not migrating |
+|---|---|
+| `product.html` | it renders an **arbitrary SKU from a query string**, which a pre-rendered static page cannot do. It is `noindex`, and the six static detail pages cover the catalogue |
+| `購物車.html` | **transactional and `noindex`**: pre-rendering buys no SEO (finding 3 already exempts it from having a document subject) |
+| `account.html` | **depends on the hosted API**, which is Phase 11 |
+
+This gives Phase 9 a defined end: when 索引 (`index.html`) is retired, every page that benefits from
+pre-rendering is pre-rendered, and the three above are a deliberate, recorded exception rather than
+an unfinished list.
+
+#### The per-page process (P9), in order
+
+1. **Read the original** and map its blocks to sections. A block with no section is a **new section
+   type: stop and show the owner the design before building it.**
+2. **Check per-language assets FIRST** (finding 28, not optional): every `src` / `href` the page
+   swaps by language goes into the tree as the **zh** value. `npm run test:lang-assets` proves it
+   afterwards, but the lift happens here — the markup's own URL may be another language's.
+3. **Check the `<section>` wrappers**: `main > section` in the original, reproduced by each node's
+   `wrap`. Their classes carry padding.
+4. Build the tree (lift copy and SEO with jsdom, never retype), add the page to `extract-css.js`,
+   render.
+5. `test:seo`, then the **visual diff**: at `lang="zh"` the page should equal the control. **Any
+   difference that cannot be explained is a hard stop**, not a tolerance.
+6. Retire the original to `legacy/`, sync the tree into MongoDB, `npm run export` must report
+   `data/` unchanged, `test:all` green, commit that page on its own.
+
+#### Effort: actual for page one, and the revised Phase 9 estimate (15 Sep 2026, replaces the earlier estimate)
+
+**Actual, page one (from the commit timeline):** P9-T1 ran from Fri 11 Sep midday to Tue 15 Sep
+late morning, i.e. **~2.5 working days** (Fri afternoon, Mon, Tue; the weekend was not worked). The
+earlier "~4 days" counted calendar days.
+- **Roughly 1.5 days were one-time work or incidents** that the other pages won't repeat: the
+  catalogue data migration, D1 sticky nav, D2 per-page CSS, the baseline re-capture, the behaviour
+  framework and `test:behaviour`, the export email leak and identity rotation (finding 22), and the
+  invented ratings (finding 26).
+- **Roughly 1 day was page work:** the tree, product-grid fixes, behaviour wiring and
+  reconciliation.
+- **The five build items plus the move took under half a day**, against the 1.5–2.5 days
+  estimated. The harnesses already existed, item 2 was a repoint rather than a chrome partial, and
+  item 4 was noindex + robots rather than P8-T3.
+
+**Revised estimate for the other 17 pages: ~10–14 working days.** Content is no longer a blocker,
+so the main variable is now **engineering**: new section types and the interactive pages.
+
+| pages | count | estimate | why |
+|---|---|---|---|
+| Content pages: 典型病例, 小册子, 常見問題, 微信發表文章, 有效成份檢測, 研究報告, 聯絡我們 | 7 | ½ day each → **3.5–4.5 days** | sections exist (faq, text, gallery, contact cards); tree + reconcile + scripts-off, little behaviour |
+| Product detail pages: 產品_T3, _PT3, _乙肝清, _憶活素, _雲芝糖肽精華_A / _B | 6 | first ~1 day, then 2–3 h each → **2–2.5 days** | one shared pattern: product-detail section, quantity + add to cart through `site.js`, and the 3D viewer where a page has one |
+| `index.html` (homepage) | 1 | **1–1.5 days** | hero video, 3D viewer, the most sections |
+| `product.html` (generic `?sku=` page, noindex) | 1 | **½–1 day** | client-side by design; either keep it hand-coded or replace it with the static detail pages |
+| `購物車.html` (cart/checkout, noindex) | 1 | **1.5–2.5 days** | the heaviest script on the site; may stay a hand-coded app page |
+| `account.html` (sign-in) | 1 | **1–2 days, likely deferred** | depends on the hosted API (Phase 11) |
+
+- **One-time items still ahead,** inside the range above: the shared chrome partial (~1 day, once),
+  and whatever new section types these pages need beyond the core 10.
+- **Re-estimate after the first content page and the first product detail page.** Those two
+  patterns cover 13 of the 17 pages.
+
+#### Re-estimate after the batch, 16 Sep 2026 — 9 pages left
+
+Eight content pages took **~1.75 hours of machine time in total**, against 3.5–4.5 days estimated.
+The estimate was wrong about what the work IS: with the sections built, a content page is a tree
+lifted from the original by script, a CSS line, a render and a reconcile. What costs real time is a
+**new section type**, a **behaviour file**, or a **difference the diff will not explain**.
+
+| pages | count | estimate | what actually drives it |
+|---|---|---|---|
+| Product detail pages (產品_T3, _PT3, _乙肝清, _憶活素, _雲芝糖肽精華_A / _B) | 6 | **½–1 day for the first, then ~30 min each: 1–1.5 days total** | `product-detail`, `gallery` and `related-products` already exist and are fidelity-mapped to these pages. The quantity/add-to-cart path is `site.js`, already proven on 產品介紹. Real risks: the **3D `<model-viewer>`** (no section for it, and the models are the 75MB `.glb` files Phase 10 moves), and per-language images (finding 28) |
+| `index.html` (homepage) | 1 | **½–1 day** | the most sections (hero, stats, glass card, featured cases, product grid), a background video, a 3D viewer, and the homepage-specific JS. `hero` and `text-block/glass` exist and are mapped |
+| `product.html` (generic `?sku=`) | 1 | **¼–½ day, or leave it** | it exists to render any SKU from a query string, which a pre-rendered page cannot do. Either keep it hand-coded (it is `noindex`) or drop it in favour of the six static detail pages. **Owner decision, not effort** |
+| `購物車.html` (cart/checkout) | 1 | **½–1 day, or leave it** | a transactional app page, `noindex`, no document subject (finding 3). Pre-rendering buys nothing for SEO; the case for migrating is editable chrome and copy, not crawlability |
+| `account.html` (sign-in) | 1 | **defer to Phase 11** | depends on the hosted API; same reasoning as the cart |
+
+**So: ~2–3 working days for the six product pages plus the homepage, and two of the remaining three
+are decisions rather than work.** The one-time costs left are the same two as before — the shared
+chrome partial and any new section type (a `model-viewer` section is the likely one).
+
+**What would make this slower:** a page that needs a new section type the owner must review first
+(that is the intended gate), a behaviour file (典型病例's took about half of that page's 17 minutes),
+or per-language media (finding 28) on the product pages, which must be checked per page before
+migrating, because only the visual diff catches it.
+
+#### After the product batch, 16 Sep 2026 — index.html is the last page
+
+The six product pages took **~2.5 hours**, against 1–1.5 days estimated. The estimate was right
+about the shape (one page pays for the rest: 產品_T3 took 61 minutes, the other five averaged 11)
+and wrong about the 3D viewer, which is not on those pages at all.
+
+**`index.html`: ½–1 day still stands, and it is the least predictable page left.**
+- It has the **only** `<model-viewer>` and the `.glb` models, so it is where a 3D viewer section is
+  decided (and those models are the 75MB Phase 10 moves).
+- It has the background video (Wix-hosted, finding 1), the most sections, and its own homepage JS.
+- `hero` and `text-block/glass` exist and are fidelity-mapped to it; `product-grid`, `card-grid` and
+  `case-list` are all built now, and the homepage reuses several of them.
+- Expect the same per-page checks to matter most there: per-language assets (finding 28), the
+  <section> wrappers, and inline styles the live markup carries.
+
+
+#### The estimating basis, from Phase 9 (owner, 16 Sep 2026) — use this for anything similar
+
+Phase 9 migrated **15 pages in ~3.5 working days** against 10–14 days estimated. Two numbers came
+out of it, and they are the basis for estimating comparable work from here on.
+
+**1. A page whose sections already exist costs 7–17 minutes**, end to end: build the tree, run the
+visual diff at 1280 and 390 scripts-on and scripts-off, run the gates, reconcile every difference,
+retire the original, commit. Measured: the six content pages averaged 13.5 minutes, and the five
+product pages after the first averaged 11.
+
+**2. The cost is the FIRST PAGE OF EACH KIND, not the page.** Every large number in Phase 9 is a
+first:
+
+| page | cost | why it was expensive |
+|---|---|---|
+| 產品介紹 | ~2.5 working days | the first page at all: catalogue data model, D1, D2, baseline re-capture, the behaviour framework, findings 22 and 26 |
+| 常見問題 | 25 min | the first content page |
+| 產品_T3 | 61 min | the first product page; the other five averaged 11 min |
+| index.html | ~3 hours | the only one of its kind: a new section, four variants, three behaviour files, ~1,400 lines of lifted JS |
+
+So estimate by **kinds, not by pages**: count how many genuinely new shapes a phase contains, price
+those in hours or days, and price everything that rhymes with an existing shape in minutes. An
+estimate that multiplies a per-page figure by a page count will be wrong in both directions — far
+too high for the repeats, and too low for the first of each kind.
+
+**A corollary worth stating**: roughly 1.5 of 產品介紹's 2.5 days was one-time infrastructure that
+no later page repeated. When the first item of a kind is expensive, ask how much of it is
+infrastructure the rest will inherit — that part is not a per-item cost at all.
+
+#### index.html (the last page in Phase 9): DONE 16 Sep 2026, awaiting owner review
+
+**Retired.** `legacy/index.html` (git rename, noindex); `/index.html` is rendered from
+`data/pages/index.json`. `test:all` is green: **15 suites, 1,496 passing checks**.
+
+**There is no `<model-viewer>` on this site.** The plan assumed one. The homepage loads **three.js
+r128 from cdnjs plus OrbitControls and GLTFLoader from unpkg** (index.html:2969-2971) and hand-rolls
+a scene, camera, WebGL renderer, lights, a `ResizeObserver` and an auto-rotating orbit control per
+model. There is no vendor element and so no built-in poster attribute: the degradation had to be
+designed. The 3D is also not a section of its own - the four `.glb` models are **slides in the hero
+carousel**, alongside two photographs.
+
+**What the page actually was.** Four of its blocks were EMPTY in the HTML and built by JavaScript on
+load: the hero carousel, the product carousel and the featured cases among them. Measured, scripts
+off, live against migrated:
+
+| | live | migrated |
+|---|---|---|
+| hero slides | **0** | 6 |
+| product cards | **0** | 3 |
+| featured case cards | **0** | 3 |
+| characters of text in `<main>` | 768 | **1,331** |
+
+That is the single biggest pre-rendering win in the phase, and it is most of the scripts-off visual
+difference (34-37%): our page is ~850px taller because it has content where the live one has empty
+boxes.
+
+**A 3D slide degrades to a photograph.** Each model slide renders the container the loader looks for
+with a real `<img>` inside it, taken from the product the model shows - and NOT guessed:
+`data/products.json` already carries a `model` field naming each product's `.glb`, so the poster is
+that product's own `image`. (`bottle_PEPTIDES.glb` belongs to two packs; the first, the standard
+pack, is used.) The loader's first act is `container.innerHTML = ''`, so where WebGL works nothing
+changes; where it does not the visitor keeps a photograph instead of a blank box or a permanent
+"載入 3D 模型中...". The lifted loader had to be corrected on three lines: it replaced the container
+with that loading sentence immediately, and with "無法載入 3D 模型" on failure, which would have
+destroyed the poster before the 19MB download even started.
+
+**Phase 10 is a data edit, not a code change**, for both heavy-media problems:
+- the four `.glb` URLs are per-slide tree fields, reaching the DOM as `data-model`; the behaviour
+  file names no file. Today they are string literals inside a 5,055-line HTML file.
+- the Wix-hosted background video (finding 1, dies at cutover) is a `videoUrl` field on the
+  `cta-band/video-band` variant. Nothing here solves finding 1; it refuses to make it worse.
+
+**One new section, and four new variants** (all markup lifted from the live page):
+- **`product-carousel`** (15th type): the 皇牌產品系列 triple layout, data-backed from
+  `products.json`. The three visible cards are pre-rendered; the six the arrows rotate through are
+  emitted once as an inert `<script type="application/json">` island, so rotation works without
+  reinstating a client-side `fetch`.
+- `hero` grew `slides` (pre-rendered slides and dots), `case-list` grew `highlights`, `cta-band`
+  grew `video-band`, and `callout` grew `quality` - the `.quality-highlight` block, which the first
+  pass missed entirely and the section-by-section structural comparison caught.
+- Three behaviour files: `home-hero.js` (the carousel, its hover physics, the particle canvas and
+  the WebGL, lifted verbatim), `product-carousel.js`, `video-band.js`.
+
+**Renderer changes the page forced:**
+- `wrap` gained `labelledby` and `section: null` - four of index's six sections carry **no class at
+  all**, only an `aria-labelledby`.
+- `mainId`, for `<main id="main-content">`.
+- **`pageFile` vs `pagePath`**: the home page's canonical is the bare directory (`/`), but the file
+  is still `index.html`. One function, used by the renderer and the SEO gate, rather than the rule
+  copied into both.
+- **`loadChrome` now lifts `<svg class="svg-filters">`**. Only index has one, it defines
+  `#glass-distortion`, and **five** rules in its stylesheet apply that filter - the carousel and
+  every glass card lose their frosted look without it. It is `position:absolute; width:0; height:0`,
+  so it costs no layout and **no gate could have seen it go**; found by comparing the live body's
+  children against ours. (The live page has the same block twice, which is a duplicate element id.)
+- A behaviour may now be registered per `type/variant`, so `cta-band/video-band` loads its file and
+  the banner and button variants on 聯絡我們 and 常見問題 do not.
+
+**Two test defects this page exposed, both fixed:**
+- `test:behaviour` picked effects by bare section type, so the case **filter** ran against index,
+  whose `case-list` is the highlights variant and has no filter panel: three red checks for a page
+  behaving correctly. It now selects by `type/variant`, the same key the template uses.
+- `editor/lang.js` listed `number` as a structural key. The only field named `number` is a hero
+  stat - "90%+", "20+ Yrs", "GMP" - which is display copy Phase 14 must translate, so an editor save
+  collapsed `{zh: "20+ Yrs"}` to a bare string. Caught by the round-trip check. Genuinely numeric
+  fields are excluded by field TYPE, so nothing depended on the name.
+
+**One fidelity loss the diff caught**, the same class as the product batch's `<h1>` tagline: the
+company card's paragraphs are styled INLINE on the live page (`font-size:1.05rem; line-height:1.6;
+margin-bottom:1.2rem`, and no bottom margin on the last) and there is no `.company-glass-card p`
+rule anywhere in the page CSS to stand in. Rendering bare `<p>` made the card shorter and moved the
+rest of the homepage up. The styling now belongs to the variant, and the hand-written assertion that
+pinned the bare `<p>` was corrected to assert the live styling instead.
+
+**The visual diff, reconciled at both widths.** A reconcile variant - the same tree, rendered in
+memory with the products in the live page's ORDER and with its own titles and descriptions, and the
+three featured cases from its inline array instead of `data/cases.json` - collapses the difference
+to the control's own number, at the **identical page height**:
+
+| | 1280 | 390 |
+|---|---|---|
+| CONTROL (live page today vs baseline) | 0.74% | 1.04% |
+| migrated, scripts on | 11.03% | 14.82% |
+| **migrated VARIANT** | **1.15%**, height 3931 = baseline | **1.04%**, height 5794 = baseline |
+
+*(The "migrated" row was 10.93% / 14.72% when Phase 9 recorded it. It gained the chat
+launcher at P13-T5 on 24 Oct 2026, +0.10 at both widths — see the reference table at the end of
+this phase.)*
+
+So the layout is exact and the whole residual is the DATA disagreement, which is not ours to
+resolve: the homepage's product order and copy come from `data/products.json` (the catalogue the
+admin owns) rather than the page's third inline copy of it, and the case excerpts come from
+`data/cases.json` rather than the page's inline three-case array. Same rule as 常見問題: render from
+the data, record the difference, change neither.
+
+Accepted, in the variant's residual and in the control alike: the `section-title` font effect
+(finding 21b) and the hero region, which is nondeterministic - the control alone, comparing the live
+page against a baseline of itself, moved between 14k and 35k pixels in that region across runs,
+because the carousel auto-advances and a 3D frame is never identical.
+
+Also worth stating: a probe that blocks external hosts shows the nav 2px taller on our page, because
+the live page's script rewrites the flag `alt` to empty and a broken image with alt text ignores its
+CSS box. With the flag CDN reachable - which is what `page-diff` does, and what a visitor gets - the
+nav measures 164 on both at 1280 and 139 at 390.
+
+**Not ported, deliberately:** `buildHeroCarousel()` (the markup it built is pre-rendered),
+`updateHeroCarouselAlt()` (alt text is in the HTML; Chinese-only until Phase 14, finding 24),
+`syncFixedNavOffset()` (superseded by D1), and `bindBackToTop()`, which was already dead code - the
+live page has no `#backToTop` element for it to bind.
+
+**Phase 9 is complete**: 15 of 18 pages pre-rendered; the other three are out of scope by the
+owner's decision recorded above.
+
+
+#### 常見問題 (page two, first content page): DONE 15 Sep 2026, awaiting owner review
+
+**Retired** (`fc8c6e8`). `legacy/常見問題.html` (git rename, noindex), and `/常見問題.html` is rendered
+from `data/pages/faq.json`, which is also in the database (export leaves `data/` unchanged).
+`test:all` is green: 14 suites, 943 passing checks.
+
+**Actual elapsed: ~25 minutes** (11:31 → about 11:56 IST, docs included). The ½-day estimate was
+~10× too high for a page whose sections exist.
+
+**What was novel** (`79a2d39`, `1f52e61`):
+- **`callout` section** (11th type): `.highlight-box` + `.expert-link`, and the tinted note with an
+  inline link (`body` + `label` + `after`). Unique to this page.
+- **FAQPage is derived, not carried.** `render.js faqPageNode` builds it from the data the
+  faq-accordion renders. A tree carrying its own FAQPage alongside is refused. `test:seo` check 7
+  fails any page whose FAQPage names different questions from its visible list.
+- **`test:behaviour` PART 5** runs the shared `site.js` effects on every other published tree:
+  - menu, badge, cross-tab, language;
+  - scripts off;
+  - per-page negative controls.
+
+  `test:editor:lang` round-trips every tree. Both find pages from `data/pages/`, so later content
+  pages get this coverage without test edits.
+
+**What was mechanical:**
+- **The tree:** lifted from the original by jsdom.
+- **Page CSS:** one `MIGRATED` line in `extract-css.js`.
+- **Chrome:** per-page `chromeFrom`.
+- **Legacy guard** and render-to-root: no change needed.
+- **Existing gates:** SEO, fidelity and publish needed none either.
+- **Visual diff harness:** generalised once to take any page (scratchpad).
+
+**Visible change, recorded:** the list now shows `data/faq.json`, the list the admin edits, instead
+of the 5 hand-coded Q&As. No data was changed (owner: content not authoritative).
+- This is also the first time an admin FAQ edit reaches the site; the admin screen already said it
+  did.
+- The seven-language `translations` for the old Q&As go with them (Chinese-only, finding 24).
+
+**Visual diff, reconciled:**
+- **Scripts on:** 39.0% at 1280 and 47.4% at 390. The data answers are shorter, so everything below
+  them moves up.
+- **The proof:** the same tree was rendered in memory with the original's own Q&As and icons.
+  - Under `lang="zh"` the page is the same height as the baseline.
+  - Its only difference is **one mid-sentence bold run in Q2**, which the copy model cannot express
+    (finding 14: lead-ins only).
+  - With that `<strong>` restored it **equals the control pixel for pixel**, region by region
+    (32,373 px at 1280, 15,006 at 390; the control is drift in the original itself).
+- **Scripts off vs scripts on** differs only in the nav switcher.
+
+**Small differences, accepted without a visual effect:**
+- the list is no longer inside `<section class="faq-section" aria-label>`, whose padding is 0;
+  the region label is gone;
+- the WeChat link's Simplified-Chinese `aria-label` is dropped, so the visible label is its name;
+- the carried Product node for PSP-500 still says `InStock` / price 0, as the original did
+  (background, content not authoritative).
+
+**Chrome partial: still optional, not blocking.** Per-page `chromeFrom` gave this page its own nav
+and footer with no extra work. It becomes worth building when chrome must change once for all pages,
+or when a page has no original to lift from (add-page-from-template).
+
+**Recorded, accepted (owner):**
+- **Stock goes live at publish, not instantly.** The rendered page bakes stock in; the old page read
+  `inventory.csv` when it loaded. **FLAG FOR `ADMIN_GUIDE.md`**, written when the page actually
+  retires: an admin stock change reaches the website only after publish.
+- **Chinese-only regression** (finding 24).
+- **Definition-of-done waivers for Phase 9:**
+  - *"Editable in Puck"*: waived only until the `mergeTree` fix, which has landed, so it now passes
+    (`test:editor:lang`, with a negative control against the pre-fix code).
+  - *"Heavy assets from R2/CDN"*: waived. Product photos are Google Drive hotlinks, and moving them
+    is Phase 10, which comes after Phase 9 by design. Re-check at Phase 10.
+
+---
+
+#### THE VISUAL-DIFF REFERENCE — current as of 24 Oct 2026, after the chat widget
+
+**This table is the number a future diff is compared against.** Before it existed, P10-T1 claimed
+"every number matching Phase 9's record" while **the record was not written down** — only index's
+table was. A reference nobody can read is not a reference (`docs/FINDINGS.md` finding 35), so here
+it is.
+
+Every migrated page, rendered from its tree, against the **15 Sep 2026 production-hostname
+baseline**, scripts on, full page. `CONTROL` is the live hand-coded page measured against the same
+baseline on the same run — the floor, not zero, because the live pages move by themselves.
+
+| page | 1280 control | 1280 migrated | 390 control | 390 migrated |
+|---|---|---|---|---|
+| index.html | 1.15% | **11.03%** | 1.04% | **14.82%** |
+| 產品介紹 | 0.10% | **15.26%** | 0.12% | **15.04%** |
+| 常見問題 | 0.93% | **28.84%** | 1.25% | **37.67%** |  <!-- was 39.15/47.64 before 康草堂...與其他品牌有何不同 was restored, 24 Oct 2026 -->
+| 典型病例 | 0.49% | **4.08%** | 0.77% | **8.14%** |
+| 小册子 | 0.16% | **2.93%** | 0.15% | **2.72%** |
+| 研究報告 | 2.17% | **6.24%** | 0.77% | **7.00%** |
+| 聯絡我們 | 0.50% | **3.20%** | 0.85% | **4.46%** |
+| 有效成份檢測 | 0.51% | **3.45%** | 0.49% | **2.54%** |
+| 微信發表文章 | 2.79% | **7.56%** | 2.43% | **7.92%** |
+| 產品_T3 | 0.70% | **5.84%** | 1.09% | **15.85%** |
+| 產品_PT3 | 0.51% | **6.33%** | 0.90% | **17.43%** |
+| 產品_乙肝清 | 0.60% | **5.02%** | 1.00% | **15.38%** |
+| 產品_憶活素 | 0.66% | **8.61%** | **17.00%** | **18.29%** |
+| 產品_雲芝糖肽精華_A | 0.80% | **5.39%** | 1.26% | **13.17%** |
+| 產品_雲芝糖肽精華_B | 0.76% | **5.52%** | 1.14% | **12.89%** |
+
+**What changed from the pre-widget run, and by how much.** Only three pre-widget figures were ever
+written down, and all three moved by the launcher and nothing else:
+
+| | before | after | delta |
+|---|---|---|---|
+| index 1280 | 10.93% | 11.03% | +0.10 |
+| index 390 | 14.72% | 14.82% | +0.10 |
+| 產品介紹 1280 | 15.11% | 15.26% | +0.15 |
+| 常見問題 1280 | 39.01% | 39.15% | +0.14 |
+
+That matches the widget's measured contribution exactly — the isolation run put index's delta at
++0.113% / +0.138%, inside the hero's own run-to-run noise. **These numbers are not derived; they
+are a fresh measurement against the baseline, taken after the widget landed.**
+
+**Reading the big ones.** 常見問題's 39% and the product pages' 390 figures are **not regressions and
+not the widget**. They are Phase 9's recorded, accepted data differences — 常見問題 renders
+`data/faq.json`, the list the admin owns, rather than the page's old hand-coded Q&As, and the
+product pages' phone layouts differ for the reasons each page's record states. Phase 9 reconciled
+every one of them to a variant render at the identical page height. **Do not read this column as
+error.** The thing to watch is **change from these numbers**, and anything that moves is a hard stop
+for the owner (P10-T5).
+
+**The widget's own contribution, measured separately** (HEAD vs working tree, same page, both
+widths): worst 0.411% at 1280 and 1.002% at 390, **no page changed height**, and the changed area is
+constant — median 5,965 px at 1280 against a 76×76 launcher, 3,495 px at 390 against 56×56. The
+percentage varies only because page heights vary from 900 px to 5,004 px.
+
+---
+
+## Phase 10 — Media + 3D to R2/CDN
+
+**What this phase is.** Every byte of media the site serves today comes from somewhere we do not
+control and cannot keep: 72 MB of `.glb` committed to Git and redeployed on every push, product
+photos hotlinked from the client's Google Drive (finding 2), the homepage background video and nine
+images on the client's Wix CDN, and — found here — two research PDFs on Wix's file store and four
+documents on Drive. Phase 10 puts all of it in one bucket we own, referenced from one place.
+
+**The payload:** 42 assets, 117.5 MB (the 12 flag icons add about 40 KB to a payload dominated by four 3D models). Nothing in it needs the client: everything downloads at full
+quality from an ordinary HTTP request (the four Drive documents serve a viewer page at their `/view`
+URL and the file itself from the direct-download endpoint).
+
+**The rule this phase is built on, already a standing decision:** *a heavy or externally hosted asset
+is a TREE FIELD, never markup.* Because of that, re-hosting is a **data edit and a re-render**, not a
+code change — which is what makes the eventual Wix death (finding 1) and the r2.dev → custom-domain
+switch (Phase 18) edits rather than migrations.
+
+**Filenames are content-addressed, with no exceptions:** `<readable-name>-<sha8>.<ext>`, where the
+hash is the first 8 hex of the sha256 of the bytes. That is what makes `immutable` caching safe, and
+it is why finding 34's `Date.now()` cache-buster could be **deleted** rather than replaced. It also
+makes every URL self-verifying: `check:media` hashes what the bucket serves and compares it to the
+name it is served under.
+
+### P10-T1 · Shared chrome partial — DONE (`8e4bde2`)
+Until now the renderer **lifted** chrome out of whichever hand-coded page a tree named. Phase 10
+re-hosts the nav logo and the seven flag icons, and under the lift those URLs lived inside 15
+**retired** pages in `legacy/` — so "move the media" would have meant editing 15 files nobody is
+supposed to touch, breaking the data-edit rule on day one. The chrome is now `renderer/chrome/*.html`
+plus `data/site.json` (`{{media.*}}` tokens), assembled by `renderer/chrome.js`.
+- **Verified three ways:** normalised HTML comparison (5 of 15 pages changed, whitespace and comments
+  only); all 15 pages re-diffed against the 15 Sep baseline with every number matching Phase 9's
+  record; and an **A/B isolating the switch** — lifted chrome vs partial, page against page — giving
+  **14 of 15 byte-identical**. Index differed, and comparing index *against itself* with identical
+  chrome gave 7,788 px against the A/B's 8,079 px in the same row bands: its animated hero, not the
+  change.
+- **Two regressions the mechanical check caught and the eye did not:** the six product pages
+  highlight 產品介紹, their parent section, not themselves — so "a page highlights itself"
+  un-highlighted the nav on all six, and `assets.navActive` is now carried per tree, read from each
+  original; and on the homepage the **logo** also links to `index.html` and matched first, so
+  `markActive` is scoped to `<nav class="nav-menu">`.
+
+### P10-T2 · `test:media`, the offline half of the contract — DONE (`8e4bde2`)
+A media URL is the one kind of content no existing gate looks at: SEO checks that an `og:image`
+exists, never where it points; fidelity maps compare tags and classes; `test:behaviour` asserts
+effects. Suite 7 of 16, in `test:all`, two layers: every media reference is on a host **declared with
+a stated reason** in `data/site.json` (in force today), and — once `media.base` is set — under that
+base, content-addressed, and on no retired host. Layer 2 switches on by **editing data**, not this
+file.
+- **It found two things nobody was looking for.** Two research PDFs served from
+  `www.wonder-herb.com/_files/ugd/` — a **Wix path on the client's own domain**, so they read as
+  internal links and the first inventory missed them; they die at cutover exactly like the video.
+  And five links to Drive **documents** (`/file/d/<id>/view`), which carry no extension and no media
+  word in the path, were invisible to the scanner itself — found while writing `check:media`, fixed
+  in both scanners, with a control that asserts the scanner sees one.
+- One of its own six controls caught a bug in it: `photo-1234abcd.jpg?v=1699` is content-addressed
+  **and** uncacheable, and was passing. The anchor now requires the URL to end at its extension.
+
+### P10-T3 · `check:media`, the online half — WRITTEN, waiting on the bucket
+`npm run check:media`. **Not in `test:all`** — it talks to a real host. This is the owner's **hard
+gate**: nothing is `git rm --cached` out of the repo until it is green. Per asset: 200 with **no
+redirect**; `Content-Type` matching the extension; `Cache-Control` with `immutable` and max-age ≥ a
+year; **CORS required on `.glb`** (the hero loader uses `fetch`, so without it every model fails
+silently while the page still shows its poster) and reported for the rest; the served bytes hashing
+to the 8 hex digits in the filename; and, against `data/media-manifest.json`, the right length and
+nothing uploaded that the site does not reference.
+- **First it checks the bucket itself:** a key that cannot exist must **not** answer 200. If the host
+  served something friendly for every path, every check after it would pass while pointing at
+  nothing.
+- Every contract rule is a **pure function**, and every negative control applies that same function
+  to a value it must reject *and* one it must accept. A control that only ever asserts rejection
+  passes just as happily when the function returns false for everything.
+- **It can be exercised before the bucket exists:** `node scripts/check-media.js --against-current`
+  runs the identical contract over the media the site uses **today**, against real HTTP responses.
+  Result: **34 of 34 fail**, and the failure shapes are the proof — Drive's `/thumbnail` transforms
+  answer 302, Drive's `/d/<id>` URLs carry no extension and `private, max-age=86400`, Wix and flagcdn
+  are not content-addressed. Exit 0: it is a demonstration, not a gate.
+
+### P10-T4 · The uploader — devDependency `aws4fetch@1.0.20`
+Scripted, not by dashboard: a scripted upload is repeatable and verifiable and a manual one is not.
+MIT, **zero dependencies**, 84 KB on disk, pinned exactly, `devDependencies`, and `node_modules/` is
+gitignored so it cannot reach the published site. It sets the content type and
+`public, max-age=31536000, immutable` per object, and writes `data/media-manifest.json` — the record
+of what each URL means, which `check:media` then verifies against.
+
+### P10-T5 · Repoint, re-render, re-diff
+`data/site.json` gains `media.base`; every reference becomes `base + key`. This turns on `test:media`
+layer 2 automatically. Then re-render and **re-diff all 15 pages at 1280 and 390, scripts on and
+off** — the six host-resized images are pre-generated at their **measured** dimensions (measured from
+the fetched bytes' own headers, not inferred: 1000×774 ×2, 800×1036, 800×620, 347×513, 366×513), so
+the diff must come back at the Phase 9 numbers.
+
+> **HARD STOP (owner, 18 Sep 2026).** If any page's diff differs from Phase 9's recorded number,
+> **stop and hand it to the owner**. Do not explain it and continue. The six host-resized images are
+> the risk: they are the only assets whose bytes are being regenerated rather than copied, and a
+> wrong dimension there is a real visual regression wearing the costume of an acceptable delta. The
+> owner reads any deviation before the move proceeds.
+
+### P10-T6 · Only then, out of the repo
+`git rm --cached` the four referenced `.glb`, add `*.glb` to `.gitignore`, delete the three unused
+ones (0.3 MB, dead weight — 7 are committed, 4 are referenced), and drop `vercel.json`'s `.glb` CORS
+rule, which exists only because the models were served from here.
+- **Gate (owner):** `check:media` green — 200, correct content type, CORS, immutable — **before** any
+  `git rm --cached`. Not a step; a gate.
+
+### P10-T7 · Finding 34 — DONE (`4f793f1`)
+All four models were fetched **eagerly on page load**, all at once, each behind a `Date.now()`
+cache-buster that made them uncacheable: ~72 MB per visit for three models the visitor may never see.
+Fixed in `assets/behaviour/home-hero.js` — a model loads when its slide activates, the buster is
+deleted outright — and gated in `test:behaviour` with a three.js stub, proved by restoring the old
+loader and watching the check fail (4 fetched on load, 4 cache-busted).
+
+### P10-T8 · P8-T3, the deploy allow-list — lands with this phase
+Scheduled here rather than after, because this is the phase that changes what deploys. It touches
+`.github/workflows/static.yml`, so it gets its own isolated review: **the diff is shown alone before
+it is applied.**
+
+> **Decided (owner, 18 Sep 2026) — the 12 flagcdn references move too. Payload 42.** Seven
+> language-switcher flags in the shared chrome and five office-location flags on 聯絡我們 come from
+> `flagcdn.com`, a fourth-party CDN. They move to R2 with everything else, for about 40 KB. The
+> reasoning is the governing one: **an exemption is the beginning of a list of exemptions**, and a
+> fourth-party CDN in the language switcher is a dependency sitting outside every gate. Keeping the
+> rule "every media reference is under `media.base`" absolute is worth more than the 40 KB.
+
+---
+
+## Phase 11 — Host the API + MongoDB
+
+### P11-T1 · Get off the laptop
+- **Goal:** the client can reach the admin over the internet.
+- **Steps:**
+  1. Provision MongoDB (Atlas free M0 to start). Put the connection string in the host's secret store, not in Git.
+  2. Host the Express API. Two options, pick one and document it:
+     - Small VPS (Hetzner/DigitalOcean, 2 vCPU / 4 GB), run with a process manager, TLS via Caddy/Let's Encrypt.
+     - Vercel serverless: adapt `server/index.js` to the platform's handler; confirm MongoDB connection reuse across invocations.
+  3. Seed production data with `npm run seed` pointed at the prod DB (or import the current `data/`).
+  4. Create the super-admin via `npm run admin:create` using the `SUPER_ADMIN_*` env values.
+  5. Nightly backup: `mongodump` to R2 on a cron, keep 30 days.
+- **Verify:** log in to the admin from a different machine; edit and publish a page; restore last night's backup into a scratch DB successfully.
+- **Gotcha:** preserve the fallback behaviour: if the API is down, the committed `data/` still serves the site. Never make the live site depend on the API being up.
+
+> **HARD GATE — no exposed identity in the hosted database.** Hosting does not go live until this
+> passes. Not a note.
+>
+> Three login addresses from the local dev database are in public git history (docs/FINDINGS.md
+> finding 22). The decision was to rotate identities, not rewrite history, which is only safe if
+> **none of those identities ever reaches a reachable system**. So:
+>
+> - **Never import the dev `users` or `sessions` collections into the hosted database** — no
+>   `mongodump`/`mongorestore` of the dev DB wholesale. Content may be seeded from `data/`; accounts
+>   are created fresh (step 4) with addresses the business controls.
+> - **Check, don't trust:** before go-live, hash every hosted account's email (`sha256` of the
+>   trimmed, lower-cased address) and assert none matches these. They are fingerprints, not the
+>   addresses — the addresses are not quoted anywhere, by standing practice:
+>   ```
+>   87924606b4131a8aceeeae8868531fbb9712aaa07a5d3a756b26ce0f5d6ca674
+>   2fbd33c012587b73ab496d79e764917c7c40b0874531c77267b3a83c45aeeb9d
+>   7932b2e116b076a54f452848eaabd5857f61bd957fe8a218faf216f24c9885bb
+>   ```
+>   A fingerprint of a guessable address can be brute-forced, so this hides nothing from a
+>   determined reader — the addresses are already public. It exists so the check never re-quotes them.
+> - Also assert every hosted account uses a domain the business controls, and no account is a
+>   free-mail address (`gmail.com` etc.) that nobody here owns — that becomes a takeover route the
+>   moment password-reset email exists.
+> - **Verify:** run the check against the hosted DB and show it pass; insert a throwaway account whose
+>   email hashes to one of the fingerprints in a scratch DB and show it fail.
+
+### P11-T3 · Login throttle that survives hosting — security, owner Phase 11
+
+Owned by Phase 11 rather than Phase 17 because hosting is what breaks it. Today's throttle
+(`server/auth.js`) counts 5 failures per **email + IP** per 15 minutes in an **in-memory `Map`**:
+
+- **On Vercel serverless (an option in P11-T1) it is not a weak throttle, it is no throttle.** Each
+  instance has its own `Map`, and a cold start empties it.
+- On a VPS a restart clears it, and **rotating IPs defeats email+IP keying** everywhere — which matters
+  more now that every admin login name has been public (finding 22).
+
+- **Steps:** store failure counts in MongoDB (a collection with a TTL index), so they survive restarts
+  and are shared by every instance. Lock **per account** after N failures regardless of IP, with an
+  exponential back-off; keep a separate per-IP limit for spraying across accounts. Answer identically
+  for unknown and known accounts so the lockout is not a username oracle. Log lockouts to the activity
+  trail (never to `data/`). Give the super-admin a documented out-of-band unlock.
+- **Verify:** N wrong passwords from N different IPs lock the account; a restart (or a second instance)
+  does not reset the count; a correct password during lockout is still refused; the lock expires; an
+  unknown email gets the same response and timing class as a known one.
+
+### P11-T2 · ONE admin, built to the final design — supersedes the two-app split
+
+> **The design in `wonderherb-admin-frontend/` is FINAL and is the only admin design (owner,
+> 17 Oct 2026).** No other admin UI is to be worked on or designed. `admin/index.html` and the Puck
+> editor's own shell are both **superseded**: they keep working until the new app covers their
+> modules, then retire. Anything that disagrees with that folder is wrong, including earlier text in
+> this file.
+
+**What the folder is, and is not.** It is a design prototype: `support.js` is a generated design-tool
+runtime (`dc-runtime`) rendering `<sc-if>` / `<sc-for>` templates against `window.React`, and the
+HTML is one 172 KB file of inline-styled mockup with hard-coded data and no API call anywhere. It is
+the target, not an implementation. Two traps inside it:
+
+- **`_ds/` is a DIFFERENT design system** — "Industry": steel-blue wireframe, Barlow Condensed,
+  Lucide, blueprint corner marks. The delivered HTML never references it (zero matches for `_ds`).
+  It contradicts the real design and must be deleted, not wired up.
+- **It WAS a nested git repository**, which is a hole in `test:data` — see finding 37. **Vendored
+  into this repo on 17 Oct 2026 (owner):** its `.git` and `_ds/` removed, the prototype, the
+  design brief and the reference screenshots kept — 2.2 MB down to 716 KB. The nested repo also
+  held a "Wix.com admin page design" zip that had already been deleted from the working tree; the
+  whole `.git` was archived outside the repo before removal rather than destroyed.
+- **Its sample ACCOUNT addresses were redacted on vendoring.** The Users screen, the sign-in field
+  and the Site settings contact field carried five company-domain addresses, only one of which was
+  the business's public contact address. This repo is public (finding 22), so all five became
+  reserved example-domain addresses. The design is unchanged — they are sample values, and the
+  prototype already redacts its own sample enquiry contacts the same way. The originals are in the
+  archived `.git` and in the design tool.
+
+**What the design settles.** The Content group lists 研究報告, 有效成份檢測, 小册子 and
+微信發表文章 alongside 典型病例 and 常見問題, which at first looks like it rebuilds in forms what
+Puck already does (non-negotiable 3). Reading the screens, it does not: each is an **item
+collection** feeding a list section on its page — reports with an institution, year and PDF; test
+reports per batch; booklets **with a language column**; WeChat articles with a link and a
+translation count. Exactly the `faq-accordion` ↔ `data/faq.json` boundary we already have. **Page
+layout stays in Puck; these screens edit the data a list section renders.** The booklet screen is
+also the first proper model for finding 28: a per-language document is a row with a language, not
+one tree field trying to hold several.
+
+#### The architecture: the admin app IS the editor app, grown up
+
+The Puck editor is already a React + Vite app talking to this API (`editor/api.js`). The admin app is
+that app with the designed shell around it and Puck as one route. That delivers "one admin site, one
+login" by construction rather than by gluing two apps together, and the design's editor screen *is*
+Puck's shape — Add panel left, canvas centre, settings right.
+
+- **Rejected:** keeping `dc-runtime` (generated, marked do-not-edit, not a framework). **Rejected:**
+  porting to vanilla like `admin/index.html` — 19 destinations against 3,563 lines of unstructured
+  HTML is how the current admin became unmaintainable.
+- **The palette is FINAL and is not to be resampled (owner, 17 Oct 2026).** The admin's teal is
+  `#0f6b6b` and its maroon `#8c1d2c`. These are deliberately **not** the live site's values
+  (`#2eada5` / `#1a7a75` teal, `#9b2e2e` maroon) — the admin is a workplace and is calmer than
+  the shopfront (brief §8.2). Do not "correct" them toward the public site; that question is closed.
+  Tokens are extracted ONCE from the prototype into a single token file — those two, the neutrals,
+  and IBM Plex Sans / Noto Sans TC / Playfair Display — and **no component hand-types a hex**.
+- The admin's fonts are a **third-party runtime dependency like the public site's** — finding 36
+  covers them, and self-hosting should cover both or neither.
+- The design drops Font Awesome entirely for inline SVG paths. That is the right call and is the
+  answer finding 36 wanted for the public site too.
+
+#### The connection map — every screen against the API that exists today
+
+Taken from the API surface, not from memory: 32 routes, `/api/cms?type=<module>` being a **generic
+list route** over `COLLECTIONS`, which is why four new content modules are cheap.
+
+| Design screen | What it talks to today | Gap |
+|---|---|---|
+| Sign in | `POST /api/auth/login`, `GET /api/auth/status` | **none** |
+| Shell, nav, permission hiding | `GET /api/auth/me` | `auth.js MODULES` needs the 4 content modules + the website permissions (Edit pages, Delete pages, Edit SEO, Publish) |
+| Products list + edit form | `GET/POST /api/cms?type=products` | **none.** `protectLangMaps` already enforces the design's "never delete a field it does not show" (finding 25) |
+| Inventory + movement log | `POST /api/stock/:sku/adjust`, `?type=movements` | **none** |
+| Sales, Customers | `/api/sales/*` | **none** |
+| Cases, FAQ, Homepage text | `/api/cms?type=…` | **none** |
+| **Research, Testing, Booklet, Article** | — | 4 entries in `COLLECTIONS`, `MODULE_OF`, `auth.MODULES`, `export.js`, `seed.js`. No new routes |
+| Pages list | `GET /api/pages` | add last-edited / last-published / status |
+| Page editor | `GET/PUT /api/pages/:slug`, `POST /api/preview` | **none for editing** |
+| Dashboard: low stock, unpaid invoices | products + `/api/sales/invoices` | compose only |
+| Dashboard: recent activity | `POST /api/activity` exists | **no `GET`** |
+| Dashboard + top bar: unpublished changes, last published | — | **the publish state does not exist** |
+| **Publish button** | `npm run publish` is a CLI the owner runs | **no API at all.** This is the centrepiece of the design's safety story |
+| Media library | — | whole feature; **Phase 10's `data/media-manifest.json` is its index** |
+| Version history + restore | — | whole feature, a publish log over git, showing no hashes |
+| Missing translations | derivable from trees + lists | one computed endpoint |
+| Enquiries | — | whole feature, and it needs the **public contact form** first |
+| Site settings | `data/site.json` is file-only | no route; decide whether site settings enter Mongo |
+
+#### Where this sits against Phase 10 — decided 17 Oct 2026
+
+The owner left the call to me. The answer is **both, with a boundary**, and it rests on two things I
+checked rather than assumed.
+
+**The shell starts now, in parallel.** Phase 10 is blocked on the R2 bucket, which is not ours to
+unblock, and **P11-T2a needs no bucket**. The two workstreams touch disjoint files:
+
+| Phase 10's remaining steps | The admin shell + wiring |
+|---|---|
+| `data/site.json`, `data/pages/*.json` (~60 refs), `data/products.json` | a new app directory (`editor/` grown up) |
+| `data/media-manifest.json`, `scripts/upload-media.js` (new) | `server/index.js` (serving the built app) |
+| the four `.glb`, `.gitignore`, `vercel.json`, `static.yml` | `package.json` (scripts) |
+
+The only shared file is `package.json`, and only its `scripts` block. Nothing in the shell reads or
+writes a page tree, so neither workstream can corrupt the other's re-diff.
+
+**Phase 10 preempts the moment credentials land.** Its remaining sequence runs upload → **hard gate**
+→ repoint → re-render → re-diff (**hard stop on any deviation**) → **hard gate** → `git rm --cached`.
+That is not a sequence to interleave with other work: a gate is only a gate if nothing else is moving
+underneath it. The admin work pauses, Phase 10 finishes, then the admin work resumes.
+
+**P12-T4, the four content modules, WAITS for Phase 10.** This is a real dependency, not tidiness.
+Three of the four collections carry exactly the documents Phase 10 is re-hosting — counted, not
+guessed: `data/pages/testing.json` holds 3 Drive document links, `brochure.json` 2, and
+`research.json` the 2 `_files/ugd` PDFs. Seeding those collections first would mean seeding Drive and
+Wix URLs that Phase 10 then has to rewrite inside a brand-new write path, with the re-diff unable to
+tell a seeding bug from a re-hosting one. And the booklet screen's per-language PDFs **are**
+finding 28, whose fix is the move itself. Build these on top of a finished move, not across one.
+
+**The media library stays at Phase 13**, on Phase 10's `data/media-manifest.json` as its index. Until
+it exists, the product form's Photo field is a URL, not a picker — the design's picker is the Phase
+13 state of that same field.
+
+**So the order is:**
+
+1. **Now, alongside the Phase 10 block:** P11-T2a (shell, auth, nav, permission hiding, tokens) and
+   P11-T2b (the seven modules that already have a backend).
+2. **Phase 10 resumes and completes** the moment the bucket exists. Everything else stops.
+3. **Then:** P11-T2c (Puck in the shell), P12-T4 (the four content modules), P12-T5 (publish),
+   P12-T2 (version history — it already existed as a task; the design makes it a screen) and
+   P12-T6 (missing translations).
+4. **Phase 13:** media library. **Month 2:** enquiries, after the public contact form exists.
+
+#### Sequencing — wiring before features
+
+1. **P11-T2a · Shell.** Vite app, extracted tokens, nav, sign-in, `GET /api/auth/me`, permission
+   hiding, the two language switches. No new backend.
+2. **P11-T2b · The modules that already have a backend** — Products, Inventory, Sales, Customers,
+   Cases, FAQ, Homepage text. Pure wiring. At the end of this the new admin replaces
+   `admin/index.html`, which retires to `legacy/`.
+3. **P11-T2c · Puck as a route** inside the designed shell. `editor/App.jsx`'s own chrome goes.
+4. **P12-T4 · The four content modules.** Cheapest real feature in the plan, and it closes finding
+   28's document half.
+5. **P12-T5 · Publish from the admin** — see below.
+6. **P12-T2 · Version history** over the publish log; **P12-T6 · Missing translations**.
+7. **Phase 13 · Media library** on Phase 10's manifest. **Month 2 · Enquiries**, after the public
+   contact form exists.
+
+#### P12-T5 is the dangerous one
+
+`npm run publish` runs export → sections:build → render → `test:seo` → `test:data` and stops on any
+failure. Turning that into a button means a **web request can now run the whole publish pipeline**.
+Non-negotiable 1 says a broken admin must never take the live site down, so:
+
+- The API must **refuse to publish when any gate fails**, and say which page and why in the plain
+  words the design specifies ("The Products page lost its FAQ information for Google."), with
+  "Your live site has not changed."
+- **Gate, with a negative control:** plant a failure (a tree that fails `test:seo`), call the publish
+  endpoint, and assert that it returns the failure **and that nothing was written**. A publish
+  endpoint that cannot be proven to refuse is not shippable.
+- Publishing is gated on the `Publish` permission, not on being signed in.
+- The progress steps the design shows are our existing gates, named for a non-technical reader:
+  "Checking every page for search engines" **is** `test:seo`. The client's reassurance and our test
+  suite become the same thing.
+
+#### Gates for this task
+
+- **One design, enforced:** a check that no component hard-codes a colour — every value resolves to
+  the extracted token file. The design being final is a rule, so it gets an assertion, not a
+  sentence (finding 35).
+- **Permission hiding verified by effect:** a staff account without `products` sees no Products nav
+  item and gets a refusal from the route, with a negative control.
+- **Finding 25 holds through the new forms:** the product form saves without deleting `link`,
+  `ribbon` or `priceNote` it never showed.
+- **No second admin:** when P11-T2b lands, `admin/index.html` moves to `legacy/` in the same commit
+  that makes the new app the default. Two live admin UIs is the state this task exists to end.
+
+- **Verify:** sign in once; reach every module and the page editor from one nav without a second
+  login; a staff account sees only its modules; publish succeeds, and a planted gate failure stops
+  it with the live site untouched.
+
+#### The origin decision, unchanged by the design
+- **Decisions this forces — take them at Phase 11, not now:**
+  1. **Same origin, or a separate host?** Same-origin subpath costs nothing and changes no auth. A separate host (`editor.wonder-herb.com`) means `localStorage` cannot be shared and single sign-in becomes a real auth change — a cookie on the parent domain, which means httpOnly + SameSite + CSRF handling the project does not have today. **This is the decision everything else hangs off.**
+  2. **Does the admin (and now the editor) stay on GitHub Pages, or move to the API host?** Moving them makes findings 6 and 16 largely vanish, because the deploy stops being "the whole repo". But `admin/index.html` is served from Pages *on purpose*: it falls back to the committed files when the API is down (CLAUDE.md hard rule 1). Moving it breaks that. Decide deliberately — **and note the split need not be all-or-nothing: hard rule 1 exists to protect the PUBLIC SITE, which stays static on Pages, non-negotiable. The admin and editor are tools, not the public site; if the API is down the client simply cannot edit for a while, which is tolerable in a way a dead public site never is. So moving admin+editor to the API host may well be fine even though moving the public site never would be.**
+  3. **Is the editor a public URL?** The admin already is — anyone can load it; the API is what gates writes. The editor is the same shape (`noindex` is already set). Acceptable, but say so out loud rather than discovering it.
+  4. **Is "may edit pages" a new permission,** or does it ride on the existing module ticks? Today `PUT /api/pages/:slug` uses `requireAdmin`; the editor UI itself is loadable by any signed-in user. Phase 12's question, but P11-T2 is when the client first sees the door.
+- **Gotcha:** the business half is NOT rebuilt in the editor. Sales, inventory, products, customers and users stay exactly where they are, in `admin/index.html` and its API. This task adds a doorway and a shared session — nothing more. CLAUDE.md non-negotiable 3.
+
+---
+
+## Phase 12 — Permissions, versioning, rollback
+
+### P12-T1 · Lock down destructive actions
+- **Goal:** the client cannot delete a page or change SEO unless allowed.
+- **Steps:**
+  1. Use Puck's permissions API to hide delete/duplicate where the role forbids it.
+  2. Enforce the same on the API: `PUT /api/pages/:slug` and any delete route check role from `server/auth.js`. UI hiding is not security.
+  3. Gate SEO fields (title, description, canonical) behind an admin-only flag.
+- **Verify:** a `staff` token cannot delete a page or edit SEO via the API (returns 403); an `admin` token can.
+
+### P12-T2 · Version history and rollback
+- **Goal:** one-click undo of a bad publish. **The final design (P11-T2) makes this a screen, 版本記錄**: a timeline of every publish with date, time, who and a summary; preview any past version; restore with a confirm step that says exactly what will change. The brief calls it "the main safety net" and is explicit that it must **never show a commit hash** — the client did not ask for git and must not be shown it. That is a presentation rule over the mechanism below, not a change to it.
+- **Steps:**
+  1. Since every publish is a Git commit, add an admin action that lists recent `data/pages` commits and can revert one (call a server endpoint that runs the git revert + re-render, or document the manual `git revert` for now).
+  2. Also snapshot the page tree in a `pages_history` collection on each save.
+- **Verify:** make a bad edit, publish, roll back, confirm the previous version is live again.
+
+### P12-T3 · Make the admin's product form multilingual
+- **Goal:** give staff a way to edit product names and descriptions in all seven languages. Today they can edit `zh` and **cannot reach the other six at all** — the form is a single `<input>` per field.
+- **Why it is a task and not a bug:** the data became per-language at P9-T1 (finding 19), recovering seven translations the live site already shipped. `server/index.js` `protectLangMaps()` stops a plain-string save from deleting them (finding 20, HIGH), so nothing is at risk — but a guard is not an editor. **This form is the client's only route to their own translations.** Until it lands, a typo in the German product name can only be fixed by a developer.
+- **Files:** the **new admin app** (P11-T2), not `admin/index.html` — that file is superseded by the final design and retires to `legacy/` when P11-T2b lands. **This task folds into P11-T2b**: the design's product edit form is already multilingual by construction (per-language Name, Description, Price note and Ribbon), so building the form to the design *is* this task. What stays separate is the API-side rule in step 4 below, which is the floor for every caller.
+- **Steps:**
+  1. Add a content-language picker to the product form, matching the Puck editor's — one language at a time, not seven inputs per field (the P8-T1 reasoning: seven inputs bury the form, and one-at-a-time is how a person actually works, especially through a Chinese IME).
+  2. **Reuse `editor/lang.js`'s `project` / `merge`.** That logic is already proven by the 26 checks in `scripts/test-editor-lang.js`, including the two bugs it was written to catch: fallback poisoning, and losing translations when items are reordered. Do not write a second implementation — a second one will get the same two things wrong.
+  3. Keep the API guard afterwards. It is the floor for every caller, not a substitute for this.
+  4. **The store merges, never replaces (finding 25, HIGH, added at P9-T1).** The rule is general: **no write path may delete a field its caller was not shown.** `protectLangMaps` covers one field type (language maps); this covers the class. Implement it once, in the API, for **every content write path**:
+     - `POST /api/cms` lists: match items by SKU/`id`, start from the stored item, apply incoming fields, `null` removes a field, an absent *item* is still deleted.
+     - `POST /api/cms?type=homepage`: the same, at the top level.
+     - `PUT /api/pages/:slug`: top level **and per section**. Persist a stable section id first, because stored trees derive one from position.
+     - Report what was kept in the response.
+
+     It bites **today** in two places: the admin product form deletes `link`, `ribbon` and `priceNote` (and would delete `clinicOnly`), and an unchanged Puck save deletes the product grid's section-level `"wrap": "container"` (proven by running `mergeTree`). Homepage and FAQ are the same shape waiting for their first new field. The forms and `mergeTree` get fixed too, as defence in depth, not as the fix. The Puck side of it was fixed narrowly at P9-T1 (`mergeTree` keeps node-level keys), so saving 產品介紹 in the editor is safe; the API rule for every path is still this step. **Blocks** lifting PT3's price hold (`assets/site.js` `PRICE_HOLD`).
+- **Verify:** edit a product's German name in the admin, save, confirm `zh` and the other five are untouched — the same round-trip `scripts/test-editor-lang.js` runs for page trees. Confirm an untranslated field shows **empty**, never the Chinese fallback. **For step 4:** one test loops **every** content write path. For each, it saves through the real caller (admin form, `mergeTree`) with fields the caller doesn't show present in the store, and confirms they survive in MongoDB and in `data/` after export. Include PT3 with `link`/`ribbon`/`priceNote`/`clinicOnly`, and 產品介紹's tree with `wrap`. Negative control: the same saves against the pre-fix API lose them. A new write path must fail this test until it merges.
+- **Gotcha:** `admin/index.html` is vanilla JS with no build step, and `editor/lang.js` is an ES module importing CommonJS (finding 18). Settle how the admin loads it — a small shared build, or the `<script type="module">` the page can already use — rather than copying the functions across, which would fork the logic the moment either side changes.
+
+### P12-T4 · The four content modules — research, testing, booklet, article
+- **Goal:** the Content group in the final design (P11-T2) edits 研究報告, 有效成份檢測, 小册子 and
+  微信發表文章 as item collections, the way Cases and FAQ already work. Page **layout** stays in Puck;
+  these edit the items a list section renders.
+- **Why it is cheap:** `/api/cms?type=<module>` is a **generic list route over `COLLECTIONS`**. This
+  is five registry entries and **no new route**: `server/db.js COLLECTIONS`, `server/index.js
+  MODULE_OF`, `server/auth.js MODULES`, `scripts/export.js`, `scripts/seed.js`.
+- **The shapes, from the design's own columns:**
+  - **research** — title, institution, year, report file, translation coverage
+  - **testing** — batch, product, test, tested-on, result, report file
+  - **booklet** — title, **language**, pages, file size, last updated, status
+  - **article** — title, published date, WeChat link, translation coverage, status
+- **The booklet row is finding 28's proper model:** a per-language document is a **row with a
+  language**, not one tree field trying to hold several. 小册子 would have published the German
+  brochure to Chinese visitors; this is the shape that makes that impossible rather than merely
+  caught.
+- **BLOCKED ON PHASE 10 — a real dependency, counted not guessed.** Three of the four carry exactly
+  the documents Phase 10 is re-hosting: `data/pages/testing.json` holds 3 Drive document links,
+  `brochure.json` 2, `research.json` the 2 `_files/ugd` PDFs. Seeding these collections first means
+  seeding Drive and Wix URLs that Phase 10 then rewrites inside a brand-new write path, with the
+  re-diff unable to tell a seeding bug from a re-hosting one.
+- **Verify:** each page's list section renders from its collection, not from markup; `test:seo` and
+  the visual diff unchanged for all four pages; `test:media` sees the documents at their new home; a
+  staff account without the module's permission is refused by the API, not just by a hidden nav item.
+
+### P12-T5 · Publish from the admin — THE PLAN (no code until the owner has read it)
+
+**This is the only part of the admin that can change the live site.** Non-negotiable 1 says a broken
+admin must never take the live site down. Everything below is arranged around that one sentence.
+
+---
+
+#### 1. The fact that decides the whole design
+
+**`npm run publish` deliberately does not commit, push or deploy.** Its own header says so:
+
+> *WHAT THIS COMMAND DOES NOT DO: it does not commit, it does not push, and it does not deploy.
+> There is no `git` call anywhere in this file. That is deliberate and it is the project's rule.*
+
+It runs export → sections:build → render → `test:seo` → `test:data`, stops on the first failure, and
+then **prints instructions for a human** to read `git diff` and push. Publishing to the live site is
+a person pushing to `main`, which fires `.github/workflows/static.yml`.
+
+**And the deploy workflow runs no gate at all.** Checked, not assumed: `static.yml` has three steps —
+checkout, configure-pages, upload `path: '.'` — and **no build, no test, no `npm` anywhere**. So:
+
+> **The SEO and leak gates are not on the path to the live site.** They are a local command someone
+> chooses to run first. The thing that actually protects the site today is **the human between
+> `publish` and `push`**.
+
+A Publish button removes that human. That is the whole risk of this task, and it cannot be designed
+around by being careful — it has to be designed around structurally.
+
+---
+
+#### 2. What "Publish" must mean — the owner's decision
+
+The design promises the client *"Published. Your site is updated."* Four ways to honour that:
+
+| | What the button does | Live site changes? | Verdict |
+|---|---|---|---|
+| **A** | Render + gate only; a human still pushes | **No** | The success message would be a **lie**. Rejected. |
+| **B** | Render + gate + commit + push, from the API | Yes | Removes the human AND needs push-to-`main` credentials in a web service. The most dangerous option. |
+| **C** | API commits data; **CI renders, gates and deploys** | Yes | Recommended — see below. |
+| **D** | Publish opens a pull request; someone approves | Yes, after approval | Honest and safe, but the client sees "submitted", not "published". A real option if the owner wants a human kept in the loop. |
+
+**Recommendation: C**, with **D available as a per-role setting** if the owner wants staff
+publishes reviewed and admin publishes immediate.
+
+---
+
+#### 3. Why C, concretely
+
+```
+admin "Publish"
+   -> API: check the `Publish` permission
+   -> API: export MongoDB -> data/*.json, data/pages/*.json
+   -> API: commit those files through the GitHub contents API
+   -> that commit triggers the workflow
+   -> CI: sections:build -> render -> test:seo -> test:data      <-- THE GATE, in CI
+   -> CI: deploy to Pages                                        <-- only if the gate passed
+   -> admin polls the run and shows the four progress steps
+```
+
+Four properties worth the complexity:
+
+1. **The gate moves onto the path to the live site.** Today it is beside that path. In CI, a failed
+   gate means the deploy step never runs — the protection becomes structural instead of procedural.
+   This is worth doing *even if the button is never built*.
+2. **No working tree is needed.** A hosted API — certainly a serverless one — has no checkout and no
+   `git`. The contents API needs neither.
+3. **No push-to-`main` credentials sit in the web service.** A scoped token that can commit is
+   narrower than a deploy key, and the deploy itself stays inside GitHub's own runner.
+4. **The audit trail already exists**: a commit plus a workflow run, which is exactly what P12-T2
+   (version history) needs to list and restore. The two tasks share one substrate.
+
+**What C costs:** `static.yml` has to change, and it is the file P8-T3 also edits — so these two
+land together or they conflict. The workflow needs `npm ci` and a Node step it does not have today.
+
+---
+
+#### 4. The failure path, which is the part that matters
+
+The design specifies plain words, and the pipeline already produces them. The mapping:
+
+| Pipeline failure | What the client sees |
+|---|---|
+| `test:seo` on one page | *"The Products page lost its FAQ information for Google."* + which page + *"Undo your last change to this page, or ask your developer."* |
+| `test:data` | **never shown in detail.** It fails on private data; echoing the reason into a client-facing UI would print the thing the gate exists to stop (finding 22). It says a check failed, names no value, and tells the owner to look at the run. |
+| render throws | the page and the renderer's own message, which is already written for a human |
+| CI unreachable | *"Can't reach the publishing service. Your live website is not affected."* |
+
+**Every failure ends with "Your live site has not changed."** — and under C that sentence is **true
+by construction**, because the deploy step is downstream of the gate.
+
+---
+
+#### 5. The hard gate on this task
+
+> **A publish endpoint that cannot be proven to refuse is not shippable.**
+
+The proof, and it is a test, not a review:
+- Plant a tree that fails `test:seo`. Call the endpoint. Assert it reports failure **and that the
+  deployed site is byte-identical afterwards**.
+- Plant a leak that fails `test:data`. Same assertion, and additionally assert the response **does
+  not contain the offending value**.
+- **Negative control:** remove the gate step from the workflow and watch both checks fail. A gate
+  that cannot be shown to bite is not a gate (finding 35).
+- Assert a user **without** the `Publish` permission is refused by the API, not merely by a hidden
+  button.
+
+---
+
+#### 6. Scope boundaries
+
+**In:** the endpoint, the permission, the progress states, the failure states, the
+unpublished-changes list, the workflow change that puts the gates before the deploy.
+
+**Out, and deliberately:**
+- **Scheduled or automatic publishing.** Every publish is someone pressing a button.
+- **Publishing from a draft branch.** One target, `main`.
+- **Rollback** — that is P12-T2, on the same substrate.
+- **Anything that writes to the site outside this path.** There must be exactly one way the live
+  site changes, or the gate has a hole beside it.
+
+---
+
+#### 7. Open questions for the owner
+
+1. **C or D** — immediate publish, or publish-as-pull-request? Or D for staff and C for admins?
+2. **Who may publish?** The design has a `Publish` permission separate from editing. Confirm staff
+   can hold it.
+3. **The unpublished-changes list** compares MongoDB against the published `data/`. Is "changed
+   since last publish" computed per record (precise, more work) or per file (cheap, coarse)?
+4. **P8-T3 and this task both edit `static.yml`.** Confirm they land together, with the diff shown
+   alone before applying, as P8-T3 already requires.
+5. **The gate-in-CI change is independently valuable.** Worth doing at Phase 10 with P8-T3, before
+   any button exists? It closes a real hole in today's deploy regardless of the admin.
+
+### P12-T6 · Missing translations
+- **Goal:** the design's 待翻譯內容 view — every field with Chinese content and no translation,
+  grouped by page and language, a progress bar per language, and a click that lands on the field.
+- **Why it is cheap and worth doing early:** nothing new is stored. Coverage is **derivable** from
+  the trees and the content collections, both of which are already per-language objects with a `zh`
+  fallback. One computed endpoint.
+- **It is also the honest face of finding 24.** Migrated pages are Chinese-only until Phase 14; this
+  view is what turns that accepted regression from an invisible gap into a worklist the client can
+  see and act on.
+- **Verify:** the count matches a hand count on one page; translating a field moves the bar; the
+  "jump to field" link lands on the right field in the right language.
+
+---
+
+## MONTH 1 GATE
+When Phases 0-12 are done: the client can log in over the internet, edit the core pages visually like Wix, publish, and the pages are pre-rendered and crawlable. Wix is still live as backup. Run `npm run test:all` and `npm run test:seo`, update `CLAUDE.md`, and demo.
+
+---
+
+## Phase 13 — All pages, full section set
+- Build the remaining sections to reach ~22: `feature-grid`, `product-carousel`, `case-list`, `case-detail`, `research-list`, `report-list`, `article-list`, `brochure`, `map`, `testimonials`, `video`, `spacer/divider`.
+- Migrate the remaining 13-14 pages to trees, each verified against baseline, each passing `test:seo`, old files moved to `legacy/`.
+- **Verify:** all 18 pages render from trees; `legacy/` holds the retired originals; full test suite green.
+
+### P13-T4 · Responsive image variants and modern formats — deferred here from Phase 10, deliberately
+**Why it is not Phase 10.** Phase 10 moves the existing bytes and nothing else. Every image goes to R2 at the **single size the site already uses** — including the six that Google Drive was resizing for us, which are pre-generated at their **measured** dimensions (1000×774 ×2, 800×1036, 800×620, 347×513, 366×513) so the move is byte-for-byte what a visitor sees today and the visual diff can prove it. Adding `srcset`/`sizes` or WebP/AVIF in the same step would change the rendered page at the same moment as the host, and no diff could then tell a re-hosting bug from an encoding one.
+
+**What this task is.** `srcset` and `sizes` are a **tree-shape change** (an image field stops being one URL and becomes a set) and **section-library work** (every section that renders an `<img>` has to emit the new markup, in both Puck and the renderer). Modern formats add `<picture>` with fallbacks. That is Phase 13's kind of work, not Phase 10's.
+
+- Decide the variant widths from the real layout breakpoints, not from round numbers.
+- Change the image field's shape once, in one place, and migrate every tree to it.
+- Generate WebP (and AVIF if it pays) alongside the original at upload time, in the same **content-addressed** scheme, so `immutable` caching still holds and `test:media` needs no exception.
+- **Verify:** every page re-diffed at 1280 and 390, scripts on and off; `test:media` green with the new field shape; the bytes a visitor downloads measurably smaller than today, stated as a number.
+
+### P13-T5 · The chat widget — FRONT END ONLY, with one boundary for Phase 15
+
+- **Goal:** a chat launcher and panel in the bottom-right of all 18 public pages, shipped **visible
+  and enabled**, telling the truth about the fact that there is no answer service yet.
+- **Owner's scope (24 Oct 2026):** build the UI, the states, the seven languages, the chrome
+  integration and the config surface. **Do NOT build keyword matching, a `faq.json` lookup, or any
+  answer logic** — a scripted matcher is thrown away the moment Phase 15 lands, so it was never
+  written.
+
+#### The boundary, which is the point of the task
+
+`requestAnswer(text, lang)` in `assets/behaviour/chat.js` is the **only** place that knows where an
+answer comes from. It returns `{ kind }`, one of `answer | refusal | unavailable | offline | error`,
+and nothing else in the file inspects anything but `kind`. **Phase 15 replaces that function body
+with an API call and changes nothing else** — not the markup, not the states, not the strings.
+
+Today it returns `unavailable`, and the UI is honest about it: the input is **disabled with its
+reason visible in the placeholder**, and there is **no typing indicator**, because nothing is typing.
+A dead input that silently swallowed a message would pass a "does it open" check and fail the person
+typing into it.
+
+#### The refusal state is built now, though nothing can trigger it
+
+This is a health-products site. A question about treating a condition must be refused and referred to
+a practitioner, and retrofitting that after answers start flowing is how it gets missed. The
+rendering path, the styling and the announcement all exist and are asserted; Phase 15 only has to
+return `{ kind: 'refusal' }`.
+
+The wording is **impersonal by owner decision**: *"Questions about treating a condition can't be
+answered here"*, not *"I can't answer"*. On a health site the first person reads as a person
+declining, which invites being treated as an adviser.
+
+**A response-time promise was proposed and cut.** The draft said "we usually reply the same day".
+Nothing on the site commits to that — the only "working days" language anywhere is about *shipping*
+(1–2 days delivery, `data/faq.json`) — and nobody had committed to it. A response-time promise the
+client cannot keep is worse than no promise.
+
+#### The stacking was measured, and the premise was wrong
+
+The widget was planned at `bottom: 140px` beside a 76px WhatsApp circle. Measured at 390×844, the
+WhatsApp button **is not a circle on a phone**: at ≤768px `.mobile-fixed-contact-btn` becomes a
+**full-width 390×49 bar pinned to `bottom: 0`** with its label showing
+(`assets/page-index.css:3020`). The cart is **not** in the thumb zone either — it lives in the
+sticky nav at the top.
+
+| | launcher | clears |
+|---|---|---|
+| desktop | 76px circle, `bottom: 140px; right: 32px` | the 76px circle at `bottom: 48` (top edge 124px), 16px gap |
+| phone | **56px** circle, `bottom: 61px; right: 16px` | the 49px bar, 12px gap; the panel then goes near-full-screen |
+
+#### Files
+
+**New:** `renderer/chrome/chat.html`, `assets/chat.css`, `assets/behaviour/chat.js`.
+
+**Modified:** `data/site.json` (the `chat` block: `enabled`, `handoffHref`, and 10 strings × 7
+languages), `renderer/chrome.js` (`{{chat.*}}`, escaped, per language), `renderer/template.js`
+(emit the partial, the sheet and the script), `renderer/render.js` (the chrome is built inside the
+language loop, because the wording is per language), `product.html` / `購物車.html` /
+`account.html` (the three hand-coded pages, carrying the identical markup), `scripts/test-behaviour.js`.
+
+**Two files were modified that the pre-build list did not name**, and the reason is worth keeping:
+`renderer/chrome.js`, because its `fill()` only ever knew `{{media.*}}` and the strings needed a
+filler of their own — escaped, unlike the media one, since these are sentences that land in
+`aria-label` and `placeholder` and already contain apostrophes; and `renderer/render.js`, because
+chrome was built once *outside* the language loop, so per-language wording was impossible until it
+moved inside.
+
+`renderer/chrome/floating.html` is **not** in the list: the chat markup went into its own partial
+rather than being appended there, which left the WhatsApp button's file byte-identical and made
+`enabled: false` leave no markup behind.
+
+#### Why chat.css is its own sheet
+
+`assets/chrome.css` is **generated** by `scripts/extract-css.js` and must not be hand-edited, and no
+page tree should have to know about a piece of chrome. So `renderer/template.js` emits
+`assets/chat.css` immediately **before** `chrome.css` — which keeps D1's "chrome.css is the last
+stylesheet" guard true. The chat widget must not be the thing that weakens that guard.
+
+#### Verify
+
+- `chatOpens@1280` and `@390`: opens, input disabled **with a reason**, **no typing indicator**,
+  WhatsApp in the panel, Escape closes and returns focus to the launcher.
+- `chatRefusal@1280`: the refusal renders in the log with the **exact approved wording**, driven
+  through the boundary because the UI cannot reach it yet — a state nobody can reach is a state
+  nobody has checked.
+- **Negative control:** without the behaviour files, every one of those fails (the existing
+  `-no-behaviour` scenario already blocks `assets/behaviour/*`).
+- **Scripts off:** the launcher and panel are hidden by the template's scripts-off rule, so the
+  existing dead-control sweep finds nothing new; the unguarded control finds them, as it must.
+- **Nothing is stored.** No transcript, no `localStorage`, no analytics. PDPO retention is a Phase 15
+  decision and nothing may be kept before it is taken.
+
+#### Deferred
+
+- The answer API, the enabled input, the typing indicator in use, and storage: **Phase 15**, where
+  the handoff should also create an **enquiry** for the admin's Enquiries inbox.
+- Multilingual grounding depends on **finding 38** (three content files, three per-language shapes).
+  The widget itself does not: it reads no content.
+- `de/es/fr/ja/ru` wording is a translation of the approved `zh`/`en` text and **needs a native read
+  before cutover**; the brief asks the same of the admin's Chinese labels.
+
+## Phase 13G — GEO: AI-crawler visibility, as deliberate work
+
+Lettered, not numbered, so Phases 14–18 keep their existing numbers.
+
+**Why this exists as its own phase.** GEO is a stated goal of this project alongside SEO, and right
+now it is being *protected* rather than *advanced* — and nothing in the project says so out loud,
+which is how it ends up assumed-covered by `test:seo`. It is not covered. `test:seo` asserts
+per-page head correctness (JSON-LD parses, canonical, hreflang reciprocity, meta present, heading
+order). It never opens `llms.txt`, `robots.txt` or `sitemap.xml`. Those three files are the GEO
+surface and **no gate reads any of them.**
+
+What already exists and must not be lost (all hand-made, all currently correct):
+- `robots.txt` explicitly allows **GPTBot, OAI-SearchBot, ChatGPT-User, PerplexityBot, ClaudeBot,
+  Google-Extended, Applebot-Extended, Bingbot**, and points at the sitemap. This is real GEO work
+  that someone did on purpose; a careless edit silently un-publishes the site to AI crawlers.
+- `llms.txt`: 24 lines, a curated index of 14 pages with one-line descriptions. All 14 links
+  currently resolve. It does not list `index.html`.
+- `sitemap.xml`: 15 URLs. It deliberately omits `account.html`, `product.html` and `購物車.html`
+  — the same utility/transactional pages `test:seo` allow-lists. Consistent, and worth asserting
+  rather than leaving as a coincidence.
+
+### P13G-T1 · Guard what exists, BEFORE the pages migrate — owner Phase 10
+
+Do this early. It is cheap, it is protective, and its whole value is that it runs *while* pages are
+being rebuilt. Migration is exactly when these rot: a page moves to `legacy/`, a slug changes, and
+`llms.txt` keeps pointing at a URL that 404s. Nothing would report it today.
+
+- Extend the gate (or add `test:geo`, wired into `test:all` like every other suite) to assert:
+  every `llms.txt` link resolves to a page that will actually be published; every non-utility page
+  is listed; `robots.txt` still carries each AI-crawler allow block by name, with a comment saying
+  removing one is a deliberate act; `sitemap.xml` covers exactly the published set minus the
+  utility allow-list; the three files agree with each other.
+- **`sitemap.xml` must track the rendered page set, not the files on disk.** Every sitemap entry
+  resolves to a page that is actually published, and every published non-utility page has one. A
+  page migrated to a tree, or moved to `legacy/`, must not leave a stale entry pointing at the old
+  file or at nothing. `legacy/` itself is never in the sitemap.
+- **Every `llms.txt` link resolves** — to a published page, checked by the gate on every run, not
+  once by hand. (Today all 14 do; that is a fact about today, not a guarantee.)
+- **Verify:** delete one AI-crawler block, point one `llms.txt` link at a missing page, or leave a
+  sitemap entry for a page moved to `legacy/` — the gate fails each time. Prove it bites, then
+  restore.
+
+### P13G-T2 · Advance GEO deliberately — owner after Phase 13
+
+Correctly sequenced after migration, not before: tuning GEO now would tune for pages that are about
+to be rebuilt, and `llms.txt` in particular is a description of a page set that is still changing.
+
+> **SUPERSEDED (owner, 15 Sep 2026, later the same day):** the current site content is not authoritative; the client will replace all of it. The rule below is **not** a Phase 9 gate and is not to be acted on. It stays as background for whenever the client's replacement content is reviewed.
+>
+> **CLAIMS PROVENANCE: added 15 Sep 2026, and NOT deferred to after Phase 13 (docs/FINDINGS.md
+> finding 26).**
+> - **Why it can't wait.** The June 2026 uploads that put invented ratings into the live pages also
+>   turned patients' cases into five-star "reviews" and cited an unsupported patient-feedback
+>   statistic. Whoever wrote that was writing health persuasion copy, and the same uploads carried
+>   the pages' visible text. **So no health claim on the current pages can be presumed to be the
+>   client's own words.**
+> - **Examples:** 產品_T3.html's statement about inhibiting tumour growth, the efficacy multipliers,
+>   the "university-proven" phrasing.
+> - **Rule, applied per page at Phase 9 migration, not at the end:** before a migrated page
+>   publishes a health or efficacy claim, trace it to a client-approved source (their Wix site,
+>   their printed materials, or their written approval). An unsourced claim is **held**: not
+>   carried into the page tree, not rewritten by us.
+> - **Patient case material** (典型病例) needs the client's confirmation that the patients
+>   consented to its publication. It must never again be presented as a review or rating.
+
+- Regenerate `llms.txt` from the page trees rather than maintaining it by hand, so it cannot drift
+  from what is published. Decide then whether to add `llms-full.txt`.
+- **Fix the existing gap: `llms.txt` does not list `index.html`**, the homepage. Found at the Phase
+  13G registration; not fixed then because the file is about to be generated rather than edited.
+- Revisit the JSON-LD now that content is modelled: `Product` nodes can carry real `offers` from
+  `data/products.json`, and FAQ/Article types can be derived rather than carried verbatim.
+
+> **HARD RULE — never emit `aggregateRating`, `review` or any rating data that does not exist.**
+> `data/products.json` holds no ratings or reviews. Fabricating them violates Google's structured
+> data policies (manual action risk, loss of rich results), and on a **health products** site it
+> is a real-world harm: invented ratings make a medical product look more trusted than any evidence
+> supports. This is not a preference to weigh against rich-result gains. If genuine, attributable
+> review data is ever collected, adding it is a new decision with the client — not a default.
+> The gate should assert the absence, so this cannot be added by accident.
+- Assess extractability for answer engines: heading hierarchy, question-shaped headings, whether
+  key claims sit in text rather than images. The site's evidence pages (`有效成份檢測`, `研究報告`,
+  `典型病例`) are its GEO strength and are currently the least structured.
+- Settle the medical-claims posture with the client before amplifying anything. This is a health
+  products site: making claims *more* machine-extractable raises the stakes on their accuracy.
+- **Verify:** `llms.txt` is generated and matches the published pages exactly; JSON-LD validates;
+  a crawl of the published output shows key claims as text.
+
+## Phase 14 — All 7 languages
+- In `buildSite()`, loop all `LANGS`. Write non-primary languages under `/<lang>/` paths, add each to `sitemap.xml`, and complete the `hreflang` set with `x-default` -> zh.
+- Add a "what is missing" view in the editor listing fields not yet translated per language.
+- **Verify:** every page exists in all 7 languages, `test:seo` confirms reciprocal hreflang across all variants, untranslated fields fall back to zh.
+
+## Phase 15 — Forms
+- Add a public form endpoint (`POST /api/forms/:name`) that writes submissions to Mongo. The static contact page posts to it. Handle spam (honeypot + rate limit) and validate input server-side.
+- Surface submissions in the dashboard under Customers & Leads.
+- **Verify:** submit the contact form on the static site; the entry appears in the dashboard; the site still works if the API is briefly down (form degrades, page does not break).
+
+## Phase 16 — Dashboard parity
+- Round out contacts/leads, an orders view, and analytics basics (pick a privacy-friendly analytics source, e.g. Plausible/Umami; note HK PDPO). Tidy the existing modules to match Wix vocabulary.
+- **Verify:** the dashboard covers Home, Catalog, Orders, Customers/Leads, basic Analytics.
+
+## Phase 17 — Security hardening + staging
+- Upload validation on the media library (content-type allowlist, size cap, reject executables). CSRF protection on state-changing routes. Rate limiting for the remaining routes — **login throttling is NOT here**, it is P11-T3 and must land before hosting. Rotate and store deploy secrets properly. Add a staging environment (second cheap host or a separate branch that deploys to a preview URL).
+- Test the backup by restoring it into staging.
+- **Verify:** an upload of a disallowed type is rejected; a restored backup boots on staging; secrets are not in Git.
+
+## Phase 18 — Cutover
+- Point the domain fully at the new pre-rendered site (already GitHub Pages via CNAME; confirm DNS and that all pages/languages are live). Submit the new sitemap to Search Console. Watch analytics and crawl stats for a week. Only then cancel Wix.
+- **Gate — the site still depends on Wix for media, by TWO routes.** Wix serves this site from its CDN *and* from its file store on the client's own domain, so one grep is not enough. Both must return **nothing** before Wix is switched off:
+  1. `grep -rn "wixstatic" *.html data/` — **the CDN**: the homepage background video (also used on 研究報告) and the `og:image` / `twitter:image` social previews. **33 hits** in the deployed HTML today.
+  2. `grep -rn "_files/ugd" *.html data/` — **Wix's file store**, served from `https://www.wonder-herb.com/_files/ugd/…`. This one looks self-hosted and is not: the files are not in this repo and die with the Wix account exactly like the video. **2 hits** today, both research PDFs linked from 研究報告. They were missed by Phase 10's first inventory *because* they look like internal links, and were caught by `npm run test:media`, which requires every media host to be declared with a reason (finding 1).
+  `data/` is grepped alongside `*.html` because a migrated page's media is a **tree field** now: the HTML is generated, so the tree is the thing that has to be clean. **23 hits in `data/` today.** Cancelling Wix with any of these left breaks the homepage, the research downloads and every link preview. Phase 10 is what clears it. See `docs/FINDINGS.md` finding 1.
+- **Gate — the media must not still be on `r2.dev` (P10-T6).** Phase 10 ships on the bucket's `*.r2.dev` development URL by deliberate choice: it needs no DNS on a domain that still points at Wix, and no client dependency. Cloudflare rate-limits `r2.dev` and documents it as **not for production**, so shipping the real cutover on it would be a defect we chose, not one we inherited. Before Wix is switched off, `media.base` in `data/site.json` must be the custom domain (`https://media.wonder-herb.com/`) and **no reference anywhere may contain `r2.dev`**: `grep -rn "r2.dev" *.html data/ assets/` returns nothing, and `npm run check:media` is green against the custom domain (200, correct content type, CORS on the `.glb` models, `immutable` caching). Because every URL is content-addressed and the base is data, the switch itself is a `data/site.json` edit plus a re-render — but it is a **gate**, not a nicety.
+- **Correction (15 Sep 2026):** the domain is **not** "already GitHub Pages via CNAME". `www.wonder-herb.com` and the apex resolve to Wix today; the `CNAME` file in the repo does not point DNS anywhere. Cutover is a DNS change plus a deliberate re-enable of GitHub Pages, which the owner unpublished on 15 Sep 2026 (finding 26).
+- **Gate — finding 26 must not ship again.**
+  1. **Stale "Review" comments on `main`.** 13 pages still carry an HTML comment listing "Review" among their structured-data types, including one naming social proof as its purpose. Remove them before cutover; `rebuild/editor` already did (`d2ee9c4`). Check: `git grep -n -e '<!--[^>]*[Rr]eview[^>]*-->' -- '*.html'` on the branch being deployed returns **nothing**.
+  2. **No rating or review data anywhere in the deployed tree**, pre-rendered or hand-coded. `npm run test:seo` covers rendered pages. Also check that `git grep -n -e aggregateRating -e reviewCount -e ratingValue -e '"Review"' -- '*.html' 'data/'` returns nothing.
+  3. **No `noindex` anywhere** in what deploys: `git grep -n -i noindex -- '*.html'`, except the ones that deliberately carry it: `account.html`, `購物車.html`, `product.html`, `admin/index.html`, `editor/index.html`, and every retired original under `legacy/` (which must also stay out of the deploy). A stray one de-indexes the client's real site. That risk is why the Pages copy was taken down rather than noindexed.
+  4. **No patient case material presented as a review or rating** in what deploys. (Health-claim review applies to the client's replacement content, not the current copy: owner, 15 Sep 2026.)
+  5. **典型病例's ItemList must not ship as it stands** (docs/FINDINGS.md finding 29). It says `numberOfItems` 15 while listing 3, types its entries `Testimonial` (not a schema.org type), and names real patients. It is carried verbatim today because site content is not authoritative and this is the owner's call with the client - but it is structured data about identifiable patients, so it is a cutover gate, not a nicety. Check: `node -e "…"` on the deployed tree, or simply read the ItemList in `data/pages/cases.json`. Fix, drop, or derive it from `data/cases.json` (the FAQPage treatment, `renderer/render.js faqPageNode`, with a `test:seo` check as the model) - then this gate can be automated like the other four.
+- **Gate — no UI string ships in a language nobody has read.** Translated interface text that no
+  native speaker has checked is exactly the thing that reads as amateur **in the markets the extra
+  languages exist to reach**, and it is invisible to every automated gate we have: the strings are
+  present, the fallback works, nothing fails.
+  Two sets need a native read before Wix is switched off:
+  1. **The chat widget's `de`, `es`, `fr`, `ja`, `ru` strings** (`data/site.json`, `chat.strings`,
+     10 strings each). The `zh` and `en` text is owner-approved (24 Oct 2026); the other five are
+     translations **of** that text and have been read by no one. Note the refusal string especially —
+     it is the one that carries a health disclaimer.
+  2. **The admin's Chinese vocabulary table**, which the design brief itself asks for: *"Please have
+     the Chinese labels checked by a native Hong Kong reader before build"*
+     (`wonderherb-admin-frontend/uploads/wonder-herb-admin-design-brief.md`, §9).
+  Check: a named person has signed off each set. There is no automated form of this gate, and
+  saying so is the point — see the manual-gate rule in `docs/FINDINGS.md` finding 35.
+
+- **Verify:** all URLs resolve, redirects from old Wix paths are in place, Search Console shows the new pages indexed, **both media greps (`wixstatic` and `_files/ugd`) are clean**, **the `r2.dev` grep is clean and `check:media` is green against `media.wonder-herb.com`**, **every translated UI string has been read by a native speaker**, and the four finding-26 checks above are clean. Then, and only then, switch Wix off.
+
+---
+
+## Appendix A — Definition of done for any migrated page
+- Renders from its tree; visually matches baseline within tolerance at 1280px and 390px.
+- **Text completeness is the visual diff's job, and only the visual diff's.** Structural checks
+  (fidelity maps, `test:render`, `test:sections`, `test:seo`) compare tags, classes and order and
+  never read the text inside an element, so a line of copy can go missing from a structurally
+  perfect element with every one of them green — it did, on all six product pages (see the box
+  under P4-T1). A green structural run is not proof the copy is complete.
+- Pre-rendered: content is in the HTML, not fetched client-side.
+- **Per-language assets lifted as the zh value** (finding 28): any `src`/`href` the old page swaps by language goes into the tree explicitly; `npm run test:lang-assets` proves it, with negative controls. Do not rely on the visual diff to notice.
+- **The live `<section>` wrappers reproduced** (`wrap: { section, label, container }`): their classes carry padding, and adjacent nodes in one live section share one wrapper.
+- `npm run test:seo` passes (h1, title, description, canonical, hreflang reciprocity, valid JSON-LD, matches baseline schema types).
+- Editable in Puck; all in-scope language fields present or falling back to zh.
+- No editor-only attributes in the output.
+- Heavy assets referenced from R2/CDN, not the repo.
+- **Interactive behaviour ported and verified BEFORE the original is retired.** Every behaviour the
+  live page offers is either ported, or explicitly recorded as dying with pre-rendering (with the
+  reason), or explicitly deferred with an owner and the owner's sign-off. Verified by a test that
+  asserts the **effect** — the menu opened, the right product (by SKU) reached the cart, an
+  out-of-stock or clinic-only product was refused — at 1280 and 390, with a negative control proving
+  the test fails when the behaviour script is absent. "No errors thrown" is **not** verification: a
+  page with nothing bound throws nothing (docs/FINDINGS.md finding 23). Added at P9-T1 after
+  產品介紹 passed SEO, fidelity and the visual diff while its cart, phone menu, quick view and language
+  switch were all dead — the finding-12 pattern: passes every gate, broken for humans.
+- Old hand-coded file moved to `legacy/`, not deleted, until the phase is signed off.
+
+## Appendix B — Commands quick reference
+```
+npm run dev           # Express API + admin at :4000
+npm run seed          # seed MongoDB from data/
+npm run export        # DB -> data/*.json (content + page trees)
+npm run sections:build# bundle sections for the Node renderer
+npm run render        # render page trees -> pre-rendered static HTML
+npm run test:seo      # SEO assertion gate (blocks bad publish)
+npm run publish       # export + sections:build + render + test:seo + test:data
+npm run test:behaviour# migrated pages' cart/menu/quick view/language, by effect, with negative controls
+npm run test:lang-assets # a migrated page carries the zh asset, never another language's (finding 28)
+npm run editor:dev    # Puck editor app (Vite)
+npm run test:all      # existing full test suite
+# deploy: commit to main -> GitHub Actions -> GitHub Pages
+```
+
+## Appendix C — Do not do these
+- Do not ship React to the public pages. It is for the editor and server-render only.
+- Do not chase byte-identical HTML. Gate on the SEO check + visual diff.
+- Do not rebuild content editing in Puck; Pages CMS / the admin already do lists. Puck is for page layouts.
+- Do not let the live site depend on the API being up.
+- Do not delete original pages before their replacement passes the definition of done.
+- Do not commit secrets or the `.glb` files.

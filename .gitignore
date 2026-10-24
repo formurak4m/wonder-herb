@@ -1,0 +1,25 @@
+node_modules/
+.env
+# Every variant too (.env.local, .env.production, a backup): only the exact name
+# `.env` was ignored, so any of these would have been committed with credentials
+# in it. The template is the one exception. docs/FINDINGS.md finding 22.
+.env.*
+!.env.example
+npm-debug.log*
+
+# The client's own workbooks: real customers, phone numbers and medical
+# remarks. This repository is public - these stay on the machine that needs
+# them and are imported with `npm run import:sales`.
+*.xlsx
+!data/templates/*.xlsx
+
+# Visual + SEO regression references (BUILD_TASKS P0-T2). Local only, never
+# deployed: hundreds of MB of screenshots that the renderer is compared against.
+baseline/
+
+# Build artifact: the section components bundled for the Node renderer.
+# Rebuilt on demand with `npm run sections:build`; never belongs on the public site.
+renderer/.build/
+
+# P5-T1 proof output. The renderer writes here, never over the live pages.
+renderer/.out/

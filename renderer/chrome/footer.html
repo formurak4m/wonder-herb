@@ -1,0 +1,43 @@
+<!-- footer.html — the SHARED site chrome (P10).
+     Lifted once from 產品介紹.html, which is now retired to legacy/. This file is
+     the source of truth: the renderer no longer copies chrome out of a page.
+     {{media.*}} is filled from data/site.json, so re-hosting the logo or the
+     flags is a data edit. The active nav link is NOT here - renderer/chrome.js
+     adds it for whichever page is being rendered. -->
+<footer role="contentinfo">
+  <div class="container footer-inner">
+    <div class="footer-col">
+      <h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4>
+      <p class="footer-brand-tagline" data-i18n="footer_col1_text1">以人為本，天然高效。</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_contact_title">聯絡我們</h4>
+      <div class="footer-contact">
+        <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
+        <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      </div>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/85293318571/" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_info_title">資訊中心</h4>
+      <div class="footer-links">
+        <ul style="list-style: none;">
+          <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
+          <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
+          <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
+          <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="container copyright">
+    <p data-i18n="copyright">© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p>
+    <p class="last-update">最後更新：<time datetime="2026-06-08">2026年6月8日</time></p>
+  </div>
+</footer>

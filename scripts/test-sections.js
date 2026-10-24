@@ -1,0 +1,896 @@
+/* The section components, checked the way the renderer actually uses them.
+ *
+ * Runs the real `renderer/build-sections.js`, requires the bundle it produces,
+ * and renders through react-dom/server in plain Node - no DOM, no jsdom. If a
+ * section reaches for `window` at render time this is where it fails, not in
+ * production.
+ *
+ * Three layers:
+ *   1. Contract checks that loop the whole registry, so every section added
+ *      later is covered by them automatically.
+ *   2. Per-section expectations, including the exact HTML for page-header.
+ *   3. Structural fidelity: the expected elements are read out of the live
+ *      page, not written here, so a section cannot quietly drop markup that
+ *      nobody thought to assert on. jsdom is used for that parsing only -
+ *      every render above still happens in plain Node with no DOM.
+ */
+const fs = require('fs');
+const path = require('path');
+const { readOriginalPage } = require(path.join(__dirname, '..', 'renderer', 'source-page.js'));
+const { execFileSync } = require('child_process');
+const React = require('react');
+const { renderToStaticMarkup } = require('react-dom/server');
+
+const ROOT = path.join(__dirname, '..');
+const BUNDLE = path.join(ROOT, 'renderer', '.build', 'sections.cjs');
+
+let fail = 0;
+const check = (label, cond, extra) => {
+  console.log((cond ? '  PASS  ' : '  FAIL  ') + label + (extra !== undefined ? '   -> ' + extra : ''));
+  if (!cond) fail++;
+};
+const eq = (label, got, want) =>
+  check(label + (got === want ? '' : '\n        expected: ' + want + '\n        got     : ' + got),
+        got === want, got === want ? got : undefined);
+
+const render = (Comp, props) => renderToStaticMarkup(React.createElement(Comp, props));
+
+console.log('\n=== the bundle builds ===\n');
+
+// build through the real script, so this tests the published path
+execFileSync(process.execPath, [path.join(ROOT, 'renderer', 'build-sections.js')],
+             { cwd: ROOT, stdio: 'pipe' });
+delete require.cache[BUNDLE];
+const bundle = require(BUNDLE);
+const components = bundle.default;
+const registry = bundle.registry;
+
+check('sections:build produced a bundle', !!bundle, 'ok');
+check('it exports a component map and a registry',
+      !!components && !!registry, Object.keys(bundle).join(', '));
+check('the registry is not empty', Object.keys(registry).length > 0,
+      Object.keys(registry).length + ' section(s)');
+
+console.log('\n=== the contract, for every registered section ===\n');
+
+Object.keys(registry).forEach(type => {
+  const mod = registry[type];
+  const Comp = mod.default;
+  const cfg = mod.config;
+
+  check(type + ': default-exports a component', typeof Comp === 'function', typeof Comp);
+  check(type + ': named-exports a config', !!cfg && typeof cfg === 'object', typeof cfg);
+  check(type + ': config has a label', !!(cfg && cfg.label), cfg && cfg.label);
+  check(type + ': config has fields', !!(cfg && cfg.fields && typeof cfg.fields === 'object'),
+        cfg && cfg.fields ? Object.keys(cfg.fields).join(', ') : undefined);
+  check(type + ': config has defaultProps', !!(cfg && cfg.defaultProps),
+        cfg && cfg.defaultProps ? Object.keys(cfg.defaultProps).join(', ') : undefined);
+
+  // every field must have a default, or the editor starts with undefined props
+  const missing = Object.keys((cfg && cfg.fields) || {})
+    .filter(f => !(cfg.defaultProps && f in cfg.defaultProps));
+  check(type + ': every field has a defaultProp', missing.length === 0,
+        missing.length ? 'missing: ' + missing.join(', ') : 'all ' + Object.keys(cfg.fields).length);
+
+  /* ONE SOURCE OF TRUTH: the component the renderer gets must be the very same
+     object the editor gets. Not an equivalent copy - the same reference. */
+  check(type + ': renderer and editor share one component object',
+        components[type] === mod.default, 'identical reference');
+
+  // renders with nothing but its defaults, in plain Node, without throwing
+  let html = null, err = null;
+  try { html = render(Comp, cfg.defaultProps); } catch (e) { err = e.message.split('\n')[0]; }
+  check(type + ': renders on the server with its defaults', err === null, err || 'ok');
+  /* A section may legitimately render nothing until it has content - an empty
+     gallery or an unmatched sku should disappear, not publish a broken shell.
+     That has to be a declared decision (`emptyWithoutContent: true`) so it is
+     reviewed once, rather than an accidental blank going unnoticed. */
+  if (cfg && cfg.emptyWithoutContent) {
+    check(type + ': renders nothing without content, and says so in its config',
+          html === '', 'declared empty');
+  } else {
+    check(type + ': produces markup', typeof html === 'string' && html.length > 0,
+          html === null ? 'threw' : html.length + ' chars');
+  }
+
+  // published output must carry no editor instrumentation (non-negotiable 4)
+  check(type + ': no editor-only attributes in the output',
+        html !== null && html.indexOf('data-wh-') === -1 && html.indexOf('data-puck') === -1, 'clean');
+});
+
+console.log('\n=== purity: no browser at render time ===\n');
+
+check('there is no window in this process', typeof window === 'undefined', 'undefined');
+check('there is no document in this process', typeof document === 'undefined', 'undefined');
+console.log('  (every render above therefore happened without a DOM)');
+
+console.log('\n=== page-header: the exact HTML ===\n');
+
+const PageHeader = components['page-header'];
+
+const centered = render(PageHeader, {
+  heading: '產品系列',
+  sub: '加拿大GMP藥廠 · 有效成份 >90% · 大學研究證實',
+  headingId: 'products-heading',
+  variant: 'centered'
+});
+eq('centered, with a heading id',
+   centered,
+   '<section class="page-header" aria-labelledby="products-heading">' +
+   '<div class="container"><h1 id="products-heading">產品系列</h1>' +
+   '<p>加拿大GMP藥廠 · 有效成份 &gt;90% · 大學研究證實</p></div></section>');
+
+check('the CJK survives unescaped', centered.indexOf('產品系列') !== -1, '產品系列');
+check('the live class names are used', centered.indexOf('class="page-header"') !== -1
+      && centered.indexOf('class="container"') !== -1, 'page-header, container');
+check('> is escaped, so the markup is valid', centered.indexOf('&gt;90%') !== -1, '&gt;90%');
+
+const noId = render(PageHeader, { heading: '典型病例', sub: '真實康復見證' });
+eq('no heading id: no id and no aria-labelledby, like 典型病例.html',
+   noId,
+   '<section class="page-header"><div class="container"><h1>典型病例</h1>' +
+   '<p>真實康復見證</p></div></section>');
+
+const noSub = render(PageHeader, { heading: '會員帳戶' });
+eq('no subtitle: the <p> is omitted entirely, not left empty',
+   noSub,
+   '<section class="page-header"><div class="container"><h1>會員帳戶</h1></div></section>');
+
+const video = render(PageHeader, {
+  heading: '研究報告', sub: '國際權威期刊', headingId: 'research-heading',
+  variant: 'video', videoUrl: 'https://cdn.example.com/hero.mp4'
+});
+check('video variant emits the background video', video.indexOf('class="video-background"') !== -1, 'ok');
+/* React 19 emits `autoPlay=""` and `playsInline=""` in camelCase rather than
+   lowercasing them. HTML attribute names are case-insensitive, so a browser
+   parses them identically - verified: hasAttribute('autoplay') is true and
+   video.autoplay is true. Asserted case-insensitively for that reason. */
+const videoLower = video.toLowerCase();
+check('with the attributes the live markup has',
+      videoLower.indexOf('autoplay') !== -1 && videoLower.indexOf('muted') !== -1 &&
+      videoLower.indexOf('loop') !== -1 && videoLower.indexOf('playsinline') !== -1 &&
+      videoLower.indexOf('aria-hidden="true"') !== -1, 'autoplay muted loop playsinline aria-hidden');
+check('and the source url', video.indexOf('https://cdn.example.com/hero.mp4') !== -1, 'ok');
+check('the video sits before the container, as on the live page',
+      video.indexOf('<video') < video.indexOf('<div class="container"'), 'ordered');
+
+const videoNoUrl = render(PageHeader, { heading: 'x', variant: 'video', videoUrl: '' });
+check('video variant with no url emits no empty <video>',
+      videoNoUrl.indexOf('<video') === -1, 'omitted');
+
+console.log('\n=== defaults are safe ===\n');
+
+const empty = render(PageHeader, config().defaultProps);
+function config() { return registry['page-header'].config; }
+eq('defaults render an empty but valid header',
+   empty, '<section class="page-header"><div class="container"><h1></h1></div></section>');
+
+/* ------------------------------------------------------------------ the
+   data-backed sections, fed the REAL data files. If a section reads a key
+   that data/products.json or data/faq.json does not have, it fails here. */
+const realProducts = require(path.join(ROOT, 'data', 'products.json'));
+const realFaq = require(path.join(ROOT, 'data', 'faq.json'));
+const DATA = { products: realProducts, faq: realFaq };
+
+console.log('\n=== the real data files, as the sections expect them ===\n');
+
+const PRODUCT_KEYS = ['id', 'title', 'sku', 'price', 'status', 'cat', 'badges', 'model', 'desc'];
+PRODUCT_KEYS.forEach(k =>
+  check('products.json has "' + k + '"', realProducts.every(p => k in p), 'all ' + realProducts.length));
+/* These two used to assert the OPPOSITE - that image and link were absent -
+   because that was finding 8, and the grid had to degrade without them. P9-T1
+   recovered both from the page's own productData array, so the assertion flips:
+   every product must now have them, and a migration that dropped one would be
+   caught here. The "must cope without them" behaviour is still tested, below,
+   against an explicit fixture rather than against the live data file - a test
+   that depends on real data being broken stops working the moment it is fixed. */
+check('products.json has "image" for every product (finding 8, closed at P9-T1)',
+      realProducts.every(p => typeof p.image === 'string' && p.image), 'all ' + realProducts.length);
+check('products.json has "link" for every product (finding 8, closed at P9-T1)',
+      realProducts.every(p => typeof p.link === 'string' && p.link), 'all ' + realProducts.length);
+check('product titles and descriptions are per-language objects (finding 19)',
+      realProducts.every(p => p.title && typeof p.title === 'object' && p.title.zh && p.title.en),
+      Object.keys(realProducts[0].title).join(', '));
+['id', 'cat', 'q', 'a'].forEach(k =>
+  check('faq.json has "' + k + '"', realFaq.every(f => k in f), 'all ' + realFaq.length));
+
+console.log('\n=== product-grid, against data/products.json ===\n');
+
+/* The renderer resolves content for one language before a section sees it
+   (renderer/render.js `resolveData`). Sections render text, never language
+   maps, so the test has to feed them the same shape the renderer does. */
+const { resolveData } = require(path.join(ROOT, 'renderer', 'render.js'));
+const ZH = resolveData(DATA, 'zh');
+const zhProducts = ZH.products;
+
+const grid = render(components['product-grid'],
+  { source: 'products.json', data: ZH, quickViewLabel: '快速瀏覽', detailLabel: '詳細介紹' });
+check('one card per product', (grid.match(/class="product-card"/g) || []).length === realProducts.length,
+      realProducts.length + ' cards');
+check('the real wrapper class', grid.indexOf('class="products-grid"') !== -1, 'products-grid');
+check('a real product title from the data', grid.indexOf(zhProducts[0].title) !== -1, zhProducts[0].title);
+check('price formatted like the live page', grid.indexOf('HK$3,800.00') !== -1, 'HK$3,800.00');
+check('the real description from the data', grid.indexOf(zhProducts[0].desc.slice(0, 12)) !== -1, 'present');
+check('resolveData collapsed the language maps to strings',
+      typeof zhProducts[0].title === 'string' && typeof zhProducts[0].desc === 'string',
+      'a section never sees a language map');
+check('the grid emits a photo for every product now that the data has one',
+      (grid.match(/<img /g) || []).length === realProducts.length,
+      realProducts.length + ' <img>');
+check('and a detail link for every product',
+      (grid.match(/class="btn-detail"/g) || []).length === realProducts.length,
+      realProducts.length + ' links');
+
+/* The degrade-gracefully behaviour finding 8 forced, kept as a FIXTURE so it
+   survives the real data being fixed. */
+const bare = render(components['product-grid'], {
+  source: 'products.json', quickViewLabel: 'x', detailLabel: 'y',
+  data: { products: [{ id: 99, title: 'No photo', price: '10.00', desc: 'd' }] }
+});
+check('a product with no image emits no broken <img>', bare.indexOf('<img') === -1, 'no img emitted');
+check('a product with no link emits no dead <a>', bare.indexOf('btn-detail') === -1, 'no link emitted');
+check('and it still renders its card', bare.indexOf('No photo') !== -1, 'card present');
+/* Behaviour hooks (P9-T1, finding 23): identity is the SKU, and the quick view
+   button renders only when its modal does - never a button with nothing behind it. */
+check('quick view without its add label renders NO button and no modal (a dead button is worse)',
+      grid.indexOf('btn-quickview') === -1 && grid.indexOf('quickViewModal') === -1, 'neither emitted');
+const gridQV = render(components['product-grid'],
+  { source: 'products.json', data: ZH, quickViewLabel: '快速瀏覽', detailLabel: '詳細介紹',
+    quantityLabel: '數量：', addLabel: '加入購物車' });
+check('with it: one quick view button per product, each bound by SKU',
+      (gridQV.match(/<button type="button" class="btn-quickview" data-sku="WH-[A-Z0-9-]+"/g) || []).length === realProducts.length,
+      realProducts.length + ' buttons');
+check('and one hidden modal with the live ids', (gridQV.match(/id="quickViewModal"/g) || []).length === 1 &&
+      gridQV.indexOf('id="modalAddToCart"') !== -1 && gridQV.indexOf('id="modalQty"') !== -1, '#quickViewModal');
+check('every card carries data-sku, data-price and data-status',
+      (gridQV.match(/<article class="product-card" data-sku="[^"]+" data-price="[\d.]+" data-status="[^"]+"/g) || []).length === realProducts.length,
+      realProducts.length + ' cards');
+check('no card or button carries data-id (the database id is not the cart id: finding 23)',
+      gridQV.indexOf('data-id=') === -1, 'absent');
+check('no data-wh-* hook in published markup (non-negotiable 4)', gridQV.indexOf('data-wh-') === -1, 'absent');
+const clinic = render(components['product-grid'], {
+  source: 'products.json', quickViewLabel: 'q', addLabel: 'a',
+  data: { products: [{ id: 1, sku: 'WH-X', title: 'T', price: '0', clinicOnly: true },
+                     { id: 2, sku: 'WH-Y', title: 'U', price: '10.00' }] }
+});
+check('clinicOnly in the data becomes data-clinic-only; no price means no data-price',
+      /data-sku="WH-X" data-status|data-sku="WH-X" data-clinic-only=""/.test(clinic) &&
+      (clinic.match(/data-clinic-only/g) || []).length === 1 && clinic.indexOf('data-sku="WH-X" data-price') === -1,
+      'flag on WH-X only');
+const gridWithImg = render(components['product-grid'],
+  { source: 'products.json', data: { products: [{ id: 9, title: 'T', price: '10.00', image: 'x.png', link: 'p.html' }] },
+    detailLabel: '詳細介紹' });
+check('and it DOES render them once the data has them',
+      gridWithImg.indexOf('<img src="x.png"') !== -1 && gridWithImg.indexOf('href="p.html"') !== -1, 'forward-compatible');
+
+console.log('\n=== product-detail, against data/products.json ===\n');
+
+const detail = render(components['product-detail'],
+  { source: 'products.json', data: ZH, sku: 'WH-T3-120', quantityLabel: '數量：',
+    addLabel: '加入購物車', unit: '/ 120粒軟膠囊' });
+/* derived from the data, not typed here: product names changed at P9-T1 when
+   the catalogue was migrated, and a hard-coded name goes stale silently */
+const t3 = zhProducts.find(p => p.sku === 'WH-T3-120');
+check('the real title for that sku', detail.indexOf(t3.title) !== -1, t3.title);
+check('the real price', detail.indexOf('HK$1,900.00') !== -1, 'HK$1,900.00');
+check('the live classes', detail.indexOf('class="product-info"') !== -1
+      && detail.indexOf('class="product-title"') !== -1
+      && detail.indexOf('class="product-price"') !== -1, 'product-info/title/price');
+check('badges split into badge-item, from the real badges string',
+      (detail.match(/class="badge-item"/g) || []).length === 2, '專利配方 + 大學證實功效倍增');
+check('an unknown sku renders nothing rather than an empty panel',
+      render(components['product-detail'], { source: 'products.json', data: ZH, sku: 'NOPE' }) === '', '""');
+
+console.log('\n=== faq-accordion, against data/faq.json ===\n');
+
+const faq = render(components['faq-accordion'], { source: 'faq.json', data: ZH });
+check('one item per question', (faq.match(/class="faq-item"/g) || []).length === realFaq.length,
+      realFaq.length + ' items');
+check('the live classes', faq.indexOf('class="faq-list"') !== -1
+      && faq.indexOf('class="faq-question"') !== -1
+      && faq.indexOf('class="faq-answer"') !== -1, 'faq-list/question/answer');
+check('the real question text', faq.indexOf(realFaq[0].q) !== -1, realFaq[0].q);
+const faqCat = render(components['faq-accordion'], { source: 'faq.json', data: ZH, category: 'General' });
+const generalCount = realFaq.filter(f => f.cat === 'General').length;
+check('category filters by the real cat values',
+      (faqCat.match(/class="faq-item"/g) || []).length === generalCount, generalCount + ' in General');
+check('a paragraph per blank-line-separated block',
+      render(components['faq-accordion'], { data: { faq: [{ id: 1, q: 'Q', a: 'one\n\ntwo' }] } })
+        .indexOf('<p>one</p><p>two</p>') !== -1, 'split');
+
+console.log('\n=== related-products ===\n');
+
+const rel = render(components['related-products'],
+  { heading: '你可能也感興趣', source: 'products.json', data: ZH,
+    items: [{ sku: 'WH-PSP-500', href: '產品_雲芝糖肽精華_B.html' }] });
+check('the live classes', rel.indexOf('class="related-products"') !== -1
+      && rel.indexOf('class="related-grid"') !== -1
+      && rel.indexOf('class="related-card"') !== -1, 'related-products/grid/card');
+check('pulls title and price from the real data',
+      rel.indexOf(zhProducts[0].title) !== -1 && rel.indexOf('HK$3,800.00') !== -1, zhProducts[0].title);
+check('empty items renders nothing',
+      render(components['related-products'], { items: [], data: ZH }) === '', '""');
+
+console.log('\n=== the presentational sections ===\n');
+
+const hero = render(components.hero, {
+  badge: '臨床驗證 · 加拿大GMP藥廠', heading: '雲芝糖肽精華 PSP', headingAccent: '+T3',
+  headingLine2: '天然輔助方案', body: '超過20年經驗', headingId: 'hero-heading',
+  stats: [{ number: '90%+', label: '有效成份含量' }],
+  primaryLabel: '立即查詢', primaryHref: 'https://wa.me/85293318571/'
+});
+check('hero: the live classes', hero.indexOf('class="hero"') !== -1
+      && hero.indexOf('class="container hero-grid"') !== -1
+      && hero.indexOf('class="hero-content reveal-on-scroll reveal-left"') !== -1, 'hero/hero-grid/hero-content');
+check('hero: the canvas the client script enhances', hero.indexOf('<canvas id="heroCanvas"') !== -1, 'present');
+check('hero: stats render as stat-item/stat-number',
+      hero.indexOf('class="stat-item"') !== -1 && hero.indexOf('90%+') !== -1, 'ok');
+check('hero: the accent span keeps the brand red', hero.indexOf('color:#9b2e2e') !== -1, 'ok');
+check('hero: carousel can be turned off',
+      render(components.hero, { showCarousel: false }).indexOf('carousel-container') === -1, 'omitted');
+
+const tbGlass = render(components['text-block'],
+  { heading: '康草堂', sub: '結合中西醫學理論', paragraphs: [{ text: '第一段' }, { text: '第二段' }] });
+check('text-block glass: the homepage classes',
+      tbGlass.indexOf('class="section-title reveal-on-scroll"') !== -1
+      && tbGlass.indexOf('class="company-glass-card reveal-on-scroll reveal-delay-2"') !== -1, 'ok');
+/* A <p> per paragraph, carrying the live page's OWN inline styling. The live
+   company card styles its paragraphs inline and there is no
+   `.company-glass-card p` rule anywhere in the page CSS to stand in for it, so
+   rendering bare <p> made the block shorter and moved the rest of the homepage
+   up - caught by the P9 visual diff. The last paragraph has no bottom margin,
+   exactly as on the live page. */
+check('text-block glass: a <p> per paragraph, styled as the live page styles them',
+      tbGlass.indexOf('<p style="font-size:1.05rem;line-height:1.6;margin-bottom:1.2rem">第一段</p>') !== -1 &&
+      tbGlass.indexOf('<p style="font-size:1.05rem;line-height:1.6">第二段</p>') !== -1 &&
+      tbGlass.indexOf('margin-bottom:1.2rem">第二段') === -1, 'ok, and no bottom margin on the last');
+const tbCard = render(components['text-block'],
+  { heading: '產品介紹', variant: 'card', paragraphs: [{ text: 'x' }], bullets: [{ text: '項目內容' }] });
+check('text-block card: the product-page class',
+      tbCard.indexOf('class="product-details-card"') !== -1, 'product-details-card');
+check('text-block card: bullets become a <ul>',
+      tbCard.indexOf('<ul><li>項目內容</li></ul>') !== -1, 'ok');
+
+console.log('\n=== copy items: bold lead-in and emphasis (finding 14, option c) ===\n');
+
+const lead = render(components['text-block'], {
+  variant: 'card', paragraphs: [{ label: '項目標題：', text: ' 項目內容' }]
+});
+check('a lead-in label renders as <strong>, with NO separator inserted',
+      lead.indexOf('<p><strong>項目標題：</strong> 項目內容</p>') !== -1,
+      'colon inside the label, space from the text');
+
+const outside = render(components['text-block'], {
+  variant: 'card', paragraphs: [{ label: '獨特提取技術', text: '：在生產和提取過程中' }]
+});
+check('and the FAQ style, where the colon is outside the label',
+      outside.indexOf('<p><strong>獨特提取技術</strong>：在生產和提取過程中</p>') !== -1,
+      'both live styles reproduce exactly');
+
+const whole = render(components['text-block'], {
+  variant: 'card', paragraphs: [{ text: '整段加粗', emphasis: true }]
+});
+check('emphasis: true bolds the whole paragraph',
+      whole.indexOf('<p><strong>整段加粗</strong></p>') !== -1, 'ok');
+
+check('a plain string copy item still works',
+      render(components['text-block'], { variant: 'card', paragraphs: ['純文字'] })
+        .indexOf('<p>純文字</p>') !== -1, 'backwards compatible');
+
+const faqStructured = render(components['faq-accordion'], {
+  data: { faq: [{ id: 1, q: 'Q', a: [
+    { label: '獨特提取技術', text: '：在生產過程中' },
+    { bullets: [{ text: '第一點' }, { label: '第二：', text: ' 說明' }] }
+  ] }] }
+});
+check('faq answer: a structured block renders a bold lead-in',
+      faqStructured.indexOf('<p><strong>獨特提取技術</strong>：在生產過程中</p>') !== -1, 'ok');
+check('faq answer: a bullets block renders a real <ul>',
+      faqStructured.indexOf('<ul><li>第一點</li><li><strong>第二：</strong> 說明</li></ul>') !== -1, 'ok');
+check('faq answer: a plain string answer still splits into paragraphs',
+      render(components['faq-accordion'], { data: { faq: [{ id: 1, q: 'Q', a: 'one\n\ntwo' }] } })
+        .indexOf('<p>one</p><p>two</p>') !== -1, 'backwards compatible');
+
+const gal = render(components.gallery,
+  { images: [{ src: 'a.png', alt: '正面' }, { src: 'b.png', alt: '側面' }], mainAlt: 'T3' });
+check('gallery: the live classes', gal.indexOf('class="product-gallery"') !== -1
+      && gal.indexOf('class="main-image"') !== -1
+      && gal.indexOf('class="thumbnail-list"') !== -1, 'ok');
+check('gallery: first thumbnail is active', gal.indexOf('class="thumbnail active"') !== -1, 'active');
+check('gallery: data-img hook for the client script', gal.indexOf('data-img="a.png"') !== -1, 'present');
+check('gallery: no images renders nothing', render(components.gallery, { images: [] }) === '', '""');
+
+const cc = render(components['contact-cards'], {
+  cards: [{ flag: 'https://flagcdn.com/hk.svg', flagAlt: 'Hong Kong Flag', title: '亞洲總部',
+            company: '康草堂有限公司',
+            details: [{ text: '+852 2757 3112' }, { text: 'info@wonder-herb.com', href: 'mailto:info@wonder-herb.com' }] }]
+});
+check('contact-cards: the live classes', cc.indexOf('class="contact-grid"') !== -1
+      && cc.indexOf('class="contact-card"') !== -1
+      && cc.indexOf('class="contact-icon"') !== -1
+      && cc.indexOf('class="contact-detail"') !== -1, 'ok');
+check('contact-cards: a detail with href becomes a link, one without stays text',
+      cc.indexOf('<a href="mailto:info@wonder-herb.com">') !== -1
+      && cc.indexOf('<span>+852 2757 3112</span>') !== -1, 'both shapes');
+check('contact-cards: the company line is optional',
+      render(components['contact-cards'], { cards: [{ title: '中國辦事處' }] }).indexOf('<h4>') === -1, 'omitted');
+
+const ctaBanner = render(components['cta-band'],
+  { heading: '需要專業諮詢？', body: '我們的健康顧問團隊', label: '立即 WhatsApp 諮詢', href: 'https://wa.me/85293318571/' });
+eq('cta-band banner: the live markup', ctaBanner,
+   '<div class="cta-banner"><h2>需要專業諮詢？</h2><p style="margin-bottom:24px">我們的健康顧問團隊</p>' +
+   '<a href="https://wa.me/85293318571/" class="btn-primary">立即 WhatsApp 諮詢</a></div>');
+eq('cta-band button: the 常見問題 shape',
+   render(components['cta-band'], { variant: 'button', label: '探索產品系列', href: '產品介紹.html' }),
+   '<div class="cta-button"><a href="產品介紹.html" class="btn-primary">探索產品系列</a></div>');
+
+eq('callout highlight: the 常見問題 highlight-box shape',
+   render(components['callout'], { heading: '標題', icon: 'fas fa-video', body: '說明文字',
+                                   label: '連結文字', href: 'https://example.com/a', linkIcon: 'fab fa-weixin' }),
+   '<div class="highlight-box"><h3><i class="fas fa-video" style="color:#9b2e2e;margin-right:8px" aria-hidden="true"></i> <span>標題</span></h3>' +
+   '<p>說明文字</p><a href="https://example.com/a" target="_blank" rel="noopener" class="expert-link">' +
+   '<i class="fab fa-weixin" aria-hidden="true"></i> <span>連結文字</span> <i class="fas fa-arrow-right" aria-hidden="true"></i></a></div>');
+eq('callout note: the tinted faq-item with the link inline, text after it',
+   render(components['callout'], { variant: 'note', heading: '標題', icon: 'fas fa-university',
+                                   body: '前文', label: '連結', href: 'a.html', after: '。' }),
+   '<div class="faq-item" style="background:#f1fffe"><h3 class="faq-question"><i class="fas fa-university" aria-hidden="true"></i> <span>標題</span></h3>' +
+   '<div class="faq-answer"><p>前文<a href="a.html" style="color:#2EADA5;font-weight:500">連結</a>。</p></div></div>');
+check('callout: no link label, no link (either variant)',
+      render(components['callout'], { heading: 'H', body: 'B' }).indexOf('<a ') === -1 &&
+      render(components['callout'], { variant: 'note', heading: 'H', body: 'B' }).indexOf('<a ') === -1, 'omitted');
+
+/* ------------------------------------------------- structural fidelity
+ *
+ * The blind spot this closes: `contact-cards` silently dropped all fifteen
+ * <i> icons from the live markup and passed every check above, because those
+ * checks look at the contract (does it export a config, does it render, is the
+ * output clean) and at hand-written assertions - and a hand-written assertion
+ * can only test what its author remembered to look at. The icons were missed
+ * precisely because nobody remembered them.
+ *
+ * So the expectation is not hand-written. For each section below we parse the
+ * REAL block out of the REAL page, collect every tag name and class token it
+ * contains, render the section, and require the rendered output to contain
+ * them all. The source page is the authority; the test author's memory is not.
+ *
+ * Anything deliberately not emitted goes in `allow` WITH A REASON, so a
+ * dropped element is either caught or consciously waived - never silent.
+ */
+const { JSDOM } = require('jsdom');
+
+/* Some blocks are built by JavaScript rather than sitting in the HTML, so the
+   "source" is a template literal. Pull it out with a scanner that understands
+   nesting: `${...}` holes are replaced with a placeholder, and any markup
+   inside a nested template (a conditional fragment) is kept, because that is
+   real markup the section still has to produce. */
+function extractTemplate(src, startRe) {
+  const m = src.match(startRe);
+  if (!m) return null;
+  let i = src.indexOf('`', m.index + m[0].length - 1);
+  if (i === -1) return null;
+  return scan(src, i + 1).text;
+}
+
+function scan(s, i) {
+  let out = '';
+  while (i < s.length) {
+    const c = s[i];
+    if (c === '\\') { out += s[i] + (s[i + 1] || ''); i += 2; continue; }
+    if (c === '`') return { text: out, end: i + 1 };
+    if (c === '$' && s[i + 1] === '{') {
+      let depth = 1; i += 2;
+      while (i < s.length && depth > 0) {
+        if (s[i] === '`') { const r = scan(s, i + 1); out += r.text; i = r.end; continue; }
+        if (s[i] === '{') depth++;
+        else if (s[i] === '}') depth--;
+        i++;
+      }
+      out += 'X';
+      continue;
+    }
+    out += c; i++;
+  }
+  return { text: out, end: i };
+}
+
+/* ------------------------------------------------------------------------
+ * The fidelity map. One entry per section (an array where a section has more
+ * than one real shape on the site). Each entry names the page and the block,
+ * gives props that populate the section fully, and lists in `allow` anything
+ * the section deliberately does not emit - WITH A REASON.
+ *
+ * The props are chosen to exercise the markup, not to be realistic content:
+ * where the live block shows three badges and the data has two, the entry
+ * passes its own data. This test is about structure, not copy.
+ * ------------------------------------------------------------------------ */
+/* A hole in a template literal: the scanner replaces the interpolated value
+   with an X, so inside a class attribute it reads as a class called X. It is
+   not markup, and nothing a section can emit. */
+const PER_ITEM_ICON = 'a per-item icon class, chosen by the item; the fixture passes one and the <i> itself is proven';
+const HOLE = 'an interpolated hole in the live template, not a class name';
+/* The live <section> around a block belongs to the TREE (`wrap`), not to the
+   component - that is the whole point of wrap, so that adjacent nodes can share
+   one section. A section class is therefore waived here and checked by
+   test:render, which renders through the tree. */
+const WRAPPED_BY_TREE = 'the live <section> wrapper, which the tree owns (wrap), not the component';
+
+const INLINE_COPY = {
+  strong: 'inline emphasis inside body copy. Fields are plain text with a constrained ' +
+          'formatter (CLAUDE.md conventions); raw HTML from an editor is deliberately not supported',
+  em: 'as strong: inline emphasis is copy-level formatting, not section structure',
+  br: 'a line break inside a copy string: field content, not section structure',
+  span: 'an inline wrapper used only to style part of a sentence',
+  ul: 'a bulleted list inside one answer\'s copy; the section renders paragraphs, ' +
+      'and lists inside copy await the constrained formatter',
+  li: 'as ul: list items live inside answer copy, not in the section shell'
+};
+
+const FIDELITY = {
+  'page-header': [
+    { label: 'centered', page: '產品介紹.html', selector: '.page-header',
+      props: { heading: '產品系列', sub: '加拿大GMP藥廠 · 有效成份 >90%', headingId: 'products-heading' } },
+    { label: 'video', page: '研究報告.html', selector: '.page-header',
+      props: { heading: '研究報告', sub: '國際權威期刊', headingId: 'research-heading',
+               variant: 'video', videoUrl: 'https://cdn.example.com/hero.mp4' } }
+  ],
+
+  hero: [
+    { page: 'index.html', selector: '.hero',
+      props: {
+        badge: '臨床驗證 · 加拿大GMP藥廠', heading: '雲芝糖肽精華 PSP', headingAccent: '+T3',
+        headingLine2: '天然輔助方案', body: '超過20年經驗', headingId: 'hero-heading',
+        stats: [{ number: '90%+', label: '有效成份含量' }],
+        primaryLabel: '立即查詢', primaryHref: 'https://wa.me/85293318571/',
+        primaryIcon: 'fab fa-whatsapp',
+        secondaryLabel: '了解產品系列', secondaryHref: '#products',
+        showCarousel: true
+      } },
+    /* The slides are pre-rendered now; the live page BUILDS them in
+       buildHeroCarousel(), so the expectation is that function's two
+       templates - one per branch, a 3D slide and a photograph.
+       The DOTS are not mapped: the live page builds each dot with
+       createElement and setAttribute rather than a template, so there is no
+       markup to read. They are covered by the visual diff and by
+       test:behaviour instead. */
+    { label: 'carousel 3D slide', page: 'index.html',
+      template: /if \(img\.type === '3d'\) \{\s*slide\.innerHTML = /,
+      allow: { X: HOLE },
+      props: {
+        slideLabel: '圖片', dotLabel: '切換至圖片', dotsLabel: '輪播導航點',
+        carouselLabel: '產品形象輪播展示', prevLabel: '上一張圖片', nextLabel: '下一張圖片',
+        slides: [
+          { type: 'model', src: 'bottle.glb', alt: '模型', poster: 'https://x/a.png', posterAlt: '照片' },
+          { type: 'image', src: 'https://x/b.png', alt: '照片' }
+        ]
+      } },
+    { label: 'carousel photo slide', page: 'index.html',
+      template: /\} else \{\s*slide\.innerHTML = /,
+      allow: { X: HOLE },
+      props: {
+        slideLabel: '圖片', dotLabel: '切換至圖片',
+        slides: [{ type: 'image', src: 'https://x/b.png', alt: '照片' }]
+      } }
+  ],
+
+  'text-block': [
+    { label: 'glass', page: 'index.html', selector: '.company-glass-card',
+      props: { heading: '康草堂', sub: '結合中西醫學理論',
+               paragraphs: [{ text: '第一段' }, { text: '第二段' }] } },
+    { label: 'card', page: '產品_T3.html', selector: '.product-details-card',
+      allow: { em: INLINE_COPY.em, br: INLINE_COPY.br, span: INLINE_COPY.span },
+      props: { heading: '產品介紹', sub: '副標題', variant: 'card',
+               // a bold lead-in and a whole-bold paragraph: both must emit <strong>.
+               // Neutral placeholder text on purpose: the fidelity check compares tags and
+               // classes only, and a test file must not reproduce product health claims
+               // (docs/FINDINGS.md finding 22).
+               paragraphs: [{ label: '標籤文字', text: ' 段落內容。' },
+                            { text: '整段加粗', emphasis: true }],
+               bullets: [{ label: '項目標題：', text: ' 項目內容' }] } },
+    { label: 'intro', page: '研究報告.html', selector: '.research-intro',
+      props: { variant: 'intro', paragraphs: [{ text: '引言文字' }] } }
+  ],
+
+  'product-grid': {
+    page: '產品介紹.html',
+    // built by renderProducts(); the markup is a template literal, not static HTML
+    template: /grid\.innerHTML = products\.map\(p => /,
+    // the button labels carry their icons; first match is the zh translation block
+    holes: [/quickview_btn:\s*"([^"]*)"/, /detail_btn:\s*"([^"]*)"/],
+    props: {
+      source: 'products.json',
+      data: { products: [{ id: 1, title: '雲芝糖肽精華', price: '3800.00', desc: '說明',
+                           image: 'https://example.com/a.png', link: '產品_A.html',
+                           ribbon: '只在指定中西醫診所出售', sku: 'WH-TEST-1' }] },
+      quickViewLabel: '快速瀏覽', detailLabel: '詳細介紹', quantityLabel: '數量：', addLabel: '加入購物車'
+    }
+  },
+
+  'product-detail': [
+   { label: 'for sale', page: '產品_T3.html', selector: '.product-info',
+    props: {
+      source: 'products.json', sku: 'WH-T3-120',
+      // its own data: the live panel shows three trust badges, the real row has two
+      data: { products: [{ id: 3, title: 'T3 複合配方', sku: 'WH-T3-120', price: '1900.00',
+                           desc: '簡短說明', badges: '徽章一, 徽章二, 徽章三' }] },
+      quantityLabel: '數量：', addLabel: '加入購物車', addIcon: 'fas fa-cart-plus',
+      detailLabel: '詳細介紹', detailIcon: 'fas fa-chevron-down',
+      descIcon: 'fas fa-flask', unit: '/ 120粒軟膠囊', headingId: 'product-title',
+      badgeIcons: [{ icon: 'fas fa-certificate' }, { icon: 'fas fa-chart-line' },
+                   { icon: 'fas fa-university' }]
+    } },
+   /* 產品_PT3 is clinic-only: the live panel shows a note and a DISABLED button
+      instead of the quantity selector. Ours decides that from the data flag. */
+   { label: 'clinic only', page: '產品_PT3.html', selector: '.product-info',
+     allow: { 'fa-microscope': PER_ITEM_ICON },
+     props: {
+       source: 'products.json', sku: 'WH-PT3-090',
+       data: { products: [{ sku: 'WH-PT3-090', title: 'PT3', price: '2480.00', desc: '說明', clinicOnly: true, badges: '徽章一, 徽章二' }] },
+       quantityLabel: '數量：', addLabel: '加入購物車', addIcon: 'fas fa-cart-plus',
+       detailLabel: '詳細介紹', detailIcon: 'fas fa-chevron-down', descIcon: 'fas fa-flask',
+       clinicNote: '只在指定中西醫診所出售', clinicIcon: 'fas fa-hospital-user',
+       clinicButtonLabel: '無庫存 (診所專供)', clinicButtonIcon: 'fas fa-ban',
+       clinicButtonAria: '无库存，该产品仅在诊所供应',
+       badgeIcons: [{ icon: 'fas fa-certificate' }, { icon: 'fas fa-chart-line' }]
+     } }
+  ],
+
+  gallery: {
+    page: '產品_T3.html', selector: '.product-gallery',
+    props: { mainAlt: 'T3', images: [{ src: 'a.png', alt: '正面' }, { src: 'b.png', alt: '側面' }] }
+  },
+
+  'related-products': {
+    page: '產品_T3.html', selector: '.related-products',
+    props: {
+      heading: '你可能也感興趣', source: 'products.json',
+      data: { products: [{ sku: 'A', title: '雲芝糖肽精華', price: '3800.00', desc: 'x' }] },
+      items: [
+        { sku: 'A', href: '產品_A.html', icon: 'fas fa-seedling' },
+        { sku: 'B', href: '產品_B.html', label: '乙肝清', desc: '護肝', icon: 'fas fa-heartbeat' },
+        { sku: 'C', href: '產品_C.html', label: 'PT3', desc: '強化', icon: 'fas fa-box' }
+      ]
+    }
+  },
+
+  'contact-cards': {
+    page: '聯絡我們.html', selector: '.contact-grid',
+    props: {
+      cards: [
+        { flag: 'https://flagcdn.com/hk.svg', flagAlt: 'Hong Kong Flag', title: '亞洲總部',
+          company: '康草堂有限公司',
+          details: [
+            { icon: 'fas fa-map-marker-alt', text: ['香港九龍彌敦道301-309号', '(佐敦地鐵A出口)'], href: 'https://maps.app.goo.gl/x', newTab: true },
+            { icon: 'fas fa-phone-alt', text: '+852 2757 3112' },
+            { icon: 'fab fa-whatsapp', text: '+852 9331 8571', href: 'https://wa.me/85293318571/' },
+            { icon: 'fab fa-envelope', text: 'info@wonder-herb.com', href: 'mailto:info@wonder-herb.com' },
+            { icon: 'fas fa-user', text: '聯絡: 陳小姐' }
+          ] }
+      ]
+    }
+  },
+
+  'cta-band': [
+    { label: 'banner', page: '聯絡我們.html', selector: '.cta-banner',
+      props: { heading: '需要專業諮詢？', body: '我們的健康顧問團隊', label: '立即 WhatsApp 諮詢',
+               href: 'https://wa.me/85293318571/', icon: 'fab fa-whatsapp' } },
+    { label: 'button', page: '常見問題.html', selector: '.cta-button',
+      props: { variant: 'button', label: '探索產品系列', href: '產品介紹.html' } },
+    /* the homepage's band: the live <section> holds the video, the overlay and
+       the glass card, so one selector covers all three */
+    { label: 'video-band', page: 'index.html', selector: '.case-studies-section',
+      allow: { 'fa-weixin': PER_ITEM_ICON, fab: PER_ITEM_ICON,
+               section: WRAPPED_BY_TREE, 'case-studies-section': WRAPPED_BY_TREE,
+               'reveal-on-scroll': WRAPPED_BY_TREE },
+      props: { variant: 'video-band', heading: '標題', headingId: 'study-heading', body: '說明文字',
+               videoUrl: 'https://cdn.example.com/bg.mp4', videoType: 'video/mp4',
+               buttons: [{ label: '甲', href: 'a.html', style: 'primary' },
+                         { label: '乙', href: 'b.html', style: 'outline' },
+                         { label: '丙', href: 'c.html', style: 'outline', icon: 'fab fa-weixin' }] } }
+  ],
+
+  callout: [
+    { label: 'highlight', page: '常見問題.html', selector: '.highlight-box',
+      props: { heading: '標題', icon: 'fas fa-video', body: '說明文字', label: '連結文字',
+               href: 'https://example.com/a', linkIcon: 'fab fa-weixin' } },
+    { label: 'info', page: '微信發表文章.html', selector: '.info-note',
+      props: { variant: 'info', body: '一行說明文字' } },
+    { label: 'note', page: '常見問題.html', selector: '.faq-section .container > .faq-item',
+      props: { variant: 'note', heading: '標題', icon: 'fas fa-university', body: '前文',
+               label: '連結', href: 'a.html', after: '。' } },
+    { label: 'quality', page: 'index.html', selector: '.quality-highlight',
+      props: { variant: 'quality', prefix: '前置說明文字，', body: '重點說明文字。' } }
+  ],
+
+  'card-grid': [
+    { label: 'badges', page: '產品_T3.html', selector: 'main > .trust-badges',
+      allow: { 'fa-certificate': PER_ITEM_ICON, 'fa-chart-line': PER_ITEM_ICON, 'fa-microscope': PER_ITEM_ICON },
+      props: { variant: 'badges',
+               items: [{ icon: 'fas fa-file-alt', title: '標題', text: '說明文字' }] } },
+    { label: 'brochure', page: '小册子.html', selector: '.brochure-grid',
+      props: { variant: 'brochure', hint: '點擊圖片放大', hintIcon: 'fas fa-search-plus', noReferrer: true,
+               items: [{ title: '第一頁', href: 'https://example.com/a', image: 'https://example.com/a.png',
+                         imageAlt: '小冊子第1頁', aria: '打開小冊子第1頁' }] } },
+    { label: 'report', page: '有效成份檢測.html', selector: '.reports-grid',
+      props: { variant: 'report', linkLabel: '下載報告 (PDF)', linkIcon: 'fas fa-download',
+               items: [{ title: '檢測報告', text: '說明文字', href: 'https://example.com/a',
+                         image: 'https://example.com/a.jpg', imageAlt: '報告第1頁', aria: '打開報告' }] } },
+    { label: 'icon', page: '研究報告.html', selector: '.reports-grid',
+      /* Each live card picks its own glyph. The section renders whatever an
+         item's `icon` names, proven by the fa-university this fixture passes -
+         what it cannot do is drop the <i> (the contact-cards failure this
+         check exists for). The other five glyph classes are item content, so
+         they are waived rather than pinned into the fixture. */
+      allow: { 'fa-globe-asia': 'a per-item icon class', 'fa-stethoscope': 'a per-item icon class',
+               'fa-chart-line': 'a per-item icon class', 'fa-dna': 'a per-item icon class',
+               'fa-shield-alt': 'a per-item icon class' },
+      props: { variant: 'icon', linkLabel: '閱讀全文 →',
+               items: [{ title: '大學研究', text: '說明文字', href: 'https://example.com/a',
+                         icon: 'fas fa-university', aria: '閱讀全文' }] } },
+    { label: 'article', page: '微信發表文章.html', selector: '.articles-grid',
+      // the grid is filled by renderArticles(); the markup is a template literal
+      template: /const html = articlesData\.map\(\(article, index\) => \{[\s\S]*?return /,
+      props: { variant: 'article', linkLabel: 'Read More', linkIcon: 'fas fa-arrow-right',
+               items: [{ badge: '標籤', title: '標題', text: '摘要文字', href: 'https://example.com/a' }] } },
+    { label: 'link-list', page: '研究報告.html', selector: '.pdf-list',
+      props: { variant: 'link-list', heading: '詳細研究報告下載',
+               items: [{ title: '報告一 (PDF)', href: 'https://example.com/a.pdf', icon: 'fas fa-file-pdf', aria: '下載報告一' },
+                       { title: '報告二', href: 'https://example.com/b', icon: 'fas fa-file-alt' }] } }
+  ],
+
+  /* Both of 典型病例's blocks are built by that page's own script, so the
+     expectation comes out of the template literals, as product-grid's does. */
+  'case-list': [
+    { label: 'cards', page: '典型病例.html',
+      template: /const html = casesArray\.map\(\(c, idx\) => \{[\s\S]*?return /,
+      allow: { X: HOLE },
+      props: {
+        source: 'cases.json', moreLabel: '閱讀更多', lessLabel: '收合', moreIcon: 'fas fa-chevron-down',
+        defaultIcon: 'fa-solid fa-virus',
+        data: { cases: [{ title: '甲女士（60歲）', subtitle: '示例診斷', summary: '摘要文字',
+                          content: '<p>內文段落</p>' }] }
+      } },
+    { label: 'filter chip', page: '典型病例.html',
+      template: /chipsHtml \+= (?=`<button data-disease)/,
+      allow: { X: HOLE },
+      props: {
+        source: 'cases.json', allLabel: '全部病例', defaultIcon: 'fa-solid fa-virus',
+        data: { cases: [{ title: 'x', subtitle: '示例診斷', summary: 'y', content: 'z' }] }
+      } },
+    /* the homepage's three mini cards, built by renderFeaturedCases() */
+    { label: 'highlights', page: 'index.html',
+      template: /grid\.innerHTML = caseDataList\.slice\(0, 3\)\.map\(\(c, i\) => \{[\s\S]*?return /,
+      allow: { X: HOLE,
+               'reveal-delay-X': 'the live class is reveal-delay-${i+1}, a hole; the section emits the real index' },
+      props: {
+        source: 'cases.json', variant: 'highlights', heading: '真實康復故事精選',
+        headingId: 'cases-heading', sub: '副標題', linkLabel: '閱讀完整故事 →',
+        linkHref: '典型病例.html', moreLinkLabel: '查看更多典型病例 →', moreHref: '典型病例.html',
+        data: { cases: [{ title: 'x', subtitle: '示例診斷', summary: 'y', content: '<p>z</p>' }] }
+      } },
+    { label: 'filter panel', page: '典型病例.html',
+      template: /let chipsHtml = /,
+      allow: { X: HOLE },
+      props: {
+        source: 'cases.json', searchPlaceholder: '搜尋', searchLabel: '病例搜索',
+        resetLabel: '清除所有篩選', resetIcon: 'fas fa-eraser',
+        resultPrefix: '共 ', resultSuffix: ' 個病例', filterLabel: '按病症篩選',
+        filterIcon: 'fas fa-tags', allLabel: '全部病例', allIcon: 'fas fa-list-ul',
+        defaultIcon: 'fa-solid fa-virus',
+        data: { cases: [{ title: 'x', subtitle: '示例診斷', summary: 'y', content: 'z' }] }
+      } }
+  ],
+
+  /* The homepage's triple carousel. Its static shell is in the HTML, but the
+     three cards are built by renderProductTriple() - so the shell and the
+     featured card's template are both mapped. The two side cards' template is
+     the same shape minus the link, so it is covered by the featured one. */
+  'product-carousel': [
+    { label: 'shell', page: 'index.html', selector: '#tripleProductLayout',
+      props: { source: 'products.json', prevLabel: '上一個產品', nextLabel: '下一個產品',
+               groupLabel: '產品輪播展示', data: { products: [] } } },
+    { label: 'featured card', page: 'index.html',
+      template: /m\.innerHTML = /,
+      allow: { X: HOLE },
+      props: {
+        source: 'products.json', detailLabel: '瞭解更多', detailIcon: 'fas fa-arrow-right',
+        data: { products: [
+          { sku: 'A', title: '甲', desc: '甲的說明', image: 'https://x/a.png', link: 'a.html' },
+          { sku: 'B', title: '乙', desc: '乙的說明', image: 'https://x/b.png', link: 'b.html' }
+        ] }
+      } }
+  ],
+
+  'map-embed': {
+    page: '聯絡我們.html', selector: '.map-placeholder',
+    props: { src: 'https://www.google.com/maps/embed?pb=x', title: '地圖',
+             caption: '香港九龍彌敦道', captionIcon: 'fas fa-map-pin' } },
+
+  'faq-accordion': {
+    page: '常見問題.html', selector: '.faq-list',
+    props: {
+      source: 'faq.json', defaultIcon: 'fas fa-question-circle',
+      data: { faq: [
+        // the plain-string answer the data holds today still works
+        { id: 1, q: 'Q1', a: 'A1' },
+        { id: 2, q: 'Q2', a: 'A2', icon: 'fas fa-flask' },
+        { id: 3, q: 'Q3', a: 'A3', icon: 'fas fa-leaf' },
+        { id: 4, q: 'Q4', a: 'A4', icon: 'fas fa-shield-alt' },
+        // and the structured shape: a bold lead-in, and a list inside the answer
+        { id: 5, q: 'Q5', icon: 'fas fa-chart-line',
+          a: [
+            { label: '獨特提取技術', text: '：在生產和提取過程中把雲芝多糖和蛋白肽結合起來。' },
+            { bullets: [{ text: '配合一線的頑疾治療時，雲芝糖肽對各類的頑疾患者非常有效。' }] }
+          ] }
+      ] }
+    }
+  }
+};
+
+/* every tag name and class token inside a block, as one set */
+function fingerprint(el) {
+  const out = new Set();
+  const walk = node => {
+    out.add(node.tagName.toLowerCase());
+    node.classList.forEach(c => out.add('.' + c));
+    Array.prototype.forEach.call(node.children, walk);
+  };
+  Array.prototype.forEach.call(el.children, walk);
+  el.classList.forEach(c => out.add('.' + c));
+  out.add(el.tagName.toLowerCase());
+  return out;
+}
+
+console.log('\n=== structural fidelity against the live markup ===\n');
+
+Object.keys(FIDELITY).forEach(type => {
+  const specs = [].concat(FIDELITY[type]);
+  specs.forEach(spec => {
+    const name = type + (spec.label ? ' (' + spec.label + ')' : '');
+    // fidelity is measured against the ORIGINAL markup (legacy/ once the page is retired)
+    const src = readOriginalPage(spec.page);
+
+    let block;
+    if (spec.template) {
+      let tpl = extractTemplate(src, spec.template);
+      if (!tpl) { check(name + ': found its template in ' + spec.page, false, 'NOT MATCHED'); return; }
+      /* A `${...}` hole becomes a placeholder, so markup that ARRIVES THROUGH a
+         hole is invisible to the fingerprint. That is exactly how product-grid
+         lost its button icons and still passed this check: the live labels are
+         "<i class='fas fa-eye'></i> 快速瀏覽", substituted in via
+         ${translations[currentLang].quickview_btn}. Found at P9-T1 by the
+         full visual diff, not by this test. `holes` names the strings that fill
+         a template's holes; their markup joins the expectation. */
+      for (const re of (spec.holes || [])) {
+        const hm = src.match(re);
+        if (!hm) { check(name + ': found hole source ' + re + ' in ' + spec.page, false, 'NOT MATCHED'); return; }
+        tpl += hm[1].replace(/\\'/g, "'");
+      }
+      block = new JSDOM('<body><div id="w">' + tpl + '</div></body>')
+        .window.document.getElementById('w');
+    } else {
+      block = new JSDOM(src).window.document.querySelector(spec.selector);
+      if (!block) { check(name + ': found ' + spec.selector + ' in ' + spec.page, false, 'NOT FOUND'); return; }
+    }
+
+    const want = fingerprint(block);
+    const html = render(components[type], spec.props);
+    const got = fingerprint(new JSDOM('<body>' + html + '</body>').window.document.body);
+
+    const allow = spec.allow || {};
+    const missing = Array.from(want).filter(t =>
+      !got.has(t) && !(t.replace(/^\./, '') in allow) && !(t in allow));
+
+    check(name + ': emits everything ' + (spec.template ? 'its template' : spec.selector) + ' has',
+          missing.length === 0,
+          missing.length ? 'MISSING ' + missing.join(', ') : want.size + ' tokens, all present');
+    Object.keys(allow).forEach(t => console.log('         waived <' + t + '> — ' + allow[t]));
+  });
+});
+
+const unmapped = Object.keys(registry).filter(t => !(t in FIDELITY));
+check('every registered section has a fidelity map', unmapped.length === 0,
+      unmapped.length ? 'UNMAPPED: ' + unmapped.join(', ') : Object.keys(registry).length + '/' +
+      Object.keys(registry).length + ' mapped');
+
+console.log('\n' + (fail ? '=== ' + fail + ' CHECK(S) FAILED ===' : '=== ALL CHECKS PASSED ==='));
+process.exit(fail ? 1 : 0);

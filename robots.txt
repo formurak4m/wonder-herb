@@ -1,0 +1,67 @@
+User-agent: *
+Allow: /
+Disallow: /購物車.html
+Disallow: /%E8%B3%BC%E7%89%A9%E8%BB%8A.html
+# retired hand-coded originals of migrated pages (P9-T1): reference copies, never public
+Disallow: /legacy/
+# internal documents, not site content (P8-T3 removes them from the deploy)
+Disallow: /docs/
+Disallow: /wonderherb-admin-frontend/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /legacy/
+# internal documents, not site content (P8-T3 removes them from the deploy)
+Disallow: /docs/
+Disallow: /wonderherb-admin-frontend/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /legacy/
+# internal documents, not site content (P8-T3 removes them from the deploy)
+Disallow: /docs/
+Disallow: /wonderherb-admin-frontend/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /legacy/
+# internal documents, not site content (P8-T3 removes them from the deploy)
+Disallow: /docs/
+Disallow: /wonderherb-admin-frontend/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /legacy/
+# internal documents, not site content (P8-T3 removes them from the deploy)
+Disallow: /docs/
+Disallow: /wonderherb-admin-frontend/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /legacy/
+# internal documents, not site content (P8-T3 removes them from the deploy)
+Disallow: /docs/
+Disallow: /wonderherb-admin-frontend/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /legacy/
+# internal documents, not site content (P8-T3 removes them from the deploy)
+Disallow: /docs/
+Disallow: /wonderherb-admin-frontend/
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /legacy/
+# internal documents, not site content (P8-T3 removes them from the deploy)
+Disallow: /docs/
+Disallow: /wonderherb-admin-frontend/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /legacy/
+# internal documents, not site content (P8-T3 removes them from the deploy)
+Disallow: /docs/
+Disallow: /wonderherb-admin-frontend/
+
+Sitemap: https://www.wonder-herb.com/sitemap.xml

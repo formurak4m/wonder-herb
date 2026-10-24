@@ -1,0 +1,2488 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title id="pageTitle">會員帳戶 | Wonder Herb - 雲芝糖肽精華</title>
+  <meta name="robots" content="noindex, follow">
+  <meta name="description" content="Wonder Herb 會員帳戶：登入、註冊及帳戶設定。">
+  
+  <!-- 内容新鲜度与权威性：机器可读最后更新时间 -->
+  <meta name="dateModified" content="2026-06-02T10:30:00+08:00">
+  <!-- Open Graph -->
+  <meta property="og:title" content="會員帳戶 | Wonder Herb">
+  <meta property="og:description" content="Wonder Herb 會員帳戶：登入、註冊及帳戶設定。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://static.wixstatic.com/media/b3683f_b7c386343b774bd3a28a2720f4237d3a~mv2.png">
+  <meta property="og:locale" content="zh_HK">
+  <meta property="og:site_name" content="康草堂 Wonder Herb">
+  
+  <link rel="canonical" href="https://www.wonder-herb.com/account.html">
+  <link rel="alternate" hreflang="zh-Hant" href="https://www.wonder-herb.com/account.html">
+  <link rel="alternate" hreflang="x-default" href="https://www.wonder-herb.com/account.html">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+
+  <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      html {
+          font-size: 16px;
+          -webkit-text-size-adjust: 100%;
+          text-size-adjust: 100%;
+          overflow-x: hidden;
+      }
+      @media (max-width: 768px) {
+          html { font-size: 15px; }
+      }
+      @media (max-width: 480px) {
+          html { font-size: 14px; }
+      }
+      @media (max-width: 380px) {
+          html { font-size: 13px; }
+      }
+
+      body {
+          font-family: 'Inter', sans-serif;
+          background-color: #ffffff;
+          color: #333333;
+          line-height: 1.5;
+          scroll-behavior: smooth;
+          overflow-x: hidden;
+      }
+
+      .container {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 24px;
+      }
+
+      /* Announcement Bar */
+      .announcement-bar {
+          background: linear-gradient(90deg, #1a1a1a 0%, #2EADA5 50%, #1a1a1a 100%);
+          color: #fff;
+          padding: 0;
+          overflow: hidden;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+      .announcement-track {
+          display: flex;
+          align-items: center;
+          white-space: nowrap;
+          animation: scroll-announcement 20s linear infinite;
+      }
+      .announcement-track span {
+          display: inline-block;
+          padding: 8px 48px;
+          font-size: 0.88rem;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+          color: #f5f5f5;
+      }
+      .announcement-track span::before {
+          content: '✦';
+          margin-right: 12px;
+          color: #E4C97B;
+          font-size: 0.75rem;
+      }
+      .announcement-track span::after {
+          content: '✦';
+          margin-left: 12px;
+          color: #E4C97B;
+          font-size: 0.75rem;
+      }
+      @keyframes scroll-announcement {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+      }
+
+      /* Top Bar 保持不变 */
+      .fixed-nav-wrapper {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          z-index: 1000;
+          background: #ffffff;
+          will-change: transform;
+      }
+
+      .top-bar {
+          background-color: #2EADA5;
+          color: #fff;
+          font-size: 0.85rem;
+          padding: 8px 0;
+          text-align: right;
+          position: relative;
+          z-index: 1000;
+      }
+
+      .top-bar .container {
+          display: flex;
+          justify-content: flex-end;
+          gap: 20px;
+          padding: 0 25px;
+      }
+
+      .top-bar a {
+          color: #fff;
+          text-decoration: none;
+      }
+
+      .lang-selector {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: rgba(255, 255, 255, 0.15);
+          padding: 4px 12px;
+          border-radius: 30px;
+          font-size: 0.8rem;
+          cursor: pointer;
+      }
+
+      .lang-selector span {
+        cursor: pointer;
+        transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      
+      
+      .lang-selector .flag-img {
+        width: 20px;
+        height: 14px;
+        object-fit: cover;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
+    }
+
+      .lang-selector span:hover {
+          opacity: 0.8;
+          text-decoration: underline;
+      }
+
+      .lang-selector .active-lang {
+          font-weight: 700;
+          text-decoration: underline;
+      }
+
+      /* Mobile Language Dropdown */
+      .lang-selector-mobile {
+          display: none;
+          position: relative;
+          z-index: 101;
+      }
+
+      .lang-selector-mobile .lang-current {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 6px;
+          background: rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 20px;
+          padding: 6px 10px;
+          cursor: pointer;
+          color: #fff;
+          font-size: 0.8rem;
+          white-space: nowrap;
+          min-width: 80px;
+      }
+
+      .lang-selector-mobile .lang-current::after {
+          content: '▼';
+          font-size: 0.6rem;
+          margin-left: 4px;
+      }
+
+      
+      
+      .lang-selector-mobile .lang-current img {
+          width: 20px;
+          height: 14px;
+          object-fit: cover;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
+
+      .lang-selector-mobile .lang-dropdown {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          background: #2EADA5;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 10px;
+          padding: 8px 0;
+          min-width: 140px;
+          z-index: 10000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+
+      .lang-selector-mobile .lang-dropdown.show {
+          display: block;
+      }
+
+      .lang-selector-mobile .lang-dropdown button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          width: 100%;
+          padding: 8px 12px;
+          background: none;
+          border: none;
+          color: #fff;
+          font-size: 0.85rem;
+          cursor: pointer;
+          text-align: left;
+      }
+
+      .lang-selector-mobile .lang-dropdown button:hover,
+      .lang-selector-mobile .lang-dropdown button.active {
+          background: rgba(255, 255, 255, 0.15);
+      }
+
+      
+      
+      .lang-selector-mobile .lang-dropdown button img {
+          width: 20px;
+          height: 14px;
+          object-fit: cover;
+          vertical-align: middle;
+          border-radius: 2px;
+      }
+
+      @media (max-width: 768px) {
+          .lang-selector {
+              display: none !important;
+          }
+          .lang-selector-mobile {
+              display: block !important;
+          }
+      }
+
+      /* Main Header 保持不变 */
+      .main-header {
+          background: #ffffff;
+          position: relative;
+          top: auto;
+          z-index: 100;
+          border-bottom: 1px solid #2EADA5;
+      }
+
+      .header-inner {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          padding: 16px 0;
+          gap: 20px;
+      }
+
+      .logo img {
+          height: 55px;
+          width: auto;
+      }
+
+      .nav-menu ul {
+          display: flex;
+          gap: 28px;
+          list-style: none;
+          flex-wrap: wrap;
+      }
+
+      .nav-menu a {
+          text-decoration: none;
+          font-weight: 500;
+          color: #2c3e2b;
+          font-size: 1rem;
+      }
+
+      .nav-menu a:hover,
+      .nav-menu a.active {
+          color: #9b2e2e;
+          border-bottom: 2px solid #9b2e2e;
+          padding-bottom: 4px;
+      }
+
+      .header-actions {
+          display: flex;
+          gap: 16px;
+          align-items: center;
+      }
+
+      .header-actions .social-icon {
+          color: #555555;
+          font-size: 1.3rem;
+          text-decoration: none;
+      }
+
+      .cart-icon {
+          font-size: 1.4rem;
+          color: #2EADA5;
+          position: relative;
+          text-decoration: none;
+      }
+
+      .cart-count {
+          position: absolute;
+          top: -8px;
+          right: -12px;
+          background: #9b2e2e;
+          color: white;
+          font-size: 0.7rem;
+          border-radius: 30px;
+          padding: 2px 6px;
+          min-width: 18px;
+          text-align: center;
+      }
+
+      .btn-contact {
+          background-color: #2EADA5;
+          color: white;
+          padding: 8px 20px;
+          border-radius: 40px;
+          text-decoration: none;
+          font-weight: 600;
+          white-space: nowrap;
+      }
+
+      .btn-contact:hover {
+          background-color: #1a7a75;
+          transform: translateY(-2px);
+      }
+
+      /* Page Header */
+      .page-header {
+          background: linear-gradient(135deg, #1f958f80 0%, #ffffff 100%);
+          padding: 55px 0 55px;
+          text-align: center;
+          border-radius: 0;
+          margin-bottom: 40px;
+      }
+
+      .page-header h1 {
+          font-size: 2.8rem;
+          font-weight: 700;
+          font-family: 'Playfair Display', serif;
+          color: #2c3e2b;
+          margin-bottom: 16px;
+      }
+
+      .page-header p {
+          font-size: 1.1rem;
+          color: #555555;
+          max-width: 700px;
+          margin: 0 auto;
+      }
+
+      /* Contact Grid */
+      .contact-section {
+          padding: 5px 0;
+      }
+
+      @media (max-width: 768px) {
+          .page-header h1 { font-size: 2rem; }
+          .page-header p { font-size: 0.95rem; }
+          .contact-section {
+              padding: 5px 0;
+          }
+          .contact-card {
+              padding: 20px 16px;
+          }
+      }
+
+      .contact-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+          gap: 32px;
+          margin-bottom: 48px;
+      }
+
+      @media (max-width: 768px) {
+          .contact-grid {
+              grid-template-columns: 1fr;
+              gap: 20px;
+              margin-bottom: 32px;
+          }
+      }
+
+      .contact-card {
+          background: white;
+          border-radius: 28px;
+          padding: 28px 24px;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+          border: 1px solid #e5e7eb;
+          transition: all 0.3s;
+          height: 100%;
+      }
+
+      .contact-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1);
+      }
+
+      .contact-icon {
+          text-align: center;
+          margin-bottom: 16px;
+      }
+
+      
+      
+      .contact-icon img {
+          width: 80px;
+          height: 48px;
+          object-fit: cover;
+          border-radius: 10px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          background-color: #ffffff;
+          border: 1px solid #e5e7eb;
+      }
+
+      .contact-card h3 {
+          font-size: 1.5rem;
+          font-weight: 700;
+          font-family: 'Playfair Display', serif;
+          color: #2c3e2b;
+          margin-bottom: 8px;
+          text-align: center;
+      }
+
+      .contact-card h4 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: #555555;
+          margin-bottom: 20px;
+          text-align: center;
+      }
+
+      .contact-detail {
+          margin: 12px 0;
+          margin-left: 30px;
+          margin-right: 30px;
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          font-size: 0.9rem;
+          color: #555555;
+      }
+
+      @media (max-width: 768px) {
+          .contact-detail {
+              margin-left: 12px;
+              margin-right: 12px;
+          }
+      }
+
+      .contact-detail i {
+          width: 20px;
+          color: #2EADA5;
+          margin-top: 2px;
+      }
+
+      .contact-detail a {
+          color: #2EADA5;
+          text-decoration: none;
+          word-break: break-word;
+      }
+
+      .contact-detail a:hover {
+          text-decoration: underline;
+      }
+
+      .map-placeholder {
+          background: #ffffff;
+          border-radius: 24px;
+          height: 280px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 24px;
+          overflow: hidden;
+      }
+
+      @media (max-width: 768px) {
+          .map-placeholder {
+              border-radius: 16px;
+              height: 200px;
+              margin-left: 4px;
+              margin-right: 4px;
+          }
+      }
+
+      .map-placeholder iframe {
+          width: 100%;
+          height: 100%;
+          border: 0;
+      }
+
+      .map-caption {
+          text-align: center;
+          margin-top: 12px;
+          font-size: 0.8rem;
+          color: #555555;
+      }
+
+      /* CTA Banner */
+      .cta-banner {
+          background: #2EADA5;
+          border-radius: 32px;
+          padding: 48px 40px;
+          text-align: center;
+          color: white;
+          margin-top: 20px;
+          margin-bottom: 40px;
+      }
+
+      @media (max-width: 768px) {
+          .cta-banner {
+              border-radius: 20px;
+              padding: 32px 20px;
+              margin-left: 4px;
+              margin-right: 4px;
+          }
+          .cta-banner h2 {
+              font-size: 1.4rem;
+          }
+      }
+
+      .cta-banner h2 {
+          font-family: 'Playfair Display', serif;
+          font-size: 1.8rem;
+          margin-bottom: 16px;
+      }
+
+      .cta-banner .btn-primary {
+          background-color: #E4C97B;
+          color: #2c3e2b;
+          padding: 12px 32px;
+          border-radius: 40px;
+          text-decoration: none;
+          font-weight: 700;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+      }
+
+      .cta-banner .btn-primary:hover {
+          background-color: #E4C97B;
+          transform: translateY(-2px);
+      }
+
+      /* Footer */
+      footer {
+          background: #1a1a1a;
+          color: #ddd;
+          padding: 48px 0 32px;
+          margin-top: 0px;
+      }
+
+      .footer-inner {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          gap: 32px;
+      }
+
+      .footer-col {
+          flex: 1;
+          min-width: 180px;
+      }
+
+      .footer-col h4 {
+          color: #ffffff;
+          margin-bottom: 16px;
+      }
+
+      .footer-col a {
+          color: #ddd;
+          text-decoration: none;
+      }
+
+      .footer-col a:hover {
+          color: #ffffff;
+      }
+
+      .footer-social a {
+          color: #ddd;
+          font-size: 1.4rem;
+          margin-right: 16px;
+          transition: 0.2s;
+          display: inline-block;
+          text-decoration: none;
+      }
+
+        .footer-social a:hover {
+            color: #ffffff;
+      }
+
+      .copyright {
+          text-align: center;
+          padding-top: 32px;
+          border-top: 1px solid #464646;
+          margin-top: 32px;
+          font-size: 0.85rem;
+      }
+
+      .last-update {
+          margin-top: 8px;
+          font-size: 0.7rem;
+          color: #a8b7a4;
+          letter-spacing: 0.3px;
+      }
+
+      /* Mobile Fixed Contact Button */
+      .mobile-fixed-contact-btn {
+          display: flex;
+          position: fixed;
+          bottom: 48px;
+          right: 32px;
+          left: auto;
+          background-color: #2EADA5;
+          color: white;
+          text-align: center;
+          padding: 0;
+          width: 76px;
+          height: 76px;
+          border-radius: 50%;
+          text-decoration: none;
+          font-weight: 700;
+          font-size: 1rem;
+          z-index: 9999;
+          box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+          gap: 0;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .mobile-fixed-contact-btn span.btn-text {
+          display: none;
+      }
+
+      .mobile-fixed-contact-btn:hover {
+          background-color: #1a7a75;
+          color: white;
+          transform: scale(1.05);
+      }
+
+      .mobile-fixed-contact-btn i {
+          font-size: 2rem;
+      }
+
+      @media (max-width: 768px) {
+          .mobile-fixed-contact-btn {
+              display: flex;
+              bottom: 0;
+              right: 0;
+              left: 0;
+              width: 100%;
+              height: auto;
+              border-radius: 0;
+              padding: 14px 20px;
+              gap: 8px;
+              box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+          }
+          .mobile-fixed-contact-btn span.btn-text {
+              display: inline;
+          }
+          .mobile-fixed-contact-btn i {
+              font-size: 1.2rem;
+          }
+      }
+
+    /* Shared header/footer styles */
+    .top-bar {
+        background-color: #2EADA5;
+        color: #fff;
+        font-size: 0.85rem;
+        padding: 8px 0;
+        text-align: right;
+    }
+
+    .top-bar .container {
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px;
+        padding: 0 25px;
+    }
+
+    .top-bar a {
+        color: #fff;
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+
+    .top-bar a:hover {
+        opacity: 0.8;
+    }
+
+    .lang-selector {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 4px 12px;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        cursor: pointer;
+    }
+
+      .lang-selector span {
+        cursor: pointer;
+        transition: opacity 0.2s;
+        vertical-align: middle;
+    }
+
+      
+      
+      .lang-selector .flag-img {
+        width: 20px;
+        height: 14px;
+        object-fit: cover;
+        vertical-align: middle;
+        margin-right: 2px;
+        border-radius: 2px;
+    }
+
+    .lang-selector span:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+
+    .lang-selector .active-lang {
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    .main-header {
+        background: #ffffff;
+        position: relative;
+        top: auto;
+        z-index: 100;
+        border-bottom: 1px solid #2EADA5;
+    }
+
+    .header-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 16px 0;
+        gap: 20px;
+    }
+
+    .logo img {
+        height: 50px;
+        width: auto;
+        display: block;
+    }
+
+    .nav-menu ul {
+        display: flex;
+        gap: 28px;
+        list-style: none;
+        flex-wrap: wrap;
+    }
+
+    .nav-menu a {
+        text-decoration: none;
+        font-weight: 500;
+        color: #2c3e2b;
+        font-size: 1rem;
+        transition: color 0.2s;
+    }
+
+    .nav-menu a:hover,
+    .nav-menu a.active {
+        color: #9b2e2e;
+        border-bottom: 2px solid #9b2e2e;
+        padding-bottom: 4px;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
+
+    .header-actions .social-icon {
+        color: #555555;
+        font-size: 1.3rem;
+        transition: transform 0.2s;
+        text-decoration: none;
+    }
+
+    .header-actions .social-icon:hover {
+        transform: scale(1.1);
+        color: #2EADA5;
+    }
+
+    .cart-icon {
+        font-size: 1.4rem;
+        color: #2EADA5;
+        position: relative;
+        text-decoration: none;
+    }
+
+    .cart-count {
+        position: absolute;
+        top: -8px;
+        right: -12px;
+        background: #9b2e2e;
+        color: white;
+        font-size: 0.7rem;
+        border-radius: 30px;
+        padding: 2px 6px;
+        min-width: 18px;
+        text-align: center;
+    }
+
+    .btn-contact {
+        background-color: #2EADA5;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .btn-contact:hover {
+        background-color: #1a7a75;
+        transform: translateY(-2px);
+    }
+
+    .menu-toggle {
+        display: none;
+        background: transparent;
+        border: 2px solid #2EADA5;
+        border-radius: 8px;
+        color: #2c3e2b;
+        cursor: pointer;
+        padding: 6px 10px;
+        font-size: 1.25rem;
+        line-height: 1;
+        transition: background-color 0.2s, color 0.2s;
+    }
+
+    .menu-toggle:hover,
+    .menu-toggle:focus {
+        background-color: #2EADA5;
+        color: #fff;
+        outline: none;
+    }
+
+    .menu-toggle[aria-expanded="true"] .fa-bars::before {
+        content: "\f00d";
+    }
+
+    .header-nav-panel {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex: 1;
+        justify-content: flex-end;
+    }
+
+    .mobile-contact-btn {
+        display: none;
+    }
+
+    .header-right-icons {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .main-header .header-inner {
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            gap: 0;
+        }
+
+        .main-header .logo {
+            flex: 0 0 auto;
+            margin-left: 25px;
+        }
+
+        .main-header .logo img {
+            height: 35px;
+        }
+
+        .header-right-icons {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .header-right-icons .mobile-cart-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #2EADA5;
+            position: relative;
+            text-decoration: none;
+            padding: 6px 8px;
+        }
+
+        .header-right-icons .mobile-cart-link .cart-count {
+            position: absolute;
+            top: -2px;
+            right: 0px;
+            background: #9b2e2e;
+            color: white;
+            font-size: 0.6rem;
+            border-radius: 30px;
+            padding: 1px 4px;
+            min-width: 14px;
+            text-align: center;
+        }
+
+        .menu-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            margin-left: 6px;
+            margin-right: 25px;
+        }
+
+        .main-header .header-nav-panel {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            flex: 0 0 100%;
+            gap: 12px;
+            padding: 8px 0 12px;
+            border-top: 1px solid #ddd5c8;
+            margin-top: 8px;
+        }
+
+        .main-header .header-nav-panel.is-open {
+            display: flex;
+        }
+
+        .main-header .nav-menu {
+            width: 100%;
+        }
+
+        .main-header .nav-menu ul {
+            flex-direction: column;
+            gap: 0;
+            width: 100%;
+            align-items: stretch;
+            justify-content: flex-start;
+            flex-wrap: nowrap;
+            margin-left: 25px;
+        }
+
+        .main-header .nav-menu li {
+            width: 100%;
+            border-bottom: 1px solid #2EADA5;
+        }
+
+        .main-header .nav-menu a {
+            display: block;
+            padding: 11px 4px;
+            border-bottom: none !important;
+            padding-bottom: 11px !important;
+        }
+
+        .main-header .header-actions {
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd5c8;
+        }
+
+        .main-header .header-actions .cart-icon,
+        .main-header .header-actions .btn-contact {
+            display: none;
+        }
+
+        .main-header .header-nav-panel.is-open .nav-menu {
+            padding-bottom: 60px;
+        }
+
+        .main-header .header-nav-panel.is-open .mobile-contact-btn {
+            display: flex;
+        }
+
+        .mobile-contact-btn {
+            display: none;
+            background: #2EADA5;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 20px;
+            border-radius: 15px;
+            margin-top: 4px;
+        }
+    }
+
+    footer {
+        background: #1a1a1a;
+        color: #ddd;
+        padding: 48px 0 32px;
+        margin-top: 0px;
+    }
+
+    .footer-inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 32px;
+    }
+
+    .footer-col {
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .footer-col h4 {
+        color: #ffffff;
+        margin-bottom: 16px;
+    }
+
+    .footer-col a {
+        color: #ddd;
+        text-decoration: none;
+    }
+
+    .footer-col a:hover {
+        color: #ffffff;
+    }
+
+    .footer-social a {
+        color: #ddd;
+        font-size: 1.4rem;
+        margin-right: 16px;
+        transition: 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+        .footer-social a:hover {
+            color: #ffffff;
+    }
+
+    .copyright {
+        text-align: center;
+        padding-top: 32px;
+        border-top: 1px solid #464646;
+        margin-top: 32px;
+        font-size: 0.85rem;
+    }
+
+    .last-update {
+        margin-top: 8px;
+        font-size: 0.7rem;
+        color: #a8b7a4;
+        letter-spacing: 0.3px;
+    }
+
+
+    /* Shared small-screen footer layout */
+    @media (max-width: 768px) {
+        footer {
+            padding: 32px 0 80px !important;
+        }
+        .footer-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+        .footer-col {
+            text-align: left;
+        }
+        .footer-brand-detail {
+            display: none;
+        }
+        .footer-contact {
+            display: none;
+        }
+        .footer-col:last-child {
+            display: none;
+        }
+        footer .container ul {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        footer .container ul li + li {
+            margin-top: 6px !important;
+        }
+        .footer-social {
+            display: flex;
+            justify-content: flex-start;
+            gap: 16px;
+        }
+    }
+
+    /* ---- account page ---- */
+    .account-section { padding: 0 0 70px; }
+    .account-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start; }
+    .account-card { background: #fff; border-radius: 28px; padding: 30px 26px; border: 1px solid #e5e7eb;
+                    box-shadow: 0 10px 25px -5px rgba(0,0,0,.05); }
+    .account-card h2 { font-size: 1.35rem; margin-bottom: 6px; color: #14524f; }
+    .account-card .account-lead { color: #6b7280; font-size: .92rem; margin-bottom: 20px; }
+    .account-field { display: block; margin-bottom: 16px; }
+    .account-field span { display: block; font-size: .85rem; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .account-field input { width: 100%; padding: 12px 14px; border: 1px solid #d1d5db; border-radius: 12px;
+                           font-size: .95rem; font-family: inherit; background: #fff; }
+    .account-field input:focus { outline: none; border-color: #1f958f; box-shadow: 0 0 0 3px rgba(31,149,143,.15); }
+    .account-btn { width: 100%; padding: 13px 18px; border: none; border-radius: 999px; cursor: pointer;
+                   background: #1f958f; color: #fff; font-size: .98rem; font-weight: 600; font-family: inherit; }
+    .account-btn:hover { background: #17756f; }
+    .account-btn[disabled] { opacity: .6; cursor: default; }
+    .account-btn.ghost { background: #fff; color: #14524f; border: 1px solid #1f958f; }
+    .account-btn.ghost:hover { background: #eef7f6; }
+    .account-msg { min-height: 20px; margin: 0 0 12px; font-size: .88rem; color: #b91c1c; }
+    .account-msg.ok { color: #15803d; }
+    .account-note { background: #fff8e6; border: 1px solid #f0d9a0; color: #7c5a10; border-radius: 16px;
+                    padding: 18px 20px; font-size: .93rem; line-height: 1.6; }
+    .account-facts { margin: 4px 0 26px; }
+    .account-facts div { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0;
+                         border-bottom: 1px solid #f0f0f0; font-size: .93rem; }
+    .account-facts dt { color: #6b7280; }
+    .account-facts dd { color: #111827; font-weight: 600; text-align: right; word-break: break-all; }
+    .account-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .account-actions .account-btn { width: auto; min-width: 160px; }
+    .wh-account-link.is-signed-in { color: #1f958f; }
+    @media (max-width: 600px) { .account-card { padding: 24px 18px; } }
+  </style>
+  <link rel="stylesheet" href="assets/chat.css">
+  <noscript><style>
+    /* chat widget (P13-T5): a control that needs JavaScript is not shown without it */
+    .wh-chat-launcher, .wh-chat-panel { display: none !important; }
+  </style></noscript>
+</head>
+<body>
+
+<div class="fixed-nav-wrapper">
+<div class="top-bar">
+  <div class="container">
+    <div class="lang-selector" aria-label="語言切換器" role="group">
+      <span id="langZhBtn" data-lang="zh" role="button" tabindex="0" aria-label="切換至中文" aria-current="true" class="active-lang"><img src="https://flagcdn.com/w20/hk.png" alt="中文" class="flag-img"> 中文</span> |
+      <span id="langEnBtn" data-lang="en" role="button" tabindex="0" aria-label="Switch to English" aria-current="false"><img src="https://flagcdn.com/w20/gb.png" alt="English" class="flag-img"> EN</span> |
+      <span id="langDeBtn" data-lang="de" role="button" tabindex="0" aria-label="Auf Deutsch umschalten" aria-current="false"><img src="https://flagcdn.com/w20/de.png" alt="Deutsch" class="flag-img"> DE</span> |
+      <span id="langEsBtn" data-lang="es" role="button" tabindex="0" aria-label="Cambiar a Español" aria-current="false"><img src="https://flagcdn.com/w20/es.png" alt="Español" class="flag-img"> ES</span> |
+      <span id="langFrBtn" data-lang="fr" role="button" tabindex="0" aria-label="Passer en Français" aria-current="false"><img src="https://flagcdn.com/w20/fr.png" alt="Français" class="flag-img"> FR</span> |
+      <span id="langJaBtn" data-lang="ja" role="button" tabindex="0" aria-label="日本語に切り替え" aria-current="false"><img src="https://flagcdn.com/w20/jp.png" alt="日本語" class="flag-img"> JA</span> |
+      <span id="langRuBtn" data-lang="ru" role="button" tabindex="0" aria-label="Переключить на русский" aria-current="false"><img src="https://flagcdn.com/w20/ru.png" alt="Русский" class="flag-img"> RU</span>
+    </div>
+    <div class="lang-selector-mobile" aria-label="語言切換">
+      <div class="lang-current" id="langCurrentBtn" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+        <img src="https://flagcdn.com/w20/hk.png" alt="" id="langCurrentFlag"> <span id="langCurrentText">中文</span>
+      </div>
+      <div class="lang-dropdown" role="listbox" id="langDropdown">
+        <button type="button" data-lang="zh" role="option"><img src="https://flagcdn.com/w20/hk.png" alt=""> 中文</button>
+        <button type="button" data-lang="en" role="option"><img src="https://flagcdn.com/w20/gb.png" alt=""> English</button>
+        <button type="button" data-lang="de" role="option"><img src="https://flagcdn.com/w20/de.png" alt=""> Deutsch</button>
+        <button type="button" data-lang="es" role="option"><img src="https://flagcdn.com/w20/es.png" alt=""> Español</button>
+        <button type="button" data-lang="fr" role="option"><img src="https://flagcdn.com/w20/fr.png" alt=""> Français</button>
+        <button type="button" data-lang="ja" role="option"><img src="https://flagcdn.com/w20/jp.png" alt=""> 日本語</button>
+        <button type="button" data-lang="ru" role="option"><img src="https://flagcdn.com/w20/ru.png" alt=""> Русский</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="announcement-bar" aria-label="公告">
+  <div class="announcement-track">
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+    <span>康草堂 Wonder Herb 以人為本，天然高效。</span>
+  </div>
+</div>
+
+    <header class="main-header" role="banner">
+  <div class="container header-inner">
+    <div class="logo">
+        <a href="index.html"><img src="https://lh3.googleusercontent.com/d/1mQafHatzw_gwbV_J9Y5AmwIAUS9r8SEi" alt="康草堂 Wonder Herb 官方標誌"></a>
+      </div>
+    <div class="header-right-icons">
+      <a href="account.html" class="mobile-cart-link wh-account-link" aria-label="Account" style="display:none"><i class="fas fa-user"></i></a>
+      <a href="購物車.html" class="mobile-cart-link" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="mobileCartCountBadge" class="cart-count">0</span></a>
+      <button type="button" class="menu-toggle" id="menuToggle" aria-label="開啟選單" aria-expanded="false" aria-controls="headerNavPanel">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="header-nav-panel" id="headerNavPanel">
+    <nav class="nav-menu" aria-label="主導航">
+      <ul>
+        <li><a href="index.html" data-i18n="nav_home">關於我們</a></li>
+        <li><a href="產品介紹.html" data-i18n="nav_products">產品介紹</a></li>
+        <li><a href="研究報告.html" data-i18n="nav_research">研究報告</a></li>
+        <li><a href="有效成份檢測.html" data-i18n="nav_testing">成份檢測</a></li>
+        <li><a href="典型病例.html" data-i18n="nav_cases">典型病例</a></li>
+        <li><a href="小册子.html" data-i18n="nav_brochure">小册子</a></li>
+        <li><a href="微信發表文章.html" data-i18n="nav_articles">文章</a></li>
+        <li><a href="常見問題.html" data-i18n="nav_faq">常見問題</a></li>
+        <li><a href="聯絡我們.html" data-i18n="nav_contact" class="active">聯絡我們</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <a href="https://wa.me/85293318571/" target="_blank" class="social-icon" aria-label="WhatsApp" style="padding-left: 6px;"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://www.facebook.com/wonderherbhealth" target="_blank" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" class="social-icon" aria-label="Instagram" style="padding-right: 6px;"><i class="fab fa-instagram"></i></a>
+      <a href="account.html" class="cart-icon wh-account-link" id="whAccountLink" aria-label="Account" style="display:none"><i class="fas fa-user"></i></a>
+      <a href="購物車.html" class="cart-icon" aria-label="購物車"><i class="fas fa-shopping-cart"></i><span id="cartCountBadge" class="cart-count">0</span></a>
+      <a href="https://wa.me/85293318571/" class="btn-contact" data-i18n="header_contact_btn">諮詢專員 <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <a href="產品介紹.html" class="mobile-contact-btn" target="_blank">
+      <i class="fas fa-shopping-bag" aria-hidden="true"></i> 網上商店 <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </a>
+    </div>
+  </div>
+</header>
+</div><!-- /.fixed-nav-wrapper -->
+
+<main>
+  <section class="page-header" aria-labelledby="account-heading">
+    <div class="container">
+      <h1 id="account-heading" data-wh-t="title">會員帳戶</h1>
+      <p data-wh-t="subtitle">登入或建立帳戶</p>
+    </div>
+  </section>
+
+  <section class="account-section" aria-label="Account">
+    <div class="container">
+      <div id="accountOffline" class="account-note" data-wh-t="offline" hidden></div>
+
+      <div id="accountPanels" class="account-grid" hidden>
+        <article class="account-card">
+          <h2 data-wh-t="login_title"></h2>
+          <p class="account-lead" data-wh-t="login_lead"></p>
+          <form id="loginForm" novalidate>
+            <label class="account-field"><span data-wh-t="email"></span>
+              <input type="email" id="loginEmail" name="email" autocomplete="email" required></label>
+            <label class="account-field"><span data-wh-t="password"></span>
+              <input type="password" id="loginPassword" name="password" autocomplete="current-password" required></label>
+            <p class="account-msg" id="loginMsg" role="alert"></p>
+            <button class="account-btn" type="submit" id="loginBtn" data-wh-t="login_btn"></button>
+          </form>
+        </article>
+
+        <article class="account-card">
+          <h2 data-wh-t="signup_title"></h2>
+          <p class="account-lead" data-wh-t="signup_lead"></p>
+          <form id="signupForm" novalidate>
+            <label class="account-field"><span data-wh-t="name"></span>
+              <input type="text" id="signupName" name="name" autocomplete="name"></label>
+            <label class="account-field"><span data-wh-t="email"></span>
+              <input type="email" id="signupEmail" name="email" autocomplete="email" required></label>
+            <label class="account-field"><span data-wh-t="password"></span>
+              <input type="password" id="signupPassword" name="password" autocomplete="new-password" required></label>
+            <label class="account-field"><span data-wh-t="confirm"></span>
+              <input type="password" id="signupConfirm" name="confirm" autocomplete="new-password" required></label>
+            <p class="account-msg" id="signupMsg" role="alert"></p>
+            <button class="account-btn" type="submit" id="signupBtn" data-wh-t="signup_btn"></button>
+          </form>
+        </article>
+      </div>
+
+      <div id="accountMember" class="account-card" hidden>
+        <h2 id="memberWelcome"></h2>
+        <p class="account-lead" data-wh-t="member_lead"></p>
+        <dl class="account-facts">
+          <div><dt data-wh-t="member_email"></dt><dd id="memberEmail"></dd></div>
+          <div><dt data-wh-t="member_role"></dt><dd id="memberRole"></dd></div>
+          <div><dt data-wh-t="member_since"></dt><dd id="memberSince"></dd></div>
+          <div><dt data-wh-t="member_last"></dt><dd id="memberLast"></dd></div>
+        </dl>
+
+        <h2 data-wh-t="change_title"></h2>
+        <p class="account-lead" data-wh-t="change_lead"></p>
+        <form id="passwordForm" novalidate>
+          <label class="account-field"><span data-wh-t="current_password"></span>
+            <input type="password" id="currentPassword" autocomplete="current-password" required></label>
+          <label class="account-field"><span data-wh-t="new_password"></span>
+            <input type="password" id="newPassword" autocomplete="new-password" required></label>
+          <p class="account-msg" id="passwordMsg" role="alert"></p>
+          <div class="account-actions">
+            <button class="account-btn" type="submit" id="passwordBtn" data-wh-t="change_btn"></button>
+            <button class="account-btn ghost" type="button" id="logoutBtn" data-wh-t="logout_btn"></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer role="contentinfo">
+  <div class="container footer-inner">
+    <div class="footer-col">
+      <h4 data-i18n="footer_col1_title">康草堂 Wonder Herb</h4>
+      <p class="footer-brand-tagline" data-i18n="footer_col1_text1">以人為本，天然高效。</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text2">加拿大GMP藥廠生產</p>
+      <p class="footer-brand-detail" data-i18n="footer_col1_text3">香港及加拿大雙重檢測</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_contact_title">聯絡我們</h4>
+      <div class="footer-contact">
+        <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:info@wonder-herb.com" style="color:#ddd;">info@wonder-herb.com</a></p>
+        <p><i class="fab fa-whatsapp" aria-hidden="true"></i> <a href="https://wa.me/85293318571/" style="color:#ddd;" data-i18n="footer_whatsapp_label">WhatsApp 專線</a></p>
+      </div>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/wonderherbhealth" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/wonderherb_hk/" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/85293318571/" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="footer_info_title">資訊中心</h4>
+      <div class="footer-links">
+        <ul style="list-style: none;">
+          <li><a href="研究報告.html" data-i18n="footer_link_research">研究報告</a></li>
+          <li><a href="有效成份檢測.html" data-i18n="footer_link_testing">有效成份檢測</a></li>
+          <li><a href="常見問題.html" data-i18n="footer_link_faq">常見問題</a></li>
+          <li><a href="典型病例.html" data-i18n="footer_link_cases">典型病例</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="container copyright">
+    <p data-i18n="copyright">© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家</p>
+    <p class="last-update">最後更新：<time datetime="2026-06-08">2026年6月8日</time></p>
+  </div>
+</footer>
+
+<script>
+  const translations = {
+    zh: {
+      nav_home: "關於我們", nav_products: "產品介紹", nav_research: "研究報告", nav_testing: "成份檢測",
+      nav_cases: "典型病例", nav_brochure: "小册子", nav_articles: "文章", nav_faq: "常見問題", nav_contact: "聯絡我們",
+      header_contact_btn: "諮詢專員 <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> <span class='btn-text'>立即諮詢</span>",
+      page_title: "聯絡我們", page_subtitle: "康草堂 Wonder Herb 亞洲總部及全球分銷據點，歡迎諮詢",
+      asia_title: "亞洲總部", asia_company: "康草堂有限公司",
+      asia_address: "香港九龍彌敦道301-309号 嘉賓商業大厦8樓803室<br>(佐敦地鐵A出口)",
+      china_title: "中國辦事處", china_address: "廣東省廣州市荔灣區流花路73號流花君庭東座3樓",
+      canada_title: "加拿大分銷商", canada_contact: "聯絡：陳小姐",
+      australia_title: "澳洲分銷商", australia_contact: "聯絡：袁先生",
+      usa_title: "美國分銷商",
+      map_caption: "<i class='fas fa-map-pin'></i> 亞洲總部：香港九龍彌敦道301-309号 嘉賓商業大厦8樓803室 (佐敦地鐵A出口)",
+      cta_title: "需要專業諮詢？", cta_desc: "我們的健康顧問團隊隨時為您解答關於雲芝糖肽精華及癌症輔助方案的疑問。",
+      cta_btn: "<i class='fab fa-whatsapp'></i> 立即 WhatsApp 諮詢",
+      footer_col1_title: "康草堂 Wonder Herb", footer_col1_text1: "以人為本，天然高效。", footer_col1_text2: "加拿大GMP藥廠生產", footer_col1_text3: "香港及加拿大雙重檢測",
+      footer_contact_title: "聯絡我們", footer_whatsapp_label: "WhatsApp 專線", footer_info_title: "資訊中心",
+      footer_link_research: "研究報告", footer_link_testing: "有效成份檢測", footer_link_faq: "常見問題", footer_link_cases: "典型病例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 版權所有 | 天然雲芝糖肽專家",
+      last_update_text: "最後更新：2026年6月2日 | 本聯絡資訊定期更新，確保準確性"
+    },
+    en: {
+      nav_home: "About Us", nav_products: "Products", nav_research: "Research", nav_testing: "Testing",
+      nav_cases: "Case", nav_brochure: "Brochure", nav_articles: "Articles", nav_faq: "FAQ", nav_contact: "Contact",
+      header_contact_btn: "Consult <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> <span class='btn-text'>Consult Advisor</span>",
+      page_title: "Contact Us", page_subtitle: "Wonder Herb Asia Headquarters & Global Distributors – Welcome to Inquire",
+      asia_title: "Asia Headquarters", asia_company: "Wonder Herb Health Products Ltd",
+      asia_address: "Rm 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong<br>(Jordan MTR Exit A)",
+      china_title: "China Office", china_address: "3/F, East Tower, Liuhua Junting, No.73 Liuhua Road, Liwan District, Guangzhou",
+      canada_title: "Canada Distributor", canada_contact: "Contact: Ms Chan",
+      australia_title: "Australia Distributor", australia_contact: "Contact: Mr Yuen",
+      usa_title: "USA Distributor",
+      map_caption: "<i class='fas fa-map-pin'></i> Asia HQ: Rm 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong",
+      cta_title: "Need Professional Advice?", cta_desc: "Our health consultant team is ready to answer your questions about Yunzhi PSP Essence and cancer supportive care.",
+      cta_btn: "<i class='fab fa-whatsapp'></i> WhatsApp Us Now",
+      footer_col1_title: "Wonder Herb", footer_col1_text1: "Patient-first, natural & effective.", footer_col1_text2: "GMP-certified in Canada", footer_col1_text3: "Dual testing: Canada & HK",
+      footer_contact_title: "Contact Us", footer_whatsapp_label: "WhatsApp Hotline", footer_info_title: "Information",
+      footer_link_research: "Research", footer_link_testing: "Testing Reports", footer_link_faq: "FAQ", footer_link_cases: "Case Studies",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. All Rights Reserved | Natural Yunzhi PSP Expert",
+      last_update_text: "Last Updated: June 2, 2026 | Contact information is updated regularly."
+    },
+    de: {
+      nav_home: "Über uns",
+      nav_products: "Produkte",
+      nav_research: "Forschung",
+      nav_testing: "Tests",
+      nav_cases: "Fälle",
+      nav_brochure: "Broschüre",
+      nav_articles: "Artikel",
+      nav_faq: "FAQ",
+      nav_contact: "Kontakt",
+      header_contact_btn: "Beratung <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> <span class='btn-text'>Beratung anfragen</span>",
+      page_title: "Kontakt",
+      page_subtitle: "Wonder Herb Asien-Hauptquartier & globale Vertriebspartner – Wir freuen uns auf Ihre Anfrage",
+      asia_title: "Asien-Hauptquartier",
+      asia_company: "Wonder Herb Health Products Ltd",
+      asia_address: "Rm 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong<br>(Jordan MTR Ausgang A)",
+      china_title: "China-Büro",
+      china_address: "3. OG, Ostturm, Liuhua Junting, Nr. 73 Liuhua Road, Liwan District, Guangzhou",
+      canada_title: "Kanada-Vertrieb",
+      canada_contact: "Kontakt: Frau Chan",
+      australia_title: "Australien-Vertrieb",
+      australia_contact: "Kontakt: Herr Yuen",
+      usa_title: "USA-Vertrieb",
+      map_caption: "<i class='fas fa-map-pin'></i> Asien-HQ: Rm 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong",
+      cta_title: "Professionelle Beratung benötigt?",
+      cta_desc: "Unser Gesundheitsberaterteam beantwortet gerne Ihre Fragen zu Yunzhi-PSP-Essenz und unterstützender Krebsversorgung.",
+      cta_btn: "<i class='fab fa-whatsapp'></i> Jetzt per WhatsApp kontaktieren",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Patientenorientiert, natürlich und wirksam.",
+      footer_col1_text2: "GMP-zertifiziert in Kanada",
+      footer_col1_text3: "Doppelte Prüfung: Kanada & HK",
+      footer_contact_title: "Kontakt",
+      footer_whatsapp_label: "WhatsApp-Hotline",
+      footer_info_title: "Informationszentrum",
+      footer_link_research: "Forschung",
+      footer_link_testing: "Prüfberichte",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Fallstudien",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Alle Rechte vorbehalten | Yunzhi-PSP-Experte",
+      last_update_text: "Zuletzt aktualisiert: 2. Juni 2026 | Kontaktinformationen werden regelmäßig aktualisiert."
+    },
+    es: {
+      nav_home: "Sobre nosotros",
+      nav_products: "Productos",
+      nav_research: "Investigación",
+      nav_testing: "Análisis",
+      nav_cases: "Casos",
+      nav_brochure: "Folleto",
+      nav_articles: "Artículos",
+      nav_faq: "Preguntas",
+      nav_contact: "Contacto",
+      header_contact_btn: "Consultar <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> <span class='btn-text'>Consultar asesor</span>",
+      page_title: "Contacto",
+      page_subtitle: "Wonder Herb Sede de Asia y socios de distribución globales – Estamos encantados de recibir su consulta",
+      asia_title: "Sede de Asia",
+      asia_company: "Wonder Herb Health Products Ltd",
+      asia_address: "Hab. 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong<br>(Salida A del MTR Jordan)",
+      china_title: "Oficina en China",
+      china_address: "3er piso, Torre Este, Liuhua Junting, No. 73 Liuhua Road, Distrito Liwan, Guangzhou",
+      canada_title: "Distribución en Canadá",
+      canada_contact: "Contacto: Sra. Chan",
+      australia_title: "Distribución en Australia",
+      australia_contact: "Contacto: Sr. Yuen",
+      usa_title: "Distribución en EE.UU.",
+      map_caption: "<i class='fas fa-map-pin'></i> HQ de Asia: Hab. 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong",
+      cta_title: "¿Necesita asesoramiento profesional?",
+      cta_desc: "Nuestro equipo de asesores de salud estará encantado de responder sus preguntas sobre Yunzhi PSP Essence y el cuidado de apoyo del cáncer.",
+      cta_btn: "<i class='fab fa-whatsapp'></i> Contactar ahora por WhatsApp",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Enfoque en el paciente, natural y efectivo.",
+      footer_col1_text2: "GMP certificado en Canadá",
+      footer_col1_text3: "Prueba doble: Canadá y HK",
+      footer_contact_title: "Contáctenos",
+      footer_whatsapp_label: "Línea WhatsApp",
+      footer_info_title: "Centro de información",
+      footer_link_research: "Investigación",
+      footer_link_testing: "Informes de prueba",
+      footer_link_faq: "Preguntas",
+      footer_link_cases: "Casos",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Todos los derechos reservados",
+      last_update_text: "Última actualización: 2 de junio de 2026 | La información de contacto se actualiza regularmente."
+    },
+    fr: {
+      nav_home: "À propos",
+      nav_products: "Produits",
+      nav_research: "Recherche",
+      nav_testing: "Tests",
+      nav_cases: "Cas",
+      nav_brochure: "Brochure",
+      nav_articles: "Articles",
+      nav_faq: "FAQ",
+      nav_contact: "Contact",
+      header_contact_btn: "Consulter <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> <span class='btn-text'>Consulter un conseiller</span>",
+      page_title: "Contact",
+      page_subtitle: "Wonder Herb Siège Asie et partenaires de distribution mondiaux – Nous sommes heureux de recevoir votre demande",
+      asia_title: "Siège Asie",
+      asia_company: "Wonder Herb Health Products Ltd",
+      asia_address: "Bureau 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong<br>(Sortie A du MTR Jordan)",
+      china_title: "Bureau en Chine",
+      china_address: "3ème étage, Tour Est, Liuhua Junting, No. 73 Liuhua Road, District Liwan, Guangzhou",
+      canada_title: "Distribution au Canada",
+      canada_contact: "Contact: Mme Chan",
+      australia_title: "Distribution en Australie",
+      australia_contact: "Contact: M. Yuen",
+      usa_title: "Distribution aux États-Unis",
+      map_caption: "<i class='fas fa-map-pin'></i> HQ d'Asie: Bureau 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong",
+      cta_title: "Besoin de conseils professionnels?",
+      cta_desc: "Notre équipe de conseillers en santé se fera un plaisir de répondre à vos questions sur Yunzhi PSP Essence et les soins de soutien contre le cancer.",
+      cta_btn: "<i class='fab fa-whatsapp'></i> Contactez maintenant via WhatsApp",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Priorité au patient, naturel et efficace.",
+      footer_col1_text2: "GMP certifié au Canada",
+      footer_col1_text3: "Double test: Canada et HK",
+      footer_contact_title: "Contactez-nous",
+      footer_whatsapp_label: "Ligne WhatsApp",
+      footer_info_title: "Centre d'information",
+      footer_link_research: "Recherche",
+      footer_link_testing: "Rapports de test",
+      footer_link_faq: "FAQ",
+      footer_link_cases: "Cas",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Tous droits réservés",
+      last_update_text: "Dernière mise à jour: 2 juin 2026 | Les informations de contact sont régulièrement mises à jour."
+    },
+    ja: {
+      nav_home: "会社概要",
+      nav_products: "製品",
+      nav_research: "研究",
+      nav_testing: "検査",
+      nav_cases: "症例",
+      nav_brochure: "パンフレット",
+      nav_articles: "記事",
+      nav_faq: "よくある質問",
+      nav_contact: "お問い合わせ",
+      header_contact_btn: "ご相談 <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> <span class='btn-text'>专员に相談</span>",
+      page_title: "お問い合わせ",
+      page_subtitle: "Wonder Herb アジア本部とグローバル配售パートナー — お問い合わせを楽しみにしております",
+      asia_title: "アジア本部",
+      asia_company: "Wonder Herb Health Products Ltd",
+      asia_address: "香港、九龍、ジェームズ・ロード301-309、チャンピオン・ビル딩8階803号室<br>（MRTジェームズ駅A出口）",
+      china_title: "中国オフィス",
+      china_address: "広州市荔湾区流花路73号、流花君亭東塔3階",
+      canada_title: "カナダ配售",
+      canada_contact: "連絡先：陳様",
+      australia_title: "オーストラリア配售",
+      australia_contact: "連絡先：袁様",
+      usa_title: "アメリカ配售",
+      map_caption: "<i class='fas fa-map-pin'></i> アジア本部：香港、九龍、ジェームズ・ロード301-309、チャンピオン・ビルディング8階803号室",
+      cta_title: "プロフェッショナルなご相談が必要ですか？",
+      cta_desc: "健康顧問チームが雲芝PSP精华と癌支援ケアに関するご質問にお答えします。",
+      cta_btn: "<i class='fab fa-whatsapp'></i> 今すぐWhatsAppで 연락",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "患者第一、天然で効果的。",
+      footer_col1_text2: "カナダGMP認証工場",
+      footer_col1_text3: "二重検査：カナダと香港",
+      footer_contact_title: "お問い合わせ",
+      footer_whatsapp_label: "WhatsApp专线",
+      footer_info_title: "情報センター",
+      footer_link_research: "研究",
+      footer_link_testing: "検査レポート",
+      footer_link_faq: "よくある質問",
+      footer_link_cases: "症例",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. 全著作権所有",
+      last_update_text: "最終更新：2026年6月2日 | 連絡先情報は定期的に更新されています。"
+    },
+    ru: {
+      nav_home: "О нас",
+      nav_products: "Продукты",
+      nav_research: "Исследования",
+      nav_testing: "Анализы",
+      nav_cases: "Случаи",
+      nav_brochure: "Брошюра",
+      nav_articles: "Статьи",
+      nav_faq: "Вопросы",
+      nav_contact: "Контакт",
+      header_contact_btn: "Консультация <i class='fas fa-arrow-right'></i>",
+      mobile_contact_btn: "<i class='fab fa-whatsapp' aria-hidden='true'></i> <span class='btn-text'>Консультация</span>",
+      page_title: "Контакт",
+      page_subtitle: "Wonder Herb Штаб-квартира в Азии и глобальные партнеры по распространению – Мы рады вашему запросу",
+      asia_title: "Штаб-квартира в Азии",
+      asia_company: "Wonder Herb Health Products Ltd",
+      asia_address: "Ком. 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong<br>(Выход A MTR Jordan)",
+      china_title: "Офис в Китае",
+      china_address: "3-й этаж, Восточная башня, Liuhua Junting, No. 73 Liuhua Road, район Liwan, Guangzhou",
+      canada_title: "Распространение в Канаде",
+      canada_contact: "Контакт: Г-жа Чен",
+      australia_title: "Распространение в Австралии",
+      australia_contact: "Контакт: Г-н Юань",
+      usa_title: "Распространение в США",
+      map_caption: "<i class='fas fa-map-pin'></i> Азиатская штаб-квартира: Ком. 803, 8/F, Champion Building, 301-309 Nathan Road, Kowloon, Hong Kong",
+      cta_title: "Нужна профессиональная консультация?",
+      cta_desc: "Наша команда консультантов по здоровью с радостью ответит на ваши вопросы о Yunzhi PSP Essence и поддерживающем уходе при раке.",
+      cta_btn: "<i class='fab fa-whatsapp'></i> Связаться сейчас через WhatsApp",
+      footer_col1_title: "Wonder Herb",
+      footer_col1_text1: "Пациент на первом месте, натурально и эффективно.",
+      footer_col1_text2: "GMP сертифицировано в Канаде",
+      footer_col1_text3: "Двойное тестирование: Канада и ГК",
+      footer_contact_title: "Свяжитесь с нами",
+      footer_whatsapp_label: "WhatsApp горячая линия",
+      footer_info_title: "Информационный центр",
+      footer_link_research: "Исследования",
+      footer_link_testing: "Отчеты об испытаниях",
+      footer_link_faq: "Вопросы",
+      footer_link_cases: "Случаи",
+      copyright: "© 2025 Wonder-herb Health Products Ltd. Все права защищены",
+      last_update_text: "Последнее обновление: 2 июня 2026 г. | Контактная информация регулярно обновляется."
+    }
+  };
+
+  let currentLang = 'zh';
+  function applyStaticTranslation(lang) {
+    const langFlags = { zh: { flag: 'https://flagcdn.com/w20/hk.png', text: ' 中文' }, en: { flag: 'https://flagcdn.com/w20/gb.png', text: ' EN' }, de: { flag: 'https://flagcdn.com/w20/de.png', text: ' DE' }, es: { flag: 'https://flagcdn.com/w20/es.png', text: ' ES' }, fr: { flag: 'https://flagcdn.com/w20/fr.png', text: ' FR' }, ja: { flag: 'https://flagcdn.com/w20/jp.png', text: ' JA' }, ru: { flag: 'https://flagcdn.com/w20/ru.png', text: ' RU' } };
+    if (langFlags[lang]) {
+      const allBtns = { zh: document.getElementById('langZhBtn'), en: document.getElementById('langEnBtn'), de: document.getElementById('langDeBtn'), es: document.getElementById('langEsBtn'), fr: document.getElementById('langFrBtn'), ja: document.getElementById('langJaBtn'), ru: document.getElementById('langRuBtn') };
+      Object.entries(allBtns).forEach(([k, btn]) => { if (btn) { btn.innerHTML = '<img src="' + langFlags[k].flag + '" alt="" class="flag-img">' + langFlags[k].text; } });
+      const curFlag = document.getElementById('langCurrentFlag');
+      const curText = document.getElementById('langCurrentText');
+      if (curFlag) curFlag.src = langFlags[lang].flag;
+      if (curText) curText.textContent = langFlags[lang].text.replace(/^\s/, '');
+      const dropdownBtns = document.querySelectorAll('#langDropdown button');
+      dropdownBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+    }
+    document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if (translations[lang] && translations[lang][key] !== undefined) el.innerHTML = translations[lang][key]; });
+    document.title = ({ zh: '聯絡我們 | Wonder Herb - 雲芝糖肽精華', en: 'Contact Us | Wonder Herb - Yunzhi PSP Essence', de: 'Kontakt | Wonder Herb - Yunzhi-PSP-Essenz', es: 'Contacto | Wonder Herb - Yunzhi PSP Essence', fr: 'Contact | Wonder Herb - Yunzhi PSP Essence', ja: 'お問い合わせ | Wonder Herb - 雲芝糖肽精華', ru: 'Контакт | Wonder Herb - Yunzhi PSP Essence' })[lang] || 'Contact Us | Wonder Herb - Yunzhi PSP Essence';
+    document.documentElement.lang = lang;
+    const zhSpan = document.getElementById('langZhBtn'), enSpan = document.getElementById('langEnBtn');
+    if (zhSpan && enSpan) { zhSpan.classList.toggle('active-lang', lang === 'zh'); enSpan.classList.toggle('active-lang', lang === 'en'); const deSpan = document.getElementById('langDeBtn'); if (deSpan) { deSpan.classList.toggle('active-lang', lang === 'de'); deSpan.setAttribute('aria-current', lang === 'de' ? 'true' : 'false'); } const esSpan = document.getElementById('langEsBtn'); if (esSpan) { esSpan.classList.toggle('active-lang', lang === 'es'); esSpan.setAttribute('aria-current', lang === 'es' ? 'true' : 'false'); } const frSpan = document.getElementById('langFrBtn'); if (frSpan) { frSpan.classList.toggle('active-lang', lang === 'fr'); frSpan.setAttribute('aria-current', lang === 'fr' ? 'true' : 'false'); } const jaSpan = document.getElementById('langJaBtn'); if (jaSpan) { jaSpan.classList.toggle('active-lang', lang === 'ja'); jaSpan.setAttribute('aria-current', lang === 'ja' ? 'true' : 'false'); } const ruSpan = document.getElementById('langRuBtn'); if (ruSpan) { ruSpan.classList.toggle('active-lang', lang === 'ru'); ruSpan.setAttribute('aria-current', lang === 'ru' ? 'true' : 'false'); } zhSpan.setAttribute('aria-current', lang === 'zh' ? 'true' : 'false'); enSpan.setAttribute('aria-current', lang === 'en' ? 'true' : 'false'); }
+  }
+  function setLanguage(lang) { if (lang !== 'zh' && lang !== 'en' && lang !== 'de' && lang !== 'es' && lang !== 'fr' && lang !== 'ja' && lang !== 'ru') return; currentLang = lang; localStorage.setItem('wonderherb_lang', lang); applyStaticTranslation(lang); if (typeof renderAccount === 'function') renderAccount(); }
+  function initLanguage() { const saved = localStorage.getItem('wonderherb_lang'); setLanguage(saved === 'zh' || saved === 'en' || saved === 'de' || saved === 'es' || saved === 'fr' || saved === 'ja' || saved === 'ru' ? saved : 'zh'); }
+
+  function bindLanguageSwitcher() {
+    document.getElementById('langZhBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('zh'); });
+    document.getElementById('langEnBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('en'); });
+    document.getElementById('langDeBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('de'); });
+    document.getElementById('langEsBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('es'); });
+    document.getElementById('langFrBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('fr'); });
+    document.getElementById('langJaBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ja'); });
+    document.getElementById('langRuBtn')?.addEventListener('click', e => { e.preventDefault(); setLanguage('ru'); });
+  }
+
+  function updateCartCountBadge() {
+    const badge = document.getElementById('cartCountBadge');
+    const mobileBadge = document.getElementById('mobileCartCountBadge');
+    let total = 0; const stored = localStorage.getItem('wonderHerbCart');
+    if (stored) { try { const items = JSON.parse(stored); if (Array.isArray(items)) total = items.reduce((s, i) => s + (i.quantity || 0), 0); } catch(e) {} }
+    if (badge) badge.innerText = total;
+    if (mobileBadge) mobileBadge.innerText = total;
+  }
+
+  window.addEventListener('storage', e => { if (e.key === 'wonderHerbCart') updateCartCountBadge(); });
+  function bindMobileMenu() {
+    const toggle = document.getElementById('menuToggle');
+    const panel = document.getElementById('headerNavPanel');
+    if (!toggle || !panel) return;
+    const closeMenu = () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', ({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單');
+      panel.classList.remove('is-open');
+      document.body.classList.remove('menu-open');
+    };
+    toggle.addEventListener('click', () => {
+      const isOpen = panel.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+      toggle.setAttribute('aria-label', isOpen ? (({ zh: '關閉選單', en: 'Close menu', de: 'Menü schließen' })[document.documentElement.lang] || '關閉選單') : (({ zh: '開啟選單', en: 'Open menu', de: 'Menü öffnen' })[document.documentElement.lang] || '開啟選單'));
+      document.body.classList.toggle('menu-open', isOpen);
+    });
+    panel.querySelectorAll('a').forEach(link => { link.addEventListener('click', closeMenu); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMenu(); });
+  }
+
+  window.addEventListener('load', () => { bindMobileMenu(); updateCartCountBadge(); initLanguage(); bindLanguageSwitcher(); const langCurrentBtn = document.getElementById('langCurrentBtn'); const langDropdown = document.getElementById('langDropdown'); if (langCurrentBtn && langDropdown) { langCurrentBtn.addEventListener('click', (e) => { e.stopPropagation(); const isOpen = langDropdown.classList.toggle('show'); langCurrentBtn.setAttribute('aria-expanded', isOpen); }); langCurrentBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const isOpen = langDropdown.classList.toggle('show'); langCurrentBtn.setAttribute('aria-expanded', isOpen); } }); langDropdown.querySelectorAll('button').forEach(btn => { btn.addEventListener('click', (e) => { e.stopPropagation(); const newLang = btn.getAttribute('data-lang'); if (newLang) { setLanguage(newLang); langDropdown.classList.remove('show'); langCurrentBtn.setAttribute('aria-expanded', 'false'); } }); }); document.addEventListener('click', (e) => { if (!langCurrentBtn.contains(e.target) && !langDropdown.contains(e.target)) { langDropdown.classList.remove('show'); langCurrentBtn.setAttribute('aria-expanded', 'false'); } }); } });
+
+  /* Reserve space below the fixed nav so page-header seamlessly meets it (no blank gap). */
+  function syncFixedNavOffset() {
+    const nav = document.querySelector('.fixed-nav-wrapper');
+    if (!nav) return;
+    const h = nav.getBoundingClientRect().height;
+    document.body.style.paddingTop = h + 'px';
+  }
+  window.addEventListener('load', syncFixedNavOffset);
+  window.addEventListener('resize', syncFixedNavOffset);
+  if (document.readyState !== 'loading') syncFixedNavOffset();
+  else document.addEventListener('DOMContentLoaded', syncFixedNavOffset);
+  /* Re-sync after mobile menu opens/closes and after fonts settle. */
+  const panel = document.getElementById('headerNavPanel');
+  if (panel && window.MutationObserver) {
+    new MutationObserver(() => requestAnimationFrame(syncFixedNavOffset)).observe(panel, { attributes: true, attributeFilter: ['class'] });
+  }
+  window.addEventListener('load', () => setTimeout(syncFixedNavOffset, 50));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(syncFixedNavOffset);
+  window.addEventListener('pageshow', updateCartCountBadge);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) updateCartCountBadge(); });
+</script>
+<a href="https://wa.me/85293318571/" class="mobile-fixed-contact-btn" data-i18n="mobile_contact_btn"><i class="fab fa-whatsapp" aria-hidden="true"></i> <span class="btn-text">立即諮詢</span></a>
+
+<!-- ============ WONDER HERB CMS REAL-TIME SYNC CLIENT ============ -->
+<script>
+(function(){
+  /* The six hand-built product pages, keyed by the SKU the admin uses for them.
+     Anything not in this map is a CMS-created product with no page of its own,
+     so it is linked to the generic detail view instead. */
+  const WH_SKU_PAGES = {
+    'WH-PSP-500': '產品_雲芝糖肽精華_B.html',
+    'WH-PSP-060': '產品_雲芝糖肽精華_A.html',
+    'WH-T3-120':  '產品_T3.html',
+    'WH-PT3-090': '產品_PT3.html',
+    'WH-HB-180':  '產品_乙肝清.html',
+    'WH-MB-060':  '產品_憶活素.html'
+  };
+
+  /* ---- data/inventory.csv -------------------------------------------------
+     The published stock file. It is read on every page so a visitor who has
+     never opened /admin still sees what is actually in stock. Anything the
+     editor changed in this browser is applied afterwards and wins. */
+  var WH_INVENTORY = null;
+
+  function whParseCsv(text) {
+    var rows = [], row = [], field = '', inQuotes = false;
+    text = String(text).replace(/^﻿/, '');
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else inQuotes = false;
+        } else field += c;
+      } else if (c === '"') { inQuotes = true; }
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else if (c !== '\r') { field += c; }
+    }
+    if (field !== '' || row.length) { row.push(field); rows.push(row); }
+    if (!rows.length) return [];
+    var head = rows.shift().map(function (h) { return h.trim(); });
+    return rows.filter(function (r) {
+      return r.some(function (v) { return String(v).trim() !== ''; });
+    }).map(function (r) {
+      var o = {};
+      head.forEach(function (h, i) { o[h] = r[i] === undefined ? '' : String(r[i]).trim(); });
+      return o;
+    });
+  }
+
+  /* Stamp stock + availability onto any array of products, matched on SKU. */
+  /* The catalogue's six built-in entries carry no SKU of their own - they are
+     identified by which product page they link to - so fall back to that. */
+  function whSkuFor(item) {
+    if (!item) return null;
+    if (item.sku) return String(item.sku).trim();
+    if (item.link) {
+      for (var sku in WH_SKU_PAGES) {
+        if (WH_SKU_PAGES[sku] === item.link) return sku;
+      }
+    }
+    return null;
+  }
+
+  function whApplyInventory(list) {
+    if (!WH_INVENTORY || !Array.isArray(list)) return;
+    list.forEach(function (item) {
+      var key = whSkuFor(item);
+      var rec = key ? WH_INVENTORY[key] : null;
+      if (!rec) return;
+      if (rec.stock !== null) {
+        item.stock = rec.stock;
+        // Pre-order sells with an empty shelf; everything else follows the count.
+        if (!/^pre/i.test(rec.status || '')) {
+          item.status = rec.stock <= 0 ? 'Out of Stock' : 'In Stock';
+        } else {
+          item.status = 'Pre-order';
+        }
+      } else if (rec.status) {
+        item.status = rec.status;
+      }
+      if (rec.reorder !== null) item.reorder = rec.reorder;
+    });
+  }
+  window.whApplyInventory = whApplyInventory;
+
+  function whApplyInventoryEverywhere() {
+    if (typeof productData !== 'undefined' && productData) {
+      Object.keys(productData).forEach(function (lang) { whApplyInventory(productData[lang]); });
+    }
+    if (typeof window.productsData !== 'undefined') whApplyInventory(window.productsData);
+  }
+
+  /* On a developer machine the live MongoDB API is preferred, so stock changed
+     in /admin shows up here on refresh with no export step. The published site
+     never looks for it - it reads the committed CSV. */
+  function whApiBase() {
+    if (window.WH_API_BASE) return window.WH_API_BASE;
+    var host = location.hostname;
+    // Only a local machine looks for a local API; the published site never does.
+    if (host === 'localhost' || host === '127.0.0.1' || host === '') return 'http://localhost:4000';
+    return null;
+  }
+
+  function whInventorySources() {
+    var base = whApiBase();
+    var list = [];
+    if (base) list.push(base + '/api/inventory.csv');
+    list.push('./data/inventory.csv');
+    return list;
+  }
+
+  /* The catalogue itself, straight from MongoDB when the API is running, so a
+     product that exists only in the database still shows up here. */
+  var WH_API_PRODUCTS = null;
+
+  function whLoadApiProducts() {
+    var base = whApiBase();
+    if (!base) return Promise.resolve();
+    return fetch(base + '/api/cms?type=products', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; })
+      .then(function (rows) {
+        if (Array.isArray(rows) && rows.length) WH_API_PRODUCTS = rows;
+      });
+  }
+
+  function whFetchFirst(urls) {
+    if (!urls.length) return Promise.resolve(null);
+    return fetch(urls[0], { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.text() : null; })
+      .catch(function () { return null; })
+      .then(function (text) {
+        return text !== null ? text : whFetchFirst(urls.slice(1));
+      });
+  }
+
+  function whLoadInventory() {
+    return whFetchFirst(whInventorySources())
+      .then(function (text) {
+        if (!text) return;
+        WH_INVENTORY = {};
+        whParseCsv(text).forEach(function (r) {
+          var sku = (r['SKU'] || '').trim();
+          if (!sku) return;
+          var onHand = (r['On hand'] || '').trim();
+          var reorder = parseInt((r['Reorder at'] || '').trim(), 10);
+          WH_INVENTORY[sku] = {
+            stock: onHand === '' ? null : Math.max(0, parseInt(onHand, 10) || 0),
+            reorder: isNaN(reorder) ? null : reorder,
+            status: (r['Status'] || '').trim()
+          };
+        });
+        whApplyInventoryEverywhere();
+      })
+      .catch(function () { /* not published yet, or opened over file:// */ });
+  }
+
+  function whProductLink(p) {
+    if (p.link) return p.link;
+    if (p.sku && WH_SKU_PAGES[p.sku]) return WH_SKU_PAGES[p.sku];
+    const key = (p.id !== undefined && p.id !== null && p.id !== '') ? p.id : (p.sku || '');
+    return key ? 'product.html?id=' + encodeURIComponent(key) : '#';
+  }
+
+  function formatMoney(val) {
+    const num = parseFloat(val) || 0;
+    return 'HK$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function syncCMSData() {
+    const currentLang = window.currentLang || 'zh';
+
+    // 1. Top Announcement Bar Sync
+    try {
+      const storedHp = localStorage.getItem('wh_homepage_text');
+      if (storedHp) {
+        const hp = JSON.parse(storedHp);
+        const noticeEl = document.querySelector('.announcement-track span');
+        if (noticeEl && hp.notice_msg) {
+          noticeEl.textContent = (hp.notice_badge ? hp.notice_badge + ': ' : '') + hp.notice_msg;
+        }
+        const heroTitleEl = document.querySelector('.hero-title, #company-heading');
+        if (heroTitleEl && hp.hero_title) heroTitleEl.innerHTML = hp.hero_title;
+        const heroSubEl = document.querySelector('.hero-subtitle');
+        if (heroSubEl && hp.hero_sub) heroSubEl.textContent = hp.hero_sub;
+      }
+    } catch(e){}
+
+    // 2. Products Catalog Sync — FULL REPLACEMENT approach
+    try {
+      const storedProds = WH_API_PRODUCTS
+        ? JSON.stringify(WH_API_PRODUCTS)
+        : localStorage.getItem('wh_products_data');
+      if (storedProds) {
+        const prods = JSON.parse(storedProds);
+        if (Array.isArray(prods)) {
+          // A. Sync 產品介紹.html (productData object) — replaces ALL languages
+          if (typeof productData !== 'undefined') {
+            const allLangs = Object.keys(productData);
+            const adminProducts = prods.map(p => {
+              const pics = Array.isArray(p.images) ? p.images.filter(x => x && x.url) : [];
+              const lead = p.image || (pics[0] && pics[0].url) || '';
+              return {
+                id: p.id || Date.now(),
+                name: p.title || 'New Product',
+                price: parseFloat(p.price) || 0,
+                priceText: formatMoney(p.price),
+                desc: p.desc || '',
+                image: lead || 'https://static.wixstatic.com/media/470fe2_a0d61950ab3941c0b30acc8c6561ce3b~mv2.png',
+                imageAlt: p.imageAlt || (pics[0] && pics[0].alt) || '',
+                images: pics,
+                badge: p.badges || null,
+                status: p.status || '',
+                link: whProductLink(p),
+                sku: p.sku || null,
+                definition: p.definition || '',
+                story: p.story || '',
+                partners: p.partners || '',
+                testimonies: Array.isArray(p.testimonies) ? p.testimonies : [],
+                papers: Array.isArray(p.papers) ? p.papers : [],
+                articles: Array.isArray(p.articles) ? p.articles : []
+              };
+            });
+            allLangs.forEach(lang => {
+              const origArr = productData[lang];
+              if (!Array.isArray(origArr)) return;
+              const merged = adminProducts.map(ap => {
+                // Match on the known page first: the admin's ids and the translated
+                // catalogue's ids are numbered independently, so matching on id alone
+                // pairs a product with the wrong translation.
+                const knownLink = ap.sku ? WH_SKU_PAGES[ap.sku] : null;
+                const existing = knownLink
+                  ? origArr.find(x => x.link === knownLink)
+                  : origArr.find(x => (ap.sku && x.sku === ap.sku) || x.id === ap.id);
+                if (existing) {
+                  // Keep the translated name/description, take everything the
+                  // editor controls from the admin record.
+                  return {
+                    ...existing,
+                    price: ap.price,
+                    priceText: ap.priceText,
+                    badge: ap.badge,
+                    status: ap.status,
+                    image: ap.image || existing.image,
+                    imageAlt: ap.imageAlt || existing.imageAlt || '',
+                    images: ap.images,
+                    sku: ap.sku || existing.sku || null,
+                    definition: ap.definition,
+                    story: ap.story,
+                    partners: ap.partners,
+                    testimonies: ap.testimonies,
+                    papers: ap.papers,
+                    articles: ap.articles,
+                    link: existing.link || ap.link
+                  };
+                }
+                return { ...ap };
+              });
+              productData[lang] = merged;
+            });
+            if (typeof renderProducts === 'function') renderProducts();
+          }
+
+          // B. Sync index.html (window.productsData)
+          if (typeof window.productsData !== 'undefined') {
+            prods.forEach(p => {
+              const existing = window.productsData.find(item => item.sku === p.sku || item.id === p.id);
+              if (existing) {
+                if (p.price) existing.price = p.price;
+                if (p.status) existing.status = p.status;
+                if (p.title) existing.titleKey = p.title;
+                if (p.desc) existing.descKey = p.desc;
+              }
+            });
+            if (typeof renderProductTriple === 'function') renderProductTriple();
+          }
+
+          // C. Sync Product Detail Pages (產品_*.html)
+          prods.forEach(p => {
+            if (p.sku && location.pathname.includes(p.sku)) {
+              const priceEl = document.querySelector('.product-price, .price, .detail-price');
+              if (priceEl && p.price) priceEl.textContent = formatMoney(p.price);
+            }
+          });
+        }
+      }
+    } catch(e){}
+
+    // 3. FAQ Sync
+    try {
+      const storedFaq = localStorage.getItem('wh_faq_data');
+      if (storedFaq && typeof faqData !== 'undefined') {
+        const faqs = JSON.parse(storedFaq);
+        if (Array.isArray(faqs)) {
+          faqData = faqs;
+          if (typeof renderFaqList === 'function') renderFaqList();
+        }
+      }
+    } catch(e){}
+
+    // 4. Cases Sync
+    try {
+      const storedCases = localStorage.getItem('wh_cases_data');
+      if (storedCases && typeof caseDataList !== 'undefined') {
+        const cases = JSON.parse(storedCases);
+        if (Array.isArray(cases) && cases.length > 0) {
+          caseDataList = cases;
+          if (typeof renderCasesList === 'function') renderCasesList();
+          if (typeof renderFeaturedCases === 'function') renderFeaturedCases(currentLang);
+        }
+      }
+    } catch(e){}
+  }
+
+  // Execute sync on load & DOMContentLoaded
+  function whBoot() {
+    syncCMSData();
+    // CSV first, then syncCMSData() again so in-browser edits stay on top.
+    Promise.all([whLoadApiProducts(), whLoadInventory()]).then(function () {
+      whApplyInventoryEverywhere();
+      syncCMSData();
+      if (typeof renderProducts === 'function') renderProducts();
+      if (typeof renderProductTriple === 'function') renderProductTriple();
+    });
+  }
+
+  if (document.readyState !== 'loading') whBoot();
+  else document.addEventListener('DOMContentLoaded', whBoot);
+  window.addEventListener('load', syncCMSData);
+
+  // BroadcastChannel & Storage Event Listeners for real-time multi-tab sync
+  if (typeof BroadcastChannel !== 'undefined') {
+    const channel = new BroadcastChannel('wh_cms_sync');
+    channel.onmessage = function() { syncCMSData(); };
+  }
+  window.addEventListener('storage', function(e) {
+    if (e.key && e.key.startsWith('wh_')) syncCMSData();
+  });
+})();
+</script>
+
+
+
+<!-- ============ WONDER HERB ACCOUNTS (shared, identical on every page) ============ -->
+<script>
+(function () {
+  'use strict';
+  var TOKEN_KEY = 'wh_auth_token';
+  var USER_KEY  = 'wh_auth_user';
+
+  /* Accounts live in the local MongoDB API, exactly like stock does. The
+     published static site has no API to talk to, so it simply has no accounts
+     and the header link stays hidden - the public pages look as they always
+     have. */
+  function authBase() {
+    if (window.WH_API_BASE) return window.WH_API_BASE;
+    var host = location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1' || host === '') return 'http://localhost:4000';
+    return null;
+  }
+
+  var listeners = [];
+  function readUser() {
+    try { return JSON.parse(localStorage.getItem(USER_KEY) || 'null'); } catch (e) { return null; }
+  }
+  function store(token, user) {
+    try {
+      if (token) localStorage.setItem(TOKEN_KEY, token); else localStorage.removeItem(TOKEN_KEY);
+      if (user) localStorage.setItem(USER_KEY, JSON.stringify(user)); else localStorage.removeItem(USER_KEY);
+    } catch (e) {}
+    announce();
+  }
+  function announce() {
+    var user = readUser();
+    paintHeader(user);
+    listeners.forEach(function (fn) { try { fn(user); } catch (e) {} });
+  }
+
+  /* One place that talks to the API, so every caller gets the same treatment:
+     the token attached, the server's own message on failure, and a session
+     that the server has forgotten cleared out here too. */
+  function request(method, path, body) {
+    var base = authBase();
+    if (!base) return Promise.reject(new Error('offline'));
+    var token = localStorage.getItem(TOKEN_KEY);
+    var headers = { 'Content-Type': 'application/json' };
+    if (token) headers.Authorization = 'Bearer ' + token;
+    return fetch(base + path, {
+      method: method,
+      headers: headers,
+      body: body === undefined ? undefined : JSON.stringify(body)
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        // only a dead session clears the browser's copy; a wrong password on a
+        // form must leave the person signed in
+        if (res.status === 401 && token && data.code === 'no_session') store(null, null);
+        if (!res.ok) {
+          var err = new Error(data.error || 'Something went wrong');
+          err.status = res.status;
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
+  var whAuth = {
+    available: function () { return !!authBase(); },
+    token: function () { try { return localStorage.getItem(TOKEN_KEY); } catch (e) { return null; } },
+    user: readUser,
+    signedIn: function () { return !!readUser() && !!whAuth.token(); },
+    onChange: function (fn) { listeners.push(fn); return fn; },
+
+    signup: function (name, email, password) {
+      return request('POST', '/api/auth/signup', { name: name, email: email, password: password })
+        .then(function (d) { store(d.token, d.user); return d.user; });
+    },
+    login: function (email, password) {
+      return request('POST', '/api/auth/login', { email: email, password: password })
+        .then(function (d) { store(d.token, d.user); return d.user; });
+    },
+    /* The session is removed on the server first, so the token cannot be
+       reused; the browser copy goes either way. */
+    logout: function () {
+      return request('POST', '/api/auth/logout', {})
+        .catch(function () {})
+        .then(function () { store(null, null); });
+    },
+    changePassword: function (currentPassword, newPassword) {
+      return request('POST', '/api/auth/password',
+        { currentPassword: currentPassword, newPassword: newPassword });
+    },
+    /* Ask the server who this token belongs to. Keeps a signed-out-elsewhere
+       or expired session from looking signed in here. */
+    refresh: function () {
+      if (!whAuth.token()) { announce(); return Promise.resolve(null); }
+      return request('GET', '/api/auth/me')
+        .then(function (d) { store(whAuth.token(), d.user); return d.user; })
+        .catch(function (err) {
+          if (err && err.status === 401) store(null, null);
+          return null;
+        });
+    }
+  };
+
+  function paintHeader(user) {
+    var links = document.querySelectorAll('.wh-account-link');
+    if (!links.length) return;
+    var live = !!authBase();
+    var name = user ? String(user.name || user.email).split(' ')[0] : '';
+    for (var i = 0; i < links.length; i++) {
+      var link = links[i];
+      // no API means no accounts, and the header keeps the look it always had
+      link.style.display = live ? '' : 'none';
+      link.setAttribute('aria-label', user ? name : 'Account');
+      link.setAttribute('title', user ? user.email : 'Sign in');
+      link.classList.toggle('is-signed-in', !!user);
+    }
+  }
+
+  window.whAuth = whAuth;
+
+  function boot() {
+    paintHeader(readUser());
+    if (authBase()) whAuth.refresh();
+  }
+  if (document.readyState !== 'loading') boot();
+  else document.addEventListener('DOMContentLoaded', boot);
+
+  // signing in or out in one tab is reflected in the others
+  window.addEventListener('storage', function (e) {
+    if (e.key === TOKEN_KEY || e.key === USER_KEY) announce();
+  });
+})();
+</script>
+
+
+<!-- ============ ACCOUNT SCREEN ============ -->
+<script>
+(function () {
+  'use strict';
+
+  /* The page's own wording, in the seven languages the switcher offers. Kept
+     here rather than in `translations` so the shared header/footer strings on
+     this page stay byte-identical to every other page. */
+  var ACCOUNT_T = {
+    zh: {
+      title: '會員帳戶', subtitle: '登入或建立您的 Wonder Herb 帳戶',
+      login_title: '登入', login_lead: '使用您的電郵地址登入。',
+      signup_title: '建立帳戶', signup_lead: '首次使用？填寫以下資料即可註冊。',
+      name: '姓名', email: '電郵地址', password: '密碼', confirm: '確認密碼',
+      login_btn: '登入', signup_btn: '建立帳戶', logout_btn: '登出',
+      member_lead: '您的帳戶資料。', member_email: '電郵地址', member_role: '帳戶類別',
+      member_since: '註冊日期', member_last: '上次登入',
+      change_title: '更改密碼', change_lead: '更改密碼後，其他裝置將需要重新登入。',
+      current_password: '目前密碼', new_password: '新密碼', change_btn: '更改密碼',
+      welcome: '您好，{name}',
+      role_staff: '工作人員', role_customer: '會員', role_admin: '管理員',
+      offline: '目前無法使用會員功能，請稍後再試，或透過 WhatsApp +852 9331 8571 與我們聯絡。',
+      working: '處理中…', mismatch: '兩次輸入的密碼不相同', need_password: '請輸入密碼',
+      changed: '密碼已更新', never: '—'
+    },
+    en: {
+      title: 'Your account', subtitle: 'Sign in or create your Wonder Herb account',
+      login_title: 'Sign in', login_lead: 'Use the email address you registered with.',
+      signup_title: 'Create an account', signup_lead: 'New here? Register with the form below.',
+      name: 'Name', email: 'Email address', password: 'Password', confirm: 'Confirm password',
+      login_btn: 'Sign in', signup_btn: 'Create account', logout_btn: 'Log out',
+      member_lead: 'Your account details.', member_email: 'Email address', member_role: 'Account type',
+      member_since: 'Registered', member_last: 'Last sign-in',
+      change_title: 'Change password', change_lead: 'Changing it signs you out on your other devices.',
+      current_password: 'Current password', new_password: 'New password', change_btn: 'Change password',
+      welcome: 'Hello, {name}',
+      role_staff: 'Staff', role_customer: 'Member', role_admin: 'Administrator',
+      offline: 'Accounts are unavailable at the moment. Please try again later, or reach us on WhatsApp +852 9331 8571.',
+      working: 'Working...', mismatch: 'The two passwords do not match', need_password: 'Please enter a password',
+      changed: 'Your password has been changed', never: '—'
+    },
+    de: {
+      title: 'Ihr Konto', subtitle: 'Melden Sie sich an oder erstellen Sie Ihr Wonder-Herb-Konto',
+      login_title: 'Anmelden', login_lead: 'Verwenden Sie die registrierte E-Mail-Adresse.',
+      signup_title: 'Konto erstellen', signup_lead: 'Neu hier? Registrieren Sie sich unten.',
+      name: 'Name', email: 'E-Mail-Adresse', password: 'Passwort', confirm: 'Passwort bestätigen',
+      login_btn: 'Anmelden', signup_btn: 'Konto erstellen', logout_btn: 'Abmelden',
+      member_lead: 'Ihre Kontodaten.', member_email: 'E-Mail-Adresse', member_role: 'Kontotyp',
+      member_since: 'Registriert', member_last: 'Letzte Anmeldung',
+      change_title: 'Passwort ändern', change_lead: 'Danach werden Ihre anderen Geräte abgemeldet.',
+      current_password: 'Aktuelles Passwort', new_password: 'Neues Passwort', change_btn: 'Passwort ändern',
+      welcome: 'Hallo, {name}',
+      role_staff: 'Mitarbeiter', role_customer: 'Mitglied', role_admin: 'Administrator',
+      offline: 'Konten sind derzeit nicht verfügbar. Bitte später erneut versuchen oder WhatsApp +852 9331 8571.',
+      working: 'Wird bearbeitet...', mismatch: 'Die Passwörter stimmen nicht überein', need_password: 'Bitte Passwort eingeben',
+      changed: 'Ihr Passwort wurde geändert', never: '—'
+    },
+    es: {
+      title: 'Su cuenta', subtitle: 'Inicie sesión o cree su cuenta de Wonder Herb',
+      login_title: 'Iniciar sesión', login_lead: 'Use el correo con el que se registró.',
+      signup_title: 'Crear una cuenta', signup_lead: '¿Es nuevo? Regístrese con el siguiente formulario.',
+      name: 'Nombre', email: 'Correo electrónico', password: 'Contraseña', confirm: 'Confirmar contraseña',
+      login_btn: 'Iniciar sesión', signup_btn: 'Crear cuenta', logout_btn: 'Cerrar sesión',
+      member_lead: 'Los datos de su cuenta.', member_email: 'Correo electrónico', member_role: 'Tipo de cuenta',
+      member_since: 'Registrado', member_last: 'Último inicio de sesión',
+      change_title: 'Cambiar contraseña', change_lead: 'Al cambiarla se cerrará la sesión en sus otros dispositivos.',
+      current_password: 'Contraseña actual', new_password: 'Nueva contraseña', change_btn: 'Cambiar contraseña',
+      welcome: 'Hola, {name}',
+      role_staff: 'Personal', role_customer: 'Miembro', role_admin: 'Administrador',
+      offline: 'Las cuentas no están disponibles en este momento. Inténtelo más tarde o escríbanos por WhatsApp +852 9331 8571.',
+      working: 'Procesando...', mismatch: 'Las contraseñas no coinciden', need_password: 'Introduzca una contraseña',
+      changed: 'Su contraseña ha sido cambiada', never: '—'
+    },
+    fr: {
+      title: 'Votre compte', subtitle: 'Connectez-vous ou créez votre compte Wonder Herb',
+      login_title: 'Se connecter', login_lead: 'Utilisez l\'adresse e-mail de votre inscription.',
+      signup_title: 'Créer un compte', signup_lead: 'Nouveau ? Inscrivez-vous ci-dessous.',
+      name: 'Nom', email: 'Adresse e-mail', password: 'Mot de passe', confirm: 'Confirmer le mot de passe',
+      login_btn: 'Se connecter', signup_btn: 'Créer un compte', logout_btn: 'Se déconnecter',
+      member_lead: 'Les informations de votre compte.', member_email: 'Adresse e-mail', member_role: 'Type de compte',
+      member_since: 'Inscrit le', member_last: 'Dernière connexion',
+      change_title: 'Changer le mot de passe', change_lead: 'Vos autres appareils seront déconnectés.',
+      current_password: 'Mot de passe actuel', new_password: 'Nouveau mot de passe', change_btn: 'Changer le mot de passe',
+      welcome: 'Bonjour, {name}',
+      role_staff: 'Personnel', role_customer: 'Membre', role_admin: 'Administrateur',
+      offline: 'Les comptes sont indisponibles pour le moment. Réessayez plus tard ou écrivez-nous sur WhatsApp +852 9331 8571.',
+      working: 'Traitement...', mismatch: 'Les mots de passe ne correspondent pas', need_password: 'Veuillez saisir un mot de passe',
+      changed: 'Votre mot de passe a été changé', never: '—'
+    },
+    ja: {
+      title: 'アカウント', subtitle: 'ログイン、または Wonder Herb アカウントを作成',
+      login_title: 'ログイン', login_lead: 'ご登録のメールアドレスをご利用ください。',
+      signup_title: 'アカウント作成', signup_lead: '初めての方は、以下からご登録ください。',
+      name: 'お名前', email: 'メールアドレス', password: 'パスワード', confirm: 'パスワード（確認）',
+      login_btn: 'ログイン', signup_btn: 'アカウントを作成', logout_btn: 'ログアウト',
+      member_lead: 'アカウント情報。', member_email: 'メールアドレス', member_role: 'アカウント種別',
+      member_since: '登録日', member_last: '前回のログイン',
+      change_title: 'パスワードの変更', change_lead: '変更すると、他の端末ではログアウトされます。',
+      current_password: '現在のパスワード', new_password: '新しいパスワード', change_btn: 'パスワードを変更',
+      welcome: 'こんにちは、{name} 様',
+      role_staff: 'スタッフ', role_customer: '会員', role_admin: '管理者',
+      offline: '現在アカウント機能をご利用いただけません。しばらくしてからお試しいただくか、WhatsApp +852 9331 8571 までご連絡ください。',
+      working: '処理中…', mismatch: 'パスワードが一致しません', need_password: 'パスワードを入力してください',
+      changed: 'パスワードを変更しました', never: '—'
+    },
+    ru: {
+      title: 'Ваш аккаунт', subtitle: 'Войдите или создайте аккаунт Wonder Herb',
+      login_title: 'Вход', login_lead: 'Используйте адрес электронной почты, указанный при регистрации.',
+      signup_title: 'Создать аккаунт', signup_lead: 'Впервые здесь? Зарегистрируйтесь ниже.',
+      name: 'Имя', email: 'Электронная почта', password: 'Пароль', confirm: 'Подтвердите пароль',
+      login_btn: 'Войти', signup_btn: 'Создать аккаунт', logout_btn: 'Выйти',
+      member_lead: 'Данные вашего аккаунта.', member_email: 'Электронная почта', member_role: 'Тип аккаунта',
+      member_since: 'Дата регистрации', member_last: 'Последний вход',
+      change_title: 'Смена пароля', change_lead: 'После смены на других устройствах потребуется войти заново.',
+      current_password: 'Текущий пароль', new_password: 'Новый пароль', change_btn: 'Сменить пароль',
+      welcome: 'Здравствуйте, {name}',
+      role_staff: 'Сотрудник', role_customer: 'Участник', role_admin: 'Администратор',
+      offline: 'Аккаунты сейчас недоступны. Попробуйте позже или напишите нам в WhatsApp +852 9331 8571.',
+      working: 'Обработка...', mismatch: 'Пароли не совпадают', need_password: 'Введите пароль',
+      changed: 'Пароль изменён', never: '—'
+    }
+  };
+
+  var el = function (id) { return document.getElementById(id); };
+  function words() {
+    var lang = (typeof currentLang !== 'undefined' && ACCOUNT_T[currentLang]) ? currentLang : 'zh';
+    return ACCOUNT_T[lang];
+  }
+  function niceDate(iso) {
+    if (!iso) return words().never;
+    var d = new Date(iso);
+    return isNaN(d.getTime()) ? words().never : d.toLocaleDateString();
+  }
+  function say(node, text, ok) {
+    if (!node) return;
+    node.textContent = text || '';
+    node.classList.toggle('ok', !!ok);
+  }
+
+  /* One function paints the whole screen: which panel is showing, and every
+     label on it. Called on load, on sign in/out, and by the language switcher. */
+  window.renderAccount = function renderAccount() {
+    var t = words();
+    document.querySelectorAll('[data-wh-t]').forEach(function (node) {
+      var key = node.getAttribute('data-wh-t');
+      if (t[key] !== undefined) node.textContent = t[key];
+    });
+
+    var live = window.whAuth && window.whAuth.available();
+    var user = window.whAuth ? window.whAuth.user() : null;
+
+    el('accountOffline').hidden = !!live;
+    el('accountPanels').hidden = !live || !!user;
+    el('accountMember').hidden = !live || !user;
+
+    if (user) {
+      el('memberWelcome').textContent = t.welcome.replace('{name}', user.name || user.email);
+      el('memberEmail').textContent = user.email;
+      el('memberRole').textContent =
+        user.role === 'admin' ? t.role_admin
+        : user.role === 'staff' ? t.role_staff
+        : t.role_customer;
+      el('memberSince').textContent = niceDate(user.createdAt);
+      el('memberLast').textContent = niceDate(user.lastLoginAt);
+    }
+  };
+
+  /* Submitting locks the button, so a slow reply cannot be double-sent, and
+     whatever the server says is what the visitor is shown. */
+  function submit(button, message, work) {
+    var t = words();
+    button.disabled = true;
+    var label = button.textContent;
+    button.textContent = t.working;
+    say(message, '');
+    return work()
+      .catch(function (err) {
+        say(message, err && err.message === 'offline' ? t.offline : (err.message || 'Error'));
+      })
+      .then(function () {
+        button.disabled = false;
+        button.textContent = label;
+      });
+  }
+
+  function bind() {
+    el('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      submit(el('loginBtn'), el('loginMsg'), function () {
+        return window.whAuth.login(el('loginEmail').value, el('loginPassword').value)
+          .then(function () { el('loginPassword').value = ''; renderAccount(); });
+      });
+    });
+
+    el('signupForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var t = words();
+      var pw = el('signupPassword').value;
+      if (!pw) { say(el('signupMsg'), t.need_password); return; }
+      if (pw !== el('signupConfirm').value) { say(el('signupMsg'), t.mismatch); return; }
+      submit(el('signupBtn'), el('signupMsg'), function () {
+        return window.whAuth.signup(el('signupName').value, el('signupEmail').value, pw)
+          .then(function () {
+            el('signupPassword').value = '';
+            el('signupConfirm').value = '';
+            renderAccount();
+          });
+      });
+    });
+
+    el('passwordForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      submit(el('passwordBtn'), el('passwordMsg'), function () {
+        return window.whAuth.changePassword(el('currentPassword').value, el('newPassword').value)
+          .then(function () {
+            el('currentPassword').value = '';
+            el('newPassword').value = '';
+            say(el('passwordMsg'), words().changed, true);
+          });
+      });
+    });
+
+    el('logoutBtn').addEventListener('click', function () {
+      window.whAuth.logout().then(renderAccount);
+    });
+  }
+
+  function boot() {
+    bind();
+    renderAccount();
+    // the shared client tells us when a sign-in, sign-out or expiry happens,
+    // including one that happened in another tab
+    if (window.whAuth) window.whAuth.onChange(renderAccount);
+  }
+  if (document.readyState !== 'loading') boot();
+  else document.addEventListener('DOMContentLoaded', boot);
+})();
+</script>
+
+<button type="button" class="wh-chat-launcher" id="wh-chat-launcher"
+        aria-expanded="false" aria-controls="wh-chat-panel" aria-label="開啟對話">
+  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
+       stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.3-.6L3 21l1.8-5.1A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5z"/>
+  </svg>
+</button>
+
+<!-- The states that are not on screen at load - refusal, error, offline - ride
+     on the panel as data-* so there is ONE copy of every string, in
+     data/site.json, and assets/behaviour/chat.js reads them back rather than
+     holding a second copy that could drift. Escaped by renderer/chrome.js. -->
+<div class="wh-chat-panel" id="wh-chat-panel" role="dialog"
+     aria-labelledby="wh-chat-title" aria-describedby="wh-chat-state"
+     data-refusal="有關治療方面的問題，本對話無法解答。如涉及您的健康狀況、症狀或正在服用的藥物，請諮詢專業醫療人員。產品、成分、檢測及訂購方面的問題，可在此查詢。"
+     data-error="發生錯誤，訊息未能傳送。"
+     data-offline="您目前似乎離線。" hidden>
+  <div class="wh-chat-head">
+    <h2 class="wh-chat-title" id="wh-chat-title">線上對話</h2>
+    <button type="button" class="wh-chat-close" id="wh-chat-close" aria-label="關閉對話">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <!-- role="log" + aria-live="polite" so a screen reader hears a new message
+       without the panel stealing focus mid-read. -->
+  <div class="wh-chat-log" id="wh-chat-log" role="log" aria-live="polite" aria-relevant="additions">
+    <p class="wh-chat-msg wh-chat-msg-system" id="wh-chat-state">網上即時對話尚未開放。如有查詢，請透過 WhatsApp 聯絡我們。</p>
+  </div>
+
+  <div class="wh-chat-foot">
+    <a class="wh-chat-handoff" href="https://wa.me/85293318571/" rel="noopener">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+        <path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 2a8 8 0 1 1-4.2 14.8l-.3-.2-2.5.7.7-2.4-.2-.3A8 8 0 0 1 12 4z"/>
+      </svg>
+      透過 WhatsApp 聯絡我們
+    </a>
+    <!-- Disabled with a VISIBLE reason, never a dead input that swallows what
+         someone types. Phase 15 enables it; no markup here changes. -->
+    <form class="wh-chat-composer" id="wh-chat-composer">
+      <label class="wh-chat-sr" for="wh-chat-input">線上對話</label>
+      <input type="text" id="wh-chat-input" class="wh-chat-input"
+             placeholder="對話尚未開放" autocomplete="off" disabled>
+      <button type="submit" class="wh-chat-send" aria-label="傳送" disabled>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 12l16-8-6 16-2.5-6.5z"/></svg>
+      </button>
+    </form>
+  </div>
+</div>
+<script src="assets/behaviour/chat.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+/* Write MongoDB back into the committed data/ files.
+ *
+ * This is the publish step of the hybrid setup: you edit against the database,
+ * then run this and commit. The live site keeps serving plain static files, so
+ * nothing about hosting or the SEO work changes.
+ */
+const fs = require('fs');
+const path = require('path');
+const { connect, close, COLLECTIONS, PAGE_COLLECTIONS } = require('../server/db');
+const { PRIMARY } = require('../renderer/i18n');
+
+const DATA = path.join(__dirname, '..', 'data');
+const PAGES_DIR = path.join(DATA, 'pages');
+const SLUG_OK = /^[a-z0-9][a-z0-9_-]*$/;
+
+const CSV_HEAD = ['SKU', 'Product', 'Price (HKD)', 'On hand', 'Reorder at',
+                  'Status', 'Stock value (HKD)', 'Last updated'];
+/* Quote only the cells that need it (RFC 4180), so a seed -> export round trip
+   reproduces the file byte for byte instead of re-quoting every cell. */
+const csvCell = v => {
+  const s = String(v === undefined || v === null ? '' : v);
+  return /["\r\n,]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+};
+
+function stripId(doc) {
+  const { _id, pos, ...rest } = doc;
+  return rest;
+}
+
+async function readList(db, name) {
+  const rows = await db.collection(COLLECTIONS[name]).find({}).sort({ pos: 1 }).toArray();
+  return rows.map(stripId);
+}
+
+/* Write only if the content actually changed, so an unchanged run leaves the
+   working tree clean and `git status` stays meaningful. */
+function writeIfChanged(file, content) {
+  const full = path.join(DATA, file);
+  let before = null;
+  try { before = fs.readFileSync(full, 'utf8'); } catch (e) { /* new file */ }
+  if (before === content) {
+    console.log('  ' + file.padEnd(20) + 'unchanged');
+    return false;
+  }
+  fs.writeFileSync(full, content, 'utf8');
+  console.log('  ' + file.padEnd(20) + 'written');
+  return true;
+}
+
+/* The stock spreadsheet is a working document for staff, not site content, so
+   it takes ONE language - the primary. Product titles became per-language
+   objects at P9-T1 (finding 19), and without this the Product column rendered
+   "[object Object]" for every row. Anything that puts a product title into a
+   string context needs this; there is no sensible implicit stringification of
+   a seven-language object. */
+function titleText(v) {
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    return v[PRIMARY] || Object.values(v).find(x => x) || '';
+  }
+  return v || '';
+}
+
+function buildInventoryCsv(products) {
+  const lines = [CSV_HEAD.map(csvCell).join(',')];
+  products.forEach(p => {
+    const tracked = p.stock !== undefined && p.stock !== null && p.stock !== '';
+    const n = tracked ? (parseInt(p.stock, 10) || 0) : null;
+    const price = parseFloat(p.price) || 0;
+    lines.push([
+      p.sku || '', titleText(p.title), price.toFixed(2),
+      n === null ? '' : n,
+      // the reorder point is set per product; it does not depend on stock being tracked
+      p.reorder === undefined || p.reorder === null ? (tracked ? 10 : '') : p.reorder,
+      p.status || '',
+      n === null ? '' : (n * price).toFixed(2),
+      p.stockUpdated || ''
+    ].map(csvCell).join(','));
+  });
+  return '﻿' + lines.join('\r\n') + '\r\n';
+}
+
+/* Page trees, one file per page, so a layout change is a small readable diff
+   rather than one churning blob.
+ *
+ * Two safety rules, matching the guard the content export already has:
+ *
+ *   - An empty `pages` collection leaves data/pages/ completely alone. It does
+ *     not create the folder and it does not remove anything, so running export
+ *     against a database that simply has no page trees yet cannot wipe trees
+ *     that are already published.
+ *   - Nothing here deletes. A tree that is on disk but no longer in the
+ *     database is reported and left in place, so a bad import or a half-seeded
+ *     database cannot quietly delete a live page. Removing a page stays a
+ *     deliberate `git rm`.
+ */
+function writePages(trees) {
+  if (!trees.length) {
+    console.log('  pages/            none in the database, data/pages/ left alone');
+    return 0;
+  }
+  fs.mkdirSync(PAGES_DIR, { recursive: true });
+
+  let changed = 0;
+  const written = [];
+  trees.forEach(tree => {
+    const slug = String(tree.slug === undefined || tree.slug === null ? '' : tree.slug).trim();
+    // the slug becomes a filename, so refuse anything that is not plainly one
+    if (!SLUG_OK.test(slug)) {
+      console.log('  pages/            skipped, unusable slug: ' + JSON.stringify(tree.slug));
+      return;
+    }
+    written.push(slug + '.json');
+    changed += writeIfChanged('pages/' + slug + '.json', JSON.stringify(pageForSite(tree), null, 2) + '\n');
+  });
+
+  const orphans = fs.readdirSync(PAGES_DIR)
+    .filter(f => f.endsWith('.json') && written.indexOf(f) === -1);
+  if (orphans.length) {
+    console.log('  pages/            ' + orphans.length + ' file(s) not in the database, left in place: '
+                + orphans.join(', '));
+  }
+  return changed;
+}
+
+/* Strip database bookkeeping. `updatedAt` is how MongoDB records its own
+   writes - nothing on the public pages renders it and no section component
+   reads it. Left in, it lands on the LAST field of every record, so adding it
+   moves the trailing comma on the line above and a one-field content change
+   shows up as a diff touching every record in the file. `git diff data/` is
+   the human review step between an edit and the live site; it has to stay
+   readable. See docs/FINDINGS.md finding 17.
+
+   Applied to every content list, not just products. */
+function forSite(doc) {
+  const { updatedAt, ...rest } = doc;
+  return rest;
+}
+
+/* Page trees get the same strip PLUS `updatedBy`, which the PUT /api/pages
+   route stamps with the editor's email address. data/ deploys to a public URL
+   and this repo is public, so that is staff PII in a public file - the same
+   class as docs/FINDINGS.md finding 16, on a path the P7-T1a fix never covered
+   because page trees did not exist yet. Found at P9-T1, where the committed
+   data/pages/products.json carried the super-admin's address. The database
+   keeps both fields; only the published projection drops them. `_id` goes too:
+   it is MongoDB's, not the page's. */
+function pageForSite(tree) {
+  const { _id, updatedBy, ...rest } = forSite(tree);
+  return rest;
+}
+
+/* The site reads products.json without stock fields; stock is the CSV's job.
+   Keeping them apart means a stock change touches one small file, not the
+   whole catalogue. */
+function productForSite(product) {
+  const { stock, reorder, stockUpdated, ...rest } = forSite(product);
+  return rest;
+}
+
+(async () => {
+  console.log('Exporting MongoDB to data/ ...\n');
+  const db = await connect();
+
+  /* NOT read here on purpose: the `movements` and `activity` collections.
+     They are the stock ledger and the admin audit trail - who added which
+     staff member, who downloaded the sales workbook, with email addresses and
+     timestamps. This script writes into data/, data/ is deployed to GitHub
+     Pages, and this repository is public, so exporting them put staff emails
+     and internal activity one commit away from a public URL.
+
+     They stay in MongoDB, reachable only through the authenticated API. Do not
+     add them back. docs/FINDINGS.md finding 16 (HIGH, security); same root
+     cause as finding 6 - the deploy is the whole repo, so anything written
+     into the working tree is published by default. */
+  const cases = await readList(db, 'cases');
+  const products = await readList(db, 'products');
+  const faq = await readList(db, 'faq');
+  const homepageDoc = await db.collection('homepage').findOne({ _id: 'homepage' });
+  const homepage = homepageDoc ? stripId(homepageDoc) : {};
+  const pages = await db.collection(PAGE_COLLECTIONS.pages)
+    .find({}, { projection: { _id: 0 } }).sort({ slug: 1 }).toArray();
+
+  if (!products.length && !cases.length && !faq.length) {
+    console.error('The database is empty. Run `npm run seed` first, or you would');
+    console.error('overwrite data/ with nothing.');
+    process.exit(1);
+  }
+
+  let changed = 0;
+  changed += writeIfChanged('cases.json', JSON.stringify(cases.map(forSite), null, 2) + '\n');
+  changed += writeIfChanged('products.json', JSON.stringify(products.map(productForSite), null, 2) + '\n');
+  changed += writeIfChanged('faq.json', JSON.stringify(faq.map(forSite), null, 2) + '\n');
+  changed += writeIfChanged('homepage.json', JSON.stringify(forSite(homepage), null, 2) + '\n');
+  // the CSV is built from the raw products - stock IS its content
+  changed += writeIfChanged('inventory.csv', buildInventoryCsv(products));
+  changed += writePages(pages);
+
+  console.log('\n' + changed + ' file(s) changed.');
+  if (changed) console.log('Review with `git diff data/`, then commit to publish.');
+  await close();
+})().catch(err => {
+  console.error('\nExport failed:', err.message);
+  process.exit(1);
+});

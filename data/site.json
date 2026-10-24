@@ -1,0 +1,193 @@
+{
+  "chrome": {
+    "logo": "https://lh3.googleusercontent.com/d/1mQafHatzw_gwbV_J9Y5AmwIAUS9r8SEi",
+    "flags": {
+      "zh": "https://flagcdn.com/w20/hk.png",
+      "en": "https://flagcdn.com/w20/gb.png",
+      "de": "https://flagcdn.com/w20/de.png",
+      "es": "https://flagcdn.com/w20/es.png",
+      "fr": "https://flagcdn.com/w20/fr.png",
+      "ja": "https://flagcdn.com/w20/jp.png",
+      "ru": "https://flagcdn.com/w20/ru.png"
+    }
+  },
+  "media": {
+    "base": "",
+    "hosts": {
+      "lh3.googleusercontent.com": "Google Drive product photos, hotlinked and rate-limited (finding 2) - Phase 10 moves them",
+      "drive.google.com": "brochure and lab-report scans and documents on the client's Drive (finding 2) - Phase 10 moves them",
+      "static.wixstatic.com": "images still on the client's Wix CDN, which dies at cutover (finding 1) - Phase 10 moves them",
+      "video.wixstatic.com": "the background video on the client's Wix CDN (finding 1) - Phase 10 moves it",
+      "flagcdn.com": "language-switcher flag icons in the shared chrome, and five office-location flags on 聯絡我們. A FOURTH-PARTY CDN - moving to R2 with everything else at Phase 10 (owner, 18 Sep 2026): an exemption from the media contract is the beginning of a list of them",
+      "www.wonder-herb.com": "two research PDFs under /_files/ugd/ - that is a WIX path on the client's own domain, not this repo (the files are not in it). They die at cutover exactly like the video (finding 1) - Phase 10 moves them"
+    },
+    "hostPaths": {
+      "www.wonder-herb.com": {
+        "path": "/_files/ugd/",
+        "why": "A DUAL-ROLE HOST. This is our own domain - every canonical, hreflang and JSON-LD @id points at it - but /_files/ugd/ is Wix's user-file store, which we do not control and which dies when the Wix account is cancelled (finding 1). Only that path is media. Removing this entry is wrong in both directions: see the comment in scripts/test-media.js"
+      }
+    },
+    "retiredHosts": [
+      "lh3.googleusercontent.com",
+      "drive.google.com",
+      "static.wixstatic.com",
+      "video.wixstatic.com",
+      "www.wonder-herb.com",
+      "flagcdn.com"
+    ],
+    "corsOrigins": [
+      "https://www.wonder-herb.com",
+      "https://formurak4m.github.io"
+    ],
+    "cacheMinSeconds": 31536000
+  },
+  "externalHosts": {
+    "schema.org": {
+      "kind": "vocabulary",
+      "why": "the JSON-LD @context and enum values (schema.org/InStock). Never fetched by a browser; an identifier, not a dependency"
+    },
+    "www.wonder-herb.com": {
+      "kind": "self",
+      "why": "our own canonicals, hreflang and the @id of the Organization node. ALSO a media host: /_files/ugd/ is Wix's file store and dies at cutover (finding 1), which is why it appears in media.hosts too"
+    },
+    "formurak4m.github.io": {
+      "kind": "self",
+      "why": "the GitHub Pages origin, named as a CORS origin so media still loads if the site is served from there before cutover"
+    },
+    "fonts.googleapis.com": {
+      "kind": "runtime",
+      "why": "webfont stylesheet, preconnected from every page. A third-party runtime dependency: if it is blocked or slow the page falls back to the CJK system stack (finding 21b)"
+    },
+    "fonts.gstatic.com": {
+      "kind": "runtime",
+      "why": "the font files behind fonts.googleapis.com"
+    },
+    "cdnjs.cloudflare.com": {
+      "kind": "runtime",
+      "why": "three.js r128, GLTFLoader and OrbitControls for the homepage hero. Declared as `deps` in renderer/template.js BEHAVIOURS, not in markup. A third-party runtime dependency for the 3D slides only - the poster shows without it"
+    },
+    "mp.weixin.qq.com": {
+      "kind": "link",
+      "why": "the client's WeChat articles, linked from 微信發表文章. Outbound links to the client's own published content, not assets"
+    },
+    "wa.me": {
+      "kind": "link",
+      "why": "WhatsApp click-to-chat for the business number, in the chrome's floating button and the contact cards"
+    },
+    "maps.app.goo.gl": {
+      "kind": "link",
+      "why": "a Google Maps link on a contact card"
+    },
+    "www.google.com": {
+      "kind": "embed",
+      "why": "the Google Maps iframe on 聯絡我們. An embedded third party: it sets its own cookies and is outside our media contract entirely"
+    },
+    "pubmed.ncbi.nlm.nih.gov": {
+      "kind": "link",
+      "why": "citations on 產品_憶活素 and 研究報告"
+    },
+    "www.ncbi.nlm.nih.gov": {
+      "kind": "link",
+      "why": "a citation on 研究報告"
+    },
+    "www.mdpi.com": {
+      "kind": "link",
+      "why": "journal citations"
+    },
+    "journals.plos.org": {
+      "kind": "link",
+      "why": "journal citations"
+    }
+  },
+  "chat": {
+    "enabled": true,
+    "_why": "The floating chat widget (P13-T5). FRONT END ONLY: there is no answer backend yet, so the panel opens in its 'unavailable' state and routes the visitor to WhatsApp. Phase 15 replaces the single boundary in assets/behaviour/chat.js; none of these strings change when it does. Wording is owner-approved (24 Oct 2026). zh and en are approved text; de/es/fr/ja/ru are translations of that text and need a native read before cutover, falling back to zh if any is removed.",
+    "handoffHref": "https://wa.me/85293318571/",
+    "strings": {
+      "zh": {
+        "title": "線上對話",
+        "launcher": "開啟對話",
+        "close": "關閉對話",
+        "send": "傳送",
+        "unavailable": "網上即時對話尚未開放。如有查詢，請透過 WhatsApp 聯絡我們。",
+        "refusal": "有關治療方面的問題，此處不提供解答。如涉及您的健康狀況、症狀或正在服用的藥物，請諮詢專業醫療人員。產品、成分、檢測及訂購方面的問題，可在此查詢。",
+        "handoff": "透過 WhatsApp 聯絡我們",
+        "placeholder": "對話尚未開放",
+        "error": "發生錯誤，訊息未能傳送。",
+        "offline": "您目前似乎離線。"
+      },
+      "en": {
+        "title": "Chat",
+        "launcher": "Open chat",
+        "close": "Close chat",
+        "send": "Send",
+        "unavailable": "Chat isn't available yet. For anything you need now, message us on WhatsApp.",
+        "refusal": "Questions about treating a condition can't be answered here. For anything about your health, symptoms or medication, please speak to a qualified practitioner. Help is available for products, ingredients, testing and ordering.",
+        "handoff": "Talk to us on WhatsApp",
+        "placeholder": "Chat isn't available yet",
+        "error": "Something went wrong. Your message wasn't sent.",
+        "offline": "You appear to be offline."
+      },
+      "de": {
+        "title": "Chat",
+        "launcher": "Chat öffnen",
+        "close": "Chat schließen",
+        "send": "Senden",
+        "unavailable": "Der Chat ist noch nicht verfügbar. Für alles, was Sie jetzt brauchen, schreiben Sie uns auf WhatsApp.",
+        "refusal": "Fragen zur Behandlung von Erkrankungen können hier nicht beantwortet werden. Wenden Sie sich bei Fragen zu Gesundheit, Symptomen oder Medikamenten an eine qualifizierte Fachkraft. Zu Produkten, Inhaltsstoffen, Prüfberichten und Bestellungen erhalten Sie hier Unterstützung.",
+        "handoff": "Schreiben Sie uns auf WhatsApp",
+        "placeholder": "Chat noch nicht verfügbar",
+        "error": "Es ist ein Fehler aufgetreten. Ihre Nachricht wurde nicht gesendet.",
+        "offline": "Sie scheinen offline zu sein."
+      },
+      "es": {
+        "title": "Chat",
+        "launcher": "Abrir el chat",
+        "close": "Cerrar el chat",
+        "send": "Enviar",
+        "unavailable": "El chat aún no está disponible. Para cualquier consulta, escríbanos por WhatsApp.",
+        "refusal": "Las preguntas sobre el tratamiento de enfermedades no se pueden responder aquí. Para cuestiones de salud, síntomas o medicación, consulte a un profesional cualificado. Sí se ofrece ayuda sobre productos, ingredientes, análisis y pedidos.",
+        "handoff": "Escríbanos por WhatsApp",
+        "placeholder": "El chat aún no está disponible",
+        "error": "Se ha producido un error. Su mensaje no se ha enviado.",
+        "offline": "Parece que no hay conexión."
+      },
+      "fr": {
+        "title": "Discussion",
+        "launcher": "Ouvrir la discussion",
+        "close": "Fermer la discussion",
+        "send": "Envoyer",
+        "unavailable": "La messagerie n'est pas encore disponible. Pour toute question, écrivez-nous sur WhatsApp.",
+        "refusal": "Les questions portant sur le traitement d'une maladie ne peuvent pas être traitées ici. Pour toute question de santé, de symptômes ou de médicaments, consultez un professionnel qualifié. Une aide est disponible pour les produits, les ingrédients, les analyses et les commandes.",
+        "handoff": "Écrivez-nous sur WhatsApp",
+        "placeholder": "Messagerie pas encore disponible",
+        "error": "Une erreur s'est produite. Votre message n'a pas été envoyé.",
+        "offline": "Vous semblez être hors ligne."
+      },
+      "ja": {
+        "title": "チャット",
+        "launcher": "チャットを開く",
+        "close": "チャットを閉じる",
+        "send": "送信",
+        "unavailable": "チャットはまだご利用いただけません。お問い合わせは WhatsApp からお願いいたします。",
+        "refusal": "治療に関するご質問にはこちらではお答えできません。健康状態、症状、服用中のお薬については、医療従事者にご相談ください。製品、成分、検査、ご注文については、こちらでご案内できます。",
+        "handoff": "WhatsApp でお問い合わせ",
+        "placeholder": "チャットはまだご利用いただけません",
+        "error": "エラーが発生しました。メッセージは送信されていません。",
+        "offline": "オフラインのようです。"
+      },
+      "ru": {
+        "title": "Чат",
+        "launcher": "Открыть чат",
+        "close": "Закрыть чат",
+        "send": "Отправить",
+        "unavailable": "Чат пока недоступен. По любым вопросам напишите нам в WhatsApp.",
+        "refusal": "Вопросы о лечении заболеваний здесь не рассматриваются. По вопросам здоровья, симптомов или лекарств обратитесь к квалифицированному специалисту. Помощь доступна по продукции, составу, результатам анализов и заказам.",
+        "handoff": "Напишите нам в WhatsApp",
+        "placeholder": "Чат пока недоступен",
+        "error": "Произошла ошибка. Сообщение не отправлено.",
+        "offline": "Похоже, вы не в сети."
+      }
+    }
+  }
+}
