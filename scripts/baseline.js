@@ -281,6 +281,19 @@ async function main() {
   const count = d => fs.existsSync(path.join(OUT, d)) ? fs.readdirSync(path.join(OUT, d)).length : 0;
   console.log('\n' + pages.length + ' page(s): ' + count('screens') + ' scripts-on shot(s), ' +
               count('screens-nojs') + ' scripts-off shot(s), ' + count('head') + ' head snapshot(s)');
+
+  /* The committed half of the reference (finding 43). baseline/head/ cannot be
+     committed - it carries finding 26's rating markup - but test:seo gates the
+     CI deploy and CI only has what is tracked. Regenerating it HERE is what
+     stops it going stale: a re-captured baseline that did not update the
+     reference would leave the gate asserting against the old site. */
+  if (count('head') > 0 && !ONLY.length) {
+    try { require('./seo-reference.js').build(); }
+    catch (err) { console.error('  seo-reference.json NOT regenerated: ' + err.message); }
+  } else if (ONLY.length) {
+    console.log('  seo-reference.json not regenerated: this was a PARTIAL capture ' +
+                '(BASELINE_PAGES set). Re-run over all pages before committing it.');
+  }
   if (thin) console.log('WARNING: ' + thin + ' capture(s) look nearly empty. The baseline is only useful if they are real.');
   return thin;
 }

@@ -1,0 +1,209 @@
+{
+  "note": "Derived from baseline/head/ (P0-T2) by scripts/seo-reference.js. Committed BECAUSE the head snapshots cannot be — see docs/FINDINGS.md finding 43. Regenerate with: npm run seo:reference",
+  "pages": {
+    "account.html": {
+      "canonical": "https://www.wonder-herb.com/account.html",
+      "types": [],
+      "title": "聯絡我們 | Wonder Herb - 雲芝糖肽精華",
+      "description": "Wonder Herb 會員帳戶：登入、註冊及帳戶設定。"
+    },
+    "index.html": {
+      "canonical": "https://www.wonder-herb.com/",
+      "types": [
+        "FAQPage",
+        "Organization",
+        "Product",
+        "Product",
+        "Product",
+        "Product",
+        "Product",
+        "WebSite"
+      ],
+      "title": "康草堂 Wonder Herb | 雲芝糖肽精華 PSP 天然輔助首選",
+      "description": "康草堂 Wonder Herb - 超過20年經驗，雲芝糖肽精華有效成份 >90%，加拿大GMP藥廠生產，大學證實複合配方功效倍增。"
+    },
+    "product.html": {
+      "canonical": "https://www.wonder-herb.com/產品介紹.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product",
+        "Product",
+        "Product",
+        "Product",
+        "Product",
+        "Product"
+      ],
+      "title": "產品介紹 | Wonder Herb - 雲芝糖肽精華",
+      "description": "康草堂 Wonder Herb 產品系列 – 雲芝糖肽精華 PSP，T3 配方，乙肝清，憶活素。加拿大GMP藥廠生產，有效成份高達90%以上。"
+    },
+    "典型病例.html": {
+      "canonical": "https://www.wonder-herb.com/典型病例.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "ItemList",
+        "Organization",
+        "Product"
+      ],
+      "title": "典型病例 | 康草堂 Wonder Herb - 雲芝糖肽精華真實見證",
+      "description": "康草堂雲芝糖肽真實病例分享，見證雲芝糖肽精華PSP如何幫助患者提升免疫力，改善生活品質。"
+    },
+    "小册子.html": {
+      "canonical": "https://www.wonder-herb.com/小册子.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product",
+        "Product"
+      ],
+      "title": "小册子 | 康草堂 Wonder Herb - 雲芝糖肽精華產品指南",
+      "description": "康草堂 Wonder Herb 產品小冊子，詳細介紹雲芝糖肽精華 PSP 及相關健康資訊。"
+    },
+    "常見問題.html": {
+      "canonical": "https://www.wonder-herb.com/常見問題.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "常見問題 | 康草堂 Wonder Herb - 雲芝糖肽精華專業解答",
+      "description": "康草堂 Wonder Herb 雲芝糖肽精華常見問題：解答雲芝糖肽是什麼、功效、檢測方法、副作用以及與其他品牌的區別，為您提供專業清晰的資訊。"
+    },
+    "微信發表文章.html": {
+      "canonical": "https://www.wonder-herb.com/微信發表文章.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "微信發表文章 | 康草堂 Wonder Herb - 雲芝糖肽精華專業資訊",
+      "description": "康草堂 Wonder Herb 微信文章精選，深入探討雲芝糖肽PSP、T3精華素對免疫提升及頑症輔助的科學與真實案例。"
+    },
+    "有效成份檢測.html": {
+      "canonical": "https://www.wonder-herb.com/有效成份檢測.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "有效成份檢測 | 康草堂 Wonder Herb - 雲芝糖肽精華",
+      "description": "康草堂 Wonder Herb - 每批產品雙重檢測，有效成份 >90%，雲芝糖肽含量遠超國家標準，純度最高，吸收最好。"
+    },
+    "產品_PT3.html": {
+      "canonical": "https://www.wonder-herb.com/產品_PT3.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "PT3 (雲芝糖肽PSP結合T3) | 大學科研配方 | Wonder Herb",
+      "description": "PT3由澳洲昆士蘭科技大學及香港大學研發，雲芝糖肽PSP結合T3，有效抑制頑疾腫瘤增長、加速凋謝，比單獨服用PSP高出數倍功效。"
+    },
+    "產品_T3.html": {
+      "canonical": "https://www.wonder-herb.com/產品_T3.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "T3 三烯生育醇 | Wonder Herb – 天然抗氧化·頑疾輔助專家",
+      "description": "康草堂 T3 三烯生育醇，澳洲昆士蘭科技大學臨床研究證實，具有抗頑疾及抑制頑疾幹細胞的作用。天然維生素E高活性60倍吸收，守護心血管，提升免疫，適合保健及輔助療程。"
+    },
+    "產品_乙肝清.html": {
+      "canonical": "https://www.wonder-herb.com/產品_乙肝清.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "乙肝清 | 康草堂 Wonder Herb – 天然草本護肝·抑制HBV病毒",
+      "description": "康草堂乙肝清，全草本配方，無西藥副作用。有助抑制HBV病毒、減輕肝細胞炎症及肝纖維化，減低肝硬化風險，每日2次每次5粒，守護肝臟健康。"
+    },
+    "產品_憶活素.html": {
+      "canonical": "https://www.wonder-herb.com/產品_憶活素.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "憶活素 MemoProve | Wonder Herb – 天然腦部保健・提升記憶力與專注力",
+      "description": "康草堂憶活素 MemoProve，奧地利 EVER PHARMA 研發配方，含天然蛋白腖 Peptone，有助修復腦細胞、增強記憶力及專注力，經歐洲嚴格測試，安全有效。"
+    },
+    "產品_雲芝糖肽精華_A.html": {
+      "canonical": "https://www.wonder-herb.com/產品_雲芝糖肽精華_A.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "雲芝糖肽精華 (PSP) 標準裝 | Wonder Herb – 天然雲芝糖肽專家",
+      "description": "康草堂雲芝糖肽精華 PSP 試用裝，有效成份高達90%以上，加拿大GMP藥廠生產，大學研究證實能提升免疫力，適合初次體驗及短期輔助。"
+    },
+    "產品_雲芝糖肽精華_B.html": {
+      "canonical": "https://www.wonder-herb.com/產品_雲芝糖肽精華_B.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "雲芝糖肽精華 (PSP) 標準裝 | Wonder Herb – 天然雲芝糖肽專家",
+      "description": "康草堂雲芝糖肽精華 PSP 標準裝，有效成份高達90%以上，加拿大GMP藥廠生產，大學研究證實能提升免疫力，減輕化療副作用，適合長期輔助療程。"
+    },
+    "產品介紹.html": {
+      "canonical": "https://www.wonder-herb.com/產品介紹.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product",
+        "Product",
+        "Product",
+        "Product",
+        "Product",
+        "Product"
+      ],
+      "title": "產品介紹 | Wonder Herb - 雲芝糖肽精華",
+      "description": "康草堂 Wonder Herb 產品系列 – 雲芝糖肽精華 PSP，T3 配方，乙肝清，憶活素。加拿大GMP藥廠生產，有效成份高達90%以上。"
+    },
+    "研究報告.html": {
+      "canonical": "https://www.wonder-herb.com/研究報告.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "研究報告 | Wonder Herb - 雲芝糖肽精華",
+      "description": "康草堂 Wonder Herb - 大學研究報告、臨床實證，展示雲芝糖肽精華 PSP 的抗腫瘤及免疫調節功效。"
+    },
+    "聯絡我們.html": {
+      "canonical": "https://www.wonder-herb.com/聯絡我們.html",
+      "types": [
+        "BreadcrumbList",
+        "FAQPage",
+        "Organization",
+        "Product"
+      ],
+      "title": "聯絡我們 | Wonder Herb - 雲芝糖肽精華",
+      "description": "康草堂 Wonder Herb 聯絡資訊：亞洲總部、中國辦事處、加拿大、澳洲及美國分銷商聯絡方式。專業雲芝糖肽產品諮詢。"
+    },
+    "購物車.html": {
+      "canonical": "https://www.wonder-herb.com/購物車.html",
+      "types": [],
+      "title": "購物車 | Wonder Herb – 雲芝糖肽精華",
+      "description": "康草堂 Wonder Herb 購物車 – 查看您的雲芝糖肽精華訂單，調整數量或繼續選購。"
+    }
+  }
+}

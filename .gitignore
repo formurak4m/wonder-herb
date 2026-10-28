@@ -15,7 +15,18 @@ npm-debug.log*
 
 # Visual + SEO regression references (BUILD_TASKS P0-T2). Local only, never
 # deployed: hundreds of MB of screenshots that the renderer is compared against.
-baseline/
+#
+# baseline/head/ STAYS IGNORED ON PURPOSE AND MUST NOT BE COMMITTED: those
+# snapshots were captured from live pages carrying finding 26's invented
+# Review / AggregateRating markup, and this repository is public and deploys to
+# the client's domain. baseline/seo-reference.json is the committed substitute -
+# the four fields test:seo actually reads, with no rating values - because a
+# gate whose reference is gitignored cannot run in CI, and test:seo gates the
+# deploy since P8-T3. See docs/FINDINGS.md finding 43.
+# (baseline/* not baseline/ - git never descends into an excluded DIRECTORY,
+#  so the negation below cannot fire against a directory-level ignore.)
+baseline/*
+!baseline/seo-reference.json
 
 # Build artifact: the section components bundled for the Node renderer.
 # Rebuilt on demand with `npm run sections:build`; never belongs on the public site.

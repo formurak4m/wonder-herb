@@ -87,7 +87,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 40 | **Counting a class name across a file counts its CSS too** — and the migration changes exactly that property. Counting `faq-question` in 常見問題 gave 13 on the live page and 6 on the migrated one, read as "the FAQ lost 7 questions". It had not: the live page is **inline-styled**, so 7 of its 13 were the selector `.faq-question`; the migrated page links an external sheet, so all 6 of its hits were real elements. Both pages render 6 | Medium — it produced a confident, wrong number that was one step from a content edit on the owner's instruction | **Method, recorded 24 Oct 2026.** Count `class="x"`, not `x`, whenever the comparison spans a page that still has inline CSS |
 | 41 | **An edit made directly to a GENERATED file is reverted by the next `npm run export`.** `assets.navActive` was added to 14 page-tree FILES at P10-T1 and never to MongoDB. It sat correct for five weeks and the first export since stripped all 14 — the chrome partial's nav fix, silently undone | **High — latent.** Armed the moment the edit was made, and it would have detonated at the first publish from the admin, which is an export. **Nothing would have caught it:** no suite asserts `navActive` or the nav highlight, and no suite exercises `export` at all | **Rule, recorded 24 Oct 2026.** The database is the source of truth for anything in a page tree. Fixed by writing `navActive` into the 14 page documents, so export now preserves it |
 | 42 | **The Google Fonts URL is malformed, so Inter and Playfair Display have NEVER loaded.** It declares two axes (`opsz,wght`) then gives `14..32,300;400;500;600;700` — one value pair followed by four bare numbers. Google Fonts answers **400**. Byte-identical on the pre-migration hand-coded pages, so this predates the rebuild and is live today on all 18 pages | Medium — the site has always rendered in fallback fonts, and the typography the design assumes has never been delivered. Not a regression and not caused by the merge | **Phase 13**, with finding 36 (self-hosting) and finding 21b (the CJK stack). One-line fix available now: paired values, e.g. `Inter:opsz,wght@14..32,300..700` returns 200 |
-| 43 | **The CI SEO gate cannot run, and its reference holds what it forbids.** P8-T3 put `test:seo` on the deploy path. That suite refuses to start without `baseline/head/`, which is **gitignored**, so the gate has failed on every CI run since and NOTHING has deployed. The obvious fix is barred: those head snapshots were captured from live pages carrying the finding-26 rating markup, so committing them would republish it | **High.** The live site has been frozen on the pre-P8-T3 artifact since 24 Oct 2026 — `server/`, `docs/` and `legacy/` are still publicly served, which is the exposure P8-T3 existed to close. The gate failed SAFE, but it has never once passed | **Open, recorded 28 Oct 2026, owner's call.** See the finding for the two options |
+| 43 | **The CI SEO gate cannot run, and its reference holds what it forbids.** P8-T3 put `test:seo` on the deploy path. That suite refuses to start without `baseline/head/`, which is **gitignored**, so the gate has failed on every CI run since and NOTHING has deployed. The obvious fix is barred: those head snapshots were captured from live pages carrying the finding-26 rating markup, so committing them would republish it | **High.** The live site has been frozen on the pre-P8-T3 artifact since 24 Oct 2026 — `server/`, `docs/` and `legacy/` are still publicly served, which is the exposure P8-T3 existed to close. The gate failed SAFE, but it has never once passed | **FIXED 28 Oct 2026** (option A). `scripts/seo-reference.js` emits `baseline/seo-reference.json` (8.7 KB, committed); `scripts/test-seo.js:110-124` reads it and asserts it carries no rating data. Proven in a tracked-files-only checkout with three negative controls |
 
 ---
 
@@ -2534,7 +2534,7 @@ rather than as a side effect of a bug fix. Correcting it is therefore **not** a 
 **Verify, when fixed:** the stylesheet returns 200, and the 18-page visual diff is re-run and
 explained, because the whole site's type will shift.
 
-## 43 · The CI SEO gate cannot run, and its reference holds what it forbids
+## 43 · The CI SEO gate cannot run, and its reference holds what it forbids — FIXED
 
 **Found:** 28 Oct 2026, when the first deploy after P8-T3 was checked and the live site still
 served `server/index.js`.
@@ -2573,16 +2573,48 @@ Skipping the baseline assertions in CI is barred too, by the suite's own stated 
 above: it would pass for the wrong reason, and the CI gate would be silently weaker than the local
 one.
 
-### The two options — owner's call
+### Fixed, 28 Oct 2026 — option A
 
-**A. A derived reference, committed.** The baseline section uses exactly two things per page: the
+`scripts/seo-reference.js` derives `baseline/seo-reference.json` from `baseline/head/`: **8.7 KB,
+18 pages**, carrying only the four fields this gate reads — canonical URL, JSON-LD `@type` names,
+`<title>` and meta description. `baseline/head/` stays ignored.
+
+Three things hold it together:
+
+1. **The generator refuses to write a file carrying finding 26's material** (`FORBIDDEN`:
+   `ratingValue`, `reviewCount`, `bestRating`, `worstRating`, `author`, `reviewBody`,
+   `datePublished`). If the script is ever widened, that is what stops the markup travelling.
+2. **`test-seo.js` asserts the same of the file it reads**, so a hand-edited or stale reference is
+   caught at the gate, not only at generation.
+3. **`scripts/baseline.js` regenerates it** at the end of a full capture, so a re-captured baseline
+   cannot leave the gate asserting against the old site. A partial capture (`BASELINE_PAGES` set)
+   prints a warning and does not write it.
+
+The extraction mirrors `ldNodes()`/`typesOf()` exactly — top level of `@graph`, not a recursive
+walk — and was proved equal to the old `baseline/head/` comparison across all 18 pages before the
+file was committed.
+
+**Verified in the environment that runs it**, which is the thing that was missing the first time:
+a checkout built from tracked files alone, holding `baseline/seo-reference.json` and no
+`baseline/head/`, runs `test:seo` to `ALL CHECKS PASSED`.
+
+| Negative control | Result | Exit |
+|---|---|---|
+| the reference deleted | dies with the instruction | **1** |
+| `ratingValue` planted in the reference | `FAIL the SEO reference carries no rating or review data (finding 26) -> FOUND: ratingValue` | **1** |
+| a canonical altered in the reference | `FAIL canonical host` + `FAIL canonical path` | **1** |
+| restored | `ALL CHECKS PASSED` | **0** |
+
+### The two options as they stood
+
+**A (taken). A derived reference, committed.** The baseline section uses exactly two things per page: the
 canonical URL, and the list of JSON-LD `@type` strings. Emit those to a small
 `baseline/seo-reference.json` (~2 KB), generated by `scripts/baseline.js`, and have `test-seo.js`
 read it. A `@type` **name** is not the fabricated data — no `ratingValue`, no `reviewCount`, no
 patient identity — and the existing waiver already expects those two type names on the pages that
 had them. The gate stays whole in CI and `static.yml` does not change.
 
-**B. Gate on `test:data` and the artifact only.** `test:data` runs clean in a CI checkout
+**B (not taken). Gate on `test:data` and the artifact only.** `test:data` runs clean in a CI checkout
 (verified, 28 Oct 2026). Drop `test:seo` from the workflow and leave it to `npm run publish`
 locally. This restores the deploy immediately but puts the human back between `publish` and
 `push` — which is the thing P8-T3 existed to remove before P12-T5 gives the admin a Publish

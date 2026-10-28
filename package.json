@@ -24,6 +24,7 @@
     "sections:build": "node renderer/build-sections.js",
     "render": "node renderer/render.js",
     "test:render": "node scripts/test-render.js",
+    "seo:reference": "node scripts/seo-reference.js",
     "test:seo": "node scripts/test-seo.js",
     "test:data": "node scripts/test-published-data.js",
     "test:behaviour": "node scripts/test-behaviour.js",

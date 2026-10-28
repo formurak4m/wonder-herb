@@ -24,13 +24,23 @@
  *               intrinsic checks would still pass, because what is left is
  *               valid, just poorer.
  *
- * ON REQUIRING THE BASELINE. baseline/ is gitignored (~13 MB of screenshots),
- * so this suite fails with an instruction rather than skipping if it is
- * missing. A gate that silently drops half its assertions when an input is
- * absent is the "passes for the wrong reason" pattern. Nothing in CI runs the
- * test suite - .github/workflows/static.yml only uploads and deploys - so the
- * only runner is a developer machine, where `node scripts/baseline.js`
- * regenerates it.
+ * ON REQUIRING THE BASELINE. This suite asserts against
+ * `baseline/seo-reference.json`, which IS committed - not against
+ * `baseline/head/`, which is not. It still fails with an instruction rather
+ * than skipping if the reference is missing: a gate that silently drops half
+ * its assertions when an input is absent is the "passes for the wrong reason"
+ * pattern.
+ *
+ * WHY A DERIVED REFERENCE AND NOT THE SNAPSHOTS (finding 43). This suite RUNS
+ * IN CI since P8-T3 - .github/workflows/static.yml gates the deploy on it, and
+ * an earlier version of this very comment said the opposite, which is how the
+ * gate came to fail on every run for four days while nothing deployed. CI
+ * checks out the repository, and `baseline/` is gitignored. The snapshots are
+ * only 720 KB, but they were captured from live pages carrying finding 26's
+ * invented Review / AggregateRating markup, and this repository is public and
+ * deploys to the client's domain, so they cannot be committed. The four fields
+ * this section actually reads can be, and are: scripts/seo-reference.js emits
+ * them and refuses to write a file carrying a rating value.
  *
  * ON LANGUAGES. Month 1 renders zh only, so the hreflang set is zh-Hant plus
  * x-default and reciprocity is degenerate (a page referring to itself). The
@@ -73,7 +83,7 @@ const OUT = path.join(ROOT, 'renderer', '.out');
 /* The trees that actually publish (data/pages/), the same list render.js
    renders by default - NOT the renderer/sample/ fixture, which is what this gate
    checked until P9-T1 while the real tree went unchecked. */
-const BASELINE = path.join(ROOT, 'baseline', 'head');
+const BASELINE = path.join(ROOT, 'baseline', 'seo-reference.json');
 
 /* The allow-list. Read the header before touching this. Keys are filenames as
    they appear in a page tree's `path`; values are the reason, printed on every
@@ -98,9 +108,21 @@ const die = msg => { console.error('\n' + msg + '\n'); process.exit(1); };
 /* ------------------------------------------------------------- inputs ----- */
 
 if (!fs.existsSync(BASELINE)) {
-  die('SEO gate cannot run: baseline/head/ is missing.\n' +
-      'It is the reference this gate asserts against, and it is gitignored.\n' +
-      'Regenerate it with:  node scripts/baseline.js');
+  die('SEO gate cannot run: baseline/seo-reference.json is missing.\n' +
+      'It is the reference this gate asserts against, and it IS committed -\n' +
+      'if it is absent something deleted it. See docs/FINDINGS.md finding 43.\n' +
+      'Regenerate it with:  npm run seo:reference   (needs baseline/head/)');
+}
+const REFERENCE = JSON.parse(fs.readFileSync(BASELINE, 'utf8')).pages || {};
+
+/* The reference must never carry finding 26's material. The generator refuses
+   to WRITE such a file; this asserts the same of the file actually being READ,
+   so a hand-edited or stale reference is caught here too. */
+{
+  const { FORBIDDEN } = require(path.join(ROOT, 'scripts', 'seo-reference.js'));
+  const hit = fs.readFileSync(BASELINE, 'utf8').match(FORBIDDEN);
+  check('the SEO reference carries no rating or review data (finding 26)',
+        !hit, hit ? 'FOUND: ' + hit[0] : Object.keys(REFERENCE).length + ' page(s), clean');
 }
 
 const { publishedTrees } = require(path.join(ROOT, 'renderer', 'render.js'));
@@ -347,15 +369,14 @@ console.log('\n=== against the P0-T2 baseline (nothing silently lost) ===\n');
 
 rendered.forEach((page, url) => {
   if (page.lang !== PRIMARY) return;            // the baseline only has the zh site
-  const base = path.join(BASELINE, page.rel);
-  if (!fs.existsSync(base)) {
-    check(page.rel + ': has a baseline head to compare against', false,
-          'baseline/head/' + page.rel + ' missing — re-run node scripts/baseline.js');
+  const ref = REFERENCE[page.rel];
+  if (!ref) {
+    check(page.rel + ': has a baseline reference to compare against', false,
+          'not in baseline/seo-reference.json — re-run npm run seo:reference');
     return;
   }
-  const bdoc = new JSDOM(fs.readFileSync(base, 'utf8')).window.document;
 
-  const bCanonical = attr(bdoc, 'link[rel="canonical"]', 'href');
+  const bCanonical = ref.canonical;
   const host = u => { try { return new URL(u).host; } catch (e) { return '(unparseable)'; } };
   check(page.rel + ': canonical host matches the baseline',
         host(attr(page.doc, 'link[rel="canonical"]', 'href')) === host(bCanonical),
@@ -376,7 +397,9 @@ rendered.forEach((page, url) => {
      a regression, so they are not part of what must be preserved - and check 6
      above fails any page that still has them. */
   const got = typesOf(page.doc);
-  const want = typesOf(bdoc).filter(t => t !== 'Review' && t !== 'AggregateRating');
+  /* Review and AggregateRating are already filtered out by the generator, for
+     the reason given just above: losing them is the point. */
+  const want = ref.types;
   const bExempt = UTILITY_PAGES[String(page.tree.path || '')];
   if (bExempt) {
     console.log('        waived: JSON-LD @types match the baseline - ' + bExempt);
@@ -399,7 +422,7 @@ rendered.forEach((page, url) => {
      it either way, so the page's own <title> is the source of truth, and this
      check accepts either, naming the disagreement when there is one. Matching
      NEITHER still fails, so a title lost in migration is still caught. */
-  const bTitle = ((bdoc.querySelector('title') || {}).textContent || '').trim();
+  const bTitle = ref.title;
   const oTitle = isRetired(page.rel)
     ? (((new JSDOM(readOriginalPage(page.rel)).window.document.querySelector('title')) || {}).textContent || '').trim()
     : bTitle;
@@ -411,8 +434,7 @@ rendered.forEach((page, url) => {
             '        NOTE: the baseline (scripts on) recorded "' + bTitle + '" - the live page\'s ' +
             'script overwrites its own title');
   check(page.rel + ': meta description matches the baseline',
-        attr(page.doc, 'meta[name="description"]', 'content') ===
-        attr(bdoc, 'meta[name="description"]', 'content'), 'identical');
+        attr(page.doc, 'meta[name="description"]', 'content') === ref.description, 'identical');
 });
 
 console.log('\n' + (fail ? '=== ' + fail + ' CHECK(S) FAILED — THIS BLOCKS PUBLISH ===' : '=== ALL CHECKS PASSED ==='));
