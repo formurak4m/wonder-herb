@@ -34,11 +34,14 @@
  * the same rule as the homepage .glb models: moving these files to R2 in Phase
  * 10 is then a data edit and a re-render, not a code change.
  *
- * NO CAPTIONS, NO HEADING, BY DECISION (owner, 28 Oct 2026): the videos carry
- * their own burned-in titles, so a caption under them would either repeat one
- * or invent one. Two of the three name a patient and a diagnosis; the third
- * carries no wording at all, and nothing here is allowed to supply it. The
- * only text is `videosLabel`, which is an aria-label and never rendered.
+ * NO PER-VIDEO CAPTIONS, BY DECISION (owner, 28 Oct 2026): the videos carry
+ * their own burned-in titles, so a caption under one would either repeat it or
+ * invent it. Two of the three name a patient and a diagnosis; the third
+ * carries no wording at all, and nothing here is allowed to supply it.
+ *
+ * A BAND HEADING is separate and is owner-supplied copy (`videosHeading`,
+ * added 28 Oct 2026). It describes the band, not any one video, so it makes no
+ * claim about a patient. It doubles as the group's accessible name.
  *
  * NO BEHAVIOUR FILE. The <video> carries native `controls`, so it plays with
  * scripts off; `preload="none"` plus a poster means not one byte of the 14 MB
@@ -71,6 +74,7 @@ export const config = {
       type: 'array',
       arrayFields: { match: { type: 'text' }, icon: { type: 'text' } }
     },
+    videosHeading: { type: 'text' },
     videosLabel: { type: 'text' },
     videos: {
       type: 'array',
@@ -101,7 +105,7 @@ export const config = {
     filterIcon: 'fas fa-tags', allLabel: '', allIcon: 'fas fa-list-ul',
     moreLabel: '', lessLabel: '', moreIcon: 'fas fa-chevron-down', emptyText: '',
     defaultIcon: 'fa-solid fa-virus', diseaseIcons: [],
-    videosLabel: '', videos: [],
+    videosHeading: '', videosLabel: '', videos: [],
     heading: '', headingId: '', sub: '', moreHref: '典型病例.html',
     limit: 3, excerptLimit: 110, linkLabel: '', linkHref: '典型病例.html',
     moreLinkLabel: '', gridId: 'featuredCasesGrid', variant: 'default'
@@ -126,7 +130,7 @@ export default function CaseList({
   source, data, searchPlaceholder, searchLabel, resetLabel, resetIcon,
   resultPrefix, resultSuffix, filterLabel, filterIcon, allLabel, allIcon,
   moreLabel, lessLabel, moreIcon, emptyText, defaultIcon, diseaseIcons,
-  videosLabel, videos,
+  videosHeading, videosLabel, videos,
   heading, headingId, sub, moreLinkLabel, moreHref,
   limit, excerptLimit, linkLabel, linkHref, gridId, variant = 'default'
 }) {
@@ -212,7 +216,9 @@ export default function CaseList({
       </div>
 
       {Array.isArray(videos) && videos.length ? (
-        <div className="case-videos" role="group" aria-label={videosLabel || undefined}>
+        <div className="case-videos" role="group"
+             aria-label={videosHeading || videosLabel || undefined}>
+          {videosHeading ? <h2 className="case-videos-title">{videosHeading}</h2> : null}
           <div className="case-videos-grid">
             {videos.map((v, i) => (
               <video className="case-video" key={i} controls preload="none" playsInline

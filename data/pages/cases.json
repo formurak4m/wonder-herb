@@ -298,7 +298,10 @@
             "src": "assets/video/case-testimony-3-53efa570.mp4",
             "poster": "assets/video/case-testimony-3-d466f1a2.jpg"
           }
-        ]
+        ],
+        "videosHeading": {
+          "zh": "Real Stories & Client Testimonials"
+        }
       }
     }
   ]

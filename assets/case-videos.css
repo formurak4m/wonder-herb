@@ -19,6 +19,15 @@
   margin: 0 0 40px;
 }
 
+.case-videos-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1f6f6a;
+  margin: 0 0 20px;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
 .case-videos-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -51,6 +60,7 @@
 
 @media (max-width: 768px) {
   .case-videos-grid { grid-template-columns: 1fr; }
+  .case-videos-title { font-size: 1.25rem; margin-bottom: 16px; }
   .case-video { border-radius: 20px; }
 }
 
