@@ -24,11 +24,19 @@
  * form already has - but it IS a trust boundary, so it is stated here and
  * nowhere else in the section library.
  *
- * VIDEOS sit BETWEEN the filter panel and the grid, which is why they are a
- * field on this section rather than a section of their own. The live page puts
- * .filter-panel and .cases-grid inside ONE <section class="cases-section">, so
- * a sibling tree node can only land above the filter panel or below the last
- * case - never between them, which is where they belong.
+ * VIDEOS sit ABOVE THE FILTER PANEL, under the page title (owner, 28 Oct 2026;
+ * they were between the filter panel and the first case until then).
+ *
+ * WHY THEY ARE STILL A FIELD HERE AND NOT A SECTION OF THEIR OWN. That
+ * position IS a section boundary, so the original reason is gone - but a new
+ * registered section type must carry a fidelity map, and a fidelity map
+ * compares the component against markup on a REAL live page. This band has no
+ * live counterpart: it is new content the client supplied, not a migration of
+ * anything. The section library is for markup that exists on the live site
+ * (see CLAUDE.md, "a variant is always markup that exists on the live site,
+ * never an invention"); new content belongs in data, which is what this is.
+ * If the band ever needs to appear on a second page, that is the moment to
+ * promote it - and then it will have a real page to be mapped against.
  *
  * Each video is a TREE FIELD (src/poster/title/duration), never markup, under
  * the same rule as the homepage .glb models: moving these files to R2 in Phase
@@ -75,6 +83,7 @@ export const config = {
       arrayFields: { match: { type: 'text' }, icon: { type: 'text' } }
     },
     videosHeading: { type: 'text' },
+    videosSub: { type: 'textarea' },
     videosLabel: { type: 'text' },
     videos: {
       type: 'array',
@@ -105,7 +114,7 @@ export const config = {
     filterIcon: 'fas fa-tags', allLabel: '', allIcon: 'fas fa-list-ul',
     moreLabel: '', lessLabel: '', moreIcon: 'fas fa-chevron-down', emptyText: '',
     defaultIcon: 'fa-solid fa-virus', diseaseIcons: [],
-    videosHeading: '', videosLabel: '', videos: [],
+    videosHeading: '', videosSub: '', videosLabel: '', videos: [],
     heading: '', headingId: '', sub: '', moreHref: '典型病例.html',
     limit: 3, excerptLimit: 110, linkLabel: '', linkHref: '典型病例.html',
     moreLinkLabel: '', gridId: 'featuredCasesGrid', variant: 'default'
@@ -130,7 +139,7 @@ export default function CaseList({
   source, data, searchPlaceholder, searchLabel, resetLabel, resetIcon,
   resultPrefix, resultSuffix, filterLabel, filterIcon, allLabel, allIcon,
   moreLabel, lessLabel, moreIcon, emptyText, defaultIcon, diseaseIcons,
-  videosHeading, videosLabel, videos,
+  videosHeading, videosSub, videosLabel, videos,
   heading, headingId, sub, moreLinkLabel, moreHref,
   limit, excerptLimit, linkLabel, linkHref, gridId, variant = 'default'
 }) {
@@ -182,6 +191,22 @@ export default function CaseList({
 
   return (
     <>
+      {Array.isArray(videos) && videos.length ? (
+        <div className="case-videos" role="group"
+             aria-label={videosHeading || videosLabel || undefined}>
+          {videosHeading ? <h2 className="case-videos-title">{videosHeading}</h2> : null}
+          {videosSub ? <p className="case-videos-sub">{videosSub}</p> : null}
+          <div className="case-videos-grid">
+            {videos.map((v, i) => (
+              <video className="case-video" key={i} controls preload="none" playsInline
+                     poster={v.poster || undefined}>
+                <source src={v.src} type="video/mp4" />
+              </video>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
       <div className="filter-panel" role="search" aria-label={searchLabel || undefined}>
         <div className="search-row">
           <div className="search-box">
@@ -214,21 +239,6 @@ export default function CaseList({
           })}
         </div>
       </div>
-
-      {Array.isArray(videos) && videos.length ? (
-        <div className="case-videos" role="group"
-             aria-label={videosHeading || videosLabel || undefined}>
-          {videosHeading ? <h2 className="case-videos-title">{videosHeading}</h2> : null}
-          <div className="case-videos-grid">
-            {videos.map((v, i) => (
-              <video className="case-video" key={i} controls preload="none" playsInline
-                     poster={v.poster || undefined}>
-                <source src={v.src} type="video/mp4" />
-              </video>
-            ))}
-          </div>
-        </div>
-      ) : null}
 
       <div className="cases-grid" role="list" aria-label={searchLabel || undefined}
            data-empty-text={emptyText || undefined}>
