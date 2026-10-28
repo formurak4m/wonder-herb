@@ -87,6 +87,7 @@ length, image load counts, JSON-LD blocks, `<h1>` count and failed requests.
 | 40 | **Counting a class name across a file counts its CSS too** — and the migration changes exactly that property. Counting `faq-question` in 常見問題 gave 13 on the live page and 6 on the migrated one, read as "the FAQ lost 7 questions". It had not: the live page is **inline-styled**, so 7 of its 13 were the selector `.faq-question`; the migrated page links an external sheet, so all 6 of its hits were real elements. Both pages render 6 | Medium — it produced a confident, wrong number that was one step from a content edit on the owner's instruction | **Method, recorded 24 Oct 2026.** Count `class="x"`, not `x`, whenever the comparison spans a page that still has inline CSS |
 | 41 | **An edit made directly to a GENERATED file is reverted by the next `npm run export`.** `assets.navActive` was added to 14 page-tree FILES at P10-T1 and never to MongoDB. It sat correct for five weeks and the first export since stripped all 14 — the chrome partial's nav fix, silently undone | **High — latent.** Armed the moment the edit was made, and it would have detonated at the first publish from the admin, which is an export. **Nothing would have caught it:** no suite asserts `navActive` or the nav highlight, and no suite exercises `export` at all | **Rule, recorded 24 Oct 2026.** The database is the source of truth for anything in a page tree. Fixed by writing `navActive` into the 14 page documents, so export now preserves it |
 | 42 | **The Google Fonts URL is malformed, so Inter and Playfair Display have NEVER loaded.** It declares two axes (`opsz,wght`) then gives `14..32,300;400;500;600;700` — one value pair followed by four bare numbers. Google Fonts answers **400**. Byte-identical on the pre-migration hand-coded pages, so this predates the rebuild and is live today on all 18 pages | Medium — the site has always rendered in fallback fonts, and the typography the design assumes has never been delivered. Not a regression and not caused by the merge | **Phase 13**, with finding 36 (self-hosting) and finding 21b (the CJK stack). One-line fix available now: paired values, e.g. `Inter:opsz,wght@14..32,300..700` returns 200 |
+| 43 | **The CI SEO gate cannot run, and its reference holds what it forbids.** P8-T3 put `test:seo` on the deploy path. That suite refuses to start without `baseline/head/`, which is **gitignored**, so the gate has failed on every CI run since and NOTHING has deployed. The obvious fix is barred: those head snapshots were captured from live pages carrying the finding-26 rating markup, so committing them would republish it | **High.** The live site has been frozen on the pre-P8-T3 artifact since 24 Oct 2026 — `server/`, `docs/` and `legacy/` are still publicly served, which is the exposure P8-T3 existed to close. The gate failed SAFE, but it has never once passed | **Open, recorded 28 Oct 2026, owner's call.** See the finding for the two options |
 
 ---
 
@@ -2532,3 +2533,62 @@ rather than as a side effect of a bug fix. Correcting it is therefore **not** a 
 
 **Verify, when fixed:** the stylesheet returns 200, and the 18-page visual diff is re-run and
 explained, because the whole site's type will shift.
+
+## 43 · The CI SEO gate cannot run, and its reference holds what it forbids
+
+**Found:** 28 Oct 2026, when the first deploy after P8-T3 was checked and the live site still
+served `server/index.js`.
+
+`.github/workflows/static.yml` run 40066050346 (`ac9a91a`) failed at step 6, `GATE: SEO (test:seo)`.
+Steps 7 to 12 were skipped, so no artifact was uploaded and no deployment was created. **The gate
+behaved exactly as designed** — it failed closed and left the previous site up. What it has never
+done is pass.
+
+**Why.** `scripts/test-seo.js` asserts part of its contract against `baseline/head/<page>.html`,
+the P0-T2 snapshot, and `die()`s with an instruction if that directory is absent. `baseline/` is
+gitignored, so it is absent in every CI checkout.
+
+**This was foreseen, in that file's own header, and I did not read it:**
+
+> *ON REQUIRING THE BASELINE. baseline/ is gitignored (~13 MB of screenshots), so this suite fails
+> with an instruction rather than skipping if it is missing. A gate that silently drops half its
+> assertions when an input is absent is the "passes for the wrong reason" pattern. **Nothing in CI
+> runs the test suite** — .github/workflows/static.yml only uploads and deploys — so the only
+> runner is a developer machine.*
+
+That last sentence was true when written. P8-T3 made it false, and the assumption it licensed was
+never revisited. The local verification of the workflow was run on a machine where `baseline/`
+exists; the staging and artifact gates were given a negative control, **the two test gates were
+not run in a baseline-free checkout**. Verify by effect means verifying in the environment that
+will run it.
+
+**Why the obvious fix is barred.** `baseline/head/` is only 720 KB — small enough to commit — but
+the snapshots were taken from live pages that carried the invented `AggregateRating` / `Review`
+markup of **finding 26**. `test-seo.js` already knows this and carries an explicit waiver for it
+(`:374`). Committing those files would put that material back into a public repository that
+deploys to the client's domain, while finding 26 is open and a history rewrite is forbidden.
+**Do not commit `baseline/head/`.**
+
+Skipping the baseline assertions in CI is barred too, by the suite's own stated principle quoted
+above: it would pass for the wrong reason, and the CI gate would be silently weaker than the local
+one.
+
+### The two options — owner's call
+
+**A. A derived reference, committed.** The baseline section uses exactly two things per page: the
+canonical URL, and the list of JSON-LD `@type` strings. Emit those to a small
+`baseline/seo-reference.json` (~2 KB), generated by `scripts/baseline.js`, and have `test-seo.js`
+read it. A `@type` **name** is not the fabricated data — no `ratingValue`, no `reviewCount`, no
+patient identity — and the existing waiver already expects those two type names on the pages that
+had them. The gate stays whole in CI and `static.yml` does not change.
+
+**B. Gate on `test:data` and the artifact only.** `test:data` runs clean in a CI checkout
+(verified, 28 Oct 2026). Drop `test:seo` from the workflow and leave it to `npm run publish`
+locally. This restores the deploy immediately but puts the human back between `publish` and
+`push` — which is the thing P8-T3 existed to remove before P12-T5 gives the admin a Publish
+button. **Not recommended**, and if taken it must be written into P12-T5 as a blocker.
+
+**Verify, when fixed:** a CI run reaches `Deploy to GitHub Pages` and goes green, and afterwards
+`/server/index.js`, `/docs/FINDINGS.md` and `/legacy/` all return **404** on the live site while
+the 18 pages, `assets/`, `data/`, `admin/` and the models return 200. Negative control: the gate
+must still fail the job when a tree is given rating data.
