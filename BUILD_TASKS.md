@@ -1079,6 +1079,26 @@ Fixed in `assets/behaviour/home-hero.js` — a model loads when its slide activa
 deleted outright — and gated in `test:behaviour` with a three.js stub, proved by restoring the old
 loader and watching the check fail (4 fetched on load, 4 cache-busted).
 
+### P10-T9 · The three case-testimony videos go to R2 with the models
+`assets/video/` holds 14 MB of patient testimony added to 典型病例 on 28 Oct 2026, under the same
+exception the `.glb` models are under: the bucket did not exist yet, and the client needed the page.
+They move with the models, and the move is a **data edit** — `fields.videos[].src` and `.poster` on
+the `case-list` section of `pages/cases` in MongoDB, then `npm run export` and `npm run render`.
+Nothing in `sections/CaseList.jsx` or `assets/case-videos.css` names a file.
+
+The masters are WhatsApp exports, 48 MB for three, and are **not in git** (`/Video/` in `.gitignore`,
+anchored to the root because Git on Windows matches ignore patterns case-insensitively and a bare
+`Video/` also hides `assets/video/`). The committed encodes were made with:
+
+```
+ffmpeg -i IN.mp4   -vf "scale='if(gt(iw,ih),min(iw,1280),-2)':'if(gt(iw,ih),-2,min(ih,1280))'"   -c:v libx264 -crf 29 -preset slow -profile:v high -pix_fmt yuv420p   -movflags +faststart -c:a aac -b:a 80k -ac 1 OUT.mp4
+# poster: ffmpeg -ss 2 -i OUT.mp4 -frames:v 1 -q:v 4 OUT.jpg
+```
+
+48 MB → 14.3 MB. Filenames are content-addressed (`-<sha8>`) to the contract in P10-T2, so they are
+safe to serve `immutable` the moment they are on the bucket.
+- **Gate (owner):** the same `check:media` gate as P10-T6. No `git rm --cached` before it is green.
+
 ### P10-T8 · P8-T3, the deploy allow-list — lands with this phase
 Scheduled here rather than after, because this is the phase that changes what deploys. It touches
 `.github/workflows/static.yml`, so it gets its own isolated review: **the diff is shown alone before

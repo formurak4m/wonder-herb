@@ -24,6 +24,26 @@
  * form already has - but it IS a trust boundary, so it is stated here and
  * nowhere else in the section library.
  *
+ * VIDEOS sit BETWEEN the filter panel and the grid, which is why they are a
+ * field on this section rather than a section of their own. The live page puts
+ * .filter-panel and .cases-grid inside ONE <section class="cases-section">, so
+ * a sibling tree node can only land above the filter panel or below the last
+ * case - never between them, which is where they belong.
+ *
+ * Each video is a TREE FIELD (src/poster/title/duration), never markup, under
+ * the same rule as the homepage .glb models: moving these files to R2 in Phase
+ * 10 is then a data edit and a re-render, not a code change.
+ *
+ * NO CAPTIONS, NO HEADING, BY DECISION (owner, 28 Oct 2026): the videos carry
+ * their own burned-in titles, so a caption under them would either repeat one
+ * or invent one. Two of the three name a patient and a diagnosis; the third
+ * carries no wording at all, and nothing here is allowed to supply it. The
+ * only text is `videosLabel`, which is an aria-label and never rendered.
+ *
+ * NO BEHAVIOUR FILE. The <video> carries native `controls`, so it plays with
+ * scripts off; `preload="none"` plus a poster means not one byte of the 14 MB
+ * is fetched until a visitor presses play.
+ *
  * The diagnosis icons are a page-level map (`diseaseIcons`: match -> icon),
  * not data: the live page keys the same map by the disease name in each
  * language. An entry may also carry its own `icon`, which wins.
@@ -51,6 +71,11 @@ export const config = {
       type: 'array',
       arrayFields: { match: { type: 'text' }, icon: { type: 'text' } }
     },
+    videosLabel: { type: 'text' },
+    videos: {
+      type: 'array',
+      arrayFields: { src: { type: 'text' }, poster: { type: 'text' } }
+    },
     /* highlights only */
     heading: { type: 'text' },
     headingId: { type: 'text' },
@@ -76,6 +101,7 @@ export const config = {
     filterIcon: 'fas fa-tags', allLabel: '', allIcon: 'fas fa-list-ul',
     moreLabel: '', lessLabel: '', moreIcon: 'fas fa-chevron-down', emptyText: '',
     defaultIcon: 'fa-solid fa-virus', diseaseIcons: [],
+    videosLabel: '', videos: [],
     heading: '', headingId: '', sub: '', moreHref: '典型病例.html',
     limit: 3, excerptLimit: 110, linkLabel: '', linkHref: '典型病例.html',
     moreLinkLabel: '', gridId: 'featuredCasesGrid', variant: 'default'
@@ -100,6 +126,7 @@ export default function CaseList({
   source, data, searchPlaceholder, searchLabel, resetLabel, resetIcon,
   resultPrefix, resultSuffix, filterLabel, filterIcon, allLabel, allIcon,
   moreLabel, lessLabel, moreIcon, emptyText, defaultIcon, diseaseIcons,
+  videosLabel, videos,
   heading, headingId, sub, moreLinkLabel, moreHref,
   limit, excerptLimit, linkLabel, linkHref, gridId, variant = 'default'
 }) {
@@ -183,6 +210,19 @@ export default function CaseList({
           })}
         </div>
       </div>
+
+      {Array.isArray(videos) && videos.length ? (
+        <div className="case-videos" role="group" aria-label={videosLabel || undefined}>
+          <div className="case-videos-grid">
+            {videos.map((v, i) => (
+              <video className="case-video" key={i} controls preload="none" playsInline
+                     poster={v.poster || undefined}>
+                <source src={v.src} type="video/mp4" />
+              </video>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="cases-grid" role="list" aria-label={searchLabel || undefined}
            data-empty-text={emptyText || undefined}>
